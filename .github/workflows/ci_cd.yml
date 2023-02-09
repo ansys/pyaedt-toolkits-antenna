@@ -26,6 +26,7 @@ jobs:
       - uses: pyansys/actions/code-style@v2
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          use-python-cache: false
 
   doc-style:
     name: "Documentation style"
