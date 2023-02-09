@@ -21,8 +21,7 @@ class CommonAntenna(object):
         self.coordinate_system = kwargs["coordinate_system"]
         self._old_antenna_name = None
         self.antenna_name = kwargs["antenna_name"]
-        self.position = kwargs["position"]
-        # super(CommonAntenna, self).__init__(*args, **kwargs)
+        self.origin = kwargs["origin"]
 
     @property
     def frequency(self):
@@ -159,18 +158,18 @@ class CommonAntenna(object):
                 self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", old_name])
 
     @property
-    def position(self):
-        """Antenna position.
+    def origin(self):
+        """Antenna origin.
 
         Returns
         -------
         list
         """
-        return self._position
+        return self._origin
 
-    @position.setter
-    def position(self, value):
-        self._position = value
+    @origin.setter
+    def origin(self, value):
+        self._origin = value
         if self.object_list:
             parameters = self._synthesis()
             parameters_map = {}

@@ -11,7 +11,7 @@ class CommonPatch(CommonAntenna):
     """Base methods common to Patch antennas."""
 
     def __init__(self, *args, **kwargs):
-        CommonAntenna.__init__(self)
+        CommonAntenna.__init__(self, *args, **kwargs)
         self._old_material = None
         self.material = kwargs["material"]
         self.substrate_height = kwargs["substrate_height"]
@@ -129,28 +129,33 @@ class RectangularPatchProbe(CommonPatch):
     >>> patch = hfss.antennas.rectangular_patch_w_probe(frequency=20.0, frequency_unit="GHz", material="Duroid (tm)",
     ...                                                  outer_boundary=None, huygens_box=True, substrate_height=0.16,
     ...                                                 length_unit="cm", coordinate_system="CS1",
-    ...                                                 antenna_name="Antenna_Samuel", position=[1, 100, 50])
+    ...                                                 antenna_name="Antenna_Samuel", origin=[1, 100, 50])
     """
 
     def __init__(self, *args, **kwargs):
-        # super(RectangularPatchProbe, self).__init__(*args, **kwargs)
-        CommonPatch.__init__(self)
 
-        # def rectangular_patch_probe(
-        #         self,
-        #         frequency=10.0,
-        #         frequency_unit="GHz",
-        #         material="FR4_epoxy",
-        #         outer_boundary=None,
-        #         huygens_box=False,
-        #         substrate_height=0.1575,
-        #         length_unit="cm",
-        #         coordinate_system="Global",
-        #         antenna_name=None,
-        #         position=None,
-        # ):
-        if not self.position:
-            self.position = [0, 0, 0]
+        if "frequency" not in kwargs.keys():
+            kwargs["frequency"] = 10.0
+        if "frequency_unit" not in kwargs.keys():
+            kwargs["frequency_unit"] = "GHz"
+        if "material" not in kwargs.keys():
+            kwargs["material"] = "FR4_epoxy"
+        if "outer_boundary" not in kwargs.keys():
+            kwargs["outer_boundary"] = None
+        if "huygens_box" not in kwargs.keys():
+            kwargs["huygens_box"] = False
+        if "substrate_height" not in kwargs.keys():
+            kwargs["substrate_height"] = 0.1575
+        if "length_unit" not in kwargs.keys():
+            kwargs["length_unit"] = "cm"
+        if "coordinate_system" not in kwargs.keys():
+            kwargs["coordinate_system"] = "Global"
+        if "antenna_name" not in kwargs.keys():
+            kwargs["antenna_name"] = None
+        if "origin" not in kwargs.keys():
+            kwargs["origin"] = [0, 0, 0]
+
+        CommonPatch.__init__(self, *args, **kwargs)
 
         self.antenna_name = self._check_antenna_name(self.antenna_name)
 
@@ -468,9 +473,9 @@ class RectangularPatchProbe(CommonPatch):
         parameters["gnd_x"] = gnd_x
         parameters["gnd_y"] = gnd_y
 
-        parameters["pos_x"] = self.position[0]
-        parameters["pos_y"] = self.position[1]
-        parameters["pos_z"] = self.position[2]
+        parameters["pos_x"] = self.origin[0]
+        parameters["pos_y"] = self.origin[1]
+        parameters["pos_z"] = self.origin[2]
 
         myKeys = list(parameters.keys())
         myKeys.sort()
