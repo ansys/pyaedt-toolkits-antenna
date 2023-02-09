@@ -1,9 +1,11 @@
 from _unittest.conftest import BasisTest
 from pyaedt.modeler.cad.object3d import Object3d
 from pyaedt.modeler.geometry_operators import GeometryOperators
+
 from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
 
 test_project_name = "Patch_test"
+
 
 class TestClass(BasisTest, object):
     def setup_class(self):
@@ -27,5 +29,7 @@ class TestClass(BasisTest, object):
         face_center_new = list(opatch1.object_list.values())[0].faces[0].center
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-6
-        opatch2 = self.aedtapp.add_from_toolkit(RectangularPatchProbe, antenna_name=opatch1.antenna_name)
+        opatch2 = self.aedtapp.add_from_toolkit(
+            RectangularPatchProbe, antenna_name=opatch1.antenna_name
+        )
         assert opatch1.antenna_name != opatch2.antenna_name

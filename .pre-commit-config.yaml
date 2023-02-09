@@ -1,3 +1,8 @@
+exclude: |
+    (?x)(
+        src/ansys/aedt/toolkits/antennas/MainWindow.py
+    )
+
 repos:
 
 - repo: https://github.com/psf/black
