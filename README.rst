@@ -100,7 +100,7 @@ need to follow these steps:
 
     .. code:: bash
     
-      python -m pip install --editable ansys-pyaedt-toolkits-ansys-aedt-toolkits-antennas
+      python -m pip install --editable ansys-aedt-toolkits-antennas
     
     #. Finally, verify your development installation by running:
 
