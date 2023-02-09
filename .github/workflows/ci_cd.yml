@@ -23,7 +23,7 @@ jobs:
     name: "Code style"
     runs-on: [pyaedt-toolkit-1]
     steps:
-      - uses: pyansys/actions/code-style@v2
+      - uses: pyansys/actions/code-style@v3
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
