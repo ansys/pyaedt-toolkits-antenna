@@ -1,9 +1,10 @@
-import math
 from collections import OrderedDict
+import math
 
 import pyaedt.generic.constants as constants
-from pyaedt.generic.general_methods import pyaedt_function_handler
 from pyaedt.generic.general_methods import generate_unique_name
+from pyaedt.generic.general_methods import pyaedt_function_handler
+
 from ansys.aedt.toolkits.antennas.common import CommonAntenna
 
 
@@ -97,7 +98,8 @@ class RectangularPatchProbe(CommonPatch):
     frequency_unit : str, optional
             Frequency units. The default is ``GHz``.
     material : str, optional
-            Substrate material. If material is not defined a new material parametrized will be defined.
+            Substrate material.
+            If material is not defined a new material parametrized will be defined.
             The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
             Boundary type to use. Options are ``"Radiation"``,
