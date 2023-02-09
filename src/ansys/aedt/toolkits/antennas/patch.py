@@ -86,10 +86,6 @@ class CommonPatch(CommonAntenna):
     def _synthesis(self):
         pass
 
-    @pyaedt_function_handler()
-    def _update_parameters(self, parameters, length_unit):
-        pass
-
 
 class RectangularPatchProbe(CommonPatch):
     """Manages rectangular patch antenna with coaxial probe.
@@ -158,21 +154,6 @@ class RectangularPatchProbe(CommonPatch):
         CommonPatch.__init__(self, *args, **kwargs)
 
         self.antenna_name = self._check_antenna_name(self.antenna_name)
-
-        # rect_patch = RectangularPatchProbe(
-        #     self._app,
-        #     frequency=self.frequency,
-        #     frequency_unit=self.frequency_unit,
-        #     material=self.material,
-        #     outer_boundary=self.outer_boundary,
-        #     huygens_box=self.huygens_box,
-        #     length_unit=self.length_unit,
-        #     substrate_height=self.substrate_height,
-        #     coordinate_system=self.coordinate_system,
-        #     antenna_name=self.antenna_name,
-        #     position=self.position,
-        # )
-        # rect_patch.draw()
 
     @pyaedt_function_handler()
     def draw(self):
