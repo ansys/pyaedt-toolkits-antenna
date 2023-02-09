@@ -1,12 +1,18 @@
+# -*- coding: utf-8 -*-
+
 import sys
 import os
 from pyaedt import Hfss, settings
 settings.use_grpc_api = True
 
 from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
-from PySide6 import QtWidgets, QtCore, QtGui
-from ui.antennas_main import Ui_MainWindow
+from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6.QtWidgets import QTableWidgetItem
+from PySide6.QtCore import QCoreApplication
+from ui.antennas_main import Ui_MainWindow, current_path
 import time
+enc = QtCore.QStringEncoder(QtCore.QStringConverter.Encoding.Utf16)
+dec = QtCore.QStringDecoder(QtCore.QStringConverter.Encoding.Utf16)
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(ApplicationWindow, self).__init__()
@@ -21,13 +27,15 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.length_unit = ''
         self.pushButton.clicked.connect(self.synth)
         self.pushButton_2.clicked.connect(self.create)
-        self.closeButton.clicked.connect(self.close)
+        self.closeButton.clicked.connect(self.release_and_close)
         self.oantenna = None
         self.hfss = Hfss(specified_version="2022.2")
         pass
 
-    def close(self):
-        self.hfss.release_desktop(False,False)
+    def release_and_close(self):
+        if self.hfss:
+            self.hfss.release_desktop(False,False)
+        self.close()
 
     def synth(self):
         freq = float(self.lineEdit.text())
@@ -42,9 +50,22 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                             material=material,
                                             outer_boundary=boundary,
                                             substrate_height=sub_height)
-        self.tableWidget.clear()
-        for par,value in self.oantenna._parameters.items():
-            self.tableWidget.row([par,value])
+        n = 0
+        self.tableWidget.setRowCount( len(self.oantenna._parameters.items()))
+        i=0
+        __sortingEnabled = self.tableWidget.isSortingEnabled()
+        self.tableWidget.setSortingEnabled(False)
+        self.tableWidget.setRowCount(len(self.oantenna._parameters.values()))
+        for par, value in self.oantenna._parameters.items():
+            item = QtWidgets.QTableWidgetItem(par)
+            self.tableWidget.setItem(i, 0, item)
+            item = QtWidgets.QTableWidgetItem(str(value)+self.oantenna.length_unit)
+            self.tableWidget.setItem(i, 1, item)
+            i+=1
+
+        self.tableWidget.setSortingEnabled(__sortingEnabled)
+
+
 
     def create(self):
         freq = float(self.lineEdit.text())
@@ -53,20 +74,40 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         boundary = self.comboBox_2.currentText()
         if boundary == "None":
             boundary=None
-
+        self.huygens = self.checkBox_4.isChecked()
+        self.component3d = self.checkBox_5.isChecked()
+        self.create_setup = self.checkBox_6.isChecked()
+        self.lattice_pair = self.checkBox_8.isChecked()
         self.oantenna = self.hfss.add_from_toolkit(RectangularPatchProbe,
                                             draw=True,
                                             frequency=freq,
                                             material=material,
                                             outer_boundary=boundary,
-                                            substrate_height=sub_height)
-        self.tableWidget.clear()
-        for par,value in self.oantenna._parameters.items():
-            self.tableWidget.row([par,value])
+                                            substrate_height=sub_height,
+                                            huygens_box=self.huygens)
+        self.oantenna.create_3dcomponent(replace=True)
+        if self.create_setup:
+            setup = self.hfss.create_setup()
+            setup.props["Frequency"] = str(freq)+"GHz"
+        self.tableWidget.setRowCount( len(self.oantenna._parameters.items()))
+        i=0
+        __sortingEnabled = self.tableWidget.isSortingEnabled()
+        self.tableWidget.setSortingEnabled(False)
+        self.tableWidget.setRowCount(len(self.oantenna._parameters.values()))
+        for par, value in self.oantenna._parameters.items():
+            item = QtWidgets.QTableWidgetItem(par)
+            self.tableWidget.setItem(i, 0, item)
+            item = QtWidgets.QTableWidgetItem(str(value)+self.oantenna.length_unit)
+            self.tableWidget.setItem(i, 1, item)
+            i+=1
+
+        self.tableWidget.setSortingEnabled(__sortingEnabled)
+
     def on_Rect_Patch_w_probe_selected(self):
         self.Rect_Patch_w_probe_settings.show()
         self.pixmap_item = self.scene.addPixmap(QtGui.QPixmap())
-        pixmap = QtGui.QPixmap("D:\\3-Python_Programs\\Demo_Pyside6\\Patch.png")
+        pixmap = QtGui.QPixmap(os.path.join(current_path, "Patch.png"))
+        print(os.path.join(current_path, "Patch.png"))
         pixmapitem = self.scene.addPixmap(pixmap)
 
         # self.scene = QtGui.QGraphicsScene(self)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ################################################################################
 ## Form generated from reading UI file 'MainWindow.ui'
 ##
@@ -20,6 +21,9 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
     QMenuBar, QPushButton, QSizePolicy, QSpacerItem,
     QSplitter, QStatusBar, QTableWidget, QTableWidgetItem,
     QWidget)
+import os
+
+current_path=os.path.join(os.getcwd(),"ui")
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -27,8 +31,8 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(810, 789)
         icon = QIcon()
-        icon.addFile(u"C:/Users/opelhatr/Downloads/pyansys-logo-black-cropped.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon.addFile(u"C:/Users/opelhatr/Downloads/pyansys-logo-black-cropped.png", QSize(), QIcon.Normal, QIcon.On)
+        icon.addFile(os.path.join(current_path, "pyansys-logo-black-cropped.png"), QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(os.path.join(current_path, "pyansys-logo-black-cropped.png"), QSize(), QIcon.Normal, QIcon.On)
         MainWindow.setWindowIcon(icon)
         MainWindow.setWindowOpacity(1.000000000000000)
         self.actionSave = QAction(MainWindow)
@@ -394,9 +398,9 @@ class Ui_MainWindow(object):
         self.actionRectangular_with_probe.setText(QCoreApplication.translate("MainWindow", u"Rectangular with probe", None))
         self.actionArrays_Synthesis.setText(QCoreApplication.translate("MainWindow", u"Arrays Synthesis", None))
         ___qtablewidgetitem = self.tableWidget.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Property", None));
+        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Property", None))
         ___qtablewidgetitem1 = self.tableWidget.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Value", None));
+        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Value", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Material name", None))
         self.comboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"FR4_epoxy", None))
         self.comboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"teflon_based", None))
@@ -422,7 +426,7 @@ class Ui_MainWindow(object):
         self.checkBox_8.setText("")
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Synthesis", None))
         self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Create", None))
-        self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Release", None))
+        self.closeButton.setText(QCoreApplication.translate("MainWindow", u"Close", None))
         self.menuLoad.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuArrays.setTitle(QCoreApplication.translate("MainWindow", u"Antennas", None))
         self.menuDesign.setTitle(QCoreApplication.translate("MainWindow", u"Design", None))
