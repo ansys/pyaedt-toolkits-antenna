@@ -1,4 +1,4 @@
-from ansys.pyaedt_toolkits.ansys_aedt_toolkits_antennas import __version__
+from ansys.aedt.toolkits.antennas import __version__
 
 
 def test_pkg_version():
