@@ -43,7 +43,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ['3.9', '3.10']
+        python-version: ['3.9']
     steps:
       - uses: pyansys/actions/build-wheelhouse@v2
         with:
@@ -59,7 +59,7 @@ jobs:
     strategy:
       matrix:
        os: [ubuntu-latest, windows-latest]
-       python-version: ['3.9', '3.10']
+       python-version: ['3.9']
       fail-fast: false
     steps:
       - uses: pyansys/actions/tests-pytest@v2
