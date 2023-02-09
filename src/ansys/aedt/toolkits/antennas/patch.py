@@ -150,6 +150,8 @@ class RectangularPatchProbe(CommonPatch):
         CommonPatch.__init__(self, *args, **kwargs)
 
         self.antenna_name = self._check_antenna_name(self.antenna_name)
+        self._parameters = self._synthesis()
+        self.parameters = []
 
     @pyaedt_function_handler()
     def draw(self):
@@ -157,11 +159,11 @@ class RectangularPatchProbe(CommonPatch):
         if self.object_list:
             self._app.logger.warning("This antenna already exists")
             return False
-        parameters = self._synthesis()
-        for param in parameters:
+
+        for param in self._parameters:
             new_name = param + "_" + self.antenna_name
             if new_name not in self._app.variable_manager.variables:
-                self._app[new_name] = str(parameters[param]) + self.length_unit
+                self._app[new_name] = str(self._parameters[param]) + self.length_unit
                 self.parameters.append(new_name)
 
         self.parameters = sorted(self.parameters)
