@@ -17,6 +17,8 @@ class CommonAntenna(object):
         self.frequency_unit = kwargs["frequency_unit"]
         self.outer_boundary = kwargs["outer_boundary"]
         self.huygens_box = kwargs["huygens_box"]
+        if "length_unit" not in kwargs.keys():
+            kwargs["length_unit"] = self._app.modeler.model_units
         self.length_unit = kwargs["length_unit"]
         self.coordinate_system = kwargs["coordinate_system"]
         self._old_antenna_name = None

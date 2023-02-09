@@ -15,10 +15,8 @@ class CommonPatch(CommonAntenna):
         self._old_material = None
         self.material = kwargs["material"]
         self.substrate_height = kwargs["substrate_height"]
-        self._app = args[0]
         self.object_list = {}
         self.parameters = []
-        self._length_unit = kwargs["length_unit"]
 
     @property
     def material(self):
@@ -52,7 +50,7 @@ class CommonPatch(CommonAntenna):
                 for param in parameters:
                     parameters_map[self.parameters[cont]] = parameters[param]
                     cont += 1
-                self._update_parameters(parameters_map, self._length_unit)
+                self._update_parameters(parameters_map, self.length_unit)
                 for antenna_obj in self.object_list:
                     if (
                         self.object_list[antenna_obj].material_name == old_material.lower()
@@ -80,7 +78,7 @@ class CommonPatch(CommonAntenna):
             for param in parameters:
                 parameters_map[self.parameters[cont]] = parameters[param]
                 cont += 1
-            self._update_parameters(parameters_map, self._length_unit)
+            self._update_parameters(parameters_map, self.length_unit)
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -142,8 +140,6 @@ class RectangularPatchProbe(CommonPatch):
             kwargs["huygens_box"] = False
         if "substrate_height" not in kwargs.keys():
             kwargs["substrate_height"] = 0.1575
-        if "length_unit" not in kwargs.keys():
-            kwargs["length_unit"] = "cm"
         if "coordinate_system" not in kwargs.keys():
             kwargs["coordinate_system"] = "Global"
         if "antenna_name" not in kwargs.keys():
