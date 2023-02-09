@@ -151,7 +151,7 @@ class RectangularPatchProbe(CommonPatch):
 
         self.antenna_name = self._check_antenna_name(self.antenna_name)
         self._parameters = self._synthesis()
-        self.parameters = None
+        self.parameters = []
 
     @pyaedt_function_handler()
     def draw(self):
