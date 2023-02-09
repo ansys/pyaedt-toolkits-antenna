@@ -18,7 +18,6 @@ directory as this module. An example of the contents of local_config.json
 
 """
 import datetime
-import gc
 import json
 import os
 import shutil
@@ -27,7 +26,8 @@ import tempfile
 
 from pyaedt import pyaedt_logger
 from pyaedt import settings
-from pyaedt.generic.general_methods import generate_unique_name
+
+# from pyaedt.generic.general_methods import generate_unique_name
 
 settings.enable_error_handler = False
 settings.enable_desktop_logs = False
@@ -43,7 +43,7 @@ from pyaedt.generic.filesystem import Scratch
 test_project_name = "test_antenna"
 
 sys.path.append(local_path)
-from _unittest.launch_desktop_tests import run_desktop_tests
+# from _unittest.launch_desktop_tests import run_desktop_tests
 
 # Initialize default desktop configuration
 default_version = "2022.2"
@@ -100,13 +100,24 @@ class BasisTest(object):
         logger.remove_all_project_file_logger()
         shutil.rmtree(self.local_scratch.path, ignore_errors=True)
 
-    def add_app(self, project_name=None, design_name=None, solution_type=None, application=None, subfolder=""):
+    def add_app(
+        self,
+        project_name=None,
+        design_name=None,
+        solution_type=None,
+        application=None,
+        subfolder="",
+    ):
         if "oDesktop" not in dir(self._main):
             self.desktop = Desktop(desktop_version, settings.non_graphical, new_thread)
             self.desktop.disable_autosave()
         if project_name:
-            example_project = os.path.join(local_path, "example_models", subfolder, project_name + ".aedt")
-            example_folder = os.path.join(local_path, "example_models", subfolder, project_name + ".aedb")
+            example_project = os.path.join(
+                local_path, "example_models", subfolder, project_name + ".aedt"
+            )
+            example_folder = os.path.join(
+                local_path, "example_models", subfolder, project_name + ".aedb"
+            )
             if os.path.exists(example_project):
                 self.test_project = self.local_scratch.copyfile(example_project)
             elif os.path.exists(example_project + "z"):

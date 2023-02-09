@@ -133,7 +133,9 @@ class CommonAntenna(object):
     def coordinate_system(self, value):
         self._coordinate_system = value
         for antenna_obj in self.object_list:
-            self.object_list[antenna_obj].history.props["Coordinate System"] = self._coordinate_system
+            self.object_list[antenna_obj].history.props[
+                "Coordinate System"
+            ] = self._coordinate_system
 
     @property
     def antenna_name(self):
@@ -211,7 +213,9 @@ class CommonAntenna(object):
         >>> path = patch.create_3dcomponent()
         """
         if not component_file:
-            component_file = os.path.join(self._app.working_directory, self.antenna_name + ".a3dcomp")
+            component_file = os.path.join(
+                self._app.working_directory, self.antenna_name + ".a3dcomp"
+            )
         if not component_name:
             component_name = self.antenna_name
 
@@ -238,7 +242,9 @@ class CommonAntenna(object):
                 reference_cs=self.coordinate_system,
             )
             if self._app.modeler.oeditor.GetObjectsInGroup(self.antenna_name).count == 0:
-                self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", self.antenna_name])
+                self._app.modeler.oeditor.Delete(
+                    ["NAME:Selections", "Selections:=", self.antenna_name]
+                )
 
             self._app.modeler.add_new_user_defined_component()
             self._app.modeler.refresh_all_ids()
