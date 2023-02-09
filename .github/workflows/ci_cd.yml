@@ -21,7 +21,7 @@ jobs:
 
   code-style:
     name: "Code style"
-    runs-on: [pyaedt-toolkit-1]
+    runs-on: ubuntu-latest
     steps:
       - uses: pyansys/actions/code-style@v3
         with:
