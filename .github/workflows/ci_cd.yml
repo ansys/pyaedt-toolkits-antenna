@@ -21,7 +21,7 @@ jobs:
 
   code-style:
     name: "Code style"
-    runs-on: ubuntu-latest
+    runs-on: [Windows, pyaedt]
     steps:
       - uses: pyansys/actions/code-style@v2
         with:
@@ -29,7 +29,7 @@ jobs:
 
   doc-style:
     name: "Documentation style"
-    runs-on: ubuntu-latest
+    runs-on: [Windows, pyaedt]
     steps:
       - uses: pyansys/actions/doc-style@v2
         with:
@@ -37,12 +37,11 @@ jobs:
 
   smoke-tests:
     name: "Build and Smoke tests"
-    runs-on: ${{ matrix.os }}
+    runs-on: [Windows, pyaedt]
     needs: [code-style]
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
         python-version: ['3.9']
     steps:
       - uses: pyansys/actions/build-wheelhouse@v2
@@ -54,11 +53,10 @@ jobs:
 
   tests:
     name: "Tests"
-    runs-on: ${{ matrix.os }}
+    runs-on: [Windows, pyaedt]
     needs: [smoke-tests]
     strategy:
       matrix:
-       os: [ubuntu-latest, windows-latest]
        python-version: ['3.9']
       fail-fast: false
     steps:
@@ -68,7 +66,7 @@ jobs:
 
   doc-build:
     name: "Build documentation"
-    runs-on: ubuntu-latest
+    runs-on: [Windows, pyaedt]
     needs: [doc-style]
     steps:
       - uses: pyansys/actions/doc-build@v2
@@ -77,7 +75,7 @@ jobs:
 
   doc-deploy-dev:
     name: "Deploy development documentation"
-    runs-on: ubuntu-latest
+    runs-on: [Windows, pyaedt]
     needs: [doc-build]
     if: github.event_name == 'push'
     steps:
@@ -88,7 +86,7 @@ jobs:
 
   doc-deploy-stable:
     name: "Deploy stable documentation"
-    runs-on: ubuntu-latest
+    runs-on: [Windows, pyaedt]
     needs: [doc-deploy-dev]
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
     steps:
@@ -99,7 +97,7 @@ jobs:
 
   build-library:
     name: "Build library basic example"
-    runs-on: ubuntu-latest
+    runs-on: [Windows, pyaedt]
     needs: [tests, doc-deploy-stable]
     steps:
       - uses: pyansys/actions/build-library@v2
