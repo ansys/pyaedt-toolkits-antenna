@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 ################################################################################
 ## Form generated from reading UI file 'MainWindow.ui'
 ##
@@ -318,6 +316,10 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_11.addWidget(self.pushButton_2)
 
+        self.closeButton = QPushButton(self.widget)
+        self.closeButton.setObjectName(u"closeButton")
+
+        self.horizontalLayout_11.addWidget(self.closeButton)
 
         self.gridLayout_5.addLayout(self.horizontalLayout_11, 4, 1, 1, 1)
 
@@ -420,6 +422,7 @@ class Ui_MainWindow(object):
         self.checkBox_8.setText("")
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Synthesis", None))
         self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Create", None))
+        self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Release", None))
         self.menuLoad.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuArrays.setTitle(QCoreApplication.translate("MainWindow", u"Antennas", None))
         self.menuDesign.setTitle(QCoreApplication.translate("MainWindow", u"Design", None))
