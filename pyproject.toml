@@ -28,6 +28,7 @@ dependencies = [
     "twine==4.0.1",
     "pyaedt==0.6.46",
     "importlib-metadata >=4.0",
+    "pyside6"
 ]
 
 [project.optional-dependencies]
