@@ -10,8 +10,8 @@ on:
 env:
   MAIN_PYTHON_VERSION: '3.9'
   DOCUMENTATION_CNAME: 'pyaedt_toolkits.docs.pyansys.com'
-  LIBRARY_NAME: 'ansys-pyaedt_toolkits-ansys_aedt_toolkits_antennas'
-  LIBRARY_NAMESPACE: 'ansys.pyaedt_toolkits.ansys_aedt_toolkits_antennas'
+  LIBRARY_NAME: 'ansys-aedt-toolkits-antennas'
+  LIBRARY_NAMESPACE: 'ansys.aedt.toolkits.antennas'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
