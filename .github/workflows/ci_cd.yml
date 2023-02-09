@@ -30,7 +30,7 @@ jobs:
 
   doc-style:
     name: "Documentation style"
-    runs-on: [pyaedt-toolkit-1]
+    runs-on: ubuntu-latest
     steps:
       - uses: pyansys/actions/doc-style@v2
         with:
