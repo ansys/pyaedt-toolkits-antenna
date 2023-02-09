@@ -8,7 +8,7 @@ on:
       - main
 
 env:
-  MAIN_PYTHON_VERSION: '3.9'
+  MAIN_PYTHON_VERSION: '3.9.13'
   DOCUMENTATION_CNAME: 'pyaedt_toolkits.docs.pyansys.com'
   LIBRARY_NAME: 'ansys-pyaedt_toolkits-ansys_aedt_toolkits_antennas'
   LIBRARY_NAMESPACE: 'ansys.pyaedt_toolkits.ansys_aedt_toolkits_antennas'
@@ -42,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9']
+        python-version: ['3.9.13']
     steps:
       - uses: pyansys/actions/build-wheelhouse@v2
         with:
@@ -57,7 +57,7 @@ jobs:
     needs: [smoke-tests]
     strategy:
       matrix:
-       python-version: ['3.9']
+       python-version: ['3.9.13']
       fail-fast: false
     steps:
       - uses: pyansys/actions/tests-pytest@v2
