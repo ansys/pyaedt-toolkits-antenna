@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWindow.ui'
+## Form generated from reading UI file 'MainWindow_original.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.2
 ##
@@ -21,13 +21,13 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
     QLabel, QLineEdit, QMainWindow, QMenu,
     QMenuBar, QPushButton, QSizePolicy, QSpacerItem,
     QSplitter, QStatusBar, QTableWidget, QTableWidgetItem,
-    QWidget)
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(810, 789)
+        MainWindow.resize(869, 753)
         icon = QIcon()
         icon.addFile(u"C:/Users/opelhatr/Downloads/pyansys-logo-black-cropped.png", QSize(), QIcon.Normal, QIcon.Off)
         icon.addFile(u"C:/Users/opelhatr/Downloads/pyansys-logo-black-cropped.png", QSize(), QIcon.Normal, QIcon.On)
@@ -72,15 +72,246 @@ class Ui_MainWindow(object):
         self.gridLayout_6.setObjectName(u"gridLayout_6")
         self.widget = QWidget(self.centralwidget)
         self.widget.setObjectName(u"widget")
-        self.gridLayout_5 = QGridLayout(self.widget)
+        self.gridLayout_7 = QGridLayout(self.widget)
+        self.gridLayout_7.setObjectName(u"gridLayout_7")
+        self.splitter_2 = QSplitter(self.widget)
+        self.splitter_2.setObjectName(u"splitter_2")
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.splitter_2.sizePolicy().hasHeightForWidth())
+        self.splitter_2.setSizePolicy(sizePolicy)
+        self.splitter_2.setFrameShape(QFrame.NoFrame)
+        self.splitter_2.setOrientation(Qt.Horizontal)
+        self.widget1 = QWidget(self.splitter_2)
+        self.widget1.setObjectName(u"widget1")
+        self.verticalLayout_4 = QVBoxLayout(self.widget1)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.Rect_Patch_w_probe_settings = QFrame(self.widget1)
+        self.Rect_Patch_w_probe_settings.setObjectName(u"Rect_Patch_w_probe_settings")
+        self.Rect_Patch_w_probe_settings.setEnabled(True)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.Rect_Patch_w_probe_settings.sizePolicy().hasHeightForWidth())
+        self.Rect_Patch_w_probe_settings.setSizePolicy(sizePolicy1)
+        self.Rect_Patch_w_probe_settings.setFrameShape(QFrame.Box)
+        self.Rect_Patch_w_probe_settings.setFrameShadow(QFrame.Plain)
+        self.Rect_Patch_w_probe_settings.setLineWidth(1)
+        self.gridLayout = QGridLayout(self.Rect_Patch_w_probe_settings)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.verticalLayout_2 = QVBoxLayout()
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.label_4 = QLabel(self.Rect_Patch_w_probe_settings)
+        self.label_4.setObjectName(u"label_4")
+
+        self.verticalLayout_2.addWidget(self.label_4)
+
+        self.label_5 = QLabel(self.Rect_Patch_w_probe_settings)
+        self.label_5.setObjectName(u"label_5")
+
+        self.verticalLayout_2.addWidget(self.label_5)
+
+        self.label_6 = QLabel(self.Rect_Patch_w_probe_settings)
+        self.label_6.setObjectName(u"label_6")
+
+        self.verticalLayout_2.addWidget(self.label_6)
+
+        self.label_7 = QLabel(self.Rect_Patch_w_probe_settings)
+        self.label_7.setObjectName(u"label_7")
+
+        self.verticalLayout_2.addWidget(self.label_7)
+
+
+        self.horizontalLayout.addLayout(self.verticalLayout_2)
+
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.lineEdit = QLineEdit(self.Rect_Patch_w_probe_settings)
+        self.lineEdit.setObjectName(u"lineEdit")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.lineEdit.sizePolicy().hasHeightForWidth())
+        self.lineEdit.setSizePolicy(sizePolicy2)
+
+        self.verticalLayout.addWidget(self.lineEdit)
+
+        self.comboBox = QComboBox(self.Rect_Patch_w_probe_settings)
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.setObjectName(u"comboBox")
+
+        self.verticalLayout.addWidget(self.comboBox)
+
+        self.lineEdit_2 = QLineEdit(self.Rect_Patch_w_probe_settings)
+        self.lineEdit_2.setObjectName(u"lineEdit_2")
+
+        self.verticalLayout.addWidget(self.lineEdit_2)
+
+        self.comboBox_2 = QComboBox(self.Rect_Patch_w_probe_settings)
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.setObjectName(u"comboBox_2")
+
+        self.verticalLayout.addWidget(self.comboBox_2)
+
+
+        self.horizontalLayout.addLayout(self.verticalLayout)
+
+
+        self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer_2, 0, 1, 1, 1)
+
+
+        self.verticalLayout_4.addWidget(self.Rect_Patch_w_probe_settings)
+
+        self.frame_3 = QFrame(self.widget1)
+        self.frame_3.setObjectName(u"frame_3")
+        self.frame_3.setFrameShape(QFrame.Box)
+        self.frame_3.setFrameShadow(QFrame.Plain)
+        self.gridLayout_5 = QGridLayout(self.frame_3)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.splitter = QSplitter(self.widget)
+        self.horizontalLayout_11 = QHBoxLayout()
+        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_11.addItem(self.horizontalSpacer)
+
+        self.pushButton = QPushButton(self.frame_3)
+        self.pushButton.setObjectName(u"pushButton")
+        self.pushButton.setEnabled(True)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
+        self.pushButton.setSizePolicy(sizePolicy3)
+        self.pushButton.setMinimumSize(QSize(100, 40))
+        self.pushButton.setStyleSheet(u"background-color : green")
+
+        self.horizontalLayout_11.addWidget(self.pushButton)
+
+        self.pushButton_2 = QPushButton(self.frame_3)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.pushButton_2.setMinimumSize(QSize(100, 40))
+        self.pushButton_2.setStyleSheet(u"background-color : blue")
+
+        self.horizontalLayout_11.addWidget(self.pushButton_2)
+
+
+        self.gridLayout_5.addLayout(self.horizontalLayout_11, 2, 0, 1, 1)
+
+        self.gridLayout_3 = QGridLayout()
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.checkBox_4 = QCheckBox(self.frame_3)
+        self.checkBox_4.setObjectName(u"checkBox_4")
+
+        self.horizontalLayout_5.addWidget(self.checkBox_4)
+
+        self.label_8 = QLabel(self.frame_3)
+        self.label_8.setObjectName(u"label_8")
+
+        self.horizontalLayout_5.addWidget(self.label_8)
+
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_5.addItem(self.horizontalSpacer_4)
+
+
+        self.gridLayout_3.addLayout(self.horizontalLayout_5, 0, 0, 1, 1)
+
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.checkBox_5 = QCheckBox(self.frame_3)
+        self.checkBox_5.setObjectName(u"checkBox_5")
+
+        self.horizontalLayout_6.addWidget(self.checkBox_5)
+
+        self.label_9 = QLabel(self.frame_3)
+        self.label_9.setObjectName(u"label_9")
+
+        self.horizontalLayout_6.addWidget(self.label_9)
+
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_6.addItem(self.horizontalSpacer_8)
+
+
+        self.gridLayout_3.addLayout(self.horizontalLayout_6, 1, 0, 1, 1)
+
+        self.horizontalLayout_7 = QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.checkBox_6 = QCheckBox(self.frame_3)
+        self.checkBox_6.setObjectName(u"checkBox_6")
+
+        self.horizontalLayout_7.addWidget(self.checkBox_6)
+
+        self.label_10 = QLabel(self.frame_3)
+        self.label_10.setObjectName(u"label_10")
+
+        self.horizontalLayout_7.addWidget(self.label_10)
+
+        self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_7.addItem(self.horizontalSpacer_10)
+
+
+        self.gridLayout_3.addLayout(self.horizontalLayout_7, 2, 0, 1, 1)
+
+        self.horizontalLayout_9 = QHBoxLayout()
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.checkBox_8 = QCheckBox(self.frame_3)
+        self.checkBox_8.setObjectName(u"checkBox_8")
+
+        self.horizontalLayout_9.addWidget(self.checkBox_8)
+
+        self.label_12 = QLabel(self.frame_3)
+        self.label_12.setObjectName(u"label_12")
+
+        self.horizontalLayout_9.addWidget(self.label_12)
+
+        self.horizontalSpacer_11 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_9.addItem(self.horizontalSpacer_11)
+
+
+        self.gridLayout_3.addLayout(self.horizontalLayout_9, 3, 0, 1, 1)
+
+
+        self.gridLayout_5.addLayout(self.gridLayout_3, 0, 0, 1, 1)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.gridLayout_5.addItem(self.verticalSpacer_2, 1, 0, 1, 1)
+
+
+        self.verticalLayout_4.addWidget(self.frame_3)
+
+        self.splitter_2.addWidget(self.widget1)
+        self.widget2 = QWidget(self.splitter_2)
+        self.widget2.setObjectName(u"widget2")
+        self.verticalLayout_3 = QVBoxLayout(self.widget2)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.splitter = QSplitter(self.widget2)
         self.splitter.setObjectName(u"splitter")
+        self.splitter.setFrameShape(QFrame.Box)
         self.splitter.setOrientation(Qt.Vertical)
         self.frame = QFrame(self.splitter)
         self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
+        self.frame.setFrameShape(QFrame.NoFrame)
+        self.frame.setFrameShadow(QFrame.Plain)
         self.gridLayout_4 = QGridLayout(self.frame)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.graphicsView = QGraphicsView(self.frame)
@@ -93,8 +324,8 @@ class Ui_MainWindow(object):
         self.splitter.addWidget(self.frame)
         self.frame_2 = QFrame(self.splitter)
         self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setFrameShape(QFrame.StyledPanel)
-        self.frame_2.setFrameShadow(QFrame.Raised)
+        self.frame_2.setFrameShape(QFrame.NoFrame)
+        self.frame_2.setFrameShadow(QFrame.Plain)
         self.gridLayout_2 = QGridLayout(self.frame_2)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.tableWidget = QTableWidget(self.frame_2)
@@ -110,216 +341,11 @@ class Ui_MainWindow(object):
 
         self.splitter.addWidget(self.frame_2)
 
-        self.gridLayout_5.addWidget(self.splitter, 0, 1, 4, 1)
+        self.verticalLayout_3.addWidget(self.splitter)
 
-        self.Rect_Patch_w_probe_settings = QFrame(self.widget)
-        self.Rect_Patch_w_probe_settings.setObjectName(u"Rect_Patch_w_probe_settings")
-        self.Rect_Patch_w_probe_settings.setFrameShape(QFrame.StyledPanel)
-        self.Rect_Patch_w_probe_settings.setFrameShadow(QFrame.Raised)
-        self.Rect_Patch_w_probe_settings.setLineWidth(12)
-        self.gridLayout = QGridLayout(self.Rect_Patch_w_probe_settings)
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.horizontalLayout_2 = QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label_5 = QLabel(self.Rect_Patch_w_probe_settings)
-        self.label_5.setObjectName(u"label_5")
+        self.splitter_2.addWidget(self.widget2)
 
-        self.horizontalLayout_2.addWidget(self.label_5)
-
-        self.comboBox = QComboBox(self.Rect_Patch_w_probe_settings)
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.setObjectName(u"comboBox")
-
-        self.horizontalLayout_2.addWidget(self.comboBox)
-
-
-        self.gridLayout.addLayout(self.horizontalLayout_2, 1, 0, 1, 1)
-
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.label_4 = QLabel(self.Rect_Patch_w_probe_settings)
-        self.label_4.setObjectName(u"label_4")
-
-        self.horizontalLayout.addWidget(self.label_4)
-
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer_2)
-
-        self.lineEdit = QLineEdit(self.Rect_Patch_w_probe_settings)
-        self.lineEdit.setObjectName(u"lineEdit")
-
-        self.horizontalLayout.addWidget(self.lineEdit)
-
-
-        self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
-
-        self.horizontalLayout_3 = QHBoxLayout()
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.label_6 = QLabel(self.Rect_Patch_w_probe_settings)
-        self.label_6.setObjectName(u"label_6")
-
-        self.horizontalLayout_3.addWidget(self.label_6)
-
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_3.addItem(self.horizontalSpacer_3)
-
-        self.lineEdit_2 = QLineEdit(self.Rect_Patch_w_probe_settings)
-        self.lineEdit_2.setObjectName(u"lineEdit_2")
-
-        self.horizontalLayout_3.addWidget(self.lineEdit_2)
-
-
-        self.gridLayout.addLayout(self.horizontalLayout_3, 2, 0, 1, 1)
-
-        self.horizontalLayout_4 = QHBoxLayout()
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.label_7 = QLabel(self.Rect_Patch_w_probe_settings)
-        self.label_7.setObjectName(u"label_7")
-
-        self.horizontalLayout_4.addWidget(self.label_7)
-
-        self.comboBox_2 = QComboBox(self.Rect_Patch_w_probe_settings)
-        self.comboBox_2.addItem("")
-        self.comboBox_2.addItem("")
-        self.comboBox_2.addItem("")
-        self.comboBox_2.addItem("")
-        self.comboBox_2.setObjectName(u"comboBox_2")
-
-        self.horizontalLayout_4.addWidget(self.comboBox_2)
-
-
-        self.gridLayout.addLayout(self.horizontalLayout_4, 3, 0, 1, 1)
-
-
-        self.gridLayout_5.addWidget(self.Rect_Patch_w_probe_settings, 0, 0, 1, 1)
-
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.gridLayout_5.addItem(self.verticalSpacer_2, 1, 0, 1, 1)
-
-        self.gridLayout_3 = QGridLayout()
-        self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.horizontalLayout_5 = QHBoxLayout()
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.label_8 = QLabel(self.widget)
-        self.label_8.setObjectName(u"label_8")
-
-        self.horizontalLayout_5.addWidget(self.label_8)
-
-        self.horizontalSpacer_5 = QSpacerItem(107, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_5.addItem(self.horizontalSpacer_5)
-
-        self.checkBox_4 = QCheckBox(self.widget)
-        self.checkBox_4.setObjectName(u"checkBox_4")
-
-        self.horizontalLayout_5.addWidget(self.checkBox_4)
-
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
-
-        self.horizontalLayout_5.addItem(self.horizontalSpacer_4)
-
-
-        self.gridLayout_3.addLayout(self.horizontalLayout_5, 0, 0, 1, 1)
-
-        self.horizontalLayout_6 = QHBoxLayout()
-        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.label_9 = QLabel(self.widget)
-        self.label_9.setObjectName(u"label_9")
-
-        self.horizontalLayout_6.addWidget(self.label_9)
-
-        self.horizontalSpacer_6 = QSpacerItem(101, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_6.addItem(self.horizontalSpacer_6)
-
-        self.checkBox_5 = QCheckBox(self.widget)
-        self.checkBox_5.setObjectName(u"checkBox_5")
-
-        self.horizontalLayout_6.addWidget(self.checkBox_5)
-
-        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
-
-        self.horizontalLayout_6.addItem(self.horizontalSpacer_8)
-
-
-        self.gridLayout_3.addLayout(self.horizontalLayout_6, 1, 0, 1, 1)
-
-        self.horizontalLayout_7 = QHBoxLayout()
-        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.label_10 = QLabel(self.widget)
-        self.label_10.setObjectName(u"label_10")
-
-        self.horizontalLayout_7.addWidget(self.label_10)
-
-        self.horizontalSpacer_7 = QSpacerItem(108, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_7.addItem(self.horizontalSpacer_7)
-
-        self.checkBox_6 = QCheckBox(self.widget)
-        self.checkBox_6.setObjectName(u"checkBox_6")
-
-        self.horizontalLayout_7.addWidget(self.checkBox_6)
-
-        self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
-
-        self.horizontalLayout_7.addItem(self.horizontalSpacer_10)
-
-
-        self.gridLayout_3.addLayout(self.horizontalLayout_7, 2, 0, 1, 1)
-
-        self.horizontalLayout_9 = QHBoxLayout()
-        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
-        self.label_12 = QLabel(self.widget)
-        self.label_12.setObjectName(u"label_12")
-
-        self.horizontalLayout_9.addWidget(self.label_12)
-
-        self.horizontalSpacer_9 = QSpacerItem(108, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_9.addItem(self.horizontalSpacer_9)
-
-        self.checkBox_8 = QCheckBox(self.widget)
-        self.checkBox_8.setObjectName(u"checkBox_8")
-
-        self.horizontalLayout_9.addWidget(self.checkBox_8)
-
-        self.horizontalSpacer_11 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
-
-        self.horizontalLayout_9.addItem(self.horizontalSpacer_11)
-
-
-        self.gridLayout_3.addLayout(self.horizontalLayout_9, 3, 0, 1, 1)
-
-
-        self.gridLayout_5.addLayout(self.gridLayout_3, 2, 0, 1, 1)
-
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.gridLayout_5.addItem(self.verticalSpacer, 3, 0, 2, 1)
-
-        self.horizontalLayout_11 = QHBoxLayout()
-        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_11.addItem(self.horizontalSpacer)
-
-        self.pushButton = QPushButton(self.widget)
-        self.pushButton.setObjectName(u"pushButton")
-
-        self.horizontalLayout_11.addWidget(self.pushButton)
-
-        self.pushButton_2 = QPushButton(self.widget)
-        self.pushButton_2.setObjectName(u"pushButton_2")
-
-        self.horizontalLayout_11.addWidget(self.pushButton_2)
-
-
-        self.gridLayout_5.addLayout(self.horizontalLayout_11, 4, 1, 1, 1)
+        self.gridLayout_7.addWidget(self.splitter_2, 0, 0, 1, 1)
 
 
         self.gridLayout_6.addWidget(self.widget, 0, 0, 1, 1)
@@ -327,7 +353,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 810, 22))
+        self.menubar.setGeometry(QRect(0, 0, 869, 21))
         self.menuLoad = QMenu(self.menubar)
         self.menuLoad.setObjectName(u"menuLoad")
         self.menuArrays = QMenu(self.menubar)
@@ -363,13 +389,6 @@ class Ui_MainWindow(object):
         self.menuUnits.addSeparator()
         self.menuUnits.addAction(self.menuLength.menuAction())
         self.menuUnits.addAction(self.menuFrequency.menuAction())
-        self.menuLength.addAction(self.actionmm)
-        self.menuLength.addAction(self.actionin)
-        self.menuLength.addAction(self.actioncm)
-        self.menuLength.addAction(self.actionmil)
-        self.menuFrequency.addAction(self.actionMHz)
-        self.menuFrequency.addAction(self.actionGHz)
-        self.menuFrequency.addAction(self.actionGHz_2)
 
         self.retranslateUi(MainWindow)
 
@@ -391,35 +410,35 @@ class Ui_MainWindow(object):
         self.actionAntennas.setText(QCoreApplication.translate("MainWindow", u"Antennas", None))
         self.actionRectangular_with_probe.setText(QCoreApplication.translate("MainWindow", u"Rectangular with probe", None))
         self.actionArrays_Synthesis.setText(QCoreApplication.translate("MainWindow", u"Arrays Synthesis", None))
-        ___qtablewidgetitem = self.tableWidget.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Property", None));
-        ___qtablewidgetitem1 = self.tableWidget.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Value", None));
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Frequency", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Material name", None))
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Subtsrate height", None))
+        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Boundary Condition", None))
+        self.lineEdit.setText(QCoreApplication.translate("MainWindow", u"10", None))
         self.comboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"FR4_epoxy", None))
         self.comboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"teflon_based", None))
         self.comboBox.setItemText(2, QCoreApplication.translate("MainWindow", u"Rogers RT/duroid 6002 (tm)", None))
 
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Frequency", None))
-        self.lineEdit.setText(QCoreApplication.translate("MainWindow", u"10", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Subtsrate height", None))
         self.lineEdit_2.setText(QCoreApplication.translate("MainWindow", u"0.254", None))
-        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Boundary Condition", None))
         self.comboBox_2.setItemText(0, QCoreApplication.translate("MainWindow", u"None", None))
         self.comboBox_2.setItemText(1, QCoreApplication.translate("MainWindow", u"Radiation", None))
         self.comboBox_2.setItemText(2, QCoreApplication.translate("MainWindow", u"PML", None))
         self.comboBox_2.setItemText(3, QCoreApplication.translate("MainWindow", u"FEBI", None))
 
-        self.label_8.setText(QCoreApplication.translate("MainWindow", u"Huygens", None))
-        self.checkBox_4.setText("")
-        self.label_9.setText(QCoreApplication.translate("MainWindow", u"3D Component", None))
-        self.checkBox_5.setText("")
-        self.label_10.setText(QCoreApplication.translate("MainWindow", u"Create setup", None))
-        self.checkBox_6.setText("")
-        self.label_12.setText(QCoreApplication.translate("MainWindow", u"Lattice pair", None))
-        self.checkBox_8.setText("")
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Synthesis", None))
         self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Create", None))
+        self.checkBox_4.setText("")
+        self.label_8.setText(QCoreApplication.translate("MainWindow", u"Huygens", None))
+        self.checkBox_5.setText("")
+        self.label_9.setText(QCoreApplication.translate("MainWindow", u"3D Component", None))
+        self.checkBox_6.setText("")
+        self.label_10.setText(QCoreApplication.translate("MainWindow", u"Create setup", None))
+        self.checkBox_8.setText("")
+        self.label_12.setText(QCoreApplication.translate("MainWindow", u"Lattice pair", None))
+        ___qtablewidgetitem = self.tableWidget.horizontalHeaderItem(0)
+        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Property", None));
+        ___qtablewidgetitem1 = self.tableWidget.horizontalHeaderItem(1)
+        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Value", None));
         self.menuLoad.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuArrays.setTitle(QCoreApplication.translate("MainWindow", u"Antennas", None))
         self.menuDesign.setTitle(QCoreApplication.translate("MainWindow", u"Design", None))

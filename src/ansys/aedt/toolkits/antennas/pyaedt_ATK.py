@@ -19,7 +19,25 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.length_unit = ''
 
+        group_unit = QtGui.QActionGroup(self.menuUnits)
+        texts = ["mm", "in", "cm", "mil"]
+        for text in texts:
+            action = QtGui.QAction(text, self.menuLength, checkable=True, checked=text == texts[0])
+            self.menuLength.addAction(action)
+            group_unit.addAction(action)
+        group_unit.setExclusive(True)
 
+        group_frequency = QtGui.QActionGroup(self.menuUnits)
+        texts = ["Hz", "KHz", "MHz", "GHz"]
+        for text in texts:
+            action = QtGui.QAction(text, self.menuFrequency, checkable=True, checked=text == texts[0])
+            self.menuFrequency.addAction(action)
+            group_frequency.addAction(action)
+        group_frequency.setExclusive(True)
+
+        # Signals
+        # self.load_pushButton.clicked.connect(self.loadFile)
+        # self.close_pushButton.clicked.connect(self.closeFile)
 
 
     def on_Rect_Patch_w_probe_selected(self):
@@ -28,21 +46,6 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         pixmap = QtGui.QPixmap("D:\\3-Python_Programs\\Demo_Pyside6\\Patch.png")
         pixmapitem = self.scene.addPixmap(pixmap)
 
-        # self.scene = QtGui.QGraphicsScene(self)
-        # self.scene.setSceneRect(QtCore.QRectF(0, 0, 245, 245))
-        # self.graphicsView.setScene(self.scene)
-        # self.item = QtGui.QGraphicsEllipseItem(0, 0, 60, 40)
-        # self.scene.addItem(self.item)
-
-        # QtGui.QPixmap(":/Image/Pictures/Huawei-img.jpg")
-        # item = QtWidgets.QGraphicsPixmapItem(QtWidgets.QPixmap.fromImage("D:\\3-Python_Programs\\pyaedt_ATK\\Patch.png"))
-        # self.scene.addItem(item)
-        # self.graphicsView.show()
-
-
-        # Signals
-        # self.load_pushButton.clicked.connect(self.loadFile)
-        # self.close_pushButton.clicked.connect(self.closeFile)
 
     def closeEvent(self, event): # Use if the main window is closed by the user
         close = QtWidgets.QMessageBox.question(self, "QUIT", "Confirm quit?", QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
