@@ -128,7 +128,7 @@ class ConicalHorn(CommonHorn):
 
     @pyaedt_function_handler()
     def draw(self):
-        """Draw rectangular patch antenna. Once the antenna is created, this method will not be used."""
+        """Draw conical horn antenna. Once the antenna is created, this method will not be used."""
         if self.object_list:
             self._app.logger.warning("This antenna already exists")
             return False
@@ -179,7 +179,7 @@ class ConicalHorn(CommonHorn):
         wg_in = self._app.modeler.create_cylinder(
             cs_axis=2,
             position=[pos_x, pos_y, pos_z],
-            radius=wg_radius + "+" + wall_thickness,
+            radius=wg_radius,
             height="-" + wg_length,
             name="wg_inner_" + self.antenna_name,
             matname="vacuum",
@@ -232,7 +232,7 @@ class ConicalHorn(CommonHorn):
         horn_sheet = self._app.modeler.create_circle(
             cs_plane=2,
             position=[pos_x, pos_y, pos_z + "+" + horn_length],
-            radius=wg_radius + "+" + wall_thickness,
+            radius=horn_radius + "+" + wall_thickness,
         )
         horn_sheet.history.props["Coordinate System"] = self.coordinate_system
 
@@ -240,16 +240,8 @@ class ConicalHorn(CommonHorn):
         self._app.modeler.connect([base.name, horn_top.name])
 
         # Horn
-        horn = self._app.modeler.subtract(blank_list=[horn_sheet.name], tool_list=[base.name], keep_originals=False)
-        horn = self._app.modeler.unite([horn.name, wall.name])
-
-        air_base = self._app.modeler.create_circle(
-            cs_plane=2,
-            position=[pos_x, pos_y, pos_z],
-            radius=wg_radius,
-
-        )
-        air_base.history.props["Coordinate System"] = self.coordinate_system
+        self._app.modeler.subtract(blank_list=[horn_sheet.name], tool_list=[base.name], keep_originals=False)
+        self._app.modeler.unite([horn_sheet.name, wall.name])
 
         air_base = self._app.modeler.create_circle(
             cs_plane=2,
@@ -262,14 +254,24 @@ class ConicalHorn(CommonHorn):
         air_top = self._app.modeler.create_circle(
             cs_plane=2,
             position=[pos_x, pos_y, pos_z + "+" + horn_length],
-            radius=wg_radius + "+" + wall_thickness,
+            radius=horn_radius,
 
         )
         air_top.history.props["Coordinate System"] = self.coordinate_system
 
-        self._app.modeler.connect(air_base, air_base)
+        self._app.modeler.connect([air_base, air_top])
 
         self._app.modeler.unite([wg_in, air_base])
+
+        wg_in.name = "internal_" + self.antenna_name
+        wg_in.color = (128, 255, 255)
+
+        horn_sheet.name = "metal_" + self.antenna_name
+        horn_sheet.material_name = self.material
+        horn_sheet.color = (255, 128, 65)
+
+        cap.color = (132, 132, 192)
+        p1.color = (128, 0, 0)
 
         # Create Huygens box
         if self.huygens_box:
@@ -279,8 +281,12 @@ class ConicalHorn(CommonHorn):
                 constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
-                position=[pos_x, pos_y, pos_z],
-                dimensions_list=[0,0, huygens_dist + self.length_unit],
+                position=[pos_x + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
+                          pos_y + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
+                          pos_z + '-' + wg_length],
+                dimensions_list=["2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
+                                 "2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
+                                 huygens_dist + self.length_unit + "+" + wg_length + "+" + horn_length],
                 name="huygens_" + self.antenna_name,
                 matname="air",
             )
@@ -299,54 +305,28 @@ class ConicalHorn(CommonHorn):
             huygens.group_name = self.antenna_name
             self.mesh_operations[mesh_op.name] = mesh_op
 
-        sub.group_name = self.antenna_name
-        gnd.group_name = self.antenna_name
-        ant.group_name = self.antenna_name
-        feed_pin.group_name = self.antenna_name
-        feed_coax.group_name = self.antenna_name
-        coax.group_name = self.antenna_name
-        port_cap.group_name = self.antenna_name
+        wg_in.group_name = self.antenna_name
+        horn_sheet.group_name = self.antenna_name
+        cap.group_name = self.antenna_name
         p1.group_name = self.antenna_name
 
-        self.object_list[sub.name] = sub
-        self.object_list[gnd.name] = gnd
-        self.object_list[ant.name] = ant
-        self.object_list[feed_pin.name] = feed_pin
-        self.object_list[feed_coax.name] = feed_coax
-        self.object_list[coax.name] = coax
-        self.object_list[port_cap.name] = port_cap
+        self.object_list[wg_in.name] = wg_in
+        self.object_list[horn_sheet.name] = horn_sheet
+        self.object_list[cap.name] = cap
         self.object_list[p1.name] = p1
-
-        # Assign coating
-        ant_bound = self._app.assign_perfecte_to_sheets(ant.name)
-        ant_bound.name = "PerfE_antenna_" + self.antenna_name
-        self.boundaries[ant_bound.name] = ant_bound
-        gnd_bound = self._app.assign_perfecte_to_sheets(gnd.name)
-        gnd_bound.name = "PerfE_gnd_" + self.antenna_name
-        self.boundaries[gnd_bound.name] = gnd_bound
-
-        face_id = coax.faces[0].edges[0].id
-        for face in coax.faces:
-            if len(face.edges) == 2:
-                face_id = face.id
-                break
-
-        coax_bound = self._app.assign_perfecte_to_sheets(face_id)
-        coax_bound.name = "PerfE_coax_" + self.antenna_name
-        self.boundaries[coax_bound.name] = coax_bound
-
-        # Excitation
-        port1 = self._app.create_wave_port_from_sheet(
-            sheet=p1, portname="port_" + self.antenna_name, terminal_references=port_cap.name
-        )
-        self.excitations[port1.name] = port1
-        if self._app.solution_type == "Terminal":
-            self.excitations[port1.name + "_T1"] = port1
 
         # Create radiation boundary
         if self.outer_boundary:
             self._app.create_open_region(str(self.frequency) + self.frequency_unit, self.outer_boundary)
 
+        # Excitation
+        if self._app.solution_type != "Modal":
+            self._app.logger.warning("Solution type must be Modal to define the excitation")
+
+        port1 = self._app.create_wave_port_from_sheet(
+            sheet=p1, portname="port_" + self.antenna_name
+        )
+        self.excitations[port1.name] = port1
         return True
 
     @pyaedt_function_handler()
