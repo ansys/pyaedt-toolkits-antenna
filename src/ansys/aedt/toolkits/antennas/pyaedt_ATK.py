@@ -42,9 +42,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def on_Rect_Patch_w_probe_selected(self):
         self.Rect_Patch_w_probe_settings.show()
-        self.pixmap_item = self.scene.addPixmap(QtGui.QPixmap())
-        pixmap = QtGui.QPixmap("D:\\3-Python_Programs\\Demo_Pyside6\\Patch.png")
-        pixmapitem = self.scene.addPixmap(pixmap)
+        self.pixmap = QtGui.QPixmap(r"Patch.png")
+        self.pixmap = self.pixmap.scaled(self.graphicsView.size().width()-5, self.graphicsView.size().height()-5)
+        self.pixmap_item = self.scene.addPixmap(self.pixmap)
 
 
     def closeEvent(self, event): # Use if the main window is closed by the user
