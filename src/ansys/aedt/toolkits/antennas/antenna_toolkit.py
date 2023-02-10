@@ -38,7 +38,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_2.clicked.connect(self.create)
         self.closeButton.clicked.connect(self.release_and_close)
         self.oantenna = None
-        self.hfss = Hfss(specified_version="2022.2")
+        self.hfss = Hfss(specified_version="2023.1")
         pass
 
     def release_and_close(self):
