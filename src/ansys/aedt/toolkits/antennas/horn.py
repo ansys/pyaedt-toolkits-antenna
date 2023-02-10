@@ -94,8 +94,7 @@ class ConicalHorn(CommonHorn):
     >>> from ansys.aedt.toolkits.antennas.horn import ConicalHorn
     >>> hfss = Hfss()
     >>> horn = hfss.add_from_toolkit(ConicalHorn, frequency=20.0, frequency_unit="GHz",
-    ...                              outer_boundary=None, huygens_box=True,
-    ...                              substrate_height=0.16,
+    ...                              outer_boundary=None, huygens_box=True, substrate_height=0.16,
     ...                              length_unit="cm", coordinate_system="CS1",
     ...                              antenna_name="PatchAntenna", origin=[1, 100, 50])
     """
