@@ -46,7 +46,7 @@ sys.path.append(local_path)
 # from _unittest.launch_desktop_tests import run_desktop_tests
 
 # Initialize default desktop configuration
-default_version = "2022.2"
+default_version = "2023.1"
 
 config = {
     "desktopVersion": default_version,
