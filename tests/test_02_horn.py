@@ -18,7 +18,7 @@ class TestClass(BasisTest, object):
 
     def test_01_conical_horn(self):
         self.aedtapp.design_name = "myname"
-        ohorn1 = self.aedtapp.add_from_toolkit(ConicalHorn, frequency=1.0)
+        ohorn1 = self.aedtapp.add_from_toolkit(ConicalHorn, draw=True, frequency=1.0)
         assert ohorn1
         assert ohorn1.object_list
         for comp in ohorn1.object_list.values():
