@@ -127,7 +127,6 @@ class RectangularPatchProbe(CommonPatch):
     """
 
     def __init__(self, *args, **kwargs):
-
         if "frequency" not in kwargs.keys():
             kwargs["frequency"] = 10.0
         if "frequency_unit" not in kwargs.keys():
@@ -155,7 +154,8 @@ class RectangularPatchProbe(CommonPatch):
 
     @pyaedt_function_handler()
     def draw(self):
-        """Draw rectangular patch antenna. Once the antenna is created, this method will not be used."""
+        """Draw rectangular patch antenna.
+        Once the antenna is created, this method will not be used."""
         if self.object_list:
             self._app.logger.warning("This antenna already exists")
             return False
@@ -208,7 +208,11 @@ class RectangularPatchProbe(CommonPatch):
         # Antenna
         ant = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=["-" + patch_x + "/2" "+" + pos_x, "-" + patch_y + "/2" "+" + pos_y, sub_h + "+" + pos_z],
+            position=[
+                "-" + patch_x + "/2" "+" + pos_x,
+                "-" + patch_y + "/2" "+" + pos_y,
+                sub_h + "+" + pos_z,
+            ],
             dimension_list=[patch_x, patch_y],
             name="ant" + self.antenna_name,
         )
@@ -283,10 +287,16 @@ class RectangularPatchProbe(CommonPatch):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
+                constants.unit_converter(
+                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
+                )
             )
             huygens = self._app.modeler.create_box(
-                position=["-" + gnd_x + "/2.1" "+" + pos_x, "-" + gnd_y + "/2.1" "+" + pos_y, pos_z],
+                position=[
+                    "-" + gnd_x + "/2.1" "+" + pos_x,
+                    "-" + gnd_y + "/2.1" "+" + pos_y,
+                    pos_z,
+                ],
                 dimensions_list=[
                     "abs(-" + gnd_x + "/2.1" + "-" + gnd_x + "/2.1)",
                     "abs(-" + gnd_y + "/2.1" + "-" + gnd_y + "/2.1)",
@@ -356,7 +366,9 @@ class RectangularPatchProbe(CommonPatch):
 
         # Create radiation boundary
         if self.outer_boundary:
-            self._app.create_open_region(str(self.frequency) + self.frequency_unit, self.outer_boundary)
+            self._app.create_open_region(
+                str(self.frequency) + self.frequency_unit, self.outer_boundary
+            )
 
         return True
 
@@ -378,7 +390,9 @@ class RectangularPatchProbe(CommonPatch):
 
         subPermittivity = float(mat_props.permittivity.value)
 
-        sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
+        sub_meters = constants.unit_converter(
+            self.substrate_height, "Length", self.length_unit, "meter"
+        )
 
         patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((subPermittivity + 1.0) / 2.0))
 
@@ -398,7 +412,12 @@ class RectangularPatchProbe(CommonPatch):
         # eff_WL_meters = wavelength / math.sqrt(eff_Permittivity)
 
         k = 2.0 * math.pi / eff_Permittivity
-        G = math.pi * patch_width / (120.0 * math.pi * wavelength) * (1.0 - math.pow(k * sub_meters, 2) / 24)
+        G = (
+            math.pi
+            * patch_width
+            / (120.0 * math.pi * wavelength)
+            * (1.0 - math.pow(k * sub_meters, 2) / 24)
+        )
 
         # ;impedance at edge of patch
         Res = 1.0 / (2.0 * G)
@@ -413,38 +432,60 @@ class RectangularPatchProbe(CommonPatch):
         feed_x = 0.0
         parameters["feed_x"] = feed_x
 
-        feed_y = round(constants.unit_converter(offset_pin_pos, "Length", "meter", self.length_unit), 2)
+        feed_y = round(
+            constants.unit_converter(offset_pin_pos, "Length", "meter", self.length_unit), 2
+        )
         parameters["feed_y"] = feed_y
 
         sub_h = self.substrate_height
         parameters["sub_h"] = sub_h
 
         sub_x = round(
-            constants.unit_converter(1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", self.length_unit), 1
+            constants.unit_converter(
+                1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", self.length_unit
+            ),
+            1,
         )
         parameters["sub_x"] = sub_x
 
         sub_y = round(
-            constants.unit_converter(1.5 * patch_length + 6.0 * sub_meters, "Length", "meter", self.length_unit), 1
+            constants.unit_converter(
+                1.5 * patch_length + 6.0 * sub_meters, "Length", "meter", self.length_unit
+            ),
+            1,
         )
         parameters["sub_y"] = sub_y
 
         coax_inner_rad = round(
-            constants.unit_converter(0.025 * (1e8 / freq_hz), "Length", "meter", self.length_unit), 3
+            constants.unit_converter(0.025 * (1e8 / freq_hz), "Length", "meter", self.length_unit),
+            3,
         )
         parameters["coax_inner_rad"] = coax_inner_rad
 
         coax_outer_rad = round(
-            constants.unit_converter(0.085 * (1e8 / freq_hz), "Length", "meter", self.length_unit), 3
+            constants.unit_converter(0.085 * (1e8 / freq_hz), "Length", "meter", self.length_unit),
+            3,
         )
         parameters["coax_outer_rad"] = coax_outer_rad
 
-        feed_length = round(constants.unit_converter(wavelength / 6.0, "Length", "meter", self.length_unit), 2)
+        feed_length = round(
+            constants.unit_converter(wavelength / 6.0, "Length", "meter", self.length_unit), 2
+        )
         parameters["feed_length"] = feed_length
 
         if self.huygens_box:
-            gnd_x = constants.unit_converter((299792458 / (freq_hz) / 4), "Length", "meter", self.length_unit) + sub_x
-            gnd_y = constants.unit_converter((299792458 / (freq_hz) / 4), "Length", "meter", self.length_unit) + sub_y
+            gnd_x = (
+                constants.unit_converter(
+                    (299792458 / (freq_hz) / 4), "Length", "meter", self.length_unit
+                )
+                + sub_x
+            )
+            gnd_y = (
+                constants.unit_converter(
+                    (299792458 / (freq_hz) / 4), "Length", "meter", self.length_unit
+                )
+                + sub_y
+            )
         else:
             gnd_x = sub_x
             gnd_y = sub_y
@@ -468,7 +509,10 @@ class RectangularPatchProbe(CommonPatch):
         if (
             not antenna_name
             or len(list(self._app.modeler.oeditor.GetObjectsInGroup(antenna_name))) > 0
-            or any(antenna_name in variables for variables in list(self._app.variable_manager.variables.keys()))
+            or any(
+                antenna_name in variables
+                for variables in list(self._app.variable_manager.variables.keys())
+            )
         ):
             antenna_name = generate_unique_name("Patch")
             while len(list(self._app.modeler.oeditor.GetObjectsInGroup(antenna_name))) > 0:
