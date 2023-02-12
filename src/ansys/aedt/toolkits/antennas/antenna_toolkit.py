@@ -34,10 +34,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         icon = QtGui.QIcon()
         icon.addFile(os.path.join(current_path, "logo_cropped.png"), QtCore.QSize(), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon.addFile(os.path.join(current_path, "logo_cropped.png"), QtCore.QSize(), QtGui.QIcon.Normal, QtGui.QIcon.On)
-
+        self.setWindowIcon(icon)
         self.actionRectangular_with_probe.triggered.connect(lambda checked: self.on_Rect_Patch_w_probe_selected())
-
-
+        self.menubar.setFont(self._font)
+        self.setWindowTitle("PyAEDT Antenna Wizard")
         self.length_unit = ''
 
         self.closeButton.clicked.connect(self.release_and_close)
