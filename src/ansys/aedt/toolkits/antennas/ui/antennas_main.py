@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(832, 1130)
+        MainWindow.resize(1024, 768)
         self.actionRectangular_with_probe = QAction(MainWindow)
         self.actionRectangular_with_probe.setObjectName(u"actionRectangular_with_probe")
         self.centralwidget = QWidget(MainWindow)
@@ -177,7 +177,7 @@ class Ui_MainWindow(object):
         sizePolicy_antenna.setHorizontalStretch(0)
         sizePolicy_antenna.setVerticalStretch(0)
         sizePolicy_antenna.setHeightForWidth(self.antenna_settings.sizePolicy().hasHeightForWidth())
-
+        self.antenna_settings.setSizePolicy(sizePolicy_antenna)
         self.horizontalLayout_20.addWidget(self.antenna_settings)
 
         self.horizontalSpacer_27 = QSpacerItem(40, 20, QSizePolicy.Preferred, QSizePolicy.Minimum)
@@ -186,7 +186,8 @@ class Ui_MainWindow(object):
 
         self.splitter_2 = QSplitter(self.design)
         self.splitter_2.setObjectName(u"splitter_2")
-        sizePolicy.setHeightForWidth(self.splitter_2.sizePolicy().hasHeightForWidth())
+        self.splitter_2.setSizePolicy(sizePolicy_antenna)
+        #sizePolicy.setHeightForWidth(self.splitter_2.sizePolicy().hasHeightForWidth())
         self.splitter_2.setOrientation(Qt.Vertical)
         self.frame_3 = QFrame(self.splitter_2)
         self.frame_3.setObjectName(u"frame_3")

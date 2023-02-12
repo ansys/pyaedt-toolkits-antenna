@@ -16,13 +16,16 @@ import time
 current_path = os.path.join(os.getcwd(), "ui")
 os.environ["QT_API"] = "pyside6"
 
+
+
+
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(ApplicationWindow, self).__init__()
         self.setupUi(self)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.setFont(font)
+        self._font = QtGui.QFont()
+        self._font.setPointSize(12)
+        self.setFont(self._font)
         header = self.property_table.horizontalHeader()
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeMode.Stretch)
@@ -138,7 +141,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.property_table.setSortingEnabled(__sortingEnabled)
         self.add_status_bar_message("Synthesis completed.")
 
-    def create(self):
+    def create_design(self):
         if not self.hfss:
             non_graphical = self.nongraphical.isChecked()
             self.add_status_bar_message("Opening Hfss. Please wait...")
@@ -219,9 +222,41 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             layout.removeItem(item)
     def on_Rect_Patch_w_probe_selected(self):
         self.clear_antenna_settings(self.gridLayout_6)
+
         self.vertical_spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
                                                      QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_6.addItem(self.vertical_spacer, 14, 0, 1, 1)
+
+
+        self.line_0 = QtWidgets.QHBoxLayout()
+        self.line_0.setObjectName(u"line_0")
+
+        self.line_0_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                   QtWidgets.QSizePolicy.Minimum)
+
+        self.line_0.addItem(self.line_0_spacer)
+
+        self.antenna_image = QtWidgets.QLabel(self.antenna_settings)
+        self.antenna_image.setObjectName(u"antenna_image")
+
+        self.antenna_image.setScaledContents(True)
+        self._pixmap = QtGui.QPixmap(os.path.join(current_path, "Patch.png"))
+        self.antenna_image.setPixmap( self._pixmap)
+        self._pixmap = self._pixmap.scaled(self.antenna_image.width(),
+                                           self.antenna_image.height(),
+                                           QtCore.Qt.KeepAspectRatio,
+                                           QtCore.Qt.SmoothTransformation
+                                           )
+        self.line_0.addWidget(self.antenna_image)
+
+
+        self.line_0_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                   QtWidgets.QSizePolicy.Minimum)
+
+        self.line_0.addItem(self.line_0_spacer)
+
+        self.gridLayout_6.addLayout(self.line_0, 0, 0, 1, 1)
+
 
         self.line_1 = QtWidgets.QHBoxLayout()
         self.line_1.setObjectName(u"line_1")
@@ -229,17 +264,22 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.line_1_label.setObjectName(u"label_2")
         self.line_1.addWidget(self.line_1_label)
         self.line_1_label.setText("Antenna Name")
+        self.line_1_label.setFont(self._font)
         self.line_1_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
                                                    QtWidgets.QSizePolicy.Minimum)
         self.line_1.addItem(self.line_1_spacer)
         self.line_1_edit = QtWidgets.QLineEdit(self.antenna_settings)
         self.line_1_edit.setObjectName(u"line_1_edit")
+        self.line_1_edit.setFont(self._font)
+
         self.line_1.addWidget(self.line_1_edit)
         self.gridLayout_6.addLayout(self.line_1, 4, 0, 1, 1)
 
         self.line_2 = QtWidgets.QHBoxLayout()
         self.line_2.setObjectName(u"line_2")
         self.line_2_label = QtWidgets.QLabel(self.antenna_settings)
+        self.line_2_label.setFont(self._font)
+
         self.line_2_label.setObjectName(u"line_2_label")
 
         self.line_2.addWidget(self.line_2_label)
@@ -250,18 +290,17 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.line_2.addItem(self.line_2_spacer)
 
         self.line_2_combo = QtWidgets.QComboBox(self.antenna_settings)
-        self.line_2_combo.addItem("")
-        self.line_2_combo.addItem("")
-        self.line_2_combo.addItem("")
+        self.line_2_combo.addItem("FR4_epoxy")
+        self.line_2_combo.addItem("teflon_based")
+        self.line_2_combo.addItem("Rogers RT/duroid 6002 (tm)")
         self.line_2_combo.setObjectName(u"line_2_combo")
+        self.line_2_combo.setFont(self._font)
+
         sizePolicy2 = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.line_2_combo.sizePolicy().hasHeightForWidth())
         self.line_2_combo.setSizePolicy(sizePolicy2)
-        self.line_2_combo.addItem("FR4_epoxy")
-        self.line_2_combo.addItem("teflon_based")
-        self.line_2_combo.addItem("Rogers RT/duroid 6002 (tm)")
         self.line_2.addWidget(self.line_2_combo)
 
         self.gridLayout_6.addLayout(self.line_2, 10, 0, 1, 1)
@@ -275,6 +314,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.line_3.setObjectName(u"line_3")
         self.label_9 = QtWidgets.QLabel(self.antenna_settings)
         self.label_9.setObjectName(u"label_9")
+        self.label_9.setFont(self._font)
 
         self.line_3.addWidget(self.label_9)
 
@@ -285,24 +325,18 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.line_3_edit = QtWidgets.QLineEdit(self.antenna_settings)
         self.line_3_edit.setObjectName(u"line_3_edit")
+        self.line_3_edit.setFont(self._font)
 
         self.line_3.addWidget(self.line_3_edit)
 
         self.gridLayout_6.addLayout(self.line_3, 8, 0, 1, 1)
 
-        self.antenna_image = QtWidgets.QLabel(self.antenna_settings)
-        self.antenna_image.setObjectName(u"antenna_image")
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        sizePolicy.setHeightForWidth(self.antenna_image.sizePolicy().hasHeightForWidth())
-        self.antenna_image.setSizePolicy(sizePolicy)
-        self.antenna_image.setScaledContents(True)
-
-        self.gridLayout_6.addWidget(self.antenna_image, 0, 0, 1, 1)
 
         self.line_4 = QtWidgets.QHBoxLayout()
         self.line_4.setObjectName(u"line_4")
         self.line_4_label = QtWidgets.QLabel(self.antenna_settings)
         self.line_4_label.setObjectName(u"line_4_label")
+        self.line_4_label.setFont(self._font)
 
         self.line_4.addWidget(self.line_4_label)
 
@@ -313,6 +347,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.line_4_edit = QtWidgets.QLineEdit(self.antenna_settings)
         self.line_4_edit.setObjectName(u"line_4_edit")
+        self.line_4_edit.setFont(self._font)
 
         self.line_4.addWidget(self.line_4_edit)
 
@@ -322,6 +357,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.line_5.setObjectName(u"line_5")
         self.line_5_label = QtWidgets.QLabel(self.antenna_settings)
         self.line_5_label.setObjectName(u"line_5_label")
+        self.line_5_label.setFont(self._font)
 
         self.line_5.addWidget(self.line_5_label)
 
@@ -331,6 +367,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.line_5_combo.addItem("PML")
         self.line_5_combo.addItem("FEBI")
         self.line_5_combo.setObjectName(u"line_5_combo")
+        self.line_5_combo.setFont(self._font)
 
         self.line_5.addWidget(self.line_5_combo)
 
@@ -338,8 +375,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.line_buttons = QtWidgets.QHBoxLayout()
         self.line_buttons.setObjectName(u"line_buttons")
+
         self.synth_button = QtWidgets.QPushButton(self.antenna_settings)
         self.synth_button.setObjectName(u"synth_button")
+        self.synth_button.setFont(self._font)
 
         self.line_buttons.addWidget(self.synth_button)
 
@@ -350,6 +389,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.create_button = QtWidgets.QPushButton(self.antenna_settings)
         self.create_button.setObjectName(u"create_button")
+        self.create_button.setFont(self._font)
 
         self.line_buttons.addWidget(self.create_button)
 
@@ -367,10 +407,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.synth_button.setText("Synthesis")
         self.create_button.setText("Create Hfss Project")
 
-        pixmap = QtGui.QPixmap(os.path.join(current_path, "Patch.png"))
-        self.antenna_image.setPixmap(pixmap)
         self.synth_button.clicked.connect(self.synth)
-        self.create_button.clicked.connect(self.create)
+        self.create_button.clicked.connect(self.create_design)
 
 
 if __name__ == "__main__":
