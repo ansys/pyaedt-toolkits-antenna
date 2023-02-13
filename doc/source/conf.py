@@ -35,11 +35,11 @@ html_theme_options = {
 
 # Sphinx extensions
 extensions = [
+    "sphinx_copybutton",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "numpydoc",
     "sphinx.ext.intersphinx",
-    "sphinx_copybutton",
+    "numpydoc",
 ]
 
 # Intersphinx mapping
