@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWindow_2yewoyC.ui'
+## Form generated from reading UI file 'MainWindow_2OPVJME.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.2
 ##
@@ -230,6 +230,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
         self.create_hfss_setup = QCheckBox(self.frame_3)
         self.create_hfss_setup.setObjectName(u"create_hfss_setup")
+        self.create_hfss_setup.setChecked(True)
 
         self.horizontalLayout_16.addWidget(self.create_hfss_setup)
 
@@ -285,6 +286,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_19.setObjectName(u"horizontalLayout_19")
         self.component_3d = QCheckBox(self.frame_3)
         self.component_3d.setObjectName(u"component_3d")
+        self.component_3d.setChecked(False)
 
         self.horizontalLayout_19.addWidget(self.component_3d)
 
@@ -392,7 +394,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.frequnits.setCurrentIndex(3)
         self.units.setCurrentIndex(1)
 
@@ -447,7 +449,7 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem1 = self.property_table.horizontalHeaderItem(1)
         ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Value", None));
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.design), QCoreApplication.translate("MainWindow", u" Design ", None))
-        self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"PushButton", None))
+        self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Analyze Project", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.analysis), QCoreApplication.translate("MainWindow", u" Analysys ", None))
         self.menuAntennas.setTitle(QCoreApplication.translate("MainWindow", u"Antennas", None))
         self.menuPatch.setTitle(QCoreApplication.translate("MainWindow", u"Patch", None))

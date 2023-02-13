@@ -69,7 +69,7 @@
           <enum>QTabWidget::Triangular</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
@@ -328,6 +328,9 @@
                        <property name="text">
                         <string>Create Hfss Setup</string>
                        </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
                       </widget>
                      </item>
                      <item>
@@ -460,6 +463,9 @@
                        <property name="text">
                         <string>3D Component</string>
                        </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
                       </widget>
                      </item>
                      <item>
@@ -551,7 +557,7 @@
            <item>
             <widget class="QPushButton" name="pushButton_5">
              <property name="text">
-              <string>PushButton</string>
+              <string>Analyze Project</string>
              </property>
             </widget>
            </item>
