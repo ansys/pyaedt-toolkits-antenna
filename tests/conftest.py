@@ -10,7 +10,7 @@ This module contains the configuration and fixture for the pytest-based unit tes
 The default configuration can be changed by placing a file called local_config.json in the same
 directory as this module. An example of the contents of local_config.json
 {
-  "desktopVersion": "2022.2",
+  "desktopVersion": "2023.1",
   "NonGraphical": false,
   "NewThread": false,
   "test_desktops": true
@@ -46,7 +46,7 @@ sys.path.append(local_path)
 # from _unittest.launch_desktop_tests import run_desktop_tests
 
 # Initialize default desktop configuration
-default_version = "2022.2"
+default_version = "2023.1"
 
 config = {
     "desktopVersion": default_version,
