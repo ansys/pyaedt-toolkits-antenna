@@ -1,9 +1,10 @@
-import math
 from collections import OrderedDict
+import math
 
 import pyaedt.generic.constants as constants
-from pyaedt.generic.general_methods import pyaedt_function_handler
 from pyaedt.generic.general_methods import generate_unique_name
+from pyaedt.generic.general_methods import pyaedt_function_handler
+
 from ansys.aedt.toolkits.antennas.common import CommonAntenna
 
 
@@ -97,7 +98,8 @@ class RectangularPatchProbe(CommonPatch):
     frequency_unit : str, optional
             Frequency units. The default is ``GHz``.
     material : str, optional
-            Substrate material. If material is not defined a new material parametrized will be defined.
+            Substrate material.
+            If material is not defined a new material parametrized will be defined.
             The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
             Boundary type to use. Options are ``"Radiation"``,
@@ -113,21 +115,18 @@ class RectangularPatchProbe(CommonPatch):
 
     Returns
     -------
-    :class:`pyaedt.toolkits.antennas.CommonAntenna` and :class:`pyaedt.modules.Boundary.CommonPatch`
-            Rectangular patch with probe object.
+    :class:`aedt.toolkits.antennas.RectangularPatchProbe`
+            Patch antenna object.
 
     Examples
     --------
     >>> from pyaedt import Hfss
+    >>> from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
     >>> hfss = Hfss()
-    >>> patch = hfss.antennas.rectangular_patch_w_probe(frequency=20.0, frequency_unit="GHz", material="Duroid (tm)",
-    ...                                                  outer_boundary=None, huygens_box=True, substrate_height=0.16,
-    ...                                                 length_unit="cm", coordinate_system="CS1",
-    ...                                                 antenna_name="Antenna_Samuel", origin=[1, 100, 50])
+    >>> patch = hfss.add_from_toolkit(RectangularPatchProbe, frequency=20.0, frequency_unit="GHz")
     """
 
     def __init__(self, *args, **kwargs):
-
         if "frequency" not in kwargs.keys():
             kwargs["frequency"] = 10.0
         if "frequency_unit" not in kwargs.keys():
@@ -154,6 +153,226 @@ class RectangularPatchProbe(CommonPatch):
         self.parameters = []
 
     @pyaedt_function_handler()
+    def draw(self):
+        """Draw rectangular patch antenna.
+        Once the antenna is created, this method will not be used."""
+        if self.object_list:
+            self._app.logger.warning("This antenna already exists")
+            return False
+
+        for param in self._parameters:
+            new_name = param + "_" + self.antenna_name
+            if new_name not in self._app.variable_manager.variables:
+                self._app[new_name] = str(self._parameters[param]) + self.length_unit
+                self.parameters.append(new_name)
+
+        self.parameters = sorted(self.parameters)
+        # Map parameter list to understand code
+        patch_x = self.parameters[7]
+        patch_y = self.parameters[8]
+        feed_x = self.parameters[3]
+        feed_y = self.parameters[4]
+        sub_h = self.parameters[12]
+        sub_x = self.parameters[13]
+        sub_y = self.parameters[14]
+
+        coax_inner_rad = self.parameters[0]
+        coax_outer_rad = self.parameters[1]
+        feed_length = self.parameters[2]
+        gnd_x = self.parameters[5]
+        gnd_y = self.parameters[6]
+        pos_x = self.parameters[9]
+        pos_y = self.parameters[10]
+        pos_z = self.parameters[11]
+
+        # Substrate
+        sub = self._app.modeler.create_box(
+            position=["-" + sub_x + "/2" "+" + pos_x, "-" + sub_y + "/2" "+" + pos_y, pos_z],
+            dimensions_list=[sub_x, sub_y, sub_h],
+            name="sub_" + self.antenna_name,
+            matname=self.material,
+        )
+        sub.color = (0, 128, 0)
+        sub.history.props["Coordinate System"] = self.coordinate_system
+
+        # Ground
+        gnd = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=["-" + gnd_x + "/2" "+" + pos_x, "-" + gnd_y + "/2" "+" + pos_y, pos_z],
+            dimension_list=[gnd_x, gnd_y],
+            name="gnd_" + self.antenna_name,
+        )
+        gnd.color = (255, 128, 65)
+        gnd.history.props["Coordinate System"] = self.coordinate_system
+
+        # Antenna
+        ant = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + patch_x + "/2" "+" + pos_x,
+                "-" + patch_y + "/2" "+" + pos_y,
+                sub_h + "+" + pos_z,
+            ],
+            dimension_list=[patch_x, patch_y],
+            name="ant" + self.antenna_name,
+        )
+        ant.color = (255, 128, 65)
+        ant.transparency = 0.1
+        ant.history.props["Coordinate System"] = self.coordinate_system
+
+        void = self._app.modeler.create_circle(
+            cs_plane=2,
+            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
+            radius=coax_outer_rad,
+            name="void_" + self.antenna_name,
+        )
+
+        self._app.modeler.subtract(gnd, void, False)
+
+        feed_pin = self._app.modeler.create_cylinder(
+            cs_axis=2,
+            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
+            radius=coax_inner_rad,
+            height=sub_h,
+            name="feed_pin_" + self.antenna_name,
+            matname="pec",
+        )
+        feed_pin.color = (255, 128, 65)
+        feed_pin.history.props["Coordinate System"] = self.coordinate_system
+
+        feed_coax = self._app.modeler.create_cylinder(
+            cs_axis=2,
+            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
+            radius=coax_inner_rad,
+            height="-" + feed_length,
+            name="feed_coax_" + self.antenna_name,
+            matname="pec",
+        )
+        feed_coax.color = (255, 128, 65)
+        feed_coax.history.props["Coordinate System"] = self.coordinate_system
+
+        coax = self._app.modeler.create_cylinder(
+            cs_axis=2,
+            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
+            radius=coax_outer_rad,
+            height="-" + feed_length,
+            name="coax_" + self.antenna_name,
+            matname="Teflon (tm)",
+        )
+        coax.color = (128, 255, 255)
+        coax.history.props["Coordinate System"] = self.coordinate_system
+
+        port_cap = self._app.modeler.create_cylinder(
+            cs_axis=2,
+            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z + "-" + feed_length],
+            radius=coax_outer_rad,
+            height="-" + sub_h + "/" + str(10),
+            name="port_cap_" + self.antenna_name,
+            matname="pec",
+        )
+        port_cap.color = (132, 132, 193)
+        port_cap.history.props["Coordinate System"] = self.coordinate_system
+
+        p1 = self._app.modeler.create_circle(
+            cs_plane=2,
+            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z + "-" + feed_length],
+            radius=coax_outer_rad,
+            name="port_" + self.antenna_name,
+        )
+        p1.color = (128, 0, 0)
+        p1.history.props["Coordinate System"] = self.coordinate_system
+
+        # Create Huygens box
+        if self.huygens_box:
+            lightSpeed = constants.SpeedOfLight  # m/s
+            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
+            huygens_dist = str(
+                constants.unit_converter(
+                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
+                )
+            )
+            huygens = self._app.modeler.create_box(
+                position=[
+                    "-" + gnd_x + "/2.1" "+" + pos_x,
+                    "-" + gnd_y + "/2.1" "+" + pos_y,
+                    pos_z,
+                ],
+                dimensions_list=[
+                    "abs(-" + gnd_x + "/2.1" + "-" + gnd_x + "/2.1)",
+                    "abs(-" + gnd_y + "/2.1" + "-" + gnd_y + "/2.1)",
+                    "abs(-" + sub_h + ")+" + huygens_dist + self.length_unit,
+                ],
+                name="huygens_" + self.antenna_name,
+                matname="air",
+            )
+            huygens.display_wireframe = True
+            huygens.color = (0, 0, 255)
+            huygens.history.props["Coordinate System"] = self.coordinate_system
+
+            mesh_op = self._app.mesh.assign_length_mesh(
+                [huygens.name],
+                maxlength=huygens_dist + self.length_unit,
+                maxel=None,
+                meshop_name="HuygensBox_Seed_" + self.antenna_name,
+            )
+
+            self.object_list[huygens.name] = huygens
+            huygens.group_name = self.antenna_name
+            self.mesh_operations[mesh_op.name] = mesh_op
+
+        sub.group_name = self.antenna_name
+        gnd.group_name = self.antenna_name
+        ant.group_name = self.antenna_name
+        feed_pin.group_name = self.antenna_name
+        feed_coax.group_name = self.antenna_name
+        coax.group_name = self.antenna_name
+        port_cap.group_name = self.antenna_name
+        p1.group_name = self.antenna_name
+
+        self.object_list[sub.name] = sub
+        self.object_list[gnd.name] = gnd
+        self.object_list[ant.name] = ant
+        self.object_list[feed_pin.name] = feed_pin
+        self.object_list[feed_coax.name] = feed_coax
+        self.object_list[coax.name] = coax
+        self.object_list[port_cap.name] = port_cap
+        self.object_list[p1.name] = p1
+
+        # Assign coating
+        ant_bound = self._app.assign_perfecte_to_sheets(ant.name)
+        ant_bound.name = "PerfE_antenna_" + self.antenna_name
+        self.boundaries[ant_bound.name] = ant_bound
+        gnd_bound = self._app.assign_perfecte_to_sheets(gnd.name)
+        gnd_bound.name = "PerfE_gnd_" + self.antenna_name
+        self.boundaries[gnd_bound.name] = gnd_bound
+
+        face_id = coax.faces[0].edges[0].id
+        for face in coax.faces:
+            if len(face.edges) == 2:
+                face_id = face.id
+                break
+
+        coax_bound = self._app.assign_perfecte_to_sheets(face_id)
+        coax_bound.name = "PerfE_coax_" + self.antenna_name
+        self.boundaries[coax_bound.name] = coax_bound
+
+        # Excitation
+        port1 = self._app.create_wave_port_from_sheet(
+            sheet=p1, portname="port_" + self.antenna_name, terminal_references=port_cap.name
+        )
+        self.excitations[port1.name] = port1
+        if self._app.solution_type == "Terminal":
+            self.excitations[port1.name + "_T1"] = port1
+
+        # Create radiation boundary
+        if self.outer_boundary:
+            self._app.create_open_region(
+                str(self.frequency) + self.frequency_unit, self.outer_boundary
+            )
+
+        return True
+
+    @pyaedt_function_handler()
     def _synthesis(self):
         parameters = {}
         lightSpeed = constants.SpeedOfLight  # m/s
@@ -171,7 +390,9 @@ class RectangularPatchProbe(CommonPatch):
 
         subPermittivity = float(mat_props.permittivity.value)
 
-        sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
+        sub_meters = constants.unit_converter(
+            self.substrate_height, "Length", self.length_unit, "meter"
+        )
 
         patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((subPermittivity + 1.0) / 2.0))
 
@@ -191,7 +412,12 @@ class RectangularPatchProbe(CommonPatch):
         # eff_WL_meters = wavelength / math.sqrt(eff_Permittivity)
 
         k = 2.0 * math.pi / eff_Permittivity
-        G = math.pi * patch_width / (120.0 * math.pi * wavelength) * (1.0 - math.pow(k * sub_meters, 2) / 24)
+        G = (
+            math.pi
+            * patch_width
+            / (120.0 * math.pi * wavelength)
+            * (1.0 - math.pow(k * sub_meters, 2) / 24)
+        )
 
         # ;impedance at edge of patch
         Res = 1.0 / (2.0 * G)
@@ -206,38 +432,60 @@ class RectangularPatchProbe(CommonPatch):
         feed_x = 0.0
         parameters["feed_x"] = feed_x
 
-        feed_y = round(constants.unit_converter(offset_pin_pos, "Length", "meter", self.length_unit), 2)
+        feed_y = round(
+            constants.unit_converter(offset_pin_pos, "Length", "meter", self.length_unit), 2
+        )
         parameters["feed_y"] = feed_y
 
         sub_h = self.substrate_height
         parameters["sub_h"] = sub_h
 
         sub_x = round(
-            constants.unit_converter(1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", self.length_unit), 1
+            constants.unit_converter(
+                1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", self.length_unit
+            ),
+            1,
         )
         parameters["sub_x"] = sub_x
 
         sub_y = round(
-            constants.unit_converter(1.5 * patch_length + 6.0 * sub_meters, "Length", "meter", self.length_unit), 1
+            constants.unit_converter(
+                1.5 * patch_length + 6.0 * sub_meters, "Length", "meter", self.length_unit
+            ),
+            1,
         )
         parameters["sub_y"] = sub_y
 
         coax_inner_rad = round(
-            constants.unit_converter(0.025 * (1e8 / freq_hz), "Length", "meter", self.length_unit), 3
+            constants.unit_converter(0.025 * (1e8 / freq_hz), "Length", "meter", self.length_unit),
+            3,
         )
         parameters["coax_inner_rad"] = coax_inner_rad
 
         coax_outer_rad = round(
-            constants.unit_converter(0.085 * (1e8 / freq_hz), "Length", "meter", self.length_unit), 3
+            constants.unit_converter(0.085 * (1e8 / freq_hz), "Length", "meter", self.length_unit),
+            3,
         )
         parameters["coax_outer_rad"] = coax_outer_rad
 
-        feed_length = round(constants.unit_converter(wavelength / 6.0, "Length", "meter", self.length_unit), 2)
+        feed_length = round(
+            constants.unit_converter(wavelength / 6.0, "Length", "meter", self.length_unit), 2
+        )
         parameters["feed_length"] = feed_length
 
         if self.huygens_box:
-            gnd_x = constants.unit_converter((299792458 / (freq_hz) / 4), "Length", "meter", self.length_unit) + sub_x
-            gnd_y = constants.unit_converter((299792458 / (freq_hz) / 4), "Length", "meter", self.length_unit) + sub_y
+            gnd_x = (
+                constants.unit_converter(
+                    (299792458 / (freq_hz) / 4), "Length", "meter", self.length_unit
+                )
+                + sub_x
+            )
+            gnd_y = (
+                constants.unit_converter(
+                    (299792458 / (freq_hz) / 4), "Length", "meter", self.length_unit
+                )
+                + sub_y
+            )
         else:
             gnd_x = sub_x
             gnd_y = sub_y
@@ -256,436 +504,15 @@ class RectangularPatchProbe(CommonPatch):
         return parameters_out
 
     @pyaedt_function_handler()
-    def draw(self):
-        """Draw rectangular patch antenna. Once the antenna is created, this method will not be used."""
-        if self.object_list:
-            self._app.logger.warning("This antenna already exists")
-            return False
-
-        for param in self._parameters:
-            new_name = param + "_" + self.antenna_name
-            if new_name not in self._app.variable_manager.variables:
-                self._app[new_name] = str(self._parameters[param]) + self.length_unit
-                self.parameters.append(new_name)
-
-        self.parameters = sorted(self.parameters)
-        # Map parameter list to understand code
-        patch_x = self.parameters[7]
-        patch_y = self.parameters[8]
-        feed_x = self.parameters[3]
-        feed_y = self.parameters[4]
-        sub_h = self.parameters[12]
-        sub_x = self.parameters[13]
-        sub_y = self.parameters[14]
-
-        coax_inner_rad = self.parameters[0]
-        coax_outer_rad = self.parameters[1]
-        feed_length = self.parameters[2]
-        gnd_x = self.parameters[5]
-        gnd_y = self.parameters[6]
-        pos_x = self.parameters[9]
-        pos_y = self.parameters[10]
-        pos_z = self.parameters[11]
-
-        # Substrate
-        sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2" "+" + pos_x, "-" + sub_y + "/2" "+" + pos_y, pos_z],
-            dimensions_list=[sub_x, sub_y, sub_h],
-            name="sub_" + self.antenna_name,
-            matname=self.material,
-        )
-        sub.color = (0, 128, 0)
-        sub.history.props["Coordinate System"] = self.coordinate_system
-
-        # Ground
-        gnd = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=["-" + gnd_x + "/2" "+" + pos_x, "-" + gnd_y + "/2" "+" + pos_y, pos_z],
-            dimension_list=[gnd_x, gnd_y],
-            name="gnd_" + self.antenna_name,
-        )
-        gnd.color = (255, 128, 65)
-        gnd.history.props["Coordinate System"] = self.coordinate_system
-
-        # Antenna
-        ant = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=["-" + patch_x + "/2" "+" + pos_x, "-" + patch_y + "/2" "+" + pos_y, sub_h + "+" + pos_z],
-            dimension_list=[patch_x, patch_y],
-            name="ant" + self.antenna_name,
-        )
-        ant.color = (255, 128, 65)
-        ant.transparency = 0.1
-        ant.history.props["Coordinate System"] = self.coordinate_system
-
-        void = self._app.modeler.create_circle(
-            cs_plane=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
-            radius=coax_outer_rad,
-            name="void_" + self.antenna_name,
-        )
-
-        self._app.modeler.subtract(gnd, void, False)
-
-        feed_pin = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
-            radius=coax_inner_rad,
-            height=sub_h,
-            name="feed_pin_" + self.antenna_name,
-            matname="pec",
-        )
-        feed_pin.color = (255, 128, 65)
-        feed_pin.history.props["Coordinate System"] = self.coordinate_system
-
-        feed_coax = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
-            radius=coax_inner_rad,
-            height="-" + feed_length,
-            name="feed_coax_" + self.antenna_name,
-            matname="pec",
-        )
-        feed_coax.color = (255, 128, 65)
-        feed_coax.history.props["Coordinate System"] = self.coordinate_system
-
-        coax = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
-            radius=coax_outer_rad,
-            height="-" + feed_length,
-            name="coax_" + self.antenna_name,
-            matname="Teflon (tm)",
-        )
-        coax.color = (128, 255, 255)
-        coax.history.props["Coordinate System"] = self.coordinate_system
-
-        port_cap = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z + "-" + feed_length],
-            radius=coax_outer_rad,
-            height="-" + sub_h + "/" + str(10),
-            name="port_cap_" + self.antenna_name,
-            matname="pec",
-        )
-        port_cap.color = (132, 132, 193)
-        port_cap.history.props["Coordinate System"] = self.coordinate_system
-
-        p1 = self._app.modeler.create_circle(
-            cs_plane=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z + "-" + feed_length],
-            radius=coax_outer_rad,
-            name="port_" + self.antenna_name,
-        )
-        p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = self.coordinate_system
-
-        # Create Huygens box
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=["-" + gnd_x + "/2.1" "+" + pos_x, "-" + gnd_y + "/2.1" "+" + pos_y, pos_z],
-                dimensions_list=[
-                    "abs(-" + gnd_x + "/2.1" + "-" + gnd_x + "/2.1)",
-                    "abs(-" + gnd_y + "/2.1" + "-" + gnd_y + "/2.1)",
-                    "abs(-" + sub_h + ")+" + huygens_dist + self.length_unit,
-                ],
-                name="huygens_" + self.antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = self.coordinate_system
-
-            mesh_op = self._app.mesh.assign_length_mesh(
-                [huygens.name],
-                maxlength=huygens_dist + self.length_unit,
-                maxel=None,
-                meshop_name="HuygensBox_Seed_" + self.antenna_name,
-            )
-
-            self.object_list[huygens.name] = huygens
-            huygens.group_name = self.antenna_name
-            self.mesh_operations[mesh_op.name] = mesh_op
-
-        sub.group_name = self.antenna_name
-        gnd.group_name = self.antenna_name
-        ant.group_name = self.antenna_name
-        feed_pin.group_name = self.antenna_name
-        feed_coax.group_name = self.antenna_name
-        coax.group_name = self.antenna_name
-        port_cap.group_name = self.antenna_name
-        p1.group_name = self.antenna_name
-
-        self.object_list[sub.name] = sub
-        self.object_list[gnd.name] = gnd
-        self.object_list[ant.name] = ant
-        self.object_list[feed_pin.name] = feed_pin
-        self.object_list[feed_coax.name] = feed_coax
-        self.object_list[coax.name] = coax
-        self.object_list[port_cap.name] = port_cap
-        self.object_list[p1.name] = p1
-
-        # Assign coating
-        ant_bound = self._app.assign_perfecte_to_sheets(ant.name)
-        ant_bound.name = "PerfE_antenna_" + self.antenna_name
-        self.boundaries[ant_bound.name] = ant_bound
-        gnd_bound = self._app.assign_perfecte_to_sheets(gnd.name)
-        gnd_bound.name = "PerfE_gnd_" + self.antenna_name
-        self.boundaries[gnd_bound.name] = gnd_bound
-
-        face_id = coax.faces[0].edges[0].id
-        for face in coax.faces:
-            if len(face.edges) == 2:
-                face_id = face.id
-                break
-
-        coax_bound = self._app.assign_perfecte_to_sheets(face_id)
-        coax_bound.name = "PerfE_coax_" + self.antenna_name
-        self.boundaries[coax_bound.name] = coax_bound
-
-        # Excitation
-        port1 = self._app.create_wave_port_from_sheet(
-            sheet=p1, portname="port_" + self.antenna_name, terminal_references=port_cap.name
-        )
-        self.excitations[port1.name] = port1
-        if self._app.solution_type == "Terminal":
-            self.excitations[port1.name + "_T1"] = port1
-
-        # Create radiation boundary
-        if self.outer_boundary:
-            self._app.create_open_region(str(self.frequency) + self.frequency_unit, self.outer_boundary)
-
-        return True
-
-    @pyaedt_function_handler()
-    def model_hfss(self):
-        """Model rectangular patch antenna. Once the antenna is created, this method will not be used."""
-        if self.object_list:
-            self._app.logger.warning("This antenna already exists")
-            return False
-
-        for param in self._parameters:
-            new_name = param + "_" + self.antenna_name
-            if new_name not in self._app.variable_manager.variables:
-                self._app[new_name] = str(self._parameters[param]) + self.length_unit
-                self.parameters.append(new_name)
-
-        self.parameters = sorted(self.parameters)
-        # Map parameter list to understand code
-        patch_x = self.parameters[7]
-        patch_y = self.parameters[8]
-        feed_x = self.parameters[3]
-        feed_y = self.parameters[4]
-        sub_h = self.parameters[12]
-        sub_x = self.parameters[13]
-        sub_y = self.parameters[14]
-
-        coax_inner_rad = self.parameters[0]
-        coax_outer_rad = self.parameters[1]
-        feed_length = self.parameters[2]
-        gnd_x = self.parameters[5]
-        gnd_y = self.parameters[6]
-        pos_x = self.parameters[9]
-        pos_y = self.parameters[10]
-        pos_z = self.parameters[11]
-
-        # Substrate
-        sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2" "+" + pos_x, "-" + sub_y + "/2" "+" + pos_y, pos_z],
-            dimensions_list=[sub_x, sub_y, sub_h],
-            name="sub_" + self.antenna_name,
-            matname=self.material,
-        )
-        sub.color = (0, 128, 0)
-        sub.history.props["Coordinate System"] = self.coordinate_system
-
-        # Ground
-        gnd = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=["-" + gnd_x + "/2" "+" + pos_x, "-" + gnd_y + "/2" "+" + pos_y, pos_z],
-            dimension_list=[gnd_x, gnd_y],
-            name="gnd_" + self.antenna_name,
-        )
-        gnd.color = (255, 128, 65)
-        gnd.history.props["Coordinate System"] = self.coordinate_system
-
-        # Antenna
-        ant = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=["-" + patch_x + "/2" "+" + pos_x, "-" + patch_y + "/2" "+" + pos_y, sub_h + "+" + pos_z],
-            dimension_list=[patch_x, patch_y],
-            name="ant" + self.antenna_name,
-        )
-        ant.color = (255, 128, 65)
-        ant.transparency = 0.1
-        ant.history.props["Coordinate System"] = self.coordinate_system
-
-        void = self._app.modeler.create_circle(
-            cs_plane=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
-            radius=coax_outer_rad,
-            name="void_" + self.antenna_name,
-        )
-
-        self._app.modeler.subtract(gnd, void, False)
-
-        feed_pin = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
-            radius=coax_inner_rad,
-            height=sub_h,
-            name="feed_pin_" + self.antenna_name,
-            matname="pec",
-        )
-        feed_pin.color = (255, 128, 65)
-        feed_pin.history.props["Coordinate System"] = self.coordinate_system
-
-        feed_coax = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
-            radius=coax_inner_rad,
-            height="-" + feed_length,
-            name="feed_coax_" + self.antenna_name,
-            matname="pec",
-        )
-        feed_coax.color = (255, 128, 65)
-        feed_coax.history.props["Coordinate System"] = self.coordinate_system
-
-        coax = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
-            radius=coax_outer_rad,
-            height="-" + feed_length,
-            name="coax_" + self.antenna_name,
-            matname="Teflon (tm)",
-        )
-        coax.color = (128, 255, 255)
-        coax.history.props["Coordinate System"] = self.coordinate_system
-
-        port_cap = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z + "-" + feed_length],
-            radius=coax_outer_rad,
-            height="-" + sub_h + "/" + str(10),
-            name="port_cap_" + self.antenna_name,
-            matname="pec",
-        )
-        port_cap.color = (132, 132, 193)
-        port_cap.history.props["Coordinate System"] = self.coordinate_system
-
-        p1 = self._app.modeler.create_circle(
-            cs_plane=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z + "-" + feed_length],
-            radius=coax_outer_rad,
-            name="port_" + self.antenna_name,
-        )
-        p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = self.coordinate_system
-
-    @pyaedt_function_handler()
-    def setup_hfss(self):
-        # Create Huygens box
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=["-" + gnd_x + "/2.1" "+" + pos_x, "-" + gnd_y + "/2.1" "+" + pos_y, pos_z],
-                dimensions_list=[
-                    "abs(-" + gnd_x + "/2.1" + "-" + gnd_x + "/2.1)",
-                    "abs(-" + gnd_y + "/2.1" + "-" + gnd_y + "/2.1)",
-                    "abs(-" + sub_h + ")+" + huygens_dist + self.length_unit,
-                ],
-                name="huygens_" + self.antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = self.coordinate_system
-
-            mesh_op = self._app.mesh.assign_length_mesh(
-                [huygens.name],
-                maxlength=huygens_dist + self.length_unit,
-                maxel=None,
-                meshop_name="HuygensBox_Seed_" + self.antenna_name,
-            )
-
-            self.object_list[huygens.name] = huygens
-            huygens.group_name = self.antenna_name
-            self.mesh_operations[mesh_op.name] = mesh_op
-
-        sub.group_name = self.antenna_name
-        gnd.group_name = self.antenna_name
-        ant.group_name = self.antenna_name
-        feed_pin.group_name = self.antenna_name
-        feed_coax.group_name = self.antenna_name
-        coax.group_name = self.antenna_name
-        port_cap.group_name = self.antenna_name
-        p1.group_name = self.antenna_name
-
-        self.object_list[sub.name] = sub
-        self.object_list[gnd.name] = gnd
-        self.object_list[ant.name] = ant
-        self.object_list[feed_pin.name] = feed_pin
-        self.object_list[feed_coax.name] = feed_coax
-        self.object_list[coax.name] = coax
-        self.object_list[port_cap.name] = port_cap
-        self.object_list[p1.name] = p1
-
-        # Assign coating
-        ant_bound = self._app.assign_perfecte_to_sheets(ant.name)
-        ant_bound.name = "PerfE_antenna_" + self.antenna_name
-        self.boundaries[ant_bound.name] = ant_bound
-        gnd_bound = self._app.assign_perfecte_to_sheets(gnd.name)
-        gnd_bound.name = "PerfE_gnd_" + self.antenna_name
-        self.boundaries[gnd_bound.name] = gnd_bound
-
-        face_id = coax.faces[0].edges[0].id
-        for face in coax.faces:
-            if len(face.edges) == 2:
-                face_id = face.id
-                break
-
-        coax_bound = self._app.assign_perfecte_to_sheets(face_id)
-        coax_bound.name = "PerfE_coax_" + self.antenna_name
-        self.boundaries[coax_bound.name] = coax_bound
-
-        # Excitation
-        port1 = self._app.create_wave_port_from_sheet(
-            sheet=p1, portname="port_" + self.antenna_name, terminal_references=port_cap.name
-        )
-        self.excitations[port1.name] = port1
-        if self._app.solution_type == "Terminal":
-            self.excitations[port1.name + "_T1"] = port1
-
-        # Create radiation boundary
-        if self.outer_boundary:
-            self._app.create_open_region(str(self.frequency) + self.frequency_unit, self.outer_boundary)
-
-        return True
-
-    @pyaedt_function_handler()
-    def model_disco(self):
-        pass
-
-    @pyaedt_function_handler()
-    def setup_disco(self):
-        pass
-
-    @pyaedt_function_handler()
     def _check_antenna_name(self, antenna_name=None):
         """Check if antenna name is repeated or assign a random antenna name."""
         if (
             not antenna_name
             or len(list(self._app.modeler.oeditor.GetObjectsInGroup(antenna_name))) > 0
-            or any(antenna_name in variables for variables in list(self._app.variable_manager.variables.keys()))
+            or any(
+                antenna_name in variables
+                for variables in list(self._app.variable_manager.variables.keys())
+            )
         ):
             antenna_name = generate_unique_name("Patch")
             while len(list(self._app.modeler.oeditor.GetObjectsInGroup(antenna_name))) > 0:
