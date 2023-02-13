@@ -6,7 +6,7 @@ build-backend = "flit_core.buildapi"
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-aedt-toolkits-antennas"
 dynamic = ["version"]
-description = "A python wrapper for ansys pyaedt-toolkits ansys.aedt.toolkits.antennas"
+description = "A python toolkit to design antennas with Ansys AEDT."
 readme = "README.rst"
 requires-python = ">=3.9"
 license = {file = "LICENSE"}
@@ -28,7 +28,10 @@ dependencies = [
     "twine==4.0.1",
     "pyaedt==0.6.46",
     "importlib-metadata >=4.0",
-    "pyside6"
+    "pyside6",
+    "pyside6",
+    "pyqtgraph",
+    "qdarkstyle",
 ]
 
 [project.optional-dependencies]
@@ -48,9 +51,9 @@ doc = [
 name = "ansys.aedt.toolkits.antennas"
 
 [project.urls]
-Source = "https://github.com/pyansys/pyaedt-toolkits.git"
-Tracker = "https://github.com/pyansys/pyaedt-toolkits.git/issues"
-Homepage = "https://github.com/pyansys/pyaedt-toolkits.git"
+Source = "https://github.com/pyansys/pyaedt-antenna-toolkit.git"
+Tracker = "https://github.com/pyansys/pyaedt-antenna-toolkit.git/issues"
+Homepage = "https://github.com/pyansys/pyaedt-antenna-toolkit.git"
 
 
 [tool.black]
