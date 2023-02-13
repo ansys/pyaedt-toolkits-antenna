@@ -14,7 +14,7 @@ import qdarkstyle
 from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
 from ansys.aedt.toolkits.antennas.ui.antennas_main import Ui_MainWindow
 
-settings.use_grpc_api = True
+settings.use_grpc_api = False
 current_path = os.path.join(os.getcwd(), "ui", "images")
 os.environ["QT_API"] = "pyside6"
 
@@ -182,7 +182,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if not self.oantenna:
             self.oantenna = self.hfss.add_from_toolkit(
                 antenna,
-                draw=not synth_only,
+                draw=False,
                 frequency_unit=frequnits,
                 length_unit=model_units,
                 huygens_box=huygens,
