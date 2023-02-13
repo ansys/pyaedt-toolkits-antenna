@@ -1,4 +1,4 @@
-Pypyaedt-toolkits ansys.aedt.toolkits.antennas
+PyAEDT antenna toolkit
 ==============================================
 |pyansys| |python| |pypi| |GH-CI| |codecov| |MIT| |black|
 
