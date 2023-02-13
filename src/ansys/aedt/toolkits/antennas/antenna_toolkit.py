@@ -13,7 +13,7 @@ from ui.antennas_main import Ui_MainWindow
 import pyqtgraph as pg
 import time
 
-current_path = os.path.join(os.getcwd(), "ui")
+current_path = os.path.join(os.getcwd(), "ui", "images")
 os.environ["QT_API"] = "pyside6"
 
 
@@ -36,6 +36,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         icon.addFile(os.path.join(current_path, "logo_cropped.png"), QtCore.QSize(), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.setWindowIcon(icon)
         self.actionRectangular_with_probe.triggered.connect(lambda checked: self.on_Rect_Patch_w_probe_selected())
+        self.actionConical.triggered.connect(lambda checked: self.on_Horn_Conical())
         self.menubar.setFont(self._font)
         self.setWindowTitle("PyAEDT Antenna Wizard")
         self.length_unit = ''
@@ -45,6 +46,12 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.oantenna = None
         self.hfss = None
         self.connect_hfss.clicked.connect(self.launch_hfss)
+        sizePolicy_antenna = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy_antenna.setHorizontalStretch(0)
+        sizePolicy_antenna.setVerticalStretch(0)
+        sizePolicy_antenna.setHeightForWidth(self.antenna_settings.sizePolicy().hasHeightForWidth())
+        self.antenna_settings.setSizePolicy(sizePolicy_antenna)
+        self.splitter_2.setSizePolicy(sizePolicy_antenna)
         pass
 
     def launch_hfss(self):
@@ -106,73 +113,41 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.hfss.release_desktop(False,False)
         self.close()
 
-    def synth(self):
+
+    def create_rectangular_probe_design(self, synth_only=False):
         if not self.hfss:
             self.launch_hfss()
-
-        freq = round(float(self.line_3_edit.text()), 3)
-        sub_height = float(self.line_4_edit.text())
-        material = self.line_2_combo.currentText()
-        boundary = self.line_5_combo.currentText()
+        freq = float(self.frequency.text())
+        sub_height = float(self.sub_height.text())
+        material = self.material.currentText()
+        boundary = self.boundary.currentText()
         if boundary == "None":
             boundary=None
+        huygens = self.huygens.isChecked()
+        component3d = self.component_3d.isChecked()
+        create_setup = self.create_hfss_setup.isChecked()
+        lattice_pair = self.lattice_pair.isChecked()
+        antenna_name = self.antenna_name.text()
         model_units = self.units.currentText()
         frequnits = self.frequnits.currentText()
-        self.oantenna = self.hfss.add_from_toolkit(RectangularPatchProbe,
-                                            draw=False,
-                                            frequency=freq,
-                                            frequency_unit=frequnits,
-                                            length_unit=model_units,
-                                            material=material,
-                                            outer_boundary=boundary,
-                                            substrate_height=sub_height)
-        n = 0
-        self.property_table.setRowCount( len(self.oantenna._parameters.items()))
-        i=0
-        __sortingEnabled = self.property_table.isSortingEnabled()
-        self.property_table.setSortingEnabled(False)
-        self.property_table.setRowCount(len(self.oantenna._parameters.values()))
-        for par, value in self.oantenna._parameters.items():
-            item = QtWidgets.QTableWidgetItem(par)
-            self.property_table.setItem(i, 0, item)
-            item = QtWidgets.QTableWidgetItem(str(value)+self.oantenna.length_unit)
-            self.property_table.setItem(i, 1, item)
-            i+=1
-        self.property_table.setSortingEnabled(__sortingEnabled)
-        self.add_status_bar_message("Synthesis completed.")
+        x_pos = float(self.x_position.text())
+        y_pos = float(self.y_position.text())
+        z_pos = float(self.z_position.text())
 
-    def create_design(self):
-        if not self.hfss:
-            non_graphical = self.nongraphical.isChecked()
-            self.add_status_bar_message("Opening Hfss. Please wait...")
-            self.hfss = Hfss(specified_version="2022.2", non_graphical=non_graphical)
-            self.add_status_bar_message("Hfss Opened.")
-
-        freq = float(self.lineEdit.text())
-        sub_height = float(self.lineEdit_2.text())
-        material = self.comboBox.currentText()
-        boundary = self.comboBox_2.currentText()
-        if boundary == "None":
-            boundary=None
-        self.huygens = self.checkBox_4.isChecked()
-        self.component3d = self.checkBox_5.isChecked()
-        self.create_setup = self.checkBox_6.isChecked()
-        self.lattice_pair = self.checkBox_8.isChecked()
-        self.antenna_name = self.lineEdit_4.text()
-        model_units = self.units.currentText()
-        frequnits = self.frequnits.currentText()
         self.oantenna = self.hfss.add_from_toolkit(RectangularPatchProbe,
-                                            draw=True,
+                                            draw=not synth_only,
                                             frequency=freq,
                                             material=material,
                                             frequency_unit=frequnits,
                                             length_unit=model_units,
                                             outer_boundary=boundary,
                                             substrate_height=sub_height,
-                                            huygens_box=self.huygens,
-                                            antenna_name=self.antenna_name,)
-        self.oantenna.create_3dcomponent(replace=True)
-        if self.create_setup:
+                                            huygens_box=huygens,
+                                            antenna_name=antenna_name,
+                                            origin=[x_pos,y_pos,z_pos])
+        if component3d:
+            self.oantenna.create_3dcomponent(replace=True)
+        if create_setup:
             setup = self.hfss.create_setup()
             setup.props["Frequency"] = str(freq)+frequnits
             sweep1 = setup.add_sweep()
@@ -194,7 +169,70 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.property_table.setSortingEnabled(__sortingEnabled)
         self.hfss.modeler.fit_all()
-        self.add_status_bar_message("Project created correctly.")
+        if synth_only:
+            self.add_status_bar_message("Synthesis completed.")
+        else:
+            self.add_status_bar_message("Project created correctly.")
+
+
+    def create_conical_horn_design(self, synth_only=False):
+        if not self.hfss:
+            self.launch_hfss()
+        freq = float(self.frequency.text())
+        boundary = self.boundary.currentText()
+        if boundary == "None":
+            boundary=None
+        huygens = self.huygens.isChecked()
+        component3d = self.component_3d.isChecked()
+        create_setup = self.create_hfss_setup.isChecked()
+        lattice_pair = self.lattice_pair.isChecked()
+        antenna_name = self.antenna_name.text()
+        model_units = self.units.currentText()
+        frequnits = self.frequnits.currentText()
+        x_pos = float(self.x_position.text())
+        y_pos = float(self.y_position.text())
+        z_pos = float(self.z_position.text())
+
+        self.oantenna = self.hfss.add_from_toolkit(ConicalHorn,
+                                            draw=not synth_only,
+                                            frequency=freq,
+                                            material=material,
+                                            frequency_unit=frequnits,
+                                            length_unit=model_units,
+                                            outer_boundary=boundary,
+                                            substrate_height=sub_height,
+                                            huygens_box=huygens,
+                                            antenna_name=antenna_name,
+                                            origin=[x_pos,y_pos,z_pos])
+        if component3d:
+            self.oantenna.create_3dcomponent(replace=True)
+        if create_setup:
+            setup = self.hfss.create_setup()
+            setup.props["Frequency"] = str(freq)+frequnits
+            sweep1 = setup.add_sweep()
+            sweep1.props["RangeStart"] = str(freq*0.8)+frequnits
+            sweep1.props["RangeEnd"] = str(freq*1.2)+frequnits
+            sweep1.update()
+
+        self.property_table.setRowCount( len(self.oantenna._parameters.items()))
+        i=0
+        __sortingEnabled = self.property_table.isSortingEnabled()
+        self.property_table.setSortingEnabled(False)
+        self.property_table.setRowCount(len(self.oantenna._parameters.values()))
+        for par, value in self.oantenna._parameters.items():
+            item = QtWidgets.QTableWidgetItem(par)
+            self.property_table.setItem(i, 0, item)
+            item = QtWidgets.QTableWidgetItem(str(value)+self.oantenna.length_unit)
+            self.property_table.setItem(i, 1, item)
+            i+=1
+
+        self.property_table.setSortingEnabled(__sortingEnabled)
+        self.hfss.modeler.fit_all()
+        if synth_only:
+            self.add_status_bar_message("Synthesis completed.")
+        else:
+            self.add_status_bar_message("Project created correctly.")
+
 
 
     def closeEvent(self, event): # Use if the main window is closed by the user
@@ -220,196 +258,177 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # remove the item from layout
             layout.removeItem(item)
+
+
+    def add_line(self, title, variable_value, label_value, line_type,value):
+        self.__dict__[title] = QtWidgets.QHBoxLayout()
+        line = self.__dict__[title]
+        line.setObjectName(title)
+
+        label = QtWidgets.QLabel()
+        label.setObjectName(u"{}_label".format(title))
+        line.addWidget(label)
+        label.setText(label_value)
+        label.setFont(self._font)
+        spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                   QtWidgets.QSizePolicy.Minimum)
+        line.addItem(spacer)
+        if line_type=="edit":
+            name = "{}".format(variable_value)
+            self.__dict__[name] = QtWidgets.QLineEdit()
+            edit = self.__dict__[name]
+            edit.setObjectName(name)
+            edit.setFont(self._font)
+            edit.setText(value)
+            line.addWidget(edit)
+        elif line_type=="combo":
+            name = "{}".format(variable_value)
+            self.__dict__[name] = QtWidgets.QComboBox()
+            edit = self.__dict__[name]
+            edit.setObjectName(name)
+            edit.setFont(self._font)
+            for v in value:
+                edit.addItem(v)
+            line.addWidget(edit)
+        return line
+
+    def add_image(self, image_path):
+        line_0 = QtWidgets.QHBoxLayout()
+        line_0.setObjectName(u"line_0")
+
+        line_0_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                   QtWidgets.QSizePolicy.Minimum)
+
+        line_0.addItem(line_0_spacer)
+
+        antenna_image = QtWidgets.QLabel()
+        antenna_image.setObjectName(u"antenna_image")
+
+        antenna_image.setScaledContents(True)
+        _pixmap = QtGui.QPixmap(image_path)
+        antenna_image.setPixmap(_pixmap)
+        _pixmap = _pixmap.scaled(antenna_image.width(),
+                                 antenna_image.height(),
+                                 QtCore.Qt.KeepAspectRatio,
+                                 QtCore.Qt.SmoothTransformation
+                                 )
+        line_0.addWidget(antenna_image)
+
+
+        line_0_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                   QtWidgets.QSizePolicy.Minimum)
+
+        line_0.addItem(line_0_spacer)
+        return line_0
+
+    def add_antenna_buttons(self,method_create):
+        line_buttons = QtWidgets.QHBoxLayout()
+        line_buttons.setObjectName(u"line_buttons")
+
+        synth_button = QtWidgets.QPushButton()
+        synth_button.setObjectName(u"synth_button")
+        synth_button.setFont(self._font)
+
+        line_buttons.addWidget(synth_button)
+
+        line_buttons_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                         QtWidgets.QSizePolicy.Minimum)
+
+        line_buttons.addItem(line_buttons_spacer)
+
+        create_button = QtWidgets.QPushButton()
+        create_button.setObjectName(u"create_button")
+        create_button.setFont(self._font)
+
+        line_buttons.addWidget(create_button)
+
+        synth_button.setText("Synthesis")
+        create_button.setText("Create Hfss Project")
+        synth_button.clicked.connect(lambda: method_create(True))
+        create_button.clicked.connect(lambda: method_create(False))
+        return line_buttons
+
     def on_Rect_Patch_w_probe_selected(self):
-        self.clear_antenna_settings(self.gridLayout_6)
+        self.clear_antenna_settings(self.layout_settings)
 
-        self.vertical_spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
-                                                     QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout_6.addItem(self.vertical_spacer, 14, 0, 1, 1)
-
-
-        self.line_0 = QtWidgets.QHBoxLayout()
-        self.line_0.setObjectName(u"line_0")
-
-        self.line_0_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                                                   QtWidgets.QSizePolicy.Minimum)
-
-        self.line_0.addItem(self.line_0_spacer)
-
-        self.antenna_image = QtWidgets.QLabel(self.antenna_settings)
-        self.antenna_image.setObjectName(u"antenna_image")
-
-        self.antenna_image.setScaledContents(True)
-        self._pixmap = QtGui.QPixmap(os.path.join(current_path, "Patch.png"))
-        self.antenna_image.setPixmap( self._pixmap)
-        self._pixmap = self._pixmap.scaled(self.antenna_image.width(),
-                                           self.antenna_image.height(),
-                                           QtCore.Qt.KeepAspectRatio,
-                                           QtCore.Qt.SmoothTransformation
-                                           )
-        self.line_0.addWidget(self.antenna_image)
-
-
-        self.line_0_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                                                   QtWidgets.QSizePolicy.Minimum)
-
-        self.line_0.addItem(self.line_0_spacer)
-
-        self.gridLayout_6.addLayout(self.line_0, 0, 0, 1, 1)
-
-
-        self.line_1 = QtWidgets.QHBoxLayout()
-        self.line_1.setObjectName(u"line_1")
-        self.line_1_label = QtWidgets.QLabel(self.antenna_settings)
-        self.line_1_label.setObjectName(u"label_2")
-        self.line_1.addWidget(self.line_1_label)
-        self.line_1_label.setText("Antenna Name")
-        self.line_1_label.setFont(self._font)
-        self.line_1_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                                                   QtWidgets.QSizePolicy.Minimum)
-        self.line_1.addItem(self.line_1_spacer)
-        self.line_1_edit = QtWidgets.QLineEdit(self.antenna_settings)
-        self.line_1_edit.setObjectName(u"line_1_edit")
-        self.line_1_edit.setFont(self._font)
-
-        self.line_1.addWidget(self.line_1_edit)
-        self.gridLayout_6.addLayout(self.line_1, 4, 0, 1, 1)
-
-        self.line_2 = QtWidgets.QHBoxLayout()
-        self.line_2.setObjectName(u"line_2")
-        self.line_2_label = QtWidgets.QLabel(self.antenna_settings)
-        self.line_2_label.setFont(self._font)
-
-        self.line_2_label.setObjectName(u"line_2_label")
-
-        self.line_2.addWidget(self.line_2_label)
-
-        self.line_2_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                                                   QtWidgets.QSizePolicy.Minimum)
-
-        self.line_2.addItem(self.line_2_spacer)
-
-        self.line_2_combo = QtWidgets.QComboBox(self.antenna_settings)
-        self.line_2_combo.addItem("FR4_epoxy")
-        self.line_2_combo.addItem("teflon_based")
-        self.line_2_combo.addItem("Rogers RT/duroid 6002 (tm)")
-        self.line_2_combo.setObjectName(u"line_2_combo")
-        self.line_2_combo.setFont(self._font)
-
-        sizePolicy2 = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.line_2_combo.sizePolicy().hasHeightForWidth())
-        self.line_2_combo.setSizePolicy(sizePolicy2)
-        self.line_2.addWidget(self.line_2_combo)
-
-        self.gridLayout_6.addLayout(self.line_2, 10, 0, 1, 1)
-
-        self.vertical_spacer_2 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum,
+        top_spacer = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum,
                                                        QtWidgets.QSizePolicy.Fixed)
 
-        self.gridLayout_6.addItem(self.vertical_spacer_2, 2, 0, 1, 1)
+        self.layout_settings.addItem(top_spacer, 2, 0, 1, 1)
 
-        self.line_3 = QtWidgets.QHBoxLayout()
-        self.line_3.setObjectName(u"line_3")
-        self.label_9 = QtWidgets.QLabel(self.antenna_settings)
-        self.label_9.setObjectName(u"label_9")
-        self.label_9.setFont(self._font)
-
-        self.line_3.addWidget(self.label_9)
-
-        self.horizontalSpacer_17 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                                                         QtWidgets.QSizePolicy.Minimum)
-
-        self.line_3.addItem(self.horizontalSpacer_17)
-
-        self.line_3_edit = QtWidgets.QLineEdit(self.antenna_settings)
-        self.line_3_edit.setObjectName(u"line_3_edit")
-        self.line_3_edit.setFont(self._font)
-
-        self.line_3.addWidget(self.line_3_edit)
-
-        self.gridLayout_6.addLayout(self.line_3, 8, 0, 1, 1)
+        image = self.add_image(os.path.join(current_path, "Patch.png"))
+        self.layout_settings.addLayout(image, 0, 0, 1, 1)
 
 
-        self.line_4 = QtWidgets.QHBoxLayout()
-        self.line_4.setObjectName(u"line_4")
-        self.line_4_label = QtWidgets.QLabel(self.antenna_settings)
-        self.line_4_label.setObjectName(u"line_4_label")
-        self.line_4_label.setFont(self._font)
+        line1 = self.add_line("line_1", "antenna_name", "Antenna Name", "edit", "Patch")
+        self.layout_settings.addLayout(line1, 3, 0, 1, 1)
 
-        self.line_4.addWidget(self.line_4_label)
+        line2 = self.add_line("line_2", "material", "Substrate Material", "combo", ["FR4_epoxy", "teflon_based","Rogers RT/duroid 6002 (tm)"])
+        self.layout_settings.addLayout(line2, 4, 0, 1, 1)
 
-        self.line4_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                                                  QtWidgets.QSizePolicy.Minimum)
 
-        self.line_4.addItem(self.line4_spacer)
+        line3 = self.add_line("line_3", "frequency", "Frequency", "edit", "10")
+        self.layout_settings.addLayout(line3, 5, 0, 1, 1)
 
-        self.line_4_edit = QtWidgets.QLineEdit(self.antenna_settings)
-        self.line_4_edit.setObjectName(u"line_4_edit")
-        self.line_4_edit.setFont(self._font)
 
-        self.line_4.addWidget(self.line_4_edit)
+        line4 = self.add_line("line_4", "sub_height", "Subtsrate height", "edit", "0.254")
+        self.layout_settings.addLayout(line4, 6, 0, 1, 1)
 
-        self.gridLayout_6.addLayout(self.line_4, 9, 0, 1, 1)
+        line5 = self.add_line("line_5", "boundary", "Boundary Condition", "combo", ["None", "Radiation", "PML", "FEBI"])
+        self.layout_settings.addLayout(line5, 7, 0, 1, 1)
 
-        self.line_5 = QtWidgets.QHBoxLayout()
-        self.line_5.setObjectName(u"line_5")
-        self.line_5_label = QtWidgets.QLabel(self.antenna_settings)
-        self.line_5_label.setObjectName(u"line_5_label")
-        self.line_5_label.setFont(self._font)
+        line6 = self.add_line("line_6", "x_position", "X Position", "edit", "0.0")
+        self.layout_settings.addLayout(line6, 8, 0, 1, 1)
+        line7 = self.add_line("line_7", "x_position", "Y Position", "edit", "0.0")
+        self.layout_settings.addLayout(line7, 9, 0, 1, 1)
+        line8 = self.add_line("line_8", "x_position", "Z Position", "edit", "0.0")
+        self.layout_settings.addLayout(line8, 10, 0, 1, 1)
 
-        self.line_5.addWidget(self.line_5_label)
+        line_buttons=self.add_antenna_buttons(self.create_rectangular_probe_design)
+        self.layout_settings.addLayout(line_buttons, 13, 0, 1, 1)
 
-        self.line_5_combo = QtWidgets.QComboBox(self.antenna_settings)
-        self.line_5_combo.addItem("None")
-        self.line_5_combo.addItem("Radiation")
-        self.line_5_combo.addItem("PML")
-        self.line_5_combo.addItem("FEBI")
-        self.line_5_combo.setObjectName(u"line_5_combo")
-        self.line_5_combo.setFont(self._font)
+        bottom_spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
+                                                     QtWidgets.QSizePolicy.Expanding)
+        self.layout_settings.addItem(bottom_spacer, 14, 0, 1, 1)
 
-        self.line_5.addWidget(self.line_5_combo)
+    def on_Horn_Conical(self):
+        self.clear_antenna_settings(self.layout_settings)
 
-        self.gridLayout_6.addLayout(self.line_5, 12, 0, 1, 1)
+        top_spacer = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum,
+                                                       QtWidgets.QSizePolicy.Fixed)
 
-        self.line_buttons = QtWidgets.QHBoxLayout()
-        self.line_buttons.setObjectName(u"line_buttons")
+        self.layout_settings.addItem(top_spacer, 2, 0, 1, 1)
 
-        self.synth_button = QtWidgets.QPushButton(self.antenna_settings)
-        self.synth_button.setObjectName(u"synth_button")
-        self.synth_button.setFont(self._font)
+        image = self.add_image(os.path.join(current_path, "HornConical.jpg"))
+        self.layout_settings.addLayout(image, 0, 0, 1, 1)
 
-        self.line_buttons.addWidget(self.synth_button)
 
-        self.line_buttons_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                                                         QtWidgets.QSizePolicy.Minimum)
+        line1 = self.add_line("line_1", "antenna_name", "Antenna Name", "edit", "Patch")
+        self.layout_settings.addLayout(line1, 3, 0, 1, 1)
 
-        self.line_buttons.addItem(self.line_buttons_spacer)
 
-        self.create_button = QtWidgets.QPushButton(self.antenna_settings)
-        self.create_button.setObjectName(u"create_button")
-        self.create_button.setFont(self._font)
 
-        self.line_buttons.addWidget(self.create_button)
+        line2 = self.add_line("line_2", "frequency", "Frequency", "edit", "10")
+        self.layout_settings.addLayout(line2, 5, 0, 1, 1)
 
-        self.gridLayout_6.addLayout(self.line_buttons, 13, 0, 1, 1)
 
-        self.line_1_edit.setText("Patch_1")
-        self.line_2_label.setText("Material name")
-        self.label_9.setText("Frequency")
-        self.line_3_edit.setText("10")
-        self.antenna_image.setText("")
-        self.line_4_label.setText("Subtsrate height")
-        self.line_4_edit.setText("0.254")
-        self.line_5_label.setText("Boundary Condition")
 
-        self.synth_button.setText("Synthesis")
-        self.create_button.setText("Create Hfss Project")
+        line5 = self.add_line("line_5", "boundary", "Boundary Condition", "combo", ["None", "Radiation", "PML", "FEBI"])
+        self.layout_settings.addLayout(line5, 7, 0, 1, 1)
 
-        self.synth_button.clicked.connect(self.synth)
-        self.create_button.clicked.connect(self.create_design)
+        line6 = self.add_line("line_6", "x_position", "X Position", "edit", "0.0")
+        self.layout_settings.addLayout(line6, 8, 0, 1, 1)
+        line7 = self.add_line("line_7", "x_position", "Y Position", "edit", "0.0")
+        self.layout_settings.addLayout(line7, 9, 0, 1, 1)
+        line8 = self.add_line("line_8", "x_position", "Z Position", "edit", "0.0")
+        self.layout_settings.addLayout(line8, 10, 0, 1, 1)
 
+        line_buttons=self.add_antenna_buttons(self.create_conical_horn_design)
+        self.layout_settings.addLayout(line_buttons, 13, 0, 1, 1)
+
+        bottom_spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
+                                                     QtWidgets.QSizePolicy.Expanding)
+        self.layout_settings.addItem(bottom_spacer, 14, 0, 1, 1)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

@@ -417,7 +417,7 @@
                  </layout>
                 </item>
                 <item row="0" column="0">
-                 <widget class="QLabel" name="antenna_image_2">
+                 <widget class="ScaledLabel" name="antenna_image_2">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                     <horstretch>0</horstretch>
@@ -849,6 +849,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ScaledLabel</class>
+   <extends>QLabel</extends>
+   <header>custom_widgets</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

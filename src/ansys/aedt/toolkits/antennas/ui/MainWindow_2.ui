@@ -69,7 +69,7 @@
           <enum>QTabWidget::Triangular</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
@@ -281,7 +281,7 @@
                <property name="lineWidth">
                 <number>12</number>
                </property>
-               <layout class="QGridLayout" name="gridLayout_6"/>
+               <layout class="QGridLayout" name="layout_settings"/>
               </widget>
              </item>
              <item>
@@ -324,7 +324,7 @@
                    <item row="2" column="0">
                     <layout class="QHBoxLayout" name="horizontalLayout_16">
                      <item>
-                      <widget class="QCheckBox" name="checkBox_7">
+                      <widget class="QCheckBox" name="create_hfss_setup">
                        <property name="text">
                         <string>Create Hfss Setup</string>
                        </property>
@@ -367,7 +367,7 @@
                    <item row="3" column="0">
                     <layout class="QHBoxLayout" name="horizontalLayout_17">
                      <item>
-                      <widget class="QCheckBox" name="checkBox_9">
+                      <widget class="QCheckBox" name="lattice_pair">
                        <property name="text">
                         <string>Lattice pair</string>
                        </property>
@@ -410,7 +410,7 @@
                    <item row="0" column="0">
                     <layout class="QHBoxLayout" name="horizontalLayout_18">
                      <item>
-                      <widget class="QCheckBox" name="checkBox_10">
+                      <widget class="QCheckBox" name="huygens">
                        <property name="text">
                         <string>Huygens</string>
                        </property>
@@ -456,7 +456,7 @@
                    <item row="1" column="0">
                     <layout class="QHBoxLayout" name="horizontalLayout_19">
                      <item>
-                      <widget class="QCheckBox" name="checkBox_11">
+                      <widget class="QCheckBox" name="component_3d">
                        <property name="text">
                         <string>3D Component</string>
                        </property>
@@ -598,8 +598,27 @@
       <string>Patch</string>
      </property>
      <addaction name="actionRectangular_with_probe"/>
+     <addaction name="actionRectangular_Inset"/>
+     <addaction name="actionRectangular_Edge"/>
+     <addaction name="actionElliptical_with_Probe"/>
+     <addaction name="actionElliptical_Inset"/>
+     <addaction name="actionElliptical_Edge_2"/>
+    </widget>
+    <widget class="QMenu" name="menuHorn">
+     <property name="title">
+      <string>Horn</string>
+     </property>
+     <addaction name="actionConical"/>
+     <addaction name="actionConical_Corrugated"/>
+     <addaction name="actionElliptical"/>
+     <addaction name="actionE_Plane"/>
+     <addaction name="actionH_Plane"/>
+     <addaction name="actionPyramidal"/>
+     <addaction name="actionPyramidal_Ridged"/>
+     <addaction name="actionQuad_Ridged"/>
     </widget>
     <addaction name="menuPatch"/>
+    <addaction name="menuHorn"/>
    </widget>
    <addaction name="menuAntennas"/>
   </widget>
@@ -607,6 +626,76 @@
   <action name="actionRectangular_with_probe">
    <property name="text">
     <string>Rectangular with Probe</string>
+   </property>
+  </action>
+  <action name="actionElliptical_Edge">
+   <property name="text">
+    <string>Elliptical Edge</string>
+   </property>
+  </action>
+  <action name="actionRectangular_Inset">
+   <property name="text">
+    <string>Rectangular Inset</string>
+   </property>
+  </action>
+  <action name="actionRectangular_Edge">
+   <property name="text">
+    <string>Rectangular Edge</string>
+   </property>
+  </action>
+  <action name="actionElliptical_with_Probe">
+   <property name="text">
+    <string>Elliptical with Probe</string>
+   </property>
+  </action>
+  <action name="actionElliptical_Inset">
+   <property name="text">
+    <string>Elliptical Inset</string>
+   </property>
+  </action>
+  <action name="actionElliptical_Edge_2">
+   <property name="text">
+    <string>Elliptical Edge</string>
+   </property>
+  </action>
+  <action name="actionConical">
+   <property name="text">
+    <string>Conical</string>
+   </property>
+  </action>
+  <action name="actionConical_Corrugated">
+   <property name="text">
+    <string>Conical Corrugated</string>
+   </property>
+  </action>
+  <action name="actionElliptical">
+   <property name="text">
+    <string>Elliptical</string>
+   </property>
+  </action>
+  <action name="actionE_Plane">
+   <property name="text">
+    <string>E-Plane</string>
+   </property>
+  </action>
+  <action name="actionH_Plane">
+   <property name="text">
+    <string>H-Plane</string>
+   </property>
+  </action>
+  <action name="actionPyramidal">
+   <property name="text">
+    <string>Pyramidal</string>
+   </property>
+  </action>
+  <action name="actionPyramidal_Ridged">
+   <property name="text">
+    <string>Pyramidal Ridged</string>
+   </property>
+  </action>
+  <action name="actionQuad_Ridged">
+   <property name="text">
+    <string>Quad Ridged</string>
    </property>
   </action>
  </widget>
