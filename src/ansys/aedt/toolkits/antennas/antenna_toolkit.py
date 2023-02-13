@@ -8,11 +8,9 @@ settings.use_grpc_api = True
 import qdarkstyle
 from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
 from PySide6 import QtWidgets, QtGui, QtCore
-from PySide6.QtWidgets import QTableWidgetItem
-from PySide6.QtCore import QCoreApplication
+
 from ui.antennas_main import Ui_MainWindow
 import pyqtgraph as pg
-import time
 
 current_path = os.path.join(os.getcwd(), "ui", "images")
 os.environ["QT_API"] = "pyside6"
