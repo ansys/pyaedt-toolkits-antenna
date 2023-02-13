@@ -200,7 +200,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for param in self.parameters:
             if param in dir(self.oantenna):
                 if isinstance(self.parameters[param], QtWidgets.QComboBox):
-                    self.oantenna.__dict__[param] = self.parameters[param].currentText()
+                    self.oantenna.__setattr__(param, self.parameters[param].currentText())
                 elif isinstance(self.parameters[param], QtWidgets.QLineEdit):
                     try:
                         self.oantenna.__setattr__(param, float(self.parameters[param].text()))
