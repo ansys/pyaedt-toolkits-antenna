@@ -45,13 +45,6 @@ extensions = [
 # Intersphinx mapping
 intersphinx_mapping = {
     "python": ("https://docs.python.org/dev", None),
-    # kept here as an example
-    # "scipy": ("https://docs.scipy.org/doc/scipy/reference", None),
-    # "numpy": ("https://numpy.org/devdocs", None),
-    # "matplotlib": ("https://matplotlib.org/stable", None),
-    # "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
-    # "pyvista": ("https://docs.pyvista.org/", None),
-    # "grpc": ("https://grpc.github.io/grpc/python/", None),
 }
 
 # numpydoc configuration
