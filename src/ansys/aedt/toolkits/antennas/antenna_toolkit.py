@@ -70,11 +70,14 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         pass
 
     def launch_hfss(self):
+        """Initialize  Hfss."""
         non_graphical = self.nongraphical.isChecked()
         self.hfss = Hfss(specified_version="2022.2", non_graphical=non_graphical)
         self.add_status_bar_message("Hfss Connected.")
 
     def analyze_antenna(self):
+        """Solves current report and plots antenna results."""
+
         if not self.hfss:
             self.launch_hfss()
         num_cores = int(self.numcores.text())
@@ -143,16 +146,31 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
     def add_status_bar_message(self, message):
+        """Add a status bar message.
+
+        Parameters
+        ----------
+        message : str
+
+        """
         myStatus = QtWidgets.QStatusBar()
         myStatus.showMessage(message, 3000000)
         self.setStatusBar(myStatus)
 
     def release_and_close(self):
+        """Release Desktop."""
         if self.hfss:
             self.hfss.release_desktop(False, False)
         self.close()
 
     def get_antenna(self, antenna, synth_only=False):
+        """Synthesize and create the antenna in Hfss.
+
+        Parameters
+        ----------
+        antenna : :class:
+        synth_only : bool
+        """
         if not self.hfss:
             self.launch_hfss()
         huygens = self.huygens.isChecked()
@@ -224,12 +242,25 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.add_status_bar_message("Project created correctly.")
 
     def create_rectangular_probe_design(self, synth_only=False):
+        """Create a rectangular probe patch.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
         self.get_antenna(RectangularPatchProbe, synth_only)
 
     def create_conical_horn_design(self, synth_only=False):
+        """Create a conical horn antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
         self.get_antenna(RectangularPatchProbe, synth_only)
 
-    def closeEvent(self, event):  # Use if the main window is closed by the user
+    def closeEvent(self, event):
+        """Close UI."""
         close = QtWidgets.QMessageBox.question(
             self, "QUIT", "Confirm quit?", QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No
         )
@@ -240,6 +271,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             event.ignore()
 
     def clear_antenna_settings(self, layout):
+        """Clear all antenna settings."""
         for i in reversed(range(layout.count())):
             item = layout.itemAt(i)
             if isinstance(item, QtWidgets.QWidgetItem):
@@ -257,6 +289,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.parameters = {}
 
     def add_line(self, title, variable_value, label_value, line_type, value):
+        """Add a new parameter to antenna settings."""
         self.__dict__[title] = QtWidgets.QHBoxLayout()
         line = self.__dict__[title]
         line.setObjectName(title)
@@ -291,6 +324,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return line
 
     def add_image(self, image_path):
+        """Add the image to antenna settings."""
         line_0 = QtWidgets.QHBoxLayout()
         line_0.setObjectName("line_0")
 
@@ -322,6 +356,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return line_0
 
     def add_antenna_buttons(self, method_create):
+        """Add create buttons to antenna settings."""
         line_buttons = QtWidgets.QHBoxLayout()
         line_buttons.setObjectName("line_buttons")
 
@@ -350,6 +385,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return line_buttons
 
     def on_Rect_Patch_w_probe_selected(self):
+        """Create Rectangular Patch UI."""
         self.clear_antenna_settings(self.layout_settings)
 
         top_spacer = QtWidgets.QSpacerItem(
@@ -404,6 +440,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.layout_settings.addItem(bottom_spacer, 14, 0, 1, 1)
 
     def on_Horn_Conical(self):
+        """Create Conical Horn UI."""
         self.clear_antenna_settings(self.layout_settings)
 
         top_spacer = QtWidgets.QSpacerItem(
