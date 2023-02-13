@@ -17,7 +17,7 @@ class TestClass(BasisTest, object):
 
     def test_01_rectangular_patch_probe(self):
         self.aedtapp.design_name = "myname"
-        opatch1 = self.aedtapp.add_from_toolkit(RectangularPatchProbe, frequency=1.0)
+        opatch1 = self.aedtapp.add_from_toolkit(RectangularPatchProbe, draw=True, frequency=1.0)
         assert opatch1
         assert opatch1.object_list
         for comp in opatch1.object_list.values():

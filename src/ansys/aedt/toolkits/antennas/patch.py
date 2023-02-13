@@ -115,21 +115,15 @@ class RectangularPatchProbe(CommonPatch):
 
     Returns
     -------
-    :class:`pyaedt.toolkits.antennas.CommonAntenna` and
-    :class:`pyaedt.modules.Boundary.CommonPatch`
-            Rectangular patch with probe object.
+    :class:`aedt.toolkits.antennas.RectangularPatchProbe`
+            Patch antenna object.
 
     Examples
     --------
     >>> from pyaedt import Hfss
+    >>> from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
     >>> hfss = Hfss()
-    >>> patch = hfss.antennas.rectangular_patch_w_probe(frequency=20.0, frequency_unit="GHz",
-    ...                                                 material="Duroid (tm)",
-    ...                                                 outer_boundary=None,
-    ...                                                 huygens_box=True, substrate_height=0.16,
-    ...                                                 length_unit="cm", coordinate_system="CS1",
-    ...                                                 antenna_name="Antenna_Samuel",
-    ...                                                 origin=[1, 100, 50])
+    >>> patch = hfss.add_from_toolkit(RectangularPatchProbe, frequency=20.0, frequency_unit="GHz")
     """
 
     def __init__(self, *args, **kwargs):
@@ -162,7 +156,6 @@ class RectangularPatchProbe(CommonPatch):
     def draw(self):
         """Draw rectangular patch antenna.
         Once the antenna is created, this method will not be used."""
-
         if self.object_list:
             self._app.logger.warning("This antenna already exists")
             return False
