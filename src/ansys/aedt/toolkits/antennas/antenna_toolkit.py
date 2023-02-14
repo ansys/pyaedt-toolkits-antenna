@@ -639,7 +639,6 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.layout_settings.addLayout(line9, 11, 0, 1, 1)
         line_buttons = self.add_antenna_buttons(method_name)
         self.layout_settings.addLayout(line_buttons, 13, 0, 1, 1)
-
         bottom_spacer = QtWidgets.QSpacerItem(
             20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
         )
