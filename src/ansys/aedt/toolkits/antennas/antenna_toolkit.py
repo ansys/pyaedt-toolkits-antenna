@@ -6,8 +6,10 @@ import sys
 from PySide6 import QtCore
 from PySide6 import QtGui
 from PySide6 import QtWidgets
+import psutil
 from pyaedt import Hfss
 from pyaedt import settings
+from pyaedt.misc import list_installed_ansysem
 import pyqtgraph as pg
 import qdarkstyle
 
@@ -17,6 +19,102 @@ from ansys.aedt.toolkits.antennas.ui.antennas_main import Ui_MainWindow
 settings.use_grpc_api = False
 current_path = os.path.join(os.getcwd(), "ui", "images")
 os.environ["QT_API"] = "pyside6"
+
+import logging
+
+logger = logging.getLogger("Global")
+
+
+class QtHandler(logging.Handler):
+    def __init__(self):
+        logging.Handler.__init__(self)
+
+    def emit(self, record):
+        record = self.format(record)
+        XStream.stdout().write("{}\n".format(record))
+
+
+handler = QtHandler()
+handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
+logger.addHandler(handler)
+
+
+def active_sessions(version=None):
+    """Get information for the active COM AEDT sessions.
+
+    Parameters
+    ----------
+    version : str, optional
+        Version to check. The default is ``None``, in which case all versions are checked.
+        When specifying a version, you can use a three-digit format like ``"222"`` or a
+        five-digit format like ``"2022.2"``.
+
+
+    Returns
+    -------
+    list
+        List of AEDT PIDs.
+    """
+    keys = ["ansysedt.exe"]
+    if version and "." in version:
+        version = version[-4:].replace(".", "")
+    if version < "222":
+        version = version[:2] + "." + version[2]
+    sessions = []
+    for p in psutil.process_iter():
+        try:
+            if p.name() in keys:
+                cmd = p.cmdline()
+                if not version or (version and version in cmd[0]):
+                    if "-grpcsrv" in cmd:
+                        if not version or (version and version in cmd[0]):
+                            sessions.append(
+                                [
+                                    p.pid,
+                                    int(cmd[cmd.index("-grpcsrv") + 1]),
+                                ]
+                            )
+                    else:
+                        sessions.append(
+                            [
+                                p.pid,
+                                -1,
+                            ]
+                        )
+        except:
+            pass
+    return sessions
+
+
+class XStream(QtCore.QObject):
+    _stdout = None
+    _stderr = None
+
+    messageWritten = QtCore.Signal(str)
+
+    def flush(self):
+        pass
+
+    def fileno(self):
+        return -1
+
+    def write(self, msg):
+        if not self.signalsBlocked():
+            self.messageWritten.emit(msg)
+
+    @staticmethod
+    def stdout():
+        if not XStream._stdout:
+            XStream._stdout = XStream()
+            sys.stdout = XStream._stdout
+        return XStream._stdout
+
+    @staticmethod
+    def stderr():
+        if not XStream._stderr:
+            XStream._stderr = XStream()
+            sys.stderr = XStream._stderr
+        return XStream._stderr
 
 
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -31,7 +129,6 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeMode.Stretch)
         self.setStyleSheet(qdarkstyle.load_stylesheet(qt_api="pyside6"))
-
         icon = QtGui.QIcon()
         icon.addFile(
             os.path.join(current_path, "logo_cropped.png"),
@@ -67,12 +164,79 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         sizePolicy_antenna.setHeightForWidth(self.antenna_settings.sizePolicy().hasHeightForWidth())
         self.antenna_settings.setSizePolicy(sizePolicy_antenna)
         self.splitter_2.setSizePolicy(sizePolicy_antenna)
+        for ver in list_installed_ansysem():
+            ver = "20{}.{}".format(
+                ver.replace("ANSYSEM_ROOT", "")[:2], ver.replace("ANSYSEM_ROOT", "")[-1]
+            )
+            self.aedt_version_combo.addItem(ver)
+        self.aedt_version_combo.currentTextChanged.connect(self.find_process_ids)
+        self.use_grpc_combo.currentTextChanged.connect(self.find_process_ids)
+        self.browse_project.clicked.connect(self.browse_for_project)
+        XStream.stdout().messageWritten.connect(self.log_text.insertPlainText)
+        XStream.stderr().messageWritten.connect(self.log_text.insertPlainText)
         pass
+
+    def add_logger_item(self):
+        pass
+
+    def browse_for_project(self):
+        dialog = QtWidgets.QFileDialog()
+        dialog.setOption(QtWidgets.QFileDialog.DontUseNativeDialog, True)
+        dialog.setFileMode(QtWidgets.QFileDialog.FileMode.AnyFile)
+        dialog.setOption(QtWidgets.QFileDialog.Option.DontConfirmOverwrite, True)
+        dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
+        fileName, _ = dialog.getOpenFileName(
+            self,
+            "Open or create new aedt file",
+            "",
+            "Aedt Files (*.aedt)",
+        )
+        if fileName:
+            self.project_name.setText(fileName)
+
+    def find_process_ids(self):
+        self.process_id_combo.clear()
+        self.process_id_combo.addItem("Create New Session")
+        sessions = active_sessions(version=self.aedt_version_combo.currentText())
+        for session in sessions:
+            if session[1] == -1:
+                self.process_id_combo.addItem("Process {}".format(session[0], session[1]))
+            else:
+                self.process_id_combo.addItem(
+                    "Process {} on Grpc {}".format(session[0], session[1])
+                )
 
     def launch_hfss(self):
         """Initialize  Hfss."""
-        non_graphical = self.nongraphical.isChecked()
-        self.hfss = Hfss(specified_version="2022.2", non_graphical=non_graphical)
+
+        non_graphical = eval(self.non_graphical_combo.currentText())
+        version = self.aedt_version_combo.currentText()
+        settings.use_grpc_api = eval(self.use_grpc_combo.currentText())
+        selected_process = self.process_id_combo.currentText()
+        projectname = self.project_name.text()
+        process_id_combo_splitted = selected_process.split(" ")
+        if selected_process == "Create New Session":
+            self.hfss = Hfss(
+                projectname=projectname,
+                specified_version=version,
+                non_graphical=non_graphical,
+                new_desktop_session=True,
+            )
+        elif len(process_id_combo_splitted) == 5:
+            self.hfss = Hfss(
+                projectname=projectname,
+                specified_version=version,
+                non_graphical=non_graphical,
+                port=int(process_id_combo_splitted[-1]),
+            )
+        else:
+            self.hfss = Hfss(
+                projectname=projectname,
+                specified_version=version,
+                non_graphical=non_graphical,
+                aedt_process_id=int(process_id_combo_splitted[1]),
+            )
+
         self.add_status_bar_message("Hfss Connected.")
 
     def analyze_antenna(self):
