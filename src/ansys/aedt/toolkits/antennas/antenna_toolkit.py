@@ -23,6 +23,7 @@ os.environ["QT_API"] = "pyside6"
 import logging
 
 logger = logging.getLogger("Global")
+line_colors = ["r", "g", "b", "y", "w"]
 
 
 class QtHandler(logging.Handler):
@@ -174,10 +175,26 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.browse_project.clicked.connect(self.browse_for_project)
         XStream.stdout().messageWritten.connect(self.log_text.insertPlainText)
         XStream.stderr().messageWritten.connect(self.log_text.insertPlainText)
-        pass
+        self.find_process_ids()
+        self.antenna1widget = None
+        self.antenna2widget = None
+        self.touchstone_graph = None
+        self.color = -1
 
-    def add_logger_item(self):
-        pass
+    def update_project(self):
+        sel = self.property_table.selectedItems()
+        if sel and self.oantenna:
+            key = (
+                self.property_table.item(self.property_table.row(sel[0]), 0).text()
+                + "_"
+                + self.oantenna.antenna_name
+            )
+            val = self.property_table.item(self.property_table.row(sel[0]), 1).text()
+        else:
+            return
+        if self.hfss and sel and key in self.hfss.variable_manager.independent_variable_names:
+            self.hfss[key] = val
+            self.hfss.logger.info("Key {} updated to value {}.".format(key, val))
 
     def browse_for_project(self):
         dialog = QtWidgets.QFileDialog()
@@ -241,32 +258,40 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def analyze_antenna(self):
         """Solves current report and plots antenna results."""
-
+        self.color += 1
+        if self.color == 5:
+            self.color = 0
+        name = "Simulation {}".format(self.color)
         if not self.hfss:
             self.launch_hfss()
         num_cores = int(self.numcores.text())
         self.hfss.analyze_nominal(num_cores)
+
         sol_data = self.hfss.post.get_solution_data()
-        self.graphWidget = pg.PlotWidget()
+        if not sol_data:
+            return
+        if not self.touchstone_graph:
+            self.touchstone_graph = pg.PlotWidget()
+            self.results.addWidget(self.touchstone_graph)
         freq = sol_data.primary_sweep_values
         val = sol_data.data_db20()
         # plot data: x, y values
-        self.results.addWidget(self.graphWidget)
-        self.graphWidget.plot(
+        self.touchstone_graph.plot(
             freq,
             val,
+            pen=line_colors[self.color],
+            name=name,
         )
-        self.graphWidget.setTitle("Scattering Plot")
-        self.graphWidget.setLabel(
+        self.touchstone_graph.setTitle("Scattering Plot")
+        self.touchstone_graph.setLabel(
             "bottom",
             "Frequency GHz",
         )
-        self.graphWidget.setLabel(
+        self.touchstone_graph.setLabel(
             "left",
             "Value in dB",
         )
 
-        self.antenna1widget = pg.PlotWidget()
         self.field_solution = self.hfss.post.get_solution_data(
             "GainTotal",
             self.hfss.nominal_adaptive,
@@ -274,24 +299,33 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             context="3D",
             report_category="Far Fields",
         )
-        line = self.add_line(
-            "combo_phi",
-            "combo_phi_box",
-            "Phi",
-            "combo",
-            self.field_solution.intrinsics["Phi"],
-        )
-        self.checked_overlap_1 = QtWidgets.QCheckBox()
-        self.checked_overlap_1.setObjectName("checked_overlap_1")
-        self.checked_overlap_1.setChecked(True)
-        self.checked_overlap_1.setText("Overlap Plot")
-        line.addWidget(self.checked_overlap_1)
-        self.results.addLayout(line)
+
+        if not self.antenna1widget:
+            self.antenna1widget = pg.PlotWidget()
+            line = self.add_line(
+                "combo_phi",
+                "combo_phi_box",
+                "Phi",
+                "combo",
+                self.field_solution.intrinsics["Phi"],
+            )
+            self.checked_overlap_1 = QtWidgets.QCheckBox()
+            self.checked_overlap_1.setObjectName("checked_overlap_1")
+            self.checked_overlap_1.setChecked(True)
+            self.checked_overlap_1.setText("Overlap Plot")
+            line.addWidget(self.checked_overlap_1)
+            self.results.addLayout(line)
+            self.results.addWidget(self.antenna1widget)
+
         theta = self.field_solution.primary_sweep_values
         val = self.field_solution.data_db20()
         # plot data: x, y values
-        self.results.addWidget(self.antenna1widget)
-        self.antenna1widget.plot(theta, val)
+        self.antenna1widget.plot(
+            theta,
+            val,
+            pen=line_colors[self.color],
+            name=name,
+        )
         self.antenna1widget.setTitle(
             "Realized gain at Phi {}".format(self.field_solution.intrinsics["Phi"][0])
         )
@@ -303,27 +337,34 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "bottom",
             "Theta",
         )
-        line2 = self.add_line(
-            "combo_theta",
-            "combo_theta_box",
-            "Theta",
-            "combo",
-            self.field_solution.intrinsics["Theta"],
-        )
-        self.checked_overlap_2 = QtWidgets.QCheckBox()
-        self.checked_overlap_2.setObjectName("checked_overlap_2")
-        self.checked_overlap_2.setChecked(True)
-        self.checked_overlap_2.setText("Overlap Plot")
-        line2.addWidget(self.checked_overlap_2)
-        self.results.addLayout(line2)
+        if not self.antenna2widget:
+            line2 = self.add_line(
+                "combo_theta",
+                "combo_theta_box",
+                "Theta",
+                "combo",
+                self.field_solution.intrinsics["Theta"],
+            )
+            self.checked_overlap_2 = QtWidgets.QCheckBox()
+            self.checked_overlap_2.setObjectName("checked_overlap_2")
+            self.checked_overlap_2.setChecked(True)
+            self.checked_overlap_2.setText("Overlap Plot")
+            line2.addWidget(self.checked_overlap_2)
+            self.results.addLayout(line2)
 
-        self.antenna2widget = pg.PlotWidget()
+            self.antenna2widget = pg.PlotWidget()
+            self.results.addWidget(self.antenna2widget)
+
         self.field_solution.primary_sweep = "Phi"
         phi = self.field_solution.primary_sweep_values
         val = self.field_solution.data_db20()
         # plot data: x, y values
-        self.results.addWidget(self.antenna2widget)
-        self.antenna2widget.plot(phi, val)
+        self.antenna2widget.plot(
+            phi,
+            val,
+            pen=line_colors[self.color],
+            name=name,
+        )
         self.antenna2widget.setTitle(
             "Realized gain at Theta {}".format(self.field_solution.intrinsics["Theta"][0])
         )
@@ -348,7 +389,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # plot data: x, y values
             if not self.checked_overlap_1.isChecked():
                 self.antenna1widget.clear()
-            self.antenna1widget.plot(theta, val)
+            self.antenna1widget.plot(theta, val, pen=line_colors[self.color])
         except:
             pass
 
@@ -363,7 +404,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             val = self.field_solution.data_db20()
             if not self.checked_overlap_2.isChecked():
                 self.antenna2widget.clear()
-            self.antenna2widget.plot(phi, val)
+            self.antenna2widget.plot(phi, val, pen=line_colors[self.color])
         except:
             pass
 
@@ -382,7 +423,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def release_and_close(self):
         """Release Desktop."""
         if self.hfss:
-            self.hfss.release_desktop(False, False)
+            if settings.non_graphical:
+                self.hfss.release_desktop(True, True)
+            else:
+                self.hfss.release_desktop(False, False)
         self.close()
 
     def get_antenna(self, antenna, synth_only=False):
@@ -393,6 +437,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         antenna : :class:
         synth_only : bool
         """
+        self.property_table.itemChanged.connect(None)
+
         if not self.hfss:
             self.launch_hfss()
         huygens = self.huygens.isChecked()
@@ -462,6 +508,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.add_status_bar_message("Synthesis completed.")
         else:
             self.add_status_bar_message("Project created correctly.")
+        self.property_table.itemChanged.connect(self.update_project)
 
     def closeEvent(self, event):
         """Close UI."""
