@@ -267,20 +267,33 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         self.antenna1widget = pg.PlotWidget()
-        solution = self.hfss.post.get_solution_data(
+        self.field_solution = self.hfss.post.get_solution_data(
             "GainTotal",
             self.hfss.nominal_adaptive,
             primary_sweep_variable="Theta",
             context="3D",
             report_category="Far Fields",
         )
-        theta = solution.primary_sweep_values
-        val = solution.data_db20()
+        line = self.add_line(
+            "combo_phi",
+            "combo_phi_box",
+            "Phi",
+            "combo",
+            self.field_solution.intrinsics["Phi"],
+        )
+        self.checked_overlap_1 = QtWidgets.QCheckBox()
+        self.checked_overlap_1.setObjectName("checked_overlap_1")
+        self.checked_overlap_1.setChecked(True)
+        self.checked_overlap_1.setText("Overlap Plot")
+        line.addWidget(self.checked_overlap_1)
+        self.results.addLayout(line)
+        theta = self.field_solution.primary_sweep_values
+        val = self.field_solution.data_db20()
         # plot data: x, y values
         self.results.addWidget(self.antenna1widget)
         self.antenna1widget.plot(theta, val)
         self.antenna1widget.setTitle(
-            "Realized gain at Phi {}".format(solution.intrinsics["Phi"][0])
+            "Realized gain at Phi {}".format(self.field_solution.intrinsics["Phi"][0])
         )
         self.antenna1widget.setLabel(
             "left",
@@ -290,15 +303,29 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "bottom",
             "Theta",
         )
+        line2 = self.add_line(
+            "combo_theta",
+            "combo_theta_box",
+            "Theta",
+            "combo",
+            self.field_solution.intrinsics["Theta"],
+        )
+        self.checked_overlap_2 = QtWidgets.QCheckBox()
+        self.checked_overlap_2.setObjectName("checked_overlap_2")
+        self.checked_overlap_2.setChecked(True)
+        self.checked_overlap_2.setText("Overlap Plot")
+        line2.addWidget(self.checked_overlap_2)
+        self.results.addLayout(line2)
+
         self.antenna2widget = pg.PlotWidget()
-        solution.primary_sweep = "Phi"
-        phi = solution.primary_sweep_values
-        val = solution.data_db20()
+        self.field_solution.primary_sweep = "Phi"
+        phi = self.field_solution.primary_sweep_values
+        val = self.field_solution.data_db20()
         # plot data: x, y values
         self.results.addWidget(self.antenna2widget)
         self.antenna2widget.plot(phi, val)
         self.antenna2widget.setTitle(
-            "Realized gain at Theta {}".format(solution.intrinsics["Theta"][0])
+            "Realized gain at Theta {}".format(self.field_solution.intrinsics["Theta"][0])
         )
         self.antenna2widget.setLabel(
             "left",
@@ -308,6 +335,37 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "bottom",
             "Phi",
         )
+        self.combo_phi_box.currentTextChanged.connect(self.update_phi)
+        self.combo_theta_box.currentTextChanged.connect(self.update_theta)
+
+    def update_phi(self):
+        """Update Gain Total Plot by changing the Phi value."""
+        try:
+            self.field_solution.primary_sweep = "Theta"
+            theta = self.field_solution.primary_sweep_values
+            self.field_solution.active_intrinsic["Phi"] = float(self.combo_phi_box.currentText())
+            val = self.field_solution.data_db20()
+            # plot data: x, y values
+            if not self.checked_overlap_1.isChecked():
+                self.antenna1widget.clear()
+            self.antenna1widget.plot(theta, val)
+        except:
+            pass
+
+    def update_theta(self):
+        """Update Gain Total Plot by changing the Theta value."""
+        try:
+            self.field_solution.primary_sweep = "Phi"
+            phi = self.field_solution.primary_sweep_values
+            self.field_solution.active_intrinsic["Theta"] = float(
+                self.combo_theta_box.currentText()
+            )
+            val = self.field_solution.data_db20()
+            if not self.checked_overlap_2.isChecked():
+                self.antenna2widget.clear()
+            self.antenna2widget.plot(phi, val)
+        except:
+            pass
 
     def add_status_bar_message(self, message):
         """Add a status bar message.
@@ -452,7 +510,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             layout.removeItem(item)
         self.parameters = {}
 
-    def add_line(self, title, variable_value, label_value, line_type, value):
+    def add_line(self, title, variable_value, label_value, line_type, value, add_paramers=True):
         """Add a new parameter to antenna settings."""
         self.__dict__[title] = QtWidgets.QHBoxLayout()
         line = self.__dict__[title]
@@ -464,7 +522,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         label.setText(label_value)
         label.setFont(self._font)
         spacer = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+            40, 20, QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum
         )
         line.addItem(spacer)
         if line_type == "edit":
@@ -474,6 +532,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             edit.setObjectName(name)
             edit.setFont(self._font)
             edit.setText(value)
+            edit.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight)
             line.addWidget(edit)
         elif line_type == "combo":
             name = "{}".format(variable_value)
@@ -482,9 +541,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             edit.setObjectName(name)
             edit.setFont(self._font)
             for v in value:
-                edit.addItem(v)
+                edit.addItem(str(v))
+
             line.addWidget(edit)
-        self.parameters[name] = edit
+        if add_paramers:
+            self.parameters[name] = edit
         return line
 
     def add_image(self, image_path):
@@ -527,18 +588,18 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         synth_button = QtWidgets.QPushButton()
         synth_button.setObjectName("synth_button")
         synth_button.setFont(self._font)
+        synth_button.setMinimumSize(QtCore.QSize(100, 40))
 
         line_buttons.addWidget(synth_button)
 
         line_buttons_spacer = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-
         line_buttons.addItem(line_buttons_spacer)
-
         create_button = QtWidgets.QPushButton()
         create_button.setObjectName("create_button")
         create_button.setFont(self._font)
+        create_button.setMinimumSize(QtCore.QSize(160, 40))
 
         line_buttons.addWidget(create_button)
 
@@ -550,19 +611,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def on_Rect_Patch_w_probe_selected(self):
         """Create Rectangular Patch UI."""
-        self.clear_antenna_settings(self.layout_settings)
-
-        top_spacer = QtWidgets.QSpacerItem(
-            20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
-
-        self.layout_settings.addItem(top_spacer, 2, 0, 1, 1)
-
-        image = self.add_image(os.path.join(current_path, "Patch.png"))
-        self.layout_settings.addLayout(image, 0, 0, 1, 1)
-
-        line1 = self.add_line("line_1", "antenna_name", "Antenna Name", "edit", "Patch")
-        self.layout_settings.addLayout(line1, 3, 0, 1, 1)
+        self._add_header("Patch.png", "RectangularPatch", "10")
 
         line2 = self.add_line(
             "line_2",
@@ -571,40 +620,22 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "combo",
             ["FR4_epoxy", "teflon_based", "Rogers RT/duroid 6002 (tm)"],
         )
-        self.layout_settings.addLayout(line2, 4, 0, 1, 1)
-
-        line3 = self.add_line("line_3", "frequency", "Frequency", "edit", "10")
-        self.layout_settings.addLayout(line3, 5, 0, 1, 1)
+        self.layout_settings.addLayout(line2, 5, 0, 1, 1)
 
         line4 = self.add_line("line_4", "substrate_height", "Subtsrate height", "edit", "0.254")
         self.layout_settings.addLayout(line4, 6, 0, 1, 1)
 
-        line5 = self.add_line(
-            "line_5",
-            "boundary",
-            "Boundary Condition",
-            "combo",
-            ["Radiation", "PML", "FEBI", "None"],
-        )
-        self.layout_settings.addLayout(line5, 7, 0, 1, 1)
-
-        line6 = self.add_line("line_6", "x_position", "Origin X Position", "edit", "0.0")
-        self.layout_settings.addLayout(line6, 8, 0, 1, 1)
-        line7 = self.add_line("line_7", "y_position", "Origin Y Position", "edit", "0.0")
-        self.layout_settings.addLayout(line7, 9, 0, 1, 1)
-        line8 = self.add_line("line_8", "z_position", "Origin Z Position", "edit", "0.0")
-        self.layout_settings.addLayout(line8, 10, 0, 1, 1)
-
-        line_buttons = self.add_antenna_buttons(self.create_rectangular_probe_design)
-        self.layout_settings.addLayout(line_buttons, 13, 0, 1, 1)
-
-        bottom_spacer = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
-        self.layout_settings.addItem(bottom_spacer, 14, 0, 1, 1)
+        self._add_footer()
 
     def on_Horn_Conical(self):
         """Create Conical Horn UI."""
+
+        self._add_header("HornConical.jpg", "HornConical", "10")
+
+        self._add_footer()
+
+    def _add_header(self, image_name, antenna_name, frequency):
+        self.tabWidget.setCurrentIndex(1)
         self.clear_antenna_settings(self.layout_settings)
 
         top_spacer = QtWidgets.QSpacerItem(
@@ -613,15 +644,16 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.layout_settings.addItem(top_spacer, 2, 0, 1, 1)
 
-        image = self.add_image(os.path.join(current_path, "HornConical.jpg"))
+        image = self.add_image(os.path.join(current_path, image_name))
         self.layout_settings.addLayout(image, 0, 0, 1, 1)
 
-        line1 = self.add_line("line_1", "antenna_name", "Antenna Name", "edit", "Patch")
+        line1 = self.add_line("line_1", "antenna_name", "Antenna Name", "edit", antenna_name)
         self.layout_settings.addLayout(line1, 3, 0, 1, 1)
 
-        line2 = self.add_line("line_2", "frequency", "Frequency", "edit", "10")
-        self.layout_settings.addLayout(line2, 5, 0, 1, 1)
+        line2 = self.add_line("line_2", "frequency", "Frequency", "edit", str(frequency))
+        self.layout_settings.addLayout(line2, 4, 0, 1, 1)
 
+    def _add_footer(self):
         line5 = self.add_line(
             "line_5",
             "boundary",
@@ -635,14 +667,19 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             ],
         )
         self.layout_settings.addLayout(line5, 7, 0, 1, 1)
-
         line6 = self.add_line("line_6", "x_position", "Origin X Position", "edit", "0.0")
         self.layout_settings.addLayout(line6, 8, 0, 1, 1)
         line7 = self.add_line("line_7", "y_position", "Origin Y Position", "edit", "0.0")
         self.layout_settings.addLayout(line7, 9, 0, 1, 1)
         line8 = self.add_line("line_8", "z_position", "Origin Z Position", "edit", "0.0")
         self.layout_settings.addLayout(line8, 10, 0, 1, 1)
-
+        line9 = self.add_line(
+            "line_9", "coordinate_system", "Coordinate System", "combo", ["Global"]
+        )
+        if self.hfss:
+            for cs in self.hfss.modeler.coordinate_systems:
+                self.coordinate_system.addItem(cs.name)
+        self.layout_settings.addLayout(line9, 11, 0, 1, 1)
         line_buttons = self.add_antenna_buttons(self.create_conical_horn_design)
         self.layout_settings.addLayout(line_buttons, 13, 0, 1, 1)
 

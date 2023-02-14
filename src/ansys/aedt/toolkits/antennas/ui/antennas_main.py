@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'antenna_toolkitZDbskx.ui'
+## Form generated from reading UI file 'antenna_toolkititGQko.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.2
 ##
@@ -78,11 +78,13 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.connect_hfss = QPushButton(self.widget)
         self.connect_hfss.setObjectName(u"connect_hfss")
+        self.connect_hfss.setMinimumSize(QSize(100, 40))
 
         self.gridLayout.addWidget(self.connect_hfss, 3, 0, 1, 1)
 
         self.closeButton = QPushButton(self.widget)
         self.closeButton.setObjectName(u"closeButton")
+        self.closeButton.setMinimumSize(QSize(100, 40))
 
         self.gridLayout.addWidget(self.closeButton, 3, 2, 1, 1)
 
@@ -249,6 +251,7 @@ class Ui_MainWindow(object):
 
         self.browse_project = QPushButton(self.tab)
         self.browse_project.setObjectName(u"browse_project")
+        self.browse_project.setMinimumSize(QSize(120, 40))
 
         self.horizontalLayout_5.addWidget(self.browse_project)
 
@@ -419,6 +422,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.pushButton_5 = QPushButton(self.analysis)
         self.pushButton_5.setObjectName(u"pushButton_5")
+        self.pushButton_5.setMinimumSize(QSize(0, 40))
 
         self.verticalLayout_3.addWidget(self.pushButton_5)
 
@@ -487,7 +491,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.frequnits.setCurrentIndex(3)
         self.units.setCurrentIndex(1)
 
