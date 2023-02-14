@@ -183,7 +183,7 @@ class ConicalHorn(CommonHorn):
             name="wg_inner_" + self.antenna_name,
             matname="vacuum",
         )
-        wall.history.props["Coordinate System"] = self.coordinate_system
+        wg_in.history.props["Coordinate System"] = self.coordinate_system
 
         # Cap
         cap = self._app.modeler.create_cylinder(
@@ -330,8 +330,11 @@ class ConicalHorn(CommonHorn):
         if self._app.solution_type != "Modal":
             self._app.logger.warning("Solution type must be Modal to define the excitation")
 
+        terminal_references = None
+        if self._app.solution_type == "Terminal":
+            terminal_references = cap.name
         port1 = self._app.create_wave_port_from_sheet(
-            sheet=p1, portname="port_" + self.antenna_name
+            sheet=p1, portname="port_" + self.antenna_name, terminal_references=terminal_references
         )
         self.excitations[port1.name] = port1
         return True
