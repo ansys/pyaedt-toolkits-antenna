@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'antenna_toolkititGQko.ui'
+## Form generated from reading UI file 'antenna_toolkitqoZmKr.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.2
 ##
@@ -19,9 +19,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
     QGridLayout, QHBoxLayout, QHeaderView, QLabel,
     QLineEdit, QMainWindow, QMenu, QMenuBar,
-    QPlainTextEdit, QPushButton, QSizePolicy, QSpacerItem,
-    QSplitter, QStatusBar, QTabWidget, QTableWidget,
-    QTableWidgetItem, QVBoxLayout, QWidget)
+    QPlainTextEdit, QProgressBar, QPushButton, QSizePolicy,
+    QSpacerItem, QSplitter, QStatusBar, QTabWidget,
+    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -202,6 +202,7 @@ class Ui_MainWindow(object):
         self.use_grpc_combo.addItem("")
         self.use_grpc_combo.addItem("")
         self.use_grpc_combo.setObjectName(u"use_grpc_combo")
+        self.use_grpc_combo.setLayoutDirection(Qt.LeftToRight)
 
         self.horizontalLayout_2.addWidget(self.use_grpc_combo)
 
@@ -456,6 +457,13 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.log_text)
 
+        self.progressBar = QProgressBar(self.centralwidget)
+        self.progressBar.setObjectName(u"progressBar")
+        self.progressBar.setLayoutDirection(Qt.LeftToRight)
+        self.progressBar.setValue(0)
+
+        self.verticalLayout.addWidget(self.progressBar)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -491,7 +499,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         self.frequnits.setCurrentIndex(3)
         self.units.setCurrentIndex(1)
 

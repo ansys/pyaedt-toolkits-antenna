@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-
 import os
 import sys
+import time
 
 from PySide6 import QtCore
 from PySide6 import QtGui
@@ -24,6 +24,90 @@ import logging
 
 logger = logging.getLogger("Global")
 line_colors = ["r", "g", "b", "y", "w"]
+
+
+class RunnerSignals(QtCore.QObject):
+    progressed = QtCore.Signal(int)
+    messaged = QtCore.Signal(str)
+    completed = QtCore.Signal()
+
+
+class RunnerHfss(QtCore.QRunnable):
+    def __init__(self):
+        super(RunnerHfss, self).__init__()
+        self.signals = RunnerSignals()
+        self.hfss_args = {
+            "non_graphical": False,
+            "version": "2023.2",
+            "selected_process": "Create New Session",
+            "projectname": None,
+            "process_id_combo_splitted": [],
+        }
+
+    def run(self):
+        self.signals.progressed.emit(int(25))
+        self.signals.messaged.emit(str(25))
+        selected_prcoess = self.hfss_args["selected_process"]
+        projectname = self.hfss_args["projectname"]
+        version = self.hfss_args["version"]
+        non_graphical = self.hfss_args["non_graphical"]
+        process_id_combo_splitted = self.hfss_args["process_id_combo_splitted"]
+        self.signals.progressed.emit(int(50))
+        if selected_prcoess == "Create New Session":
+            self.hfss = Hfss(
+                projectname=projectname,
+                specified_version=version,
+                non_graphical=non_graphical,
+                new_desktop_session=True,
+            )
+        elif len(process_id_combo_splitted) == 5:
+            self.hfss = Hfss(
+                projectname=projectname,
+                specified_version=version,
+                non_graphical=non_graphical,
+                port=int(process_id_combo_splitted[-1]),
+            )
+        else:
+            self.hfss = Hfss(
+                projectname=projectname,
+                specified_version=version,
+                non_graphical=non_graphical,
+                aedt_process_id=int(process_id_combo_splitted[1]),
+            )
+        if "non_graphical" in self.hfss_args:
+            if not settings.use_grpc_api:
+                self.pid = self.hfss.odesktop.GetProcessID()
+                self.projectname = self.hfss.project_name
+                self.designname = self.hfss.design_name
+                self.hfss.release_desktop(False, False)
+            else:
+                self.pid = -1
+        time.sleep(5)
+        self.signals.completed.emit()
+
+
+class RunnerAnalsysis(QtCore.QRunnable):
+    def __init__(self):
+        super(RunnerAnalsysis, self).__init__()
+        self.signals = RunnerSignals()
+        self.logger_file = ""
+        self.lines = []
+
+    def run(self):
+        finished = False
+        while not finished:
+            with open(self.logger_file, "r") as f:
+                lines = f.readlines()
+                if len(lines) > len(self.lines):
+                    for line in lines[len(self.lines) :]:
+                        line_str = line.strip()
+                        if line_str:
+                            self.signals.messaged.emit(line.strip())
+                            if "Stopping Batch Run" in line:
+                                finished = True
+                                self.signals.completed.emit()
+                    self.lines.extend(lines[len(self.lines) :])
+                time.sleep(3)
 
 
 class QtHandler(logging.Handler):
@@ -121,6 +205,8 @@ class XStream(QtCore.QObject):
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(ApplicationWindow, self).__init__()
+        self.__thread = QtCore.QThreadPool()
+        self.__thread.setMaxThreadCount(4)
         self.parameters = {}
         self.setupUi(self)
         self._font = QtGui.QFont()
@@ -173,13 +259,23 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.aedt_version_combo.currentTextChanged.connect(self.find_process_ids)
         self.use_grpc_combo.currentTextChanged.connect(self.find_process_ids)
         self.browse_project.clicked.connect(self.browse_for_project)
-        XStream.stdout().messageWritten.connect(self.log_text.insertPlainText)
-        XStream.stderr().messageWritten.connect(self.log_text.insertPlainText)
+
+        tc = self.log_text.textCursor()
+        tc.setPosition(self.log_text.document().characterCount())
+        self.log_text.setTextCursor(tc)
+        XStream.stdout().messageWritten.connect(lambda value: self.write_log_line(value))
+        XStream.stderr().messageWritten.connect(lambda value: self.write_log_line(value))
         self.find_process_ids()
         self.antenna1widget = None
         self.antenna2widget = None
         self.touchstone_graph = None
         self.color = -1
+
+    def write_log_line(self, value):
+        self.log_text.insertPlainText(value)
+        tc = self.log_text.textCursor()
+        tc.setPosition(self.log_text.document().characterCount())
+        self.log_text.setTextCursor(tc)
 
     def update_project(self):
         sel = self.property_table.selectedItems()
@@ -193,8 +289,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             return
         if self.hfss and sel and key in self.hfss.variable_manager.independent_variable_names:
+            if self.oantenna.length_unit not in val:
+                val = val + self.oantenna.length_unit
             self.hfss[key] = val
             self.hfss.logger.info("Key {} updated to value {}.".format(key, val))
+            self.add_status_bar_message("Project updated.")
 
     def browse_for_project(self):
         dialog = QtWidgets.QFileDialog()
@@ -224,49 +323,96 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
 
     def launch_hfss(self):
-        """Initialize  Hfss."""
-
         non_graphical = eval(self.non_graphical_combo.currentText())
         version = self.aedt_version_combo.currentText()
         settings.use_grpc_api = eval(self.use_grpc_combo.currentText())
         selected_process = self.process_id_combo.currentText()
         projectname = self.project_name.text()
         process_id_combo_splitted = selected_process.split(" ")
-        if selected_process == "Create New Session":
+        args = {
+            "non_graphical": non_graphical,
+            "version": version,
+            "selected_process": selected_process,
+            "projectname": projectname,
+            "process_id_combo_splitted": process_id_combo_splitted,
+        }
+
+        worker_1 = RunnerHfss()
+        worker_1.hfss_args = args
+        worker_1.signals.progressed.connect(lambda value: self.update_progress(value))
+        worker_1.signals.completed.connect(lambda: self.update_hfss(worker_1))
+
+        self.__thread.start(worker_1)
+        pass
+
+    def update_progress(self, value):
+        self.progressBar.setValue(value)
+        if self.progressBar.isHidden():
+            self.progressBar.setVisible(True)
+
+    def update_hfss(self, worker_1):
+        if worker_1.pid != -1:
+            module = sys.modules["__main__"]
+            try:
+                del module.COMUtil
+            except AttributeError:
+                pass
+            try:
+                del module.oDesktop
+            except AttributeError:
+                pass
+            try:
+                del module.pyaedt_initialized
+            except AttributeError:
+                pass
+            try:
+                del module.oAnsoftApplication
+            except AttributeError:
+                pass
+            version = self.aedt_version_combo.currentText()
+
             self.hfss = Hfss(
-                projectname=projectname,
                 specified_version=version,
-                non_graphical=non_graphical,
-                new_desktop_session=True,
-            )
-        elif len(process_id_combo_splitted) == 5:
-            self.hfss = Hfss(
-                projectname=projectname,
-                specified_version=version,
-                non_graphical=non_graphical,
-                port=int(process_id_combo_splitted[-1]),
+                projectname=worker_1.projectname,
+                designname=worker_1.designname,
+                aedt_process_id=worker_1.pid,
             )
         else:
-            self.hfss = Hfss(
-                projectname=projectname,
-                specified_version=version,
-                non_graphical=non_graphical,
-                aedt_process_id=int(process_id_combo_splitted[1]),
-            )
-
-        self.add_status_bar_message("Hfss Connected.")
+            self.hfss = worker_1.hfss
+        self.update_progress(100)
 
     def analyze_antenna(self):
         """Solves current report and plots antenna results."""
+        self.add_status_bar_message("Analysis Started...")
+        if self.progressBar.value() < 100:
+            self.add_status_bar_message("Wait that previous process if terminated.")
+            return
+        self.update_progress(25)
         self.color += 1
         if self.color == 5:
             self.color = 0
-        name = "Simulation {}".format(self.color)
-        if not self.hfss:
-            self.launch_hfss()
-        num_cores = int(self.numcores.text())
-        self.hfss.analyze_nominal(num_cores)
+        # if not self.hfss:
+        #     self.launch_hfss()
+        num_cores = self.numcores.text()
+        self.hfss.save_project()
+        project_file = self.hfss.results_directory[:-7]
+        design_name = self.hfss.design_name
+        self.hfss.solve_in_batch(run_in_thread=True)
+        self.update_progress(50)
+        if self.hfss.last_run_log:
+            worker_1 = RunnerAnalsysis()
+            worker_1.logger_file = self.hfss.last_run_log
+            worker_1.signals.messaged.connect(lambda value: self.hfss.logger.info(value))
+            worker_1.signals.completed.connect(
+                lambda: self._udpdate_results(project_file, design_name)
+            )
+            self.__thread.start(worker_1)
 
+    def _udpdate_results(self, project_file, design_name):
+        self.update_progress(75)
+        self.hfss.load_project(project_file, design_name=design_name)
+
+        name = "Simulation {}".format(self.color)
         sol_data = self.hfss.post.get_solution_data()
         if not sol_data:
             return
@@ -378,6 +524,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         self.combo_phi_box.currentTextChanged.connect(self.update_phi)
         self.combo_theta_box.currentTextChanged.connect(self.update_theta)
+        self.update_progress(100)
+        self.add_status_bar_message("Analysis Completed.")
 
     def update_phi(self):
         """Update Gain Total Plot by changing the Phi value."""
@@ -437,10 +585,14 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         antenna : :class:
         synth_only : bool
         """
+        if self.progressBar.value() < 100:
+            self.add_status_bar_message("Wait that previous process if terminated.")
+            return
+        self.progressBar.setValue(0)
         self.property_table.itemChanged.connect(None)
 
         if not self.hfss:
-            self.launch_hfss()
+            self.add_status_bar_message("Launch ")
         huygens = self.huygens.isChecked()
         component3d = self.component_3d.isChecked()
         create_setup = self.create_hfss_setup.isChecked()
@@ -455,6 +607,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 length_unit=model_units,
                 huygens_box=huygens,
             )
+        self.progressBar.setValue(33)
+
         x_pos = float(self.x_position.text())
         y_pos = float(self.y_position.text())
         z_pos = float(self.z_position.text())
@@ -465,6 +619,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.parameters["boundary"].currentText() == "None"
             else self.parameters["boundary"].currentText()
         )
+
         for param in self.parameters:
             if param in dir(self.oantenna):
                 if isinstance(self.parameters[param], QtWidgets.QComboBox):
@@ -489,6 +644,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 sweep1.props["RangeStart"] = str(freq * 0.8) + frequnits
                 sweep1.props["RangeEnd"] = str(freq * 1.2) + frequnits
                 sweep1.update()
+        self.progressBar.setValue(66)
 
         self.property_table.setRowCount(len(self.oantenna._parameters.items()))
         i = 0
@@ -508,7 +664,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.add_status_bar_message("Synthesis completed.")
         else:
             self.add_status_bar_message("Project created correctly.")
-        self.property_table.itemChanged.connect(self.update_project)
+            self.property_table.itemChanged.connect(self.update_project)
+        self.progressBar.setValue(100)
 
     def closeEvent(self, event):
         """Close UI."""
