@@ -1,29 +1,43 @@
 import os
+import copy
 
 from pyaedt.generic.general_methods import pyaedt_function_handler
+from pyaedt.generic.general_methods import generate_unique_name
+from ansys.aedt.toolkits.antennas.parameters import InputParameters
+from ansys.aedt.toolkits.antennas.parameters import SynthesisParameters
+from ansys.aedt.toolkits.antennas.parameters import Property
 
 
 class CommonAntenna(object):
     """Base methods common to antennas toolkit."""
 
-    def __init__(self, *args, **kwargs):
+    antenna_type = ""
+
+    def __init__(self, default_input_parameters, *args, **kwargs):
         self._app = args[0]
+        self.input_parameters = InputParameters(default_input_parameters)
+
+        for k, v in kwargs.items():
+            if k in default_input_parameters:
+                setattr(self.input_parameters, k, copy.deepcopy(v))
+            else:
+                raise AttributeError(f"{k} is not a valid parameter for this antenna. \n"
+                                     f"Accepted parameters are {str(list(default_input_parameters.keys()))}")
+
+        if self.input_parameters.length_unit is None:
+            self.input_parameters.length_unit = self._app.modeler.model_units
+
+        self.input_parameters.antenna_name = self._check_antenna_name(self.input_parameters.antenna_name)
+
+        self.synthesis_parameters = SynthesisParameters()
+        self.synthesis_parameters.antenna_name = self.input_parameters.antenna_name
+
         self.parameters = []
         self.object_list = {}
         self.boundaries = {}
         self.excitations = {}
         self.mesh_operations = {}
-        self.frequency = kwargs["frequency"]
-        self.frequency_unit = kwargs["frequency_unit"]
-        self.outer_boundary = kwargs["outer_boundary"]
-        self.huygens_box = kwargs["huygens_box"]
-        if "length_unit" not in kwargs.keys():
-            kwargs["length_unit"] = self._app.modeler.model_units
-        self.length_unit = kwargs["length_unit"]
-        self.coordinate_system = kwargs["coordinate_system"]
         self._old_antenna_name = None
-        self.antenna_name = kwargs["antenna_name"]
-        self.origin = kwargs["origin"]
 
     @property
     def frequency(self):
@@ -293,3 +307,43 @@ class CommonAntenna(object):
     @pyaedt_function_handler()
     def _synthesis(self):
         pass
+
+    @pyaedt_function_handler()
+    def _check_antenna_name(self, antenna_name=None):
+        """Check if antenna name is repeated or assign a random antenna name."""
+        if (
+            not antenna_name
+            or len(list(self._app.modeler.oeditor.GetObjectsInGroup(antenna_name))) > 0
+            or any(
+                antenna_name in variables
+                for variables in list(self._app.variable_manager.variables.keys())
+            )
+        ):
+            antenna_name = generate_unique_name(self.antenna_type)
+            while len(list(self._app.modeler.oeditor.GetObjectsInGroup(antenna_name))) > 0:
+                antenna_name = generate_unique_name(self.antenna_type)
+        return antenna_name
+
+    @pyaedt_function_handler()
+    def update_synthesis_parameters(self, new_params):
+        for k, v in new_params.items():
+            if hasattr(self.synthesis_parameters, k):
+                param = getattr(self.synthesis_parameters, k)
+                param.value = v
+            else:
+                self.synthesis_parameters.add_parameter(k, v)
+
+    @pyaedt_function_handler()
+    def set_variables_in_hfss(self):
+        for p in self.synthesis_parameters.__dict__.values():
+            if isinstance(p, Property):
+                if p.hfss_variable not in self._app.variable_manager.variables:
+                    self._app[p.hfss_variable] = str(p.value) + self.input_parameters.length_unit
+
+    @pyaedt_function_handler()
+    def init_model(self):
+        # Create radiation boundary
+        if self.input_parameters.outer_boundary:
+            self._app.create_open_region(
+                str(self.input_parameters.frequency) + self.input_parameters.frequency_unit, self.input_parameters.outer_boundary
+            )
