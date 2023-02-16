@@ -11,7 +11,7 @@ class CommonPatch(CommonAntenna):
     """Base methods common to Patch antennas."""
 
     def __init__(self, default_input_parameters, *args, **kwargs):
-        CommonAntenna.antenna_type = "Patchhh"
+        CommonAntenna.antenna_type = "Patch"
         CommonAntenna.__init__(self, default_input_parameters, *args, **kwargs)
 
 
