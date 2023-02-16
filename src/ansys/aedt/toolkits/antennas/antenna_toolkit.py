@@ -633,7 +633,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.oantenna._parameters = self.oantenna._synthesis()
         if not synth_only:
             if not self.oantenna.object_list:
-                self.oantenna.draw()
+                self.oantenna.init_model()
+                self.oantenna.model_hfss()
+                self.oantenna.setup_hfss()
             if component3d:
                 self.oantenna.create_3dcomponent(replace=True)
             if create_setup:

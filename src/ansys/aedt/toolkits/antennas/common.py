@@ -91,10 +91,11 @@ class CommonAntenna(object):
     @outer_boundary.setter
     def outer_boundary(self, value):
         self._input_parameters.outer_boundary = value
-        self._app.create_open_region(
-            str(self._input_parameters.frequency) + self._input_parameters.frequency_unit,
-            self._input_parameters.outer_boundary,
-        )
+        if self.object_list:
+            self._app.create_open_region(
+                str(self._input_parameters.frequency) + self._input_parameters.frequency_unit,
+                self._input_parameters.outer_boundary,
+            )
 
     @property
     def huygens_box(self):
@@ -145,7 +146,7 @@ class CommonAntenna(object):
         for antenna_obj in self.object_list:
             self.object_list[antenna_obj].history.props[
                 "Coordinate System"
-            ] = self._coordinate_system
+            ] = self._input_parameters.coordinate_system
 
     @property
     def antenna_name(self):
