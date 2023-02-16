@@ -1,8 +1,8 @@
-from _unittest.conftest import BasisTest
 from pyaedt.modeler.cad.object3d import Object3d
 from pyaedt.modeler.geometry_operators import GeometryOperators
 
 from ansys.aedt.toolkits.antennas.horn import ConicalHorn
+from conftest import BasisTest
 
 test_project_name = "Horn_test"
 

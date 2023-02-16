@@ -30,27 +30,14 @@
        </sizepolicy>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="1" column="0">
+       <item row="3" column="0">
         <widget class="QPushButton" name="connect_hfss">
          <property name="text">
           <string>Launch HFSS</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="2">
+       <item row="3" column="2">
         <widget class="QPushButton" name="closeButton">
          <property name="text">
           <string>Release</string>
@@ -203,17 +190,121 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_26">
                <item>
-                <widget class="QCheckBox" name="nongraphical">
-                 <property name="layoutDirection">
-                  <enum>Qt::RightToLeft</enum>
-                 </property>
+                <widget class="QLabel" name="label_4">
                  <property name="text">
                   <string>Non Graphical</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <spacer name="horizontalSpacer_31">
+                <widget class="QComboBox" name="non_graphical_combo">
+                 <item>
+                  <property name="text">
+                   <string>False</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>True</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>AEDT Version</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="aedt_version_combo"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>Use Grpc (Linux Default True)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="use_grpc_combo">
+                 <item>
+                  <property name="text">
+                   <string>True</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>False</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QLabel" name="label_5">
+                 <property name="text">
+                  <string>Available AEDT Sessions</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="process_id_combo">
+                 <item>
+                  <property name="text">
+                   <string>Create New Session</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <widget class="QLabel" name="label_6">
+                 <property name="text">
+                  <string>Project Name</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="project_name"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <item>
+                <spacer name="horizontalSpacer_3">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -224,6 +315,13 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="browse_project">
+                 <property name="text">
+                  <string>Select aedt project</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
@@ -246,6 +344,9 @@
             <spacer name="horizontalSpacer_29">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Preferred</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -581,7 +682,30 @@
          </widget>
         </widget>
        </item>
+       <item row="3" column="1">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPlainTextEdit" name="log_text">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
      </widget>
     </item>
    </layout>
