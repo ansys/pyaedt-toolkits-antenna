@@ -49,7 +49,7 @@ class Property:
 class SynthesisParameters:
 
     def __init__(self):
-        self._antenna_name = "DefaultName"
+        self._antenna_name = ""
 
     def add_parameter(self, name, value):
         setattr(self, name, Property(copy.deepcopy(value), self, name))
@@ -60,7 +60,10 @@ class SynthesisParameters:
 
     @antenna_name.setter
     def antenna_name(self, name):
-        self._antenna_name = name
+        if not self._antenna_name:
+            self._antenna_name = name
+        else:
+            raise AttributeError("Parameter antenna_name can be set only once in the synthesis_parameters.")
 
 
 class InputParameters(FrozenClass):

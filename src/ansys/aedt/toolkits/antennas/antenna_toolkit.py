@@ -47,13 +47,13 @@ class RunnerHfss(QtCore.QRunnable):
     def run(self):
         self.signals.progressed.emit(int(25))
         self.signals.messaged.emit(str(25))
-        selected_prcoess = self.hfss_args["selected_process"]
+        selected_process = self.hfss_args["selected_process"]
         projectname = self.hfss_args["projectname"]
         version = self.hfss_args["version"]
         non_graphical = self.hfss_args["non_graphical"]
         process_id_combo_splitted = self.hfss_args["process_id_combo_splitted"]
         self.signals.progressed.emit(int(50))
-        if selected_prcoess == "Create New Session":
+        if selected_process == "Create New Session":
             self.hfss = Hfss(
                 projectname=projectname,
                 specified_version=version,
