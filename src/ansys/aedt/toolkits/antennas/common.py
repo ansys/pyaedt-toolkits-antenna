@@ -39,17 +39,6 @@ class CommonAntenna(object):
         self.mesh_operations = {}
         self._old_antenna_name = None
 
-        # self.frequency = kwargs["frequency"]
-        # self.frequency_unit = kwargs["frequency_unit"]
-        # self.outer_boundary = kwargs["outer_boundary"]
-        # self.huygens_box = kwargs["huygens_box"]
-        # if "length_unit" not in kwargs.keys():
-        #     kwargs["length_unit"] = self._app.modeler.model_units
-        # self.length_unit = kwargs["length_unit"]
-        # self.coordinate_system = kwargs["coordinate_system"]
-        # self.antenna_name = kwargs["antenna_name"]
-        # self.origin = kwargs["origin"]
-
     @property
     def frequency(self):
         """Center Frequency.
@@ -344,8 +333,17 @@ class CommonAntenna(object):
             else:
                 self.synthesis_parameters.add_parameter(k, v)
 
+    @pyaedt_function_handler()
     def set_variables_in_hfss(self):
         for p in self.synthesis_parameters.__dict__.values():
             if isinstance(p, Property):
                 if p.hfss_variable not in self._app.variable_manager.variables:
                     self._app[p.hfss_variable] = str(p.value) + self.input_parameters.length_unit
+
+    @pyaedt_function_handler()
+    def init_model(self):
+        # Create radiation boundary
+        if self.input_parameters.outer_boundary:
+            self._app.create_open_region(
+                str(self.input_parameters.frequency) + self.input_parameters.frequency_unit, self.input_parameters.outer_boundary
+            )

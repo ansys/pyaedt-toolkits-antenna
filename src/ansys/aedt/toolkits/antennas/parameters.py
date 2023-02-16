@@ -70,19 +70,3 @@ class InputParameters(FrozenClass):
         for key, value in self.__default_properties.items():
             setattr(self, key, copy.deepcopy(value))
         self._freeze()  # no new attributes after this point.
-
-
-# defaults = {
-#     "freq": 1.0,
-#     "dim_x": "3mm",
-# }
-#
-# iparams = InputParameters(defaults)
-#
-# sparam = SynthesisParameters()
-#
-#
-#
-#
-# res = -1
-
