@@ -1,11 +1,12 @@
-import os
 import copy
+import os
 
-from pyaedt.generic.general_methods import pyaedt_function_handler
 from pyaedt.generic.general_methods import generate_unique_name
+from pyaedt.generic.general_methods import pyaedt_function_handler
+
 from ansys.aedt.toolkits.antennas.parameters import InputParameters
-from ansys.aedt.toolkits.antennas.parameters import SynthesisParameters
 from ansys.aedt.toolkits.antennas.parameters import Property
+from ansys.aedt.toolkits.antennas.parameters import SynthesisParameters
 
 
 class CommonAntenna(object):
@@ -15,29 +16,31 @@ class CommonAntenna(object):
 
     def __init__(self, default_input_parameters, *args, **kwargs):
         self._app = args[0]
-        self.input_parameters = InputParameters(default_input_parameters)
+        self._input_parameters = InputParameters(default_input_parameters)
 
         for k, v in kwargs.items():
             if k in default_input_parameters:
-                setattr(self.input_parameters, k, copy.deepcopy(v))
+                setattr(self._input_parameters, k, copy.deepcopy(v))
             else:
-                raise AttributeError(f"{k} is not a valid parameter for this antenna. \n"
-                                     f"Accepted parameters are {str(list(default_input_parameters.keys()))}")
+                raise AttributeError(
+                    f"{k} is not a valid parameter for this antenna. \n"
+                    f"Accepted parameters are {str(list(default_input_parameters.keys()))}"
+                )
 
-        if self.input_parameters.length_unit is None:
-            self.input_parameters.length_unit = self._app.modeler.model_units
+        if self._input_parameters.length_unit is None:
+            self._input_parameters.length_unit = self._app.modeler.model_units
 
-        self.input_parameters.antenna_name = self._check_antenna_name(self.input_parameters.antenna_name)
+        self._input_parameters.antenna_name = self._check_antenna_name(
+            self._input_parameters.antenna_name
+        )
 
         self.synthesis_parameters = SynthesisParameters()
-        self.synthesis_parameters.antenna_name = self.input_parameters.antenna_name
+        self.synthesis_parameters.antenna_name = self._input_parameters.antenna_name
 
-        self.parameters = []
         self.object_list = {}
         self.boundaries = {}
         self.excitations = {}
         self.mesh_operations = {}
-        self._old_antenna_name = None
 
     @property
     def frequency(self):
@@ -47,19 +50,15 @@ class CommonAntenna(object):
         -------
         float
         """
-        return self._frequency
+        return self._input_parameters.frequency
 
     @frequency.setter
     def frequency(self, value):
-        self._frequency = value
+        self._input_parameters.frequency = value
         if self.object_list:
             parameters = self._synthesis()
-            parameters_map = {}
-            cont = 0
-            for param in parameters:
-                parameters_map[self.parameters[cont]] = parameters[param]
-                cont += 1
-            self._update_parameters(parameters_map, self._length_unit)
+            self.update_synthesis_parameters(parameters)
+            self.set_variables_in_hfss()
 
     @property
     def frequency_unit(self):
@@ -69,19 +68,15 @@ class CommonAntenna(object):
         -------
         str
         """
-        return self._frequency_unit
+        return self._input_parameters.frequency_unit
 
     @frequency_unit.setter
     def frequency_unit(self, value):
-        self._frequency_unit = value
+        self._input_parameters.frequency_unit = value
         if self.object_list:
             parameters = self._synthesis()
-            parameters_map = {}
-            cont = 0
-            for param in parameters:
-                parameters_map[self.parameters[cont]] = parameters[param]
-                cont += 1
-            self._update_parameters(parameters_map, self._length_unit)
+            self.update_synthesis_parameters(parameters)
+            self.set_variables_in_hfss()
 
     @property
     def outer_boundary(self):
@@ -91,11 +86,15 @@ class CommonAntenna(object):
         -------
         str
         """
-        return self._outer_boundary
+        return self._input_parameters.outer_boundary
 
     @outer_boundary.setter
     def outer_boundary(self, value):
-        self._outer_boundary = value
+        self._input_parameters.outer_boundary = value
+        self._app.create_open_region(
+            str(self._input_parameters.frequency) + self._input_parameters.frequency_unit,
+            self._input_parameters.outer_boundary,
+        )
 
     @property
     def huygens_box(self):
@@ -105,10 +104,11 @@ class CommonAntenna(object):
         -------
         bool
         """
-        return self._huygens_box
+        return self._input_parameters.huygens_box
 
     @huygens_box.setter
     def huygens_box(self, value):
+        # No effect for now
         self._huygens_box = value
 
     @property
@@ -119,19 +119,15 @@ class CommonAntenna(object):
         -------
         str
         """
-        return self._length_unit
+        return self._input_parameters.length_unit
 
     @length_unit.setter
     def length_unit(self, value):
         self._length_unit = value
         if self.object_list:
             parameters = self._synthesis()
-            parameters_map = {}
-            cont = 0
-            for param in parameters:
-                parameters_map[self.parameters[cont]] = parameters[param]
-                cont += 1
-            self._update_parameters(parameters_map, self._length_unit)
+            self.update_synthesis_parameters(parameters)
+            self.set_variables_in_hfss()
 
     @property
     def coordinate_system(self):
@@ -141,11 +137,11 @@ class CommonAntenna(object):
         -------
         str
         """
-        return self._coordinate_system
+        return self._input_parameters.coordinate_system
 
     @coordinate_system.setter
     def coordinate_system(self, value):
-        self._coordinate_system = value
+        self._input_parameters.coordinate_system = value
         for antenna_obj in self.object_list:
             self.object_list[antenna_obj].history.props[
                 "Coordinate System"
@@ -159,21 +155,18 @@ class CommonAntenna(object):
         -------
         str
         """
-        return self._antenna_name
+        return self._input_parameters.antenna_name
 
     @antenna_name.setter
     def antenna_name(self, value):
-        self._antenna_name = value
-        old_name = None
-        if value != self._old_antenna_name:
-            old_name = self._old_antenna_name
-            self._old_antenna_name = self._antenna_name
-        if old_name and self.object_list:
+        if value != self.antenna_name and self.object_list:
             for antenna_obj in self.object_list:
-                self.object_list[antenna_obj].group_name = self._antenna_name
-
-            if len(list(self._app.modeler.oeditor.GetObjectsInGroup(old_name))) == 0:
-                self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", old_name])
+                self.object_list[antenna_obj].group_name = value
+            if len(list(self._app.modeler.oeditor.GetObjectsInGroup(self.antenna_name))) == 0:
+                self._app.modeler.oeditor.Delete(
+                    ["NAME:Selections", "Selections:=", self.antenna_name]
+                )
+            self._input_parameters.antenna_name = value
 
     @property
     def origin(self):
@@ -183,23 +176,15 @@ class CommonAntenna(object):
         -------
         list
         """
-        return self._origin
+        return self._input_parameters.origin
 
     @origin.setter
     def origin(self, value):
-        self._origin = value
+        self._input_parameters.origin = value
         if self.object_list:
             parameters = self._synthesis()
-            parameters_map = {}
-            cont = 0
-            for param in parameters:
-                if param[0:4] == "pos_":
-                    parameters_map[self.parameters[cont]] = parameters[param]
-                cont += 1
-            if parameters_map:
-                self._update_parameters(parameters_map, self._length_unit)
-            else:
-                self._app.logger.error("Variable with suffix 'pos' not found.")
+            self.update_synthesis_parameters(parameters)
+            self.set_variables_in_hfss()
 
     @pyaedt_function_handler()
     def create_3dcomponent(self, component_file=None, component_name=None, replace=False):
@@ -216,15 +201,16 @@ class CommonAntenna(object):
 
         Returns
         -------
-        str
-            Path of the 3DComponent file.
+        str.
+            Path of the 3DComponent file or 3DComponent name.
 
         Examples
         --------
         >>> from pyaedt import Hfss
+        >>> from ansys.aedt.toolkits.antennas.horn import ConicalHorn
         >>> hfss = Hfss()
-        >>> patch = hfss.antennas.rectangular_patch_w_probe()
-        >>> path = patch.create_3dcomponent()
+        >>> horn = hfss.add_from_toolkit(ConicalHorn, draw=True)
+        >>> horn = horn.create_3dcomponent()
         """
         if not component_file:
             component_file = os.path.join(
@@ -233,12 +219,21 @@ class CommonAntenna(object):
         if not component_name:
             component_name = self.antenna_name
 
+        parameters = []
+        for p in self.synthesis_parameters.__dict__.values():
+            if isinstance(p, Property):
+                parameters.append(p.hfss_variable)
+
+        boundaries = list(self.boundaries.keys())
+        if not boundaries:
+            boundaries = [""]
+
         self._app.modeler.create_3dcomponent(
             component_file=component_file,
             component_name=component_name,
-            variables_to_include=self.parameters,
+            variables_to_include=parameters,
             object_list=list(self.object_list.keys()),
-            boundaries_list=list(self.boundaries.keys()),
+            boundaries_list=boundaries,
             excitation_list=list(self.excitations.keys()),
             included_cs=[self.coordinate_system],
             reference_cs=self.coordinate_system,
@@ -248,9 +243,9 @@ class CommonAntenna(object):
         if replace:
             self._app.modeler.replace_3dcomponent(
                 component_name=component_name,
-                variables_to_include=self.parameters,
+                variables_to_include=parameters,
                 object_list=list(self.object_list.keys()),
-                boundaries_list=list(self.boundaries.keys()),
+                boundaries_list=boundaries,
                 excitation_list=list(self.excitations.keys()),
                 included_cs=[self.coordinate_system],
                 reference_cs=self.coordinate_system,
@@ -260,10 +255,10 @@ class CommonAntenna(object):
                     ["NAME:Selections", "Selections:=", self.antenna_name]
                 )
 
-            self._app.modeler.add_new_user_defined_component()
+            user_defined_component = self._app.modeler.add_new_user_defined_component()
             self._app.modeler.refresh_all_ids()
-
-        return True
+            return user_defined_component[0]
+        return component_file
 
     @pyaedt_function_handler()
     def duplicate_along_line(self, vector, num_clones=2):
@@ -284,9 +279,10 @@ class CommonAntenna(object):
         Examples
         --------
         >>> from pyaedt import Hfss
+        >>> from ansys.aedt.toolkits.antennas.horn import ConicalHorn
         >>> hfss = Hfss()
-        >>> patch = hfss.antennas.rectangular_patch_w_probe()
-        >>> new_patch = patch.duplicate_along_line([10, 0, 0], 2)
+        >>> horn = hfss.add_from_toolkit(ConicalHorn, draw=True)
+        >>> new_horn = horn.duplicate_along_line([10, 0, 0], 2)
         """
         new_objects = {}
         for i in range(0, num_clones - 1):
@@ -337,13 +333,12 @@ class CommonAntenna(object):
     def set_variables_in_hfss(self):
         for p in self.synthesis_parameters.__dict__.values():
             if isinstance(p, Property):
-                if p.hfss_variable not in self._app.variable_manager.variables:
-                    self._app[p.hfss_variable] = str(p.value) + self.input_parameters.length_unit
+                self._app[p.hfss_variable] = str(p.value) + self.length_unit
 
     @pyaedt_function_handler()
     def init_model(self):
         # Create radiation boundary
-        if self.input_parameters.outer_boundary:
+        if self._input_parameters.outer_boundary:
             self._app.create_open_region(
-                str(self.input_parameters.frequency) + self.input_parameters.frequency_unit, self.input_parameters.outer_boundary
+                str(self.frequency) + self.frequency_unit, self.outer_boundary
             )
