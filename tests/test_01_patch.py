@@ -30,6 +30,6 @@ class TestClass(BasisTest, object):
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-6
         opatch2 = self.aedtapp.add_from_toolkit(
-            RectangularPatchProbe, antenna_name=opatch1.antenna_name
+            RectangularPatchProbe, draw=True, antenna_name=opatch1.antenna_name
         )
         assert opatch1.antenna_name != opatch2.antenna_name

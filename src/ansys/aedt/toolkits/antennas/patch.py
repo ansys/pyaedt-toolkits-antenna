@@ -10,12 +10,9 @@ from ansys.aedt.toolkits.antennas.common import CommonAntenna
 class CommonPatch(CommonAntenna):
     """Base methods common to Patch antennas."""
 
-    def __init__(self, default_input_parameters, *args, **kwargs):
+    def __init__(self, _default_input_parameters, *args, **kwargs):
         CommonAntenna.antenna_type = "Patch"
-        CommonAntenna.__init__(self, default_input_parameters, *args, **kwargs)
-
-
-        self._old_material = None
+        CommonAntenna.__init__(self, _default_input_parameters, *args, **kwargs)
 
     @property
     def material(self):
@@ -25,7 +22,7 @@ class CommonPatch(CommonAntenna):
         -------
         str
         """
-        return self._material
+        return self._input_parameters.material
 
     @material.setter
     def material(self, value):
@@ -36,26 +33,18 @@ class CommonPatch(CommonAntenna):
         ):
             self._app.logger.warning("Material not found. Create new material before assign")
         else:
-            self._material = value
-            old_material = None
-            if value != self._old_material:
-                old_material = self._old_material
-                self._old_material = self._material
-
-            if old_material and self.object_list:
-                parameters = self._synthesis()
-                parameters_map = {}
-                cont = 0
-                for param in parameters:
-                    parameters_map[self.parameters[cont]] = parameters[param]
-                    cont += 1
-                self._update_parameters(parameters_map, self.length_unit)
+            if value != self.material and self.object_list:
                 for antenna_obj in self.object_list:
                     if (
-                        self.object_list[antenna_obj].material_name == old_material.lower()
+                        self.object_list[antenna_obj].material_name == self.material.lower()
                         and "coax" not in antenna_obj
                     ):
                         self.object_list[antenna_obj].material_name = value
+
+                self._input_parameters.material = value
+                parameters = self._synthesis()
+                self.update_synthesis_parameters(parameters)
+                self.set_variables_in_hfss()
 
     @property
     def substrate_height(self):
@@ -65,19 +54,16 @@ class CommonPatch(CommonAntenna):
         -------
         float
         """
-        return self._substrate_height
+        return self._input_parameters.substrate_height
 
     @substrate_height.setter
     def substrate_height(self, value):
-        self._substrate_height = value
-        parameters = self._synthesis()
+        self._input_parameters.substrate_height = value
+
         if self.object_list:
-            parameters_map = {}
-            cont = 0
-            for param in parameters:
-                parameters_map[self.parameters[cont]] = parameters[param]
-                cont += 1
-            self._update_parameters(parameters_map, self.length_unit)
+            parameters = self._synthesis()
+            self.update_synthesis_parameters(parameters)
+            self.set_variables_in_hfss()
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -121,10 +107,12 @@ class RectangularPatchProbe(CommonPatch):
     >>> from pyaedt import Hfss
     >>> from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
     >>> hfss = Hfss()
-    >>> patch = hfss.add_from_toolkit(RectangularPatchProbe, frequency=20.0, frequency_unit="GHz")
+    >>> patch = hfss.add_from_toolkit(RectangularPatchProbe, draw=True, frequency=20.0,
+    ...                               frequency_unit="GHz")
+
     """
 
-    default_input_parameters = {
+    _default_input_parameters = {
         "antenna_name": None,
         "origin": [0, 0, 0],
         "length_unit": None,
@@ -138,7 +126,7 @@ class RectangularPatchProbe(CommonPatch):
     }
 
     def __init__(self, *args, **kwargs):
-        CommonPatch.__init__(self, self.default_input_parameters, *args, **kwargs)
+        CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
@@ -146,18 +134,16 @@ class RectangularPatchProbe(CommonPatch):
     @pyaedt_function_handler()
     def _synthesis(self):
         parameters = {}
-        length_unit = self.input_parameters.length_unit
+        length_unit = self.length_unit
         lightSpeed = constants.SpeedOfLight  # m/s
-        freq_hz = constants.unit_converter(
-            self.input_parameters.frequency, "Freq", self.input_parameters.frequency_unit, "Hz"
-        )
+        freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
         wavelength = lightSpeed / freq_hz
 
         if (
-            self.input_parameters.material in self._app._materials.mat_names_aedt
-            or self.input_parameters.material in self._app._materials.mat_names_aedt_lower
+            self.material in self._app._materials.mat_names_aedt
+            or self.material in self._app._materials.mat_names_aedt_lower
         ):
-            mat_props = self._app._materials[self.input_parameters.material]
+            mat_props = self._app._materials[self.material]
         else:
             self._app.logger.warning("Material not found. Create the material before assignment.")
             return parameters
@@ -165,7 +151,7 @@ class RectangularPatchProbe(CommonPatch):
         subPermittivity = float(mat_props.permittivity.value)
 
         sub_meters = constants.unit_converter(
-            self.input_parameters.substrate_height, "Length", self.input_parameters.length_unit, "meter"
+            self.substrate_height, "Length", self.length_unit, "meter"
         )
 
         patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((subPermittivity + 1.0) / 2.0))
@@ -209,7 +195,7 @@ class RectangularPatchProbe(CommonPatch):
         feed_y = round(constants.unit_converter(offset_pin_pos, "Length", "meter", length_unit), 2)
         parameters["feed_y"] = feed_y
 
-        sub_h = self.input_parameters.substrate_height
+        sub_h = self.substrate_height
         parameters["sub_h"] = sub_h
 
         sub_x = round(
@@ -245,9 +231,15 @@ class RectangularPatchProbe(CommonPatch):
         )
         parameters["feed_length"] = feed_length
 
-        if self.input_parameters.huygens_box:
-            gnd_x = constants.unit_converter((299792458 / freq_hz / 4), "Length", "meter", length_unit) + sub_x
-            gnd_y = constants.unit_converter((299792458 / freq_hz / 4), "Length", "meter", length_unit) + sub_y
+        if self.huygens_box:
+            gnd_x = (
+                constants.unit_converter((299792458 / freq_hz / 4), "Length", "meter", length_unit)
+                + sub_x
+            )
+            gnd_y = (
+                constants.unit_converter((299792458 / freq_hz / 4), "Length", "meter", length_unit)
+                + sub_y
+            )
         else:
             gnd_x = sub_x
             gnd_y = sub_y
@@ -255,9 +247,9 @@ class RectangularPatchProbe(CommonPatch):
         parameters["gnd_x"] = gnd_x
         parameters["gnd_y"] = gnd_y
 
-        parameters["pos_x"] = self.input_parameters.origin[0]
-        parameters["pos_y"] = self.input_parameters.origin[1]
-        parameters["pos_z"] = self.input_parameters.origin[2]
+        parameters["pos_x"] = self.origin[0]
+        parameters["pos_y"] = self.origin[1]
+        parameters["pos_z"] = self.origin[2]
 
         myKeys = list(parameters.keys())
         myKeys.sort()
@@ -293,15 +285,15 @@ class RectangularPatchProbe(CommonPatch):
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
 
-        antenna_name = self.input_parameters.antenna_name
-        coordinate_system = self.input_parameters.coordinate_system
+        antenna_name = self.antenna_name
+        coordinate_system = self.coordinate_system
 
         # Substrate
         sub = self._app.modeler.create_box(
             position=["-" + sub_x + "/2" "+" + pos_x, "-" + sub_y + "/2" "+" + pos_y, pos_z],
             dimensions_list=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
-            matname=self.input_parameters.material,
+            matname=self.material,
         )
         sub.color = (0, 128, 0)
         sub.history.props["Coordinate System"] = coordinate_system
@@ -413,7 +405,7 @@ class RectangularPatchProbe(CommonPatch):
 
     @pyaedt_function_handler()
     def setup_hfss(self):
-
+        """Rectangular patch antenna HFSS setup."""
         # Map parameters
         sub_h = self.synthesis_parameters.sub_h.hfss_variable
         gnd_x = self.synthesis_parameters.gnd_x.hfss_variable
@@ -422,16 +414,14 @@ class RectangularPatchProbe(CommonPatch):
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
 
-        antenna_name = self.input_parameters.antenna_name
-        coordinate_system = self.input_parameters.coordinate_system
-        length_unit = self.input_parameters.length_unit
+        antenna_name = self.antenna_name
+        coordinate_system = self.coordinate_system
+        length_unit = self.length_unit
 
         # Create Huygens box
-        if self.input_parameters.huygens_box:
+        if self.huygens_box:
             lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(
-                self.input_parameters.frequency, "Freq", self.input_parameters.frequency_unit, "Hz"
-            )
+            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
                 constants.unit_converter(
                     lightSpeed / (10 * freq_hz), "Length", "meter", length_unit
