@@ -13,6 +13,7 @@ from pyaedt.misc import list_installed_ansysem
 import pyqtgraph as pg
 import qdarkstyle
 
+from ansys.aedt.toolkits.antennas.horn import ConicalHorn
 from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
 from ansys.aedt.toolkits.antennas.ui.antennas_main import Ui_MainWindow
 
@@ -888,7 +889,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         ----------
         synth_only : bool
         """
-        self.get_antenna(RectangularPatchProbe, synth_only)
+        self.get_antenna(ConicalHorn, synth_only)
 
 
 if __name__ == "__main__":
