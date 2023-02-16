@@ -280,11 +280,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def update_project(self):
         sel = self.property_table.selectedItems()
         if sel and self.oantenna:
-            key = (
-                self.property_table.item(self.property_table.row(sel[0]), 0).text()
-                + "_"
-                + self.oantenna.antenna_name
-            )
+            sel_key = self.property_table.item(self.property_table.row(sel[0]), 0).text()
+            key = self.oantenna.synthesis_parameters.__getattribute__(sel_key).hfss_variable
             val = self.property_table.item(self.property_table.row(sel[0]), 1).text()
         else:
             return
