@@ -9,7 +9,9 @@ class FrozenClass(object):
     def __setattr__(self, key, value):
         if self.__isfrozen:
             if key not in dir(self):
-                raise AttributeError("{} is a frozen class. Not existing key: {}".format(type(self).__name__, key))
+                raise AttributeError(
+                    "{} is a frozen class. Not existing key: {}".format(type(self).__name__, key)
+                )
         object.__setattr__(self, key, value)
 
     def _freeze(self):
@@ -20,7 +22,6 @@ class FrozenClass(object):
 
 
 class Property:
-
     def __init__(self, value, owner, name):
         self.value = value
         self._owner = owner
@@ -47,7 +48,6 @@ class Property:
 
 
 class SynthesisParameters:
-
     def __init__(self):
         self._antenna_name = ""
 
@@ -63,11 +63,12 @@ class SynthesisParameters:
         if not self._antenna_name:
             self._antenna_name = name
         else:
-            raise AttributeError("Parameter antenna_name can be set only once in the synthesis_parameters.")
+            raise AttributeError(
+                "Parameter antenna_name can be set only once in the synthesis_parameters."
+            )
 
 
 class InputParameters(FrozenClass):
-
     def __init__(self, default_parameters):
         self.__default_properties = copy.deepcopy(default_parameters)
         for key, value in self.__default_properties.items():
