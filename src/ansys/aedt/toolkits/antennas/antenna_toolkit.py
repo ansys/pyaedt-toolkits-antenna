@@ -13,6 +13,7 @@ from pyaedt.misc import list_installed_ansysem
 import pyqtgraph as pg
 import qdarkstyle
 
+from ansys.aedt.toolkits.antennas.horn import ConicalHorn
 from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
 from ansys.aedt.toolkits.antennas.ui.antennas_main import Ui_MainWindow
 
@@ -280,11 +281,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def update_project(self):
         sel = self.property_table.selectedItems()
         if sel and self.oantenna:
-            key = (
-                self.property_table.item(self.property_table.row(sel[0]), 0).text()
-                + "_"
-                + self.oantenna.antenna_name
-            )
+            sel_key = self.property_table.item(self.property_table.row(sel[0]), 0).text()
+            key = self.oantenna.synthesis_parameters.__getattribute__(sel_key).hfss_variable
             val = self.property_table.item(self.property_table.row(sel[0]), 1).text()
         else:
             return
@@ -633,7 +631,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.oantenna._parameters = self.oantenna._synthesis()
         if not synth_only:
             if not self.oantenna.object_list:
-                self.oantenna.draw()
+                self.oantenna.init_model()
+                self.oantenna.model_hfss()
+                self.oantenna.setup_hfss()
             if component3d:
                 self.oantenna.create_3dcomponent(replace=True)
             if create_setup:
@@ -889,7 +889,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         ----------
         synth_only : bool
         """
-        self.get_antenna(RectangularPatchProbe, synth_only)
+        self.get_antenna(ConicalHorn, synth_only)
 
 
 if __name__ == "__main__":
