@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
+from pathlib import Path
 import sys
 import time
 
+current_path = Path(os.getcwd())
+package_path = current_path.parents[3]
+sys.path.append(os.path.abspath(package_path))
 from PySide6 import QtCore
 from PySide6 import QtGui
 from PySide6 import QtWidgets
@@ -13,6 +17,7 @@ from pyaedt.misc import list_installed_ansysem
 import pyqtgraph as pg
 import qdarkstyle
 
+from ansys.aedt.toolkits.antennas.helix import AxialMode
 from ansys.aedt.toolkits.antennas.horn import ConicalHorn
 from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
 from ansys.aedt.toolkits.antennas.ui.antennas_main import Ui_MainWindow
@@ -235,6 +240,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             lambda checked: self.draw_rectangular_probe_ui()
         )
         self.actionConical.triggered.connect(lambda checked: self.draw_conical_horn_ui())
+        self.actionAxial.triggered.connect(lambda checked: self.draw_axial_helix_ui())
         self.menubar.setFont(self._font)
         self.setWindowTitle("PyAEDT Antenna Wizard")
         self.length_unit = ""
@@ -890,6 +896,37 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         synth_only : bool
         """
         self.get_antenna(ConicalHorn, synth_only)
+
+    def draw_axial_helix_ui(self):
+        """Create Conical Horn UI."""
+
+        self._add_header("AxialMode.jpg", "AxialMode", "10")
+        line2 = self.add_line(
+            "line_2",
+            "gain_value",
+            "Expected Gain (dB)",
+            "edit",
+            "10",
+        )
+        self.layout_settings.addLayout(line2, 5, 0, 1, 1)
+        line3 = self.add_line(
+            "line_3",
+            "feeder_lenth",
+            "Feeder Length",
+            "edit",
+            "10",
+        )
+        self.layout_settings.addLayout(line3, 5, 0, 1, 1)
+        self._add_footer(self.create_axial_helic_design)
+
+    def create_axial_helic_design(self, synth_only=False):
+        """Create a conical horn antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.get_antenna(AxialMode, synth_only)
 
 
 if __name__ == "__main__":
