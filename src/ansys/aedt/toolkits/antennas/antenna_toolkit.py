@@ -23,7 +23,7 @@ os.environ["QT_API"] = "pyside6"
 import logging
 
 logger = logging.getLogger("Global")
-line_colors = ["r", "g", "b", "y", "w"]
+line_colors = ["g", "b", "r", "y", "w"]
 
 
 class RunnerSignals(QtCore.QObject):
