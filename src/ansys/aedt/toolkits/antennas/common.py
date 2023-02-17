@@ -1,6 +1,8 @@
 import copy
+import math
 import os
 
+import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import generate_unique_name
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
@@ -343,3 +345,123 @@ class CommonAntenna(object):
             self._app.create_open_region(
                 str(self.frequency) + self.frequency_unit, self.outer_boundary
             )
+
+
+class TransmissionLine(object):
+    """Base methods common to transmission line calculation.
+
+    Parameters
+    ----------
+    frequency : float, optional
+            Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+            Frequency units. The default is ``GHz``.
+
+    Returns
+    -------
+    :class:`aedt.toolkits.antennas.common.TransmissionLine`
+            Transmission line calculator object.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antennas.common import TransmissionLine
+    >>> tl_calc = TransmissionLine(frequency=2)
+    >>> tl_calc.stripline_calculator(substrate_height=10, permittivity=2.2, impedance=60)
+    """
+
+    antenna_type = ""
+
+    def __init__(self, frequency=10, frequency_unit="GHz"):
+        self.frequency = frequency
+        self.frequency_unit = frequency_unit
+
+    @pyaedt_function_handler()
+    def microstrip_calculator(
+        self, substrate_height, permittivity, impedance=50.0, electrical_length=150.0
+    ):
+        """Strip line calculator.
+
+        Parameters
+        ----------
+        substrate_height : float
+                Substrate height.
+        permittivity : float
+                Substrate permittivity.
+        impedance : str, optional
+                Impedance. The default is ``50.0``.
+        electrical_length : str, optional
+                Electrical length in degrees. The default is ``150.0``.
+
+        Returns
+        -------
+        tuple
+            Line width and length.
+        """
+
+        z0 = impedance
+        e0 = permittivity
+        h0 = substrate_height
+
+        A_us = z0 / 60.0 * math.sqrt((e0 + 1.0) / 2.0) + (e0 - 1.0) / (e0 + 1.0) * (
+            0.23 + 0.11 / e0
+        )
+        B_us = 377.0 * math.pi / (2.0 * z0 * math.sqrt(e0))
+
+        w_over_subH_1 = 8.0 * math.exp(A_us) / (math.exp(2.0 * A_us) - 2.0)
+        w_over_subH_2 = (
+            2.0
+            / math.pi
+            * (
+                B_us
+                - 1.0
+                - math.log(2.0 * B_us - 1.0)
+                + (e0 - 1.0) / (2.0 * e0) * (math.log(B_us - 1.0) + 0.39 - 0.61 / e0)
+            )
+        )
+
+        ustrip_width = w_over_subH_1 * h0
+        if w_over_subH_1 < 2.0:
+            ustrip_width = w_over_subH_1 * h0
+
+        if w_over_subH_2 >= 2:
+            ustrip_width = w_over_subH_2 * h0
+
+        er_eff = (e0 + 1.0) / 2.0 + (e0 - 1.0) / 2.0 * 1.0 / (
+            math.sqrt(1.0 + 12.0 * h0 / ustrip_width)
+        )
+        f = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
+
+        k0 = 2.0 * math.pi * f / 3.0e8
+
+        ustrip_length = math.radians(electrical_length) / (math.sqrt(er_eff) * k0)
+
+        return ustrip_width, ustrip_length
+
+    @pyaedt_function_handler()
+    def stripline_calculator(self, substrate_height, permittivity, impedance=50.0):
+        """Strip line calculator.
+
+        Parameters
+        ----------
+        substrate_height : float
+                Substrate height.
+        permittivity : float
+                Substrate permittivity.
+        impedance : str, optional
+                Impedance. The default is ``50.0``.
+
+        Returns
+        -------
+        float
+            Line width.
+        """
+
+        x = 30.0 * math.pi / (math.sqrt(permittivity) * impedance) - 0.441
+
+        if math.sqrt(permittivity) * impedance <= 120:
+            w_over_h = x
+        else:
+            w_over_h = 0.85 - math.sqrt(0.6 - x)
+
+        width = w_over_h * substrate_height
+        return width
