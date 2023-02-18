@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
+from pathlib import Path
 import sys
 import time
 
+current_path = Path(os.getcwd())
+package_path = current_path.parents[3]
+sys.path.append(os.path.abspath(package_path))
 from PySide6 import QtCore
 from PySide6 import QtGui
 from PySide6 import QtWidgets
@@ -13,7 +17,10 @@ from pyaedt.misc import list_installed_ansysem
 import pyqtgraph as pg
 import qdarkstyle
 
+from ansys.aedt.toolkits.antennas.helix import AxialMode
 from ansys.aedt.toolkits.antennas.horn import ConicalHorn
+from ansys.aedt.toolkits.antennas.patch import RectangularPatchEdge
+from ansys.aedt.toolkits.antennas.patch import RectangularPatchInset
 from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
 from ansys.aedt.toolkits.antennas.ui.antennas_main import Ui_MainWindow
 
@@ -231,10 +238,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             QtGui.QIcon.On,
         )
         self.setWindowIcon(icon)
-        self.actionRectangular_with_probe.triggered.connect(
-            lambda checked: self.draw_rectangular_probe_ui()
-        )
-        self.actionConical.triggered.connect(lambda checked: self.draw_conical_horn_ui())
+
         self.menubar.setFont(self._font)
         self.setWindowTitle("PyAEDT Antenna Wizard")
         self.length_unit = ""
@@ -271,6 +275,18 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.antenna2widget = None
         self.touchstone_graph = None
         self.color = -1
+
+        self.actionRectangular_with_probe.triggered.connect(
+            lambda checked: self.draw_rectangular_probe_ui()
+        )
+        self.actionConical.triggered.connect(lambda checked: self.draw_conical_horn_ui())
+        self.actionAxial.triggered.connect(lambda checked: self.draw_axial_helix_ui())
+        self.actionRectangular_Edge.triggered.connect(
+            lambda checked: self.draw_rectangular_probe_edge_ui()
+        )
+        self.actionRectangular_Inset.triggered.connect(
+            lambda checked: self.draw_rectangular_probe_inset_ui()
+        )
 
     def write_log_line(self, value):
         self.log_text.insertPlainText(value)
@@ -875,6 +891,60 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         self.get_antenna(RectangularPatchProbe, synth_only)
 
+    def draw_rectangular_probe_inset_ui(self):
+        """Create Rectangular Patch UI."""
+        self._add_header("RectInset.jpg", "RectangularPatchInset", "10")
+
+        line2 = self.add_line(
+            "line_2",
+            "material",
+            "Substrate Material",
+            "combo",
+            ["FR4_epoxy", "teflon_based", "Rogers RT/duroid 6002 (tm)"],
+        )
+        self.layout_settings.addLayout(line2, 5, 0, 1, 1)
+
+        line4 = self.add_line("line_4", "substrate_height", "Subtsrate height", "edit", "0.254")
+        self.layout_settings.addLayout(line4, 6, 0, 1, 1)
+
+        self._add_footer(self.create_rectangular_probe_inset_design)
+
+    def create_rectangular_probe_inset_design(self, synth_only=False):
+        """Create a rectangular probe patch.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.get_antenna(RectangularPatchInset, synth_only)
+
+    def draw_rectangular_probe_edge_ui(self):
+        """Create Rectangular Patch UI."""
+        self._add_header("RectEdge.jpg", "RectangularPatchEdge", "10")
+
+        line2 = self.add_line(
+            "line_2",
+            "material",
+            "Substrate Material",
+            "combo",
+            ["FR4_epoxy", "teflon_based", "Rogers RT/duroid 6002 (tm)"],
+        )
+        self.layout_settings.addLayout(line2, 5, 0, 1, 1)
+
+        line4 = self.add_line("line_4", "substrate_height", "Subtsrate height", "edit", "0.254")
+        self.layout_settings.addLayout(line4, 6, 0, 1, 1)
+
+        self._add_footer(self.create_rectangular_probe_edge_design)
+
+    def create_rectangular_probe_edge_design(self, synth_only=False):
+        """Create a rectangular probe patch.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.get_antenna(RectangularPatchEdge, synth_only)
+
     def draw_conical_horn_ui(self):
         """Create Conical Horn UI."""
 
@@ -890,6 +960,37 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         synth_only : bool
         """
         self.get_antenna(ConicalHorn, synth_only)
+
+    def draw_axial_helix_ui(self):
+        """Create Conical Horn UI."""
+
+        self._add_header("AxialMode.jpg", "AxialMode", "10")
+        line2 = self.add_line(
+            "line_2",
+            "gain_value",
+            "Expected Gain (dB)",
+            "edit",
+            "10",
+        )
+        self.layout_settings.addLayout(line2, 5, 0, 1, 1)
+        line3 = self.add_line(
+            "line_3",
+            "feeder_lenth",
+            "Feeder Length",
+            "edit",
+            "10",
+        )
+        self.layout_settings.addLayout(line3, 5, 0, 1, 1)
+        self._add_footer(self.create_axial_helic_design)
+
+    def create_axial_helic_design(self, synth_only=False):
+        """Create a conical horn antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.get_antenna(AxialMode, synth_only)
 
 
 if __name__ == "__main__":
