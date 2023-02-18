@@ -15,7 +15,7 @@ class TestClass(BasisTest, object):
     def teardown_class(self):
         BasisTest.my_teardown(self)
 
-    def test_01_conical_horn(self):
+    def test_01_helix_axial(self):
         self.aedtapp.design_name = "myname"
         oantenna = self.aedtapp.add_from_toolkit(AxialMode, draw=True, frequency=1.0)
         assert oantenna

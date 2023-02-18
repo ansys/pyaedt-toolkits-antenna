@@ -389,17 +389,16 @@ class AxialMode(CommonHelix):
         feedCoax.group_name = antenna_name
         feedPin.group_name = antenna_name
         cap.group_name = antenna_name
-        cutout.group_name = antenna_name
         gnd.group_name = antenna_name
         p1.group_name = antenna_name
+        o1.group_name = antenna_name
         self._app.modeler.translate(
-            [udm, feedCoax, feedPin, cap, cutout, gnd, p1], [pos_x, pos_y, pos_z]
+            [udm, feedCoax, feedPin, cap, gnd, p1, o1], [pos_x, pos_y, pos_z]
         )
         self.object_list[udm.name] = udm
         self.object_list[feedCoax.name] = feedCoax
         self.object_list[feedPin.name] = feedPin
         self.object_list[cap.name] = cap
-        self.object_list[cutout.name] = cutout
         self.object_list[gnd.name] = gnd
         self.object_list[p1.name] = p1
         self.object_list[o1.name] = o1
