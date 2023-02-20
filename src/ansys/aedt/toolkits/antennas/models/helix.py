@@ -4,7 +4,8 @@ import math
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
-from ansys.aedt.toolkits.antennas.common import CommonAntenna
+import ansys.aedt.toolkits.antennas.common_ui
+from ansys.aedt.toolkits.antennas.models.common import CommonAntenna
 
 
 class CommonHelix(CommonAntenna):
@@ -116,6 +117,7 @@ class AxialMode(CommonHelix):
 
     _default_input_parameters = {
         "antenna_name": None,
+        "antenna_material": "pec",
         "origin": [0, 0, 0],
         "length_unit": None,
         "coordinate_system": "Global",
@@ -189,7 +191,7 @@ class AxialMode(CommonHelix):
         """Draw conical horn antenna.
         Once the antenna is created, this method will not be used anymore."""
         if self.object_list:
-            self._app.logger.warning("This antenna already exists")
+            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists")
             return False
 
         self.set_variables_in_hfss()
@@ -247,7 +249,7 @@ class AxialMode(CommonHelix):
                 "-{}-{}/2".format(feed_pinL, wire_diameter),
             ],
             [groundx, groundy],
-            name="PerfE_gnd_" + antenna_name,
+            name="gnd_" + antenna_name,
         )
         gnd.history.props["Coordinate System"] = coordinate_system
 
@@ -301,23 +303,23 @@ class AxialMode(CommonHelix):
             ],
             radius=coax_outer_radius,
             height="-{}".format(feeder_length),
-            name="Coax_{}".format(antenna_name),
+            name="coax_{}".format(antenna_name),
             matname="Teflon (tm)",
         )
         Coax.history.props["Coordinate System"] = coordinate_system
-        faceId = self._app.modeler.get_faceid_from_position(
-            obj_name=Coax.name,
-            position=[
-                "{}/2+{}".format(diameter, coax_outer_radius),
-                "-{}/2".format(feed_pinD),
-                "-{}-{}/2-{}/2".format(feed_pinL, wire_diameter, feed_pinD),
-            ],
-        )
+        # faceId = self._app.modeler.get_faceid_from_position(
+        #     obj_name=Coax.name,
+        #     position=[
+        #         "{}/2+{}".format(diameter, coax_outer_radius),
+        #         "-{}/2".format(feed_pinD),
+        #         "-{}-{}/2-{}/2".format(feed_pinL, wire_diameter, feed_pinD),
+        #     ],
+        # )
 
         # f_perf = [i for i in Coax.faces if i.id not in
         # [Coax.bottom_face_z.id, Coax.top_face_z.id]]
-        o1 = self._app.modeler.create_object_from_face(faceId)
-        o1.name = "PerfE_Coax_{}".format(antenna_name)
+        # o1 = self._app.modeler.create_object_from_face(faceId)
+        # o1.name = "PerfE_Coax_{}".format(antenna_name)
         # Cap
         cap = self._app.modeler.create_cylinder(
             cs_axis=2,
@@ -391,7 +393,7 @@ class AxialMode(CommonHelix):
         cap.group_name = antenna_name
         gnd.group_name = antenna_name
         p1.group_name = antenna_name
-        o1.group_name = antenna_name
+        # o1.group_name = antenna_name
         self._app.modeler.translate(
             [udm, feedCoax, feedPin, cap, gnd, p1, o1], [pos_x, pos_y, pos_z]
         )
@@ -401,55 +403,6 @@ class AxialMode(CommonHelix):
         self.object_list[cap.name] = cap
         self.object_list[gnd.name] = gnd
         self.object_list[p1.name] = p1
-        self.object_list[o1.name] = o1
-
-    @pyaedt_function_handler()
-    def setup_hfss(self):
-        """Conical horn antenna HFSS setup."""
-
-        if "huygens_{}".format(self.antenna_name) in self.object_list:
-            obj_name = "huygens_{}".format(self.antenna_name)
-            val = self.object_list[obj_name]
-            if self.huygens_box:
-                lightSpeed = constants.SpeedOfLight  # m/s
-                freq_hz = constants.unit_converter(
-                    self.frequency, "Freq", self.frequency_unit, "Hz"
-                )
-                huygens_dist = str(
-                    constants.unit_converter(
-                        lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                    )
-                )
-                mesh_op = self._app.mesh.assign_length_mesh(
-                    [obj_name],
-                    maxlength=huygens_dist + self.length_unit,
-                    maxel=None,
-                    meshop_name="HuygensBox_Seed_" + self.antenna_name,
-                )
-                self.mesh_operations[mesh_op.name] = mesh_op
-            else:
-                val.delete()
-                del self.object_list[obj_name]
-        port = port_cap = None
-        if "port_{}".format(self.antenna_name) in self.object_list:
-            port = self.object_list["port_{}".format(self.antenna_name)]
-        if "port_cap_{}".format(self.antenna_name) in self.object_list:
-            port_cap = self.object_list["port_cap_{}".format(self.antenna_name)]
-        if port:
-            terminal_references = None
-            if self._app.solution_type == "Terminal" and port_cap:
-                terminal_references = port_cap.name
-            port1 = self._app.create_wave_port_from_sheet(
-                sheet=port,
-                portname="port_" + self.antenna_name,
-                terminal_references=terminal_references,
-            )
-            self.excitations[port1.name] = port1
-        for obj in self.object_list.keys():
-            if obj.startswith("PerfE"):
-                self._app.assign_perfecte_to_sheets(obj)
-
-        return True
 
     @pyaedt_function_handler()
     def model_disco(self):

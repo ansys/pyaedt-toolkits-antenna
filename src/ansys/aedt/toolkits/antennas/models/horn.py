@@ -3,7 +3,8 @@ from collections import OrderedDict
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
-from ansys.aedt.toolkits.antennas.common import CommonAntenna
+import ansys.aedt.toolkits.antennas.common_ui
+from ansys.aedt.toolkits.antennas.models.common import CommonAntenna
 
 
 class CommonHorn(CommonAntenna):
@@ -30,7 +31,9 @@ class CommonHorn(CommonAntenna):
             and value not in self._app._materials.mat_names_aedt
             and value not in self._app._materials.mat_names_aedt_lower
         ):
-            self._app.logger.warning("Material not found. Create new material before assign")
+            ansys.aedt.toolkits.antennas.common_ui.logger.warning(
+                "Material not found. Create new material before assign"
+            )
         else:
             if value != self.material and self.object_list:
                 for antenna_obj in self.object_list:
@@ -93,6 +96,7 @@ class ConicalHorn(CommonHorn):
 
     _default_input_parameters = {
         "antenna_name": None,
+        "antenna_material": "pec",
         "origin": [0, 0, 0],
         "length_unit": None,
         "coordinate_system": "Global",
@@ -120,7 +124,9 @@ class ConicalHorn(CommonHorn):
             self.material not in self._app._materials.mat_names_aedt
             or self.material not in self._app._materials.mat_names_aedt_lower
         ):
-            self._app.logger.warning("Material not found. Create new material before assign.")
+            ansys.aedt.toolkits.antennas.common_ui.logger.warning(
+                "Material not found. Create new material before assign."
+            )
             return parameters
 
         wg_radius_in = 0.5 * wavelength_in
@@ -157,7 +163,7 @@ class ConicalHorn(CommonHorn):
         """Draw conical horn antenna.
         Once the antenna is created, this method will not be used anymore."""
         if self.object_list:
-            self._app.logger.warning("This antenna already exists")
+            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists")
             return False
 
         self.set_variables_in_hfss()
@@ -297,6 +303,33 @@ class ConicalHorn(CommonHorn):
 
         cap.color = (132, 132, 192)
         p1.color = (128, 0, 0)
+        if self.huygens_box:
+            lightSpeed = constants.SpeedOfLight  # m/s
+            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
+            huygens_dist = str(
+                constants.unit_converter(
+                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
+                )
+            )
+            huygens = self._app.modeler.create_box(
+                position=[
+                    pos_x + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
+                    pos_y + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
+                    pos_z + "-" + wg_length,
+                ],
+                dimensions_list=[
+                    "2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
+                    "2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
+                    huygens_dist + self.length_unit + "+" + wg_length + "+" + horn_length,
+                ],
+                name="huygens_" + antenna_name,
+                matname="air",
+            )
+            huygens.display_wireframe = True
+            huygens.color = (0, 0, 255)
+            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.group_name = antenna_name
+            self.object_list[huygens.name] = huygens
 
         wg_in.group_name = antenna_name
         horn_sheet.group_name = antenna_name
@@ -308,79 +341,79 @@ class ConicalHorn(CommonHorn):
         self.object_list[cap.name] = cap
         self.object_list[p1.name] = p1
 
-    @pyaedt_function_handler()
-    def setup_hfss(self):
-        """Conical horn antenna HFSS setup."""
-        horn_length = self.synthesis_parameters.horn_length.hfss_variable
-        horn_radius = self.synthesis_parameters.horn_radius.hfss_variable
-        wg_length = self.synthesis_parameters.wg_length.hfss_variable
-        pos_x = self.synthesis_parameters.pos_x.hfss_variable
-        pos_y = self.synthesis_parameters.pos_y.hfss_variable
-        pos_z = self.synthesis_parameters.pos_z.hfss_variable
-        antenna_name = self.antenna_name
-        coordinate_system = self.coordinate_system
-        length_unit = self.length_unit
-
-        # Create Huygens box
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", length_unit
-                )
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    pos_x + "-" + horn_radius + "-" + huygens_dist + length_unit,
-                    pos_y + "-" + horn_radius + "-" + huygens_dist + length_unit,
-                    pos_z + "-" + wg_length,
-                ],
-                dimensions_list=[
-                    "2*" + horn_radius + "+" + "2*" + huygens_dist + length_unit,
-                    "2*" + horn_radius + "+" + "2*" + huygens_dist + length_unit,
-                    huygens_dist + length_unit + "+" + wg_length + "+" + horn_length,
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
-
-            mesh_op = self._app.mesh.assign_length_mesh(
-                [huygens.name],
-                maxlength=huygens_dist + length_unit,
-                maxel=None,
-                meshop_name="HuygensBox_Seed_" + antenna_name,
-            )
-
-            self.object_list[huygens.name] = huygens
-            huygens.group_name = antenna_name
-            self.mesh_operations[mesh_op.name] = mesh_op
-
-        # Excitation
-        if self._app.solution_type != "Modal":
-            self._app.logger.warning("Solution type must be Modal to define the excitation")
-
-        # Assign port and excitation
-        port_cap = None
-        port = None
-        for obj_name in self.object_list:
-            if obj_name.startswith("port_cap_"):
-                port_cap = self.object_list[obj_name]
-            elif obj_name.startswith("port_"):
-                port = self.object_list[obj_name]
-
-        terminal_references = None
-        if self._app.solution_type == "Terminal":
-            terminal_references = port_cap.name
-        port1 = self._app.create_wave_port_from_sheet(
-            sheet=port, portname="port_" + antenna_name, terminal_references=terminal_references
-        )
-        self.excitations[port1.name] = port1
-
-        return True
+    # @pyaedt_function_handler()
+    # def setup_hfss(self):
+    #     """Conical horn antenna HFSS setup."""
+    #     horn_length = self.synthesis_parameters.horn_length.hfss_variable
+    #     horn_radius = self.synthesis_parameters.horn_radius.hfss_variable
+    #     wg_length = self.synthesis_parameters.wg_length.hfss_variable
+    #     pos_x = self.synthesis_parameters.pos_x.hfss_variable
+    #     pos_y = self.synthesis_parameters.pos_y.hfss_variable
+    #     pos_z = self.synthesis_parameters.pos_z.hfss_variable
+    #     antenna_name = self.antenna_name
+    #     coordinate_system = self.coordinate_system
+    #     length_unit = self.length_unit
+    #
+    #     # Create Huygens box
+    #     if self.huygens_box:
+    #         lightSpeed = constants.SpeedOfLight  # m/s
+    #         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
+    #         huygens_dist = str(
+    #             constants.unit_converter(
+    #                 lightSpeed / (10 * freq_hz), "Length", "meter", length_unit
+    #             )
+    #         )
+    #         huygens = self._app.modeler.create_box(
+    #             position=[
+    #                 pos_x + "-" + horn_radius + "-" + huygens_dist + length_unit,
+    #                 pos_y + "-" + horn_radius + "-" + huygens_dist + length_unit,
+    #                 pos_z + "-" + wg_length,
+    #             ],
+    #             dimensions_list=[
+    #                 "2*" + horn_radius + "+" + "2*" + huygens_dist + length_unit,
+    #                 "2*" + horn_radius + "+" + "2*" + huygens_dist + length_unit,
+    #                 huygens_dist + length_unit + "+" + wg_length + "+" + horn_length,
+    #             ],
+    #             name="huygens_" + antenna_name,
+    #             matname="air",
+    #         )
+    #         huygens.display_wireframe = True
+    #         huygens.color = (0, 0, 255)
+    #         huygens.history.props["Coordinate System"] = coordinate_system
+    #
+    #         mesh_op = self._app.mesh.assign_length_mesh(
+    #             [huygens.name],
+    #             maxlength=huygens_dist + length_unit,
+    #             maxel=None,
+    #             meshop_name="HuygensBox_Seed_" + antenna_name,
+    #         )
+    #
+    #         self.object_list[huygens.name] = huygens
+    #         huygens.group_name = antenna_name
+    #         self.mesh_operations[mesh_op.name] = mesh_op
+    #
+    #     # Excitation
+    #     if self._app.solution_type != "Modal":
+    #         self._app.logger.warning("Solution type must be Modal to define the excitation")
+    #
+    #     # Assign port and excitation
+    #     port_cap = None
+    #     port = None
+    #     for obj_name in self.object_list:
+    #         if obj_name.startswith("port_cap_"):
+    #             port_cap = self.object_list[obj_name]
+    #         elif obj_name.startswith("port_"):
+    #             port = self.object_list[obj_name]
+    #
+    #     terminal_references = None
+    #     if self._app.solution_type == "Terminal":
+    #         terminal_references = port_cap.name
+    #     port1 = self._app.create_wave_port_from_sheet(
+    #         sheet=port, portname="port_" + antenna_name, terminal_references=terminal_references
+    #     )
+    #     self.excitations[port1.name] = port1
+    #
+    #     return True
 
     @pyaedt_function_handler()
     def model_disco(self):

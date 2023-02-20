@@ -1,9 +1,9 @@
 from pyaedt.modeler.cad.object3d import Object3d
 from pyaedt.modeler.geometry_operators import GeometryOperators
 
-from ansys.aedt.toolkits.antennas.patch import RectangularPatchEdge
-from ansys.aedt.toolkits.antennas.patch import RectangularPatchInset
-from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
+from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchEdge
+from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchInset
+from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchProbe
 from conftest import BasisTest
 
 test_project_name = "Patch_test"

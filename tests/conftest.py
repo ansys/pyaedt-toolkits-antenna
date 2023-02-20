@@ -27,6 +27,8 @@ import tempfile
 from pyaedt import pyaedt_logger
 from pyaedt import settings
 
+import ansys.aedt.toolkits.antennas.common_ui
+
 # from pyaedt.generic.general_methods import generate_unique_name
 
 settings.enable_error_handler = False
@@ -180,7 +182,7 @@ def desktop_init():
 @pytest.fixture
 def clean_desktop_messages(desktop_init):
     """Clear all Desktop app messages."""
-    desktop_init.logger.clear_messages(level=3)
+    ansys.aedt.toolkits.antennas.common_ui.logger.clear_messages(level=3)
 
 
 @pytest.fixture

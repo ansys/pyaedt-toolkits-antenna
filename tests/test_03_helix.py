@@ -1,6 +1,6 @@
 from pyaedt.modeler.cad.object3d import Object3d
 
-from ansys.aedt.toolkits.antennas.helix import AxialMode
+from ansys.aedt.toolkits.antennas.models.helix import AxialMode
 from conftest import BasisTest
 
 test_project_name = "Helix_test"

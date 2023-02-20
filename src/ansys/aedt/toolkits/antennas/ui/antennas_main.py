@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'antenna_toolkitwamFJp.ui'
+## Form generated from reading UI file 'antenna_toolkitcsahZp.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.2
 ##
@@ -78,15 +78,21 @@ class Ui_MainWindow(object):
         self.widget.setSizePolicy(sizePolicy1)
         self.gridLayout = QGridLayout(self.widget)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.release_and_exit_button = QPushButton(self.widget)
+        self.release_and_exit_button.setObjectName(u"release_and_exit_button")
+        self.release_and_exit_button.setMinimumSize(QSize(0, 40))
+
+        self.gridLayout.addWidget(self.release_and_exit_button, 3, 3, 1, 1)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer, 3, 1, 1, 1)
+
         self.connect_hfss = QPushButton(self.widget)
         self.connect_hfss.setObjectName(u"connect_hfss")
+        self.connect_hfss.setMinimumSize(QSize(0, 40))
 
         self.gridLayout.addWidget(self.connect_hfss, 3, 0, 1, 1)
-
-        self.closeButton = QPushButton(self.widget)
-        self.closeButton.setObjectName(u"closeButton")
-
-        self.gridLayout.addWidget(self.closeButton, 3, 2, 1, 1)
 
         self.tabWidget = QTabWidget(self.widget)
         self.tabWidget.setObjectName(u"tabWidget")
@@ -435,11 +441,13 @@ class Ui_MainWindow(object):
 
         self.tabWidget.addTab(self.analysis, "")
 
-        self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 3)
+        self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 5)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.release_button = QPushButton(self.widget)
+        self.release_button.setObjectName(u"release_button")
+        self.release_button.setMinimumSize(QSize(0, 40))
 
-        self.gridLayout.addItem(self.horizontalSpacer, 3, 1, 1, 1)
+        self.gridLayout.addWidget(self.release_button, 3, 2, 1, 1)
 
 
         self.verticalLayout.addWidget(self.widget)
@@ -525,8 +533,8 @@ class Ui_MainWindow(object):
         self.actionPyramidal_Ridged.setText(QCoreApplication.translate("MainWindow", u"Pyramidal Ridged", None))
         self.actionQuad_Ridged.setText(QCoreApplication.translate("MainWindow", u"Quad Ridged", None))
         self.actionAxial.setText(QCoreApplication.translate("MainWindow", u"Axial", None))
-        self.connect_hfss.setText(QCoreApplication.translate("MainWindow", u"Launch HFSS", None))
-        self.closeButton.setText(QCoreApplication.translate("MainWindow", u"Release", None))
+        self.release_and_exit_button.setText(QCoreApplication.translate("MainWindow", u" Close Desktop and Wizard ", None))
+        self.connect_hfss.setText(QCoreApplication.translate("MainWindow", u"  Launch HFSS  ", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Frequency Units", None))
         self.frequnits.setItemText(0, QCoreApplication.translate("MainWindow", u"Hz", None))
         self.frequnits.setItemText(1, QCoreApplication.translate("MainWindow", u"KHz", None))
@@ -570,6 +578,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.design), QCoreApplication.translate("MainWindow", u" Design ", None))
         self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Analyze Project", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.analysis), QCoreApplication.translate("MainWindow", u" Analysys ", None))
+        self.release_button.setText(QCoreApplication.translate("MainWindow", u" Close Antenna Wizard ", None))
         self.menuAntennas.setTitle(QCoreApplication.translate("MainWindow", u"Antennas", None))
         self.menuPatch.setTitle(QCoreApplication.translate("MainWindow", u"Patch", None))
         self.menuHorn.setTitle(QCoreApplication.translate("MainWindow", u"Horn", None))
