@@ -112,6 +112,17 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             lambda checked: self.draw_rectangular_probe_ui()
         )
         self.actionConical.triggered.connect(lambda checked: self.draw_conical_horn_ui())
+        self.actionConical_Corrugated.triggered.connect(
+            lambda checked: self.draw_conical_horn_corrugated_ui()
+        )
+        self.actionElliptical.triggered.connect(lambda checked: self.draw_elliptical_horn_ui())
+        self.actionE_Plane.triggered.connect(lambda checked: self.draw_eplane_horn_ui())
+        self.actionH_Plane.triggered.connect(lambda checked: self.draw_hplane_horn_ui())
+        self.actionPyramidal.triggered.connect(lambda checked: self.draw_pyramidal_horn_ui())
+        self.actionPyramidal_Ridged.triggered.connect(
+            lambda checked: self.draw_pyramidal_corr_horn_ui()
+        )
+        self.actionQuad_Ridged.triggered.connect(lambda checked: self.draw_quad_ridged_horn_ui())
         self.actionAxial.triggered.connect(lambda checked: self.draw_axial_helix_ui())
         self.actionRectangular_Edge.triggered.connect(
             lambda checked: self.draw_rectangular_probe_edge_ui()
@@ -119,6 +130,22 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionRectangular_Inset.triggered.connect(
             lambda checked: self.draw_rectangular_probe_inset_ui()
         )
+        self.actionBowtieSlot.triggered.connect(lambda checked: self.draw_bowtie_slot_ui())
+        self.actionBowtieNormal.triggered.connect(lambda checked: self.draw_bowtie_normal_ui())
+        self.actionBowtieRounded.triggered.connect(lambda checked: self.draw_bowtie_rounded_ui())
+        self.actionArchimedean.triggered.connect(lambda checked: self.draw_conical_archimedean_ui())
+        self.actionLog.triggered.connect(lambda checked: self.draw_conical_log_ui())
+        self.actionSinous.triggered.connect(lambda checked: self.draw_conical_sinuous_ui())
+        self.actionPlanar.triggered.connect(lambda checked: self.draw_dipole_planar_ui())
+        self.actionWire.triggered.connect(lambda checked: self.draw_dipole_wire_ui())
+        self.actionLog_Periodic_Array.triggered.connect(
+            lambda checked: self.draw_log_periodic_array_ui()
+        )
+        self.actionLog_Trap.triggered.connect(lambda checked: self.draw_log_periodic_trap_ui())
+
+        self.actionLog_Tooth.triggered.connect(lambda checked: self.draw_log_periodic_tooth_ui())
+        self.actionBicone.triggered.connect(lambda checked: self.draw_bicone_ui())
+        self.actionDiscone.triggered.connect(lambda checked: self.draw_discone_ui())
 
     def write_log_line(self, value):
         self.log_text.insertPlainText(value)
@@ -604,19 +631,21 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         antenna_image = QtWidgets.QLabel()
         antenna_image.setObjectName("antenna_image")
 
+        antenna_image.setMaximumHeight(self.centralwidget.height() / 3)
         antenna_image.setScaledContents(True)
         _pixmap = QtGui.QPixmap(image_path)
-        antenna_image.setPixmap(_pixmap)
         _pixmap = _pixmap.scaled(
             antenna_image.width(),
             antenna_image.height(),
             QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation,
         )
+        antenna_image.setPixmap(_pixmap)
+
         line_0.addWidget(antenna_image)
 
         line_0_spacer = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
         )
 
         line_0.addItem(line_0_spacer)
@@ -859,6 +888,446 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         synth_only : bool
         """
         self.get_antenna(AxialMode, synth_only)
+
+    def draw_bowtie_normal_ui(self):
+        """Create Conical Horn UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("Bowtie.jpg", "Bowtie", "10")
+        self._add_footer(self.create_bowtie_normal_design)
+
+    def create_bowtie_normal_design(self, synth_only=False):
+        """Create a bowtie  antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_bowtie_rounded_ui(self):
+        """Create Conical Horn UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("BowtieRounded.jpg", "BowtieRound", "10")
+        self._add_footer(self.create_bowtie_rounded_design)
+
+    def create_bowtie_rounded_design(self, synth_only=False):
+        """Create a bowtie rounded antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_bowtie_slot_ui(self):
+        """Create Conical Horn UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("BowtieSlot.jpg", "BowtieSlot", "10")
+        self._add_footer(self.create_bowtie_slot_design)
+
+    def create_bowtie_slot_design(self, synth_only=False):
+        """Create a bowtie slot antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_conical_archimedean_ui(self):
+        """Create Conical Archimedean UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("ConicalArchimedean.jpg", "Archimedean", "10")
+        self._add_footer(self.create_conical_archimedean_design)
+
+    def create_conical_archimedean_design(self, synth_only=False):
+        """Create a Conical Archimedean antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_conical_log_ui(self):
+        """Create Conical Log UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("ConicalLog.jpg", "Archimedean", "10")
+        self._add_footer(self.create_conical_log_design)
+
+    def create_conical_log_design(self, synth_only=False):
+        """Create a Conical Log antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_conical_sinuous_ui(self):
+        """Create Conical Sinuous UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("ConicalSinuous.jpg", "Archimedean", "10")
+        self._add_footer(self.create_conical_sinuous_design)
+
+    def create_conical_sinuous_design(self, synth_only=False):
+        """Create a Conical Sinuous antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_dipole_planar_ui(self):
+        """Create Planar Dipole UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("PlanarDipole.jpg", "PlanarDipole", "10")
+        self._add_footer(self.create_planar_dipole_design)
+
+    def create_planar_dipole_design(self, synth_only=False):
+        """Create a Planar Dipole antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_dipole_wire_ui(self):
+        """Create Wire Dipole UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("WireDipole.jpg", "PlanarDipole", "10")
+        self._add_footer(self.create_wire_dipole_design)
+
+    def create_wire_dipole_design(self, synth_only=False):
+        """Create a Wire Dipole antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_conical_horn_corrugated_ui(self):
+        """Create Conical Horn Corrugated UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornConicalCorrugated.jpg", "HornCorrugated", "10")
+        self._add_footer(self.create_horn_corrugated_design)
+
+    def create_horn_corrugated_design(self, synth_only=False):
+        """Create a Conical Horn Corrugated antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_eplane_horn_ui(self):
+        """Create E-Plane UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornEPlane.jpg", "HornEPlane", "10")
+        self._add_footer(self.create_horn_eplane_design)
+
+    def create_horn_eplane_design(self, synth_only=False):
+        """Create a E-Plane horn antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_hplane_horn_ui(self):
+        """Create H-Plane UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornHPlane.jpg", "HornHPlane", "10")
+        self._add_footer(self.create_horn_hplane_design)
+
+    def create_horn_hplane_design(self, synth_only=False):
+        """Create a H-Plane horn antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pyramidal_horn_ui(self):
+        """Create Horn Pyramidal UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornPyramidal.jpg", "HornPyramidal", "10")
+        self._add_footer(self.create_horn_pyramidal_design)
+
+    def create_horn_pyramidal_design(self, synth_only=False):
+        """Create a Horn Pyramidal antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pyramidal_corr_horn_ui(self):
+        """Create Horn Pyramidal Ridged UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornPyramidalRidegd.png", "HornPyramidalRid", "10")
+        self._add_footer(self.create_horn_pyramidal_rid_design)
+
+    def create_horn_pyramidal_rid_design(self, synth_only=False):
+        """Create a Conical Horn Pyramidal antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_elliptical_horn_ui(self):
+        """Create  Horn Elliptical UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornElliptical.jpg", "HornElliptical", "10")
+        self._add_footer(self.create_horn_elliptical_design)
+
+    def create_horn_elliptical_design(self, synth_only=False):
+        """Create a Horn Elliptical antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_quad_ridged_horn_ui(self):
+        """Create  Quad-Ridged Horn UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornQuadRidged.png", "HornQuadRidged", "10")
+        self._add_footer(self.create_horn_quad_design)
+
+    def create_horn_quad_design(self, synth_only=False):
+        """Create a Quad-Ridged antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_log_periodic_array_ui(self):
+        """Create  Log-Periodic Array UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("LogPeriodicArray.png", "LogPeriodicArray", "10")
+        self._add_footer(self.create_log_periodic_array_design)
+
+    def create_log_periodic_array_design(self, synth_only=False):
+        """Create a Log-Periodic Array antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_log_periodic_tooth_ui(self):
+        """Create  Log-Periodic Tooth UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("LogTooth.jpg", "LogTooth", "10")
+        self._add_footer(self.create_log_periodic_tooth_design)
+
+    def create_log_periodic_tooth_design(self, synth_only=False):
+        """Create a Log-Periodic Tooth antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_log_periodic_trap_ui(self):
+        """Create  Log-Periodic Array UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("LogTrap.jpg", "LogTrap", "10")
+        self._add_footer(self.create_log_periodic_trap_design)
+
+    def create_log_periodic_trap_design(self, synth_only=False):
+        """Create a Log-Periodic Trap antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_bicone_ui(self):
+        """Create  Bicone antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("Bicone.jpg", "Bicone", "10")
+        self._add_footer(self.create_log_periodic_trap_design)
+
+    def create_bicone_design(self, synth_only=False):
+        """Create a bicone antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_discone_ui(self):
+        """Create  Discone antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("Discone.jpg", "Discone", "10")
+        self._add_footer(self.create_log_periodic_trap_design)
+
+    def create_discone_design(self, synth_only=False):
+        """Create a Discone antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
 
 
 if __name__ == "__main__":
