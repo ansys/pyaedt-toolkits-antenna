@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'antenna_toolkitqoZmKr.ui'
+## Form generated from reading UI file 'antenna_toolkitwamFJp.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.2
 ##
@@ -58,6 +58,8 @@ class Ui_MainWindow(object):
         self.actionPyramidal_Ridged.setObjectName(u"actionPyramidal_Ridged")
         self.actionQuad_Ridged = QAction(MainWindow)
         self.actionQuad_Ridged.setObjectName(u"actionQuad_Ridged")
+        self.actionAxial = QAction(MainWindow)
+        self.actionAxial.setObjectName(u"actionAxial")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -78,13 +80,11 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.connect_hfss = QPushButton(self.widget)
         self.connect_hfss.setObjectName(u"connect_hfss")
-        self.connect_hfss.setMinimumSize(QSize(100, 40))
 
         self.gridLayout.addWidget(self.connect_hfss, 3, 0, 1, 1)
 
         self.closeButton = QPushButton(self.widget)
         self.closeButton.setObjectName(u"closeButton")
-        self.closeButton.setMinimumSize(QSize(100, 40))
 
         self.gridLayout.addWidget(self.closeButton, 3, 2, 1, 1)
 
@@ -202,7 +202,6 @@ class Ui_MainWindow(object):
         self.use_grpc_combo.addItem("")
         self.use_grpc_combo.addItem("")
         self.use_grpc_combo.setObjectName(u"use_grpc_combo")
-        self.use_grpc_combo.setLayoutDirection(Qt.LeftToRight)
 
         self.horizontalLayout_2.addWidget(self.use_grpc_combo)
 
@@ -252,7 +251,6 @@ class Ui_MainWindow(object):
 
         self.browse_project = QPushButton(self.tab)
         self.browse_project.setObjectName(u"browse_project")
-        self.browse_project.setMinimumSize(QSize(120, 40))
 
         self.horizontalLayout_5.addWidget(self.browse_project)
 
@@ -423,7 +421,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.pushButton_5 = QPushButton(self.analysis)
         self.pushButton_5.setObjectName(u"pushButton_5")
-        self.pushButton_5.setMinimumSize(QSize(0, 40))
 
         self.verticalLayout_3.addWidget(self.pushButton_5)
 
@@ -459,7 +456,6 @@ class Ui_MainWindow(object):
 
         self.progressBar = QProgressBar(self.centralwidget)
         self.progressBar.setObjectName(u"progressBar")
-        self.progressBar.setLayoutDirection(Qt.LeftToRight)
         self.progressBar.setValue(0)
 
         self.verticalLayout.addWidget(self.progressBar)
@@ -474,6 +470,8 @@ class Ui_MainWindow(object):
         self.menuPatch.setObjectName(u"menuPatch")
         self.menuHorn = QMenu(self.menuAntennas)
         self.menuHorn.setObjectName(u"menuHorn")
+        self.menuHelix = QMenu(self.menuAntennas)
+        self.menuHelix.setObjectName(u"menuHelix")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -482,6 +480,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuAntennas.menuAction())
         self.menuAntennas.addAction(self.menuPatch.menuAction())
         self.menuAntennas.addAction(self.menuHorn.menuAction())
+        self.menuAntennas.addAction(self.menuHelix.menuAction())
         self.menuPatch.addAction(self.actionRectangular_with_probe)
         self.menuPatch.addAction(self.actionRectangular_Inset)
         self.menuPatch.addAction(self.actionRectangular_Edge)
@@ -496,10 +495,11 @@ class Ui_MainWindow(object):
         self.menuHorn.addAction(self.actionPyramidal)
         self.menuHorn.addAction(self.actionPyramidal_Ridged)
         self.menuHorn.addAction(self.actionQuad_Ridged)
+        self.menuHelix.addAction(self.actionAxial)
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.frequnits.setCurrentIndex(3)
         self.units.setCurrentIndex(1)
 
@@ -524,6 +524,7 @@ class Ui_MainWindow(object):
         self.actionPyramidal.setText(QCoreApplication.translate("MainWindow", u"Pyramidal", None))
         self.actionPyramidal_Ridged.setText(QCoreApplication.translate("MainWindow", u"Pyramidal Ridged", None))
         self.actionQuad_Ridged.setText(QCoreApplication.translate("MainWindow", u"Quad Ridged", None))
+        self.actionAxial.setText(QCoreApplication.translate("MainWindow", u"Axial", None))
         self.connect_hfss.setText(QCoreApplication.translate("MainWindow", u"Launch HFSS", None))
         self.closeButton.setText(QCoreApplication.translate("MainWindow", u"Release", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Frequency Units", None))
@@ -572,5 +573,6 @@ class Ui_MainWindow(object):
         self.menuAntennas.setTitle(QCoreApplication.translate("MainWindow", u"Antennas", None))
         self.menuPatch.setTitle(QCoreApplication.translate("MainWindow", u"Patch", None))
         self.menuHorn.setTitle(QCoreApplication.translate("MainWindow", u"Horn", None))
+        self.menuHelix.setTitle(QCoreApplication.translate("MainWindow", u"Helix", None))
     # retranslateUi
 

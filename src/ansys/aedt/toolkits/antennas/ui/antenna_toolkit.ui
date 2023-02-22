@@ -708,6 +708,13 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QProgressBar" name="progressBar">
+      <property name="value">
+       <number>0</number>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -747,8 +754,15 @@
      <addaction name="actionPyramidal_Ridged"/>
      <addaction name="actionQuad_Ridged"/>
     </widget>
+    <widget class="QMenu" name="menuHelix">
+     <property name="title">
+      <string>Helix</string>
+     </property>
+     <addaction name="actionAxial"/>
+    </widget>
     <addaction name="menuPatch"/>
     <addaction name="menuHorn"/>
+    <addaction name="menuHelix"/>
    </widget>
    <addaction name="menuAntennas"/>
   </widget>
@@ -826,6 +840,11 @@
   <action name="actionQuad_Ridged">
    <property name="text">
     <string>Quad Ridged</string>
+   </property>
+  </action>
+  <action name="actionAxial">
+   <property name="text">
+    <string>Axial</string>
    </property>
   </action>
  </widget>
