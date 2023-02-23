@@ -19,6 +19,7 @@ import qdarkstyle
 
 from ansys.aedt.toolkits.antennas.helix import AxialMode
 from ansys.aedt.toolkits.antennas.horn import ConicalHorn
+from ansys.aedt.toolkits.antennas.horn import PyramidalRidged
 from ansys.aedt.toolkits.antennas.patch import RectangularPatchEdge
 from ansys.aedt.toolkits.antennas.patch import RectangularPatchInset
 from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
@@ -280,6 +281,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             lambda checked: self.draw_rectangular_probe_ui()
         )
         self.actionConical.triggered.connect(lambda checked: self.draw_conical_horn_ui())
+        self.actionPyramidal_Ridged.triggered.connect(
+            lambda checked: self.draw_pyramidal_ridged_horn_ui()
+        )
         self.actionAxial.triggered.connect(lambda checked: self.draw_axial_helix_ui())
         self.actionRectangular_Edge.triggered.connect(
             lambda checked: self.draw_rectangular_probe_edge_ui()
@@ -960,6 +964,22 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         synth_only : bool
         """
         self.get_antenna(ConicalHorn, synth_only)
+
+    def draw_pyramidal_ridged_horn_ui(self):
+        """Create pyramidal ridged horn UI."""
+
+        self._add_header("HornPyramidalRidged.png", "HornPyramidalRidged", "10")
+
+        self._add_footer(self.create_pyramidal_ridged_horn_design)
+
+    def create_pyramidal_ridged_horn_design(self, synth_only=False):
+        """Create pyramidal ridged horn.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.get_antenna(PyramidalRidged, synth_only)
 
     def draw_axial_helix_ui(self):
         """Create Conical Horn UI."""

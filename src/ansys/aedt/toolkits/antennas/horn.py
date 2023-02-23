@@ -527,10 +527,10 @@ class PyramidalRidged(CommonHorn):
         flare_length = self.synthesis_parameters.flare_length.hfss_variable
         wall_thickness = self.synthesis_parameters.wall_thickness.hfss_variable
         wg_height = self.synthesis_parameters.wg_height.hfss_variable
-        wg_width = self.synthesis_parameters.aperture_width.hfss_variable
-        wg_length = self.synthesis_parameters.flare_length.hfss_variable
-        ridge_width = self.synthesis_parameters.wall_thickness.hfss_variable
-        ridge_spacing = self.synthesis_parameters.wg_height.hfss_variable
+        wg_width = self.synthesis_parameters.wg_width.hfss_variable
+        wg_length = self.synthesis_parameters.wg_length.hfss_variable
+        ridge_width = self.synthesis_parameters.ridge_width.hfss_variable
+        ridge_spacing = self.synthesis_parameters.ridge_spacing.hfss_variable
 
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
@@ -542,9 +542,9 @@ class PyramidalRidged(CommonHorn):
         # Air
         air = self._app.modeler.create_box(
             position=[
-                "-" + wg_width + "/2" + "+" + pos_x,
-                "-" + wg_height + "/2" + "+" + pos_y,
-                "-" + wg_length + "+" + pos_z,
+                "-" + wg_width + "/2",
+                "-" + wg_height + "/2",
+                "-" + wg_length,
             ],
             dimensions_list=[wg_width, wg_height, wg_length],
             matname="vacuum",
@@ -554,13 +554,13 @@ class PyramidalRidged(CommonHorn):
         # Wall
         wall = self._app.modeler.create_box(
             position=[
-                "-" + wg_width + "/2" + "-" + wall_thickness + "+" + pos_x,
-                "-" + wg_height + "/2" + "-" + wall_thickness + "+" + pos_y,
-                "-" + wg_length + "+" + pos_z,
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "-" + wg_height + "/2" + "-" + wall_thickness,
+                "-" + wg_length,
             ],
             dimensions_list=[
-                wg_width + "+" + "2*" + wall_thickness,
-                wg_height + "2*" + wall_thickness,
+                wg_width + "+2*" + wall_thickness,
+                wg_height + "+2*" + wall_thickness,
                 wg_length,
             ],
             name="wall_" + antenna_name,
@@ -577,9 +577,9 @@ class PyramidalRidged(CommonHorn):
         # Input
         wg_in = self._app.modeler.create_box(
             position=[
-                "-" + wg_width + "/2" + "+" + pos_x,
-                "-" + wg_height + "/2" + "+" + pos_y,
-                "-" + wg_length + "+" + pos_z,
+                "-" + wg_width + "/2",
+                "-" + wg_height + "/2",
+                "-" + wg_length,
             ],
             dimensions_list=[wg_width, wg_height, wg_length],
             name="wg_inner" + antenna_name,
@@ -591,16 +591,16 @@ class PyramidalRidged(CommonHorn):
         # Cap
         cap = self._app.modeler.create_box(
             position=[
-                "-" + wg_width + "/2" + "-" + wall_thickness + "+" + pos_x,
-                "-" + wg_height + "/2" + "-" + wall_thickness + "+" + pos_y,
-                "-" + wg_length + "+" + pos_z,
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "-" + wg_height + "/2" + "-" + wall_thickness,
+                "-" + wg_length,
             ],
             dimensions_list=[
                 wg_width + "+" + "2*" + wall_thickness,
-                wg_height + "2*" + wall_thickness,
+                wg_height + "+2*" + wall_thickness,
                 "-" + wall_thickness,
             ],
-            name="wall_" + antenna_name,
+            name="port_cap_" + antenna_name,
             matname="pec",
         )
         cap.history.props["Coordinate System"] = coordinate_system
@@ -608,11 +608,11 @@ class PyramidalRidged(CommonHorn):
 
         # P1
         p1 = self._app.modeler.create_rectangle(
-            cs_plane=2,
+            csPlane=2,
             position=[
-                "-" + wg_width + "/2" + "+" + pos_x,
-                "-" + wg_height + "/2" + "+" + pos_y,
-                "-" + wg_length + "+" + pos_z,
+                "-" + wg_width + "/2",
+                "-" + wg_height + "/2",
+                "-" + wg_length,
             ],
             dimension_list=[wg_width, wg_height],
             name="port_" + antenna_name,
@@ -622,11 +622,11 @@ class PyramidalRidged(CommonHorn):
 
         # Horn wall
         base = self._app.modeler.create_rectangle(
-            cs_plane=2,
+            csPlane=2,
             position=[
-                "-" + wg_width + "/2" + "+" + pos_x,
-                "-" + wg_height + "/2" + "+" + pos_y,
-                pos_z,
+                "-" + wg_width + "/2",
+                "-" + wg_height + "/2",
+                "0",
             ],
             dimension_list=[wg_width, wg_height],
             name="base_" + antenna_name,
@@ -634,25 +634,25 @@ class PyramidalRidged(CommonHorn):
         base.history.props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_rectangle(
-            cs_plane=2,
+            csPlane=2,
             position=[
-                "-" + wg_width + "/2" + "-" + wall_thickness + "+" + pos_x,
-                "-" + wg_height + "/2" + "-" + wall_thickness + "+" + pos_y,
-                pos_z,
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "-" + wg_height + "/2" + "-" + wall_thickness,
+                "0",
             ],
             dimension_list=[
                 wg_width + "+" + "2*" + wall_thickness,
-                wg_height + "2*" + wall_thickness,
+                wg_height + "+2*" + wall_thickness,
             ],
             name="base_wall_" + antenna_name,
         )
         base_wall.history.props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_rectangle(
-            cs_plane=2,
+            csPlane=2,
             position=[
-                "-" + aperture_width + "/2" + "+" + pos_x,
-                "-" + aperture_height + "/2" + "+" + pos_y,
+                "-" + aperture_width + "/2",
+                "-" + aperture_height + "/2",
                 flare_length,
             ],
             dimension_list=[aperture_width, aperture_height],
@@ -661,10 +661,10 @@ class PyramidalRidged(CommonHorn):
         horn_top.history.props["Coordinate System"] = coordinate_system
 
         horn = self._app.modeler.create_rectangle(
-            cs_plane=2,
+            csPlane=2,
             position=[
-                "-" + aperture_width + "/2" + "-" + wall_thickness + "+" + pos_x,
-                "-" + aperture_height + "/2" + "-" + wall_thickness + "+" + pos_y,
+                "-" + aperture_width + "/2" + "-" + wall_thickness,
+                "-" + aperture_height + "/2" + "-" + wall_thickness,
                 flare_length,
             ],
             dimension_list=[
@@ -676,508 +676,392 @@ class PyramidalRidged(CommonHorn):
         horn.history.props["Coordinate System"] = coordinate_system
 
         # Ridge
-        position1 = []
-        position2 = []
-        position1.append(["0", ridge_spacing + "/2", "0"])
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.00417",
-                flare_length + "*1/8",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.0179",
-                flare_length + "*2/8",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.0439",
-                flare_length + "*3/8",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.0858",
-                flare_length + "*4/8",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.1502",
-                flare_length + "*5/8",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.1942",
-                flare_length + "*11/16",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.25",
-                flare_length + "*6/8",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.2945",
-                flare_length + "*19/24",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.3486",
-                flare_length + "*5/6",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.4183",
-                flare_length + "*7/8",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.4776",
-                flare_length + "*29/32",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.5549",
-                flare_length + "*15/16",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.6780",
-                flare_length + "*31/32",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.7654",
-                flare_length + "*63/64",
-            ]
-        )
-        position1.append(
-            [
-                "0",
-                ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.8627",
-                flare_length + "*127/128",
-            ]
-        )
-        position1.append(["0", aperture_height + "/2", flare_length])
-        position1.append(["0", wg_height + "/2", "0"])
+        def ridge_position(sign="+"):
+            position = []
+            if sign == "+":
+                sign = ""
+            position.append(["0", sign + "(" + ridge_spacing + "/2)", "0"])
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.00417)",
+                    flare_length + "*1/8",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.0179)",
+                    flare_length + "*2/8",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.0439)",
+                    flare_length + "*3/8",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.0858)",
+                    flare_length + "*4/8",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.1502)",
+                    flare_length + "*5/8",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.1942)",
+                    flare_length + "*11/16",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.25)",
+                    flare_length + "*6/8",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.2945)",
+                    flare_length + "*19/24",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.3486)",
+                    flare_length + "*5/6",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.4183)",
+                    flare_length + "*7/8",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.4776)",
+                    flare_length + "*29/32",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.5549)",
+                    flare_length + "*15/16",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.6780)",
+                    flare_length + "*31/32",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.7654)",
+                    flare_length + "*63/64",
+                ]
+            )
+            position.append(
+                [
+                    "0",
+                    sign
+                    + "("
+                    + ridge_spacing
+                    + "/2"
+                    + "+"
+                    + "("
+                    + aperture_height
+                    + "-"
+                    + ridge_spacing
+                    + ")/2*"
+                    + "0.8627)",
+                    flare_length + "*127/128",
+                ]
+            )
+            position.append(["0", sign + aperture_height + "/2", flare_length])
+            position.append(["0", sign + wg_height + "/2", "0"])
+            return position
 
-        position2.append(["0", "-(" + ridge_spacing + "/2)", "0"])
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.00417)",
-                flare_length + "*1/8",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.0179)",
-                flare_length + "*2/8",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.0439)",
-                flare_length + "*3/8",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.0858)",
-                flare_length + "*4/8",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.1502)",
-                flare_length + "*5/8",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.1942)",
-                flare_length + "*11/16",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.25)",
-                flare_length + "*6/8",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.2945)",
-                flare_length + "*19/24",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.3486)",
-                flare_length + "*5/6",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.4183)",
-                flare_length + "*7/8",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.4776)",
-                flare_length + "*29/32",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.5549)",
-                flare_length + "*15/16",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.6780)",
-                flare_length + "*31/32",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.7654)",
-                flare_length + "*63/64",
-            ]
-        )
-        position2.append(
-            [
-                "0",
-                "-("
-                + ridge_spacing
-                + "/2"
-                + "+"
-                + "("
-                + aperture_height
-                + "-"
-                + ridge_spacing
-                + ")/2*"
-                + "0.8627)",
-                flare_length + "*127/128",
-            ]
-        )
-        position2.append(["0", "-" + aperture_height + "/2", flare_length])
-        position2.append(["0", "-" + wg_height + "/2", "0"])
-
-        self._app.modeler.create_polyline(
-            position_list=position1,
+        ridge = self._app.modeler.create_polyline(
+            position_list=ridge_position(),
             cover_surface=True,
-            name="bottom_ridge" + antenna_name,
+            name="right_ridge" + antenna_name,
             matname=self.material,
-            xsection_type="Rectangle",
-            xsection_height=ridge_width,
         )
+        ridge = self._app.modeler.thicken_sheet(ridge, ridge_width, True)
+        ridge.history.props["Coordinate System"] = coordinate_system
+        ridge.color = (132, 132, 193)
 
-        #
-        #
-        # wg_in.group_name = antenna_name
-        # horn_sheet.group_name = antenna_name
-        # cap.group_name = antenna_name
-        # p1.group_name = antenna_name
-        #
-        # self.object_list[wg_in.name] = wg_in
-        # self.object_list[horn_sheet.name] = horn_sheet
-        # self.object_list[cap.name] = cap
-        # self.object_list[p1.name] = p1
+        mridge = self._app.modeler.create_polyline(
+            position_list=ridge_position("-"),
+            cover_surface=True,
+            name="left_ridge" + antenna_name,
+            matname=self.material,
+        )
+        mridge = self._app.modeler.thicken_sheet(mridge, ridge_width, True)
+        mridge.history.props["Coordinate System"] = coordinate_system
+        mridge.color = (132, 132, 193)
+
+        # Connectors of the ridge
+        # Connector
+        connector = self._app.modeler.create_box(
+            position=[
+                "-" + ridge_width + "/2",
+                "-" + wg_height + "/2",
+                "-" + wg_length,
+            ],
+            dimensions_list=[
+                ridge_width,
+                "(" + wg_height + "-" + ridge_spacing + ")/2",
+                wg_length,
+            ],
+            name="connector_" + antenna_name,
+            matname="pec",
+        )
+        connector.history.props["Coordinate System"] = coordinate_system
+        connector.color = (132, 132, 193)
+
+        # Bottom connector
+        bconnector = self._app.modeler.create_box(
+            position=[
+                "-" + ridge_width + "/2",
+                wg_height + "/2",
+                "-" + wg_length,
+            ],
+            dimensions_list=[
+                ridge_width,
+                "-(" + wg_height + "-" + ridge_spacing + ")/2",
+                wg_length,
+            ],
+            name="bconnector_" + antenna_name,
+            matname="pec",
+        )
+        bconnector.history.props["Coordinate System"] = coordinate_system
+        bconnector.color = (132, 132, 193)
+
+        # Connect pieces
+        self._app.modeler.connect([horn.name, base_wall.name])
+        self._app.modeler.connect([base.name, horn_top.name])
+
+        self._app.modeler.subtract(horn.name, base.name, False)
+        self._app.modeler.unite([horn, wall, ridge, mridge, connector, bconnector])
+        horn.color = (255, 128, 65)
+        horn.material_name = self.material
+
+        # Air base
+        air_base = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + wg_width + "/2",
+                "-" + wg_height + "/2",
+                "0",
+            ],
+            dimension_list=[
+                wg_width,
+                wg_height,
+            ],
+            name="air_base_" + antenna_name,
+        )
+        air_base.history.props["Coordinate System"] = coordinate_system
+
+        # Air top
+        air_top = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + aperture_width + "/2",
+                "-" + aperture_height + "/2",
+                flare_length,
+            ],
+            dimension_list=[
+                aperture_width,
+                aperture_height,
+            ],
+            name="air_top_" + antenna_name,
+        )
+        air_top.history.props["Coordinate System"] = coordinate_system
+
+        self._app.modeler.connect([air_base.name, air_top.name])
+
+        self._app.modeler.unite([wg_in, air_base])
+
+        self._app.modeler.translate([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
+
+        cap.group_name = antenna_name
+        horn.group_name = antenna_name
+        wg_in.group_name = antenna_name
+        p1.group_name = antenna_name
+
+        self.object_list[cap.name] = cap
+        self.object_list[horn.name] = horn
+        self.object_list[wg_in.name] = wg_in
+        self.object_list[p1.name] = p1
 
     @pyaedt_function_handler()
     def setup_hfss(self):
         """Conical horn antenna HFSS setup."""
-        horn_length = self.synthesis_parameters.horn_length.hfss_variable
-        horn_radius = self.synthesis_parameters.horn_radius.hfss_variable
+        aperture_height = self.synthesis_parameters.aperture_height.hfss_variable
+        aperture_width = self.synthesis_parameters.aperture_width.hfss_variable
         wg_length = self.synthesis_parameters.wg_length.hfss_variable
+        flare_length = self.synthesis_parameters.flare_length.hfss_variable
+        wall_thickness = self.synthesis_parameters.wall_thickness.hfss_variable
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
@@ -1196,14 +1080,42 @@ class PyramidalRidged(CommonHorn):
             )
             huygens = self._app.modeler.create_box(
                 position=[
-                    pos_x + "-" + horn_radius + "-" + huygens_dist + length_unit,
-                    pos_y + "-" + horn_radius + "-" + huygens_dist + length_unit,
-                    pos_z + "-" + wg_length,
+                    pos_x
+                    + "-"
+                    + aperture_width
+                    + "/2-"
+                    + huygens_dist
+                    + length_unit
+                    + "-2*"
+                    + wall_thickness,
+                    pos_y
+                    + "-"
+                    + aperture_height
+                    + "/2"
+                    + "-"
+                    + wall_thickness
+                    + "-"
+                    + huygens_dist
+                    + length_unit,
+                    pos_z + "-" + wg_length + "-" + wall_thickness,
                 ],
                 dimensions_list=[
-                    "2*" + horn_radius + "+" + "2*" + huygens_dist + length_unit,
-                    "2*" + horn_radius + "+" + "2*" + huygens_dist + length_unit,
-                    huygens_dist + length_unit + "+" + wg_length + "+" + horn_length,
+                    aperture_width
+                    + "+"
+                    + "2*"
+                    + huygens_dist
+                    + length_unit
+                    + "+2*"
+                    + wall_thickness,
+                    aperture_height + "+" + "2*" + huygens_dist + length_unit,
+                    huygens_dist
+                    + length_unit
+                    + "+"
+                    + wg_length
+                    + "+"
+                    + wall_thickness
+                    + "+"
+                    + flare_length,
                 ],
                 name="huygens_" + antenna_name,
                 matname="air",
@@ -1223,9 +1135,12 @@ class PyramidalRidged(CommonHorn):
             huygens.group_name = antenna_name
             self.mesh_operations[mesh_op.name] = mesh_op
 
+        self._app.change_material_override(True)
+
         # Excitation
-        if self._app.solution_type != "Modal":
+        if self._app.solution_type != "Modal" and int(self._app.aedt_version_id[-3:]) < 231:
             self._app.logger.warning("Solution type must be Modal to define the excitation")
+            return True
 
         # Assign port and excitation
         port_cap = None
@@ -1236,12 +1151,29 @@ class PyramidalRidged(CommonHorn):
             elif obj_name.startswith("port_"):
                 port = self.object_list[obj_name]
 
-        terminal_references = None
         if self._app.solution_type == "Terminal":
-            terminal_references = port_cap.name
-        port1 = self._app.create_wave_port_from_sheet(
-            sheet=port, portname="port_" + antenna_name, terminal_references=terminal_references
-        )
+            port1 = self._app._create_waveport_driven(
+                objectname=port.name,
+                int_line_start=port.faces[0].edges[1].midpoint,
+                int_line_stop=port.faces[0].edges[3].midpoint,
+                portname="port_" + antenna_name,
+            )
+        else:
+            if int(self._app.aedt_version_id[-3:]) < 231:
+                port1 = self._app.create_wave_port(
+                    port.faces[0].id,
+                    port.faces[0].edges[0].midpoint,
+                    port.faces[0].edges[2].midpoint,
+                    portname="port_" + antenna_name,
+                )
+            else:
+                port1 = self._app.create_wave_port(
+                    port.faces[0].id,
+                    port.faces[0].edges[1].midpoint,
+                    port.faces[0].edges[3].midpoint,
+                    portname="port_" + antenna_name,
+                )
+
         self.excitations[port1.name] = port1
 
         return True
