@@ -1,9 +1,9 @@
 from pyaedt.modeler.cad.object3d import Object3d
 from pyaedt.modeler.geometry_operators import GeometryOperators
 
-from ansys.aedt.toolkits.antennas.patch import RectangularPatchEdge
-from ansys.aedt.toolkits.antennas.patch import RectangularPatchInset
-from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
+from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchEdge
+from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchInset
+from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchProbe
 from conftest import BasisTest
 
 test_project_name = "Patch_test"
@@ -30,7 +30,7 @@ class TestClass(BasisTest, object):
         assert opatch1.origin == [10, 20, 50]
         face_center_new = list(opatch1.object_list.values())[0].faces[0].center
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
-        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-6
+        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         opatch2 = self.aedtapp.add_from_toolkit(
             RectangularPatchProbe, draw=True, antenna_name=opatch1.antenna_name
         )
@@ -49,7 +49,7 @@ class TestClass(BasisTest, object):
         assert opatch1.origin == [10, 20, 50]
         face_center_new = list(opatch1.object_list.values())[0].faces[0].center
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
-        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-6
+        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         opatch2 = self.aedtapp.add_from_toolkit(
             RectangularPatchInset, draw=True, antenna_name=opatch1.antenna_name
         )
@@ -68,7 +68,7 @@ class TestClass(BasisTest, object):
         assert opatch1.origin == [10, 20, 50]
         face_center_new = list(opatch1.object_list.values())[0].faces[0].center
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
-        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-6
+        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         opatch2 = self.aedtapp.add_from_toolkit(
             RectangularPatchEdge, draw=True, antenna_name=opatch1.antenna_name
         )

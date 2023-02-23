@@ -6,9 +6,9 @@ import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import generate_unique_name
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
-from ansys.aedt.toolkits.antennas.parameters import InputParameters
-from ansys.aedt.toolkits.antennas.parameters import Property
-from ansys.aedt.toolkits.antennas.parameters import SynthesisParameters
+from ansys.aedt.toolkits.antennas.models.parameters import InputParameters
+from ansys.aedt.toolkits.antennas.models.parameters import Property
+from ansys.aedt.toolkits.antennas.models.parameters import SynthesisParameters
 
 
 class CommonAntenna(object):
@@ -43,6 +43,24 @@ class CommonAntenna(object):
         self.boundaries = {}
         self.excitations = {}
         self.mesh_operations = {}
+
+    @property
+    def antenna_material(self):
+        """Metal to be assigned to material Frequency.
+
+        Returns
+        -------
+        float
+        """
+        return self._input_parameters.antenna_material
+
+    @antenna_material.setter
+    def antenna_material(self, value):
+        self._input_parameters.antenna_material = value
+        if self.object_list:
+            parameters = self._synthesis()
+            self.update_synthesis_parameters(parameters)
+            self.set_variables_in_hfss()
 
     @property
     def frequency(self):
@@ -328,7 +346,7 @@ class CommonAntenna(object):
         for k, v in new_params.items():
             if hasattr(self.synthesis_parameters, k):
                 param = getattr(self.synthesis_parameters, k)
-                param.value = v
+                param.value = float(round(v, 3))
             else:
                 self.synthesis_parameters.add_parameter(k, v)
 
@@ -345,6 +363,98 @@ class CommonAntenna(object):
             self._app.create_open_region(
                 str(self.frequency) + self.frequency_unit, self.outer_boundary
             )
+
+    @pyaedt_function_handler()
+    def setup_hfss(self):
+        """Antenna HFSS setup."""
+        terminal_references = []
+        port_lump = port = port_cap = None
+        if "port_lump_{}".format(self.antenna_name) in self.object_list:
+            port_lump = self.object_list["port_lump_{}".format(self.antenna_name)]
+            terminal_references = [
+                i
+                for i in port_lump.touching_objects
+                if self._app.modeler[i]
+                and (
+                    self._app.modeler[i].object_type == "Sheet"
+                    or self._app.materials[self._app.modeler[i].material_name].is_conductor()
+                )
+            ]
+            if len(terminal_references) > 1:
+                axis_dir = [[], []]
+                for edge in port_lump.edges:
+                    if terminal_references[1] in self._app.modeler.get_bodynames_from_position(
+                        edge.midpoint
+                    ):
+                        axis_dir[1] = edge.midpoint
+                    elif terminal_references[0] in self._app.modeler.get_bodynames_from_position(
+                        edge.midpoint
+                    ):
+                        axis_dir[0] = edge.midpoint
+                terminal_references = terminal_references[1:]
+
+        elif "port_{}".format(self.antenna_name) in self.object_list:
+            port = self.object_list["port_{}".format(self.antenna_name)]
+            if "port_cap_{}".format(self.antenna_name) in self.object_list:
+                port_cap = self.object_list["port_cap_{}".format(self.antenna_name)]
+        if port_lump:
+            port1 = self._app.create_lumped_port_to_sheet(
+                "port_lump_{}".format(self.antenna_name),
+                axisdir=axis_dir,
+                impedance=50,
+                portname="port_" + self.antenna_name,
+                renorm=True,
+                deemb=False,
+                reference_object_list=terminal_references,
+            )
+            self.excitations[port1.name] = port1
+        elif port:
+            if self._app.solution_type == "Terminal" and port_cap:
+                terminal_references = port_cap.name
+            port1 = self._app.create_wave_port_from_sheet(
+                sheet=port,
+                portname="port_" + self.antenna_name,
+                terminal_references=terminal_references,
+            )
+            self.excitations[port1.name] = port1
+        for obj_name in self.object_list.keys():
+            if (
+                obj_name.startswith("PerfE")
+                or obj_name.startswith("gnd_")
+                or obj_name.startswith("ant_")
+            ):
+                self._app.assign_perfecte_to_sheets(obj_name)
+            elif obj_name.startswith("coax"):
+                obj = self.object_list[obj_name]
+                face_id = obj.faces[0].edges[0].id
+                for face in obj.faces:
+                    if len(face.edges) == 2:
+                        face_id = face.id
+                        break
+                coax_bound = self._app.assign_perfecte_to_sheets(face_id)
+                coax_bound.name = "PerfE_" + obj_name
+                self.boundaries[coax_bound.name] = coax_bound
+                break
+            elif obj_name.startswith("huygens_"):
+                if self.huygens_box:
+                    lightSpeed = constants.SpeedOfLight  # m/s
+                    freq_hz = constants.unit_converter(
+                        self.frequency, "Freq", self.frequency_unit, "Hz"
+                    )
+                    huygens_dist = str(
+                        constants.unit_converter(
+                            lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
+                        )
+                    )
+                    mesh_op = self._app.mesh.assign_length_mesh(
+                        [obj_name],
+                        maxlength=huygens_dist + self.length_unit,
+                        maxel=None,
+                        meshop_name="HuygensBox_Seed_" + self.antenna_name,
+                    )
+                    self.mesh_operations[mesh_op.name] = mesh_op
+
+        return True
 
 
 class TransmissionLine(object):
@@ -465,3 +575,47 @@ class TransmissionLine(object):
 
         width = w_over_h * substrate_height
         return width
+
+    @pyaedt_function_handler()
+    def suspended_strip_calculator(self, wavelength, w1, substrate_height, permittivity):
+        """Suspended stripline calculator.
+
+        Parameters
+        ----------
+        wavelength : float
+        w1 : float
+        substrate_height : float
+            Substrate in meter.
+        permittivity : float
+            Dielectric permittivity
+
+        Returns
+        -------
+        float
+            Effective Permittivity.
+        """
+        Hfrac = 16.0  # H_as_fraction_of_wavelength 1/H
+        H = (wavelength / math.sqrt(permittivity) + substrate_height * Hfrac) / Hfrac
+        heigth_ratio = substrate_height / (H - substrate_height)
+        a = math.pow(0.8621 - 0.125 * math.log(heigth_ratio), 4.0)
+        b = math.pow(0.4986 - 0.1397 * math.log(heigth_ratio), 4.0)
+
+        Width_to_height_ratio = w1 / (H - substrate_height)
+        sqrt_er_eff = math.pow(
+            1.0
+            + heigth_ratio
+            * (a - b * math.log(Width_to_height_ratio))
+            * (1.0 / math.sqrt(permittivity) - 1.0),
+            -1.0,
+        )
+        eff_perm = math.pow(sqrt_er_eff, 2.0)
+
+        if (permittivity >= 6.0) and (permittivity <= 10.0):
+            eff_perm = eff_perm * 1.15  # about 15% larger than calculated
+        if permittivity > 10:
+            eff_perm = eff_perm * 1.25  # about 25% lager then calculated
+
+        if eff_perm >= (permittivity + 1.0) / 2.0:
+            eff_perm = (permittivity + 1.0) / 2.0
+
+        return eff_perm

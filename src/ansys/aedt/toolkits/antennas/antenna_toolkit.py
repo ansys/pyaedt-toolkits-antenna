@@ -2,7 +2,15 @@
 import os
 from pathlib import Path
 import sys
-import time
+
+import ansys.aedt.toolkits.antennas.common_ui
+from ansys.aedt.toolkits.antennas.common_ui import RunnerAnalsysis
+from ansys.aedt.toolkits.antennas.common_ui import RunnerHfss
+from ansys.aedt.toolkits.antennas.common_ui import XStream
+from ansys.aedt.toolkits.antennas.common_ui import active_sessions
+from ansys.aedt.toolkits.antennas.common_ui import handler
+from ansys.aedt.toolkits.antennas.common_ui import line_colors
+from ansys.aedt.toolkits.antennas.common_ui import logger
 
 current_path = Path(os.getcwd())
 package_path = current_path.parents[3]
@@ -10,205 +18,28 @@ sys.path.append(os.path.abspath(package_path))
 from PySide6 import QtCore
 from PySide6 import QtGui
 from PySide6 import QtWidgets
-import psutil
 from pyaedt import Hfss
 from pyaedt import settings
 from pyaedt.misc import list_installed_ansysem
 import pyqtgraph as pg
 import qdarkstyle
 
-from ansys.aedt.toolkits.antennas.helix import AxialMode
-from ansys.aedt.toolkits.antennas.horn import ConicalHorn
-from ansys.aedt.toolkits.antennas.horn import PyramidalRidged
-from ansys.aedt.toolkits.antennas.patch import RectangularPatchEdge
-from ansys.aedt.toolkits.antennas.patch import RectangularPatchInset
-from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
+from ansys.aedt.toolkits.antennas.models.bowtie import BowTie
+from ansys.aedt.toolkits.antennas.models.helix import AxialMode
+from ansys.aedt.toolkits.antennas.models.horn import ConicalHorn
+from ansys.aedt.toolkits.antennas.models.horn import PyramidalRidged
+from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchEdge
+from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchInset
+from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchProbe
 from ansys.aedt.toolkits.antennas.ui.antennas_main import Ui_MainWindow
 
-settings.use_grpc_api = False
 current_path = os.path.join(os.getcwd(), "ui", "images")
 os.environ["QT_API"] = "pyside6"
 
 import logging
 
-logger = logging.getLogger("Global")
-line_colors = ["g", "b", "r", "y", "w"]
-
-
-class RunnerSignals(QtCore.QObject):
-    progressed = QtCore.Signal(int)
-    messaged = QtCore.Signal(str)
-    completed = QtCore.Signal()
-
-
-class RunnerHfss(QtCore.QRunnable):
-    def __init__(self):
-        super(RunnerHfss, self).__init__()
-        self.signals = RunnerSignals()
-        self.hfss_args = {
-            "non_graphical": False,
-            "version": "2023.2",
-            "selected_process": "Create New Session",
-            "projectname": None,
-            "process_id_combo_splitted": [],
-        }
-
-    def run(self):
-        self.signals.progressed.emit(int(25))
-        self.signals.messaged.emit(str(25))
-        selected_process = self.hfss_args["selected_process"]
-        projectname = self.hfss_args["projectname"]
-        version = self.hfss_args["version"]
-        non_graphical = self.hfss_args["non_graphical"]
-        process_id_combo_splitted = self.hfss_args["process_id_combo_splitted"]
-        self.signals.progressed.emit(int(50))
-        if selected_process == "Create New Session":
-            self.hfss = Hfss(
-                projectname=projectname,
-                specified_version=version,
-                non_graphical=non_graphical,
-                new_desktop_session=True,
-            )
-        elif len(process_id_combo_splitted) == 5:
-            self.hfss = Hfss(
-                projectname=projectname,
-                specified_version=version,
-                non_graphical=non_graphical,
-                port=int(process_id_combo_splitted[-1]),
-            )
-        else:
-            self.hfss = Hfss(
-                projectname=projectname,
-                specified_version=version,
-                non_graphical=non_graphical,
-                aedt_process_id=int(process_id_combo_splitted[1]),
-            )
-        if "non_graphical" in self.hfss_args:
-            if not settings.use_grpc_api:
-                self.pid = self.hfss.odesktop.GetProcessID()
-                self.projectname = self.hfss.project_name
-                self.designname = self.hfss.design_name
-                self.hfss.release_desktop(False, False)
-            else:
-                self.pid = -1
-        time.sleep(5)
-        self.signals.completed.emit()
-
-
-class RunnerAnalsysis(QtCore.QRunnable):
-    def __init__(self):
-        super(RunnerAnalsysis, self).__init__()
-        self.signals = RunnerSignals()
-        self.logger_file = ""
-        self.lines = []
-
-    def run(self):
-        finished = False
-        while not finished:
-            with open(self.logger_file, "r") as f:
-                lines = f.readlines()
-                if len(lines) > len(self.lines):
-                    for line in lines[len(self.lines) :]:
-                        line_str = line.strip()
-                        if line_str:
-                            self.signals.messaged.emit(line.strip())
-                            if "Stopping Batch Run" in line:
-                                finished = True
-                                self.signals.completed.emit()
-                    self.lines.extend(lines[len(self.lines) :])
-                time.sleep(3)
-
-
-class QtHandler(logging.Handler):
-    def __init__(self):
-        logging.Handler.__init__(self)
-
-    def emit(self, record):
-        record = self.format(record)
-        XStream.stdout().write("{}\n".format(record))
-
-
-handler = QtHandler()
 handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
 logger.addHandler(handler)
-
-
-def active_sessions(version=None):
-    """Get information for the active COM AEDT sessions.
-
-    Parameters
-    ----------
-    version : str, optional
-        Version to check. The default is ``None``, in which case all versions are checked.
-        When specifying a version, you can use a three-digit format like ``"222"`` or a
-        five-digit format like ``"2022.2"``.
-
-
-    Returns
-    -------
-    list
-        List of AEDT PIDs.
-    """
-    keys = ["ansysedt.exe"]
-    if version and "." in version:
-        version = version[-4:].replace(".", "")
-    if version < "222":
-        version = version[:2] + "." + version[2]
-    sessions = []
-    for p in psutil.process_iter():
-        try:
-            if p.name() in keys:
-                cmd = p.cmdline()
-                if not version or (version and version in cmd[0]):
-                    if "-grpcsrv" in cmd:
-                        if not version or (version and version in cmd[0]):
-                            sessions.append(
-                                [
-                                    p.pid,
-                                    int(cmd[cmd.index("-grpcsrv") + 1]),
-                                ]
-                            )
-                    else:
-                        sessions.append(
-                            [
-                                p.pid,
-                                -1,
-                            ]
-                        )
-        except:
-            pass
-    return sessions
-
-
-class XStream(QtCore.QObject):
-    _stdout = None
-    _stderr = None
-
-    messageWritten = QtCore.Signal(str)
-
-    def flush(self):
-        pass
-
-    def fileno(self):
-        return -1
-
-    def write(self, msg):
-        if not self.signalsBlocked():
-            self.messageWritten.emit(msg)
-
-    @staticmethod
-    def stdout():
-        if not XStream._stdout:
-            XStream._stdout = XStream()
-            sys.stdout = XStream._stdout
-        return XStream._stdout
-
-    @staticmethod
-    def stderr():
-        if not XStream._stderr:
-            XStream._stderr = XStream()
-            sys.stderr = XStream._stderr
-        return XStream._stderr
 
 
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -243,8 +74,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.menubar.setFont(self._font)
         self.setWindowTitle("PyAEDT Antenna Wizard")
         self.length_unit = ""
+        self.create_button = None
 
-        self.closeButton.clicked.connect(self.release_and_close)
+        self.release_and_exit_button.clicked.connect(self.release_and_close)
+        self.release_button.clicked.connect(self.release_only)
         self.pushButton_5.clicked.connect(self.analyze_antenna)
         self.oantenna = None
         self.hfss = None
@@ -281,9 +114,17 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             lambda checked: self.draw_rectangular_probe_ui()
         )
         self.actionConical.triggered.connect(lambda checked: self.draw_conical_horn_ui())
-        self.actionPyramidal_Ridged.triggered.connect(
-            lambda checked: self.draw_pyramidal_ridged_horn_ui()
+        self.actionConical_Corrugated.triggered.connect(
+            lambda checked: self.draw_conical_horn_corrugated_ui()
         )
+        self.actionElliptical.triggered.connect(lambda checked: self.draw_elliptical_horn_ui())
+        self.actionE_Plane.triggered.connect(lambda checked: self.draw_eplane_horn_ui())
+        self.actionH_Plane.triggered.connect(lambda checked: self.draw_hplane_horn_ui())
+        self.actionPyramidal.triggered.connect(lambda checked: self.draw_pyramidal_horn_ui())
+        self.actionPyramidal_Ridged.triggered.connect(
+            lambda checked: self.draw_pyramidal_corr_horn_ui()
+        )
+        self.actionQuad_Ridged.triggered.connect(lambda checked: self.draw_quad_ridged_horn_ui())
         self.actionAxial.triggered.connect(lambda checked: self.draw_axial_helix_ui())
         self.actionRectangular_Edge.triggered.connect(
             lambda checked: self.draw_rectangular_probe_edge_ui()
@@ -291,6 +132,22 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionRectangular_Inset.triggered.connect(
             lambda checked: self.draw_rectangular_probe_inset_ui()
         )
+        self.actionBowtieSlot.triggered.connect(lambda checked: self.draw_bowtie_slot_ui())
+        self.actionBowtieNormal.triggered.connect(lambda checked: self.draw_bowtie_normal_ui())
+        self.actionBowtieRounded.triggered.connect(lambda checked: self.draw_bowtie_rounded_ui())
+        self.actionArchimedean.triggered.connect(lambda checked: self.draw_conical_archimedean_ui())
+        self.actionLog.triggered.connect(lambda checked: self.draw_conical_log_ui())
+        self.actionSinous.triggered.connect(lambda checked: self.draw_conical_sinuous_ui())
+        self.actionPlanar.triggered.connect(lambda checked: self.draw_dipole_planar_ui())
+        self.actionWire.triggered.connect(lambda checked: self.draw_dipole_wire_ui())
+        self.actionLog_Periodic_Array.triggered.connect(
+            lambda checked: self.draw_log_periodic_array_ui()
+        )
+        self.actionLog_Trap.triggered.connect(lambda checked: self.draw_log_periodic_trap_ui())
+
+        self.actionLog_Tooth.triggered.connect(lambda checked: self.draw_log_periodic_tooth_ui())
+        self.actionBicone.triggered.connect(lambda checked: self.draw_bicone_ui())
+        self.actionDiscone.triggered.connect(lambda checked: self.draw_discone_ui())
 
     def write_log_line(self, value):
         self.log_text.insertPlainText(value)
@@ -310,7 +167,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.oantenna.length_unit not in val:
                 val = val + self.oantenna.length_unit
             self.hfss[key] = val
-            self.hfss.logger.info("Key {} updated to value {}.".format(key, val))
+            ansys.aedt.toolkits.antennas.common_ui.logger.info(
+                "Key {} updated to value {}.".format(key, val)
+            )
             self.add_status_bar_message("Project updated.")
 
     def browse_for_project(self):
@@ -420,7 +279,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.hfss.last_run_log:
             worker_1 = RunnerAnalsysis()
             worker_1.logger_file = self.hfss.last_run_log
-            worker_1.signals.messaged.connect(lambda value: self.hfss.logger.info(value))
+            worker_1.signals.messaged.connect(
+                lambda value: ansys.aedt.toolkits.antennas.common_ui.logger.info(value)
+            )
             worker_1.signals.completed.connect(
                 lambda: self._udpdate_results(project_file, design_name)
             )
@@ -586,13 +447,16 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         myStatus.showMessage(message, 3000000)
         self.setStatusBar(myStatus)
 
+    def release_only(self):
+        """Release Desktop."""
+        if self.hfss:
+            self.hfss.release_desktop(False, False)
+        self.close()
+
     def release_and_close(self):
         """Release Desktop."""
         if self.hfss:
-            if settings.non_graphical:
-                self.hfss.release_desktop(True, True)
-            else:
-                self.hfss.release_desktop(False, False)
+            self.hfss.release_desktop(True, True)
         self.close()
 
     def get_antenna(self, antenna, synth_only=False):
@@ -664,6 +528,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 sweep1.props["RangeStart"] = str(freq * 0.8) + frequnits
                 sweep1.props["RangeEnd"] = str(freq * 1.2) + frequnits
                 sweep1.update()
+            self.create_button.setEnabled(False)
         self.progressBar.setValue(66)
 
         self.property_table.setRowCount(len(self.oantenna._parameters.items()))
@@ -674,7 +539,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for par, value in self.oantenna._parameters.items():
             item = QtWidgets.QTableWidgetItem(par)
             self.property_table.setItem(i, 0, item)
-            item = QtWidgets.QTableWidgetItem(str(value) + self.oantenna.length_unit)
+            item = QtWidgets.QTableWidgetItem(str(round(value, 3)) + self.oantenna.length_unit)
             self.property_table.setItem(i, 1, item)
             i += 1
 
@@ -768,19 +633,21 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         antenna_image = QtWidgets.QLabel()
         antenna_image.setObjectName("antenna_image")
 
+        antenna_image.setMaximumHeight(self.centralwidget.height() / 3)
         antenna_image.setScaledContents(True)
         _pixmap = QtGui.QPixmap(image_path)
-        antenna_image.setPixmap(_pixmap)
         _pixmap = _pixmap.scaled(
             antenna_image.width(),
             antenna_image.height(),
             QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation,
         )
+        antenna_image.setPixmap(_pixmap)
+
         line_0.addWidget(antenna_image)
 
         line_0_spacer = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
         )
 
         line_0.addItem(line_0_spacer)
@@ -802,17 +669,17 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
         line_buttons.addItem(line_buttons_spacer)
-        create_button = QtWidgets.QPushButton()
-        create_button.setObjectName("create_button")
-        create_button.setFont(self._font)
-        create_button.setMinimumSize(QtCore.QSize(160, 40))
+        self.create_button = QtWidgets.QPushButton()
+        self.create_button.setObjectName("create_button")
+        self.create_button.setFont(self._font)
+        self.create_button.setMinimumSize(QtCore.QSize(160, 40))
 
-        line_buttons.addWidget(create_button)
+        line_buttons.addWidget(self.create_button)
 
         synth_button.setText("Synthesis")
-        create_button.setText("Create Hfss Project")
+        self.create_button.setText("Create Hfss Project")
         synth_button.clicked.connect(lambda: method_create(True))
-        create_button.clicked.connect(lambda: method_create(False))
+        self.create_button.clicked.connect(lambda: method_create(False))
         return line_buttons
 
     def _add_header(self, image_name, antenna_name, frequency):
@@ -834,6 +701,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         line2 = self.add_line("line_2", "frequency", "Frequency", "edit", str(frequency))
         self.layout_settings.addLayout(line2, 4, 0, 1, 1)
 
+        # line3 = self.add_line("line_2", "antenna_material", "Antenna Material", "combo",
+        #                       ["pec", "copper", "aluminum", "steel"])
+        # self.layout_settings.addLayout(line3, 5, 0, 1, 1)
+
     def _add_footer(self, method_name):
         line5 = self.add_line(
             "line_5",
@@ -847,29 +718,34 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 "None",
             ],
         )
-        self.layout_settings.addLayout(line5, 7, 0, 1, 1)
+        self.layout_settings.addLayout(line5, 10, 0, 1, 1)
         line6 = self.add_line("line_6", "x_position", "Origin X Position", "edit", "0.0")
-        self.layout_settings.addLayout(line6, 8, 0, 1, 1)
+        self.layout_settings.addLayout(line6, 11, 0, 1, 1)
         line7 = self.add_line("line_7", "y_position", "Origin Y Position", "edit", "0.0")
-        self.layout_settings.addLayout(line7, 9, 0, 1, 1)
+        self.layout_settings.addLayout(line7, 12, 0, 1, 1)
         line8 = self.add_line("line_8", "z_position", "Origin Z Position", "edit", "0.0")
-        self.layout_settings.addLayout(line8, 10, 0, 1, 1)
+        self.layout_settings.addLayout(line8, 13, 0, 1, 1)
         line9 = self.add_line(
             "line_9", "coordinate_system", "Coordinate System", "combo", ["Global"]
         )
         if self.hfss:
             for cs in self.hfss.modeler.coordinate_systems:
                 self.coordinate_system.addItem(cs.name)
-        self.layout_settings.addLayout(line9, 11, 0, 1, 1)
+        self.layout_settings.addLayout(line9, 14, 0, 1, 1)
         line_buttons = self.add_antenna_buttons(method_name)
-        self.layout_settings.addLayout(line_buttons, 13, 0, 1, 1)
+        self.layout_settings.addLayout(line_buttons, 15, 0, 1, 1)
         bottom_spacer = QtWidgets.QSpacerItem(
             20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
         )
-        self.layout_settings.addItem(bottom_spacer, 14, 0, 1, 1)
+        self.layout_settings.addItem(bottom_spacer, 16, 0, 1, 1)
 
     def draw_rectangular_probe_ui(self):
         """Create Rectangular Patch UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
         self._add_header("Patch.png", "RectangularPatch", "10")
 
         line2 = self.add_line(
@@ -879,10 +755,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "combo",
             ["FR4_epoxy", "teflon_based", "Rogers RT/duroid 6002 (tm)"],
         )
-        self.layout_settings.addLayout(line2, 5, 0, 1, 1)
+        self.layout_settings.addLayout(line2, 6, 0, 1, 1)
 
         line4 = self.add_line("line_4", "substrate_height", "Subtsrate height", "edit", "0.254")
-        self.layout_settings.addLayout(line4, 6, 0, 1, 1)
+        self.layout_settings.addLayout(line4, 7, 0, 1, 1)
 
         self._add_footer(self.create_rectangular_probe_design)
 
@@ -897,6 +773,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def draw_rectangular_probe_inset_ui(self):
         """Create Rectangular Patch UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
         self._add_header("RectInset.jpg", "RectangularPatchInset", "10")
 
         line2 = self.add_line(
@@ -906,10 +787,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "combo",
             ["FR4_epoxy", "teflon_based", "Rogers RT/duroid 6002 (tm)"],
         )
-        self.layout_settings.addLayout(line2, 5, 0, 1, 1)
+        self.layout_settings.addLayout(line2, 6, 0, 1, 1)
 
         line4 = self.add_line("line_4", "substrate_height", "Subtsrate height", "edit", "0.254")
-        self.layout_settings.addLayout(line4, 6, 0, 1, 1)
+        self.layout_settings.addLayout(line4, 7, 0, 1, 1)
 
         self._add_footer(self.create_rectangular_probe_inset_design)
 
@@ -924,6 +805,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def draw_rectangular_probe_edge_ui(self):
         """Create Rectangular Patch UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
         self._add_header("RectEdge.jpg", "RectangularPatchEdge", "10")
 
         line2 = self.add_line(
@@ -933,10 +819,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "combo",
             ["FR4_epoxy", "teflon_based", "Rogers RT/duroid 6002 (tm)"],
         )
-        self.layout_settings.addLayout(line2, 5, 0, 1, 1)
+        self.layout_settings.addLayout(line2, 6, 0, 1, 1)
 
         line4 = self.add_line("line_4", "substrate_height", "Subtsrate height", "edit", "0.254")
-        self.layout_settings.addLayout(line4, 6, 0, 1, 1)
+        self.layout_settings.addLayout(line4, 7, 0, 1, 1)
 
         self._add_footer(self.create_rectangular_probe_edge_design)
 
@@ -951,7 +837,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def draw_conical_horn_ui(self):
         """Create Conical Horn UI."""
-
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
         self._add_header("HornConical.jpg", "HornConical", "10")
 
         self._add_footer(self.create_conical_horn_design)
@@ -965,24 +855,13 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         self.get_antenna(ConicalHorn, synth_only)
 
-    def draw_pyramidal_ridged_horn_ui(self):
-        """Create pyramidal ridged horn UI."""
-
-        self._add_header("HornPyramidalRidged.png", "HornPyramidalRidged", "10")
-
-        self._add_footer(self.create_pyramidal_ridged_horn_design)
-
-    def create_pyramidal_ridged_horn_design(self, synth_only=False):
-        """Create pyramidal ridged horn.
-
-        Parameters
-        ----------
-        synth_only : bool
-        """
-        self.get_antenna(PyramidalRidged, synth_only)
-
     def draw_axial_helix_ui(self):
         """Create Conical Horn UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
 
         self._add_header("AxialMode.jpg", "AxialMode", "10")
         line2 = self.add_line(
@@ -992,7 +871,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "edit",
             "10",
         )
-        self.layout_settings.addLayout(line2, 5, 0, 1, 1)
+        self.layout_settings.addLayout(line2, 6, 0, 1, 1)
         line3 = self.add_line(
             "line_3",
             "feeder_lenth",
@@ -1000,7 +879,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "edit",
             "10",
         )
-        self.layout_settings.addLayout(line3, 5, 0, 1, 1)
+        self.layout_settings.addLayout(line3, 7, 0, 1, 1)
         self._add_footer(self.create_axial_helic_design)
 
     def create_axial_helic_design(self, synth_only=False):
@@ -1011,6 +890,455 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         synth_only : bool
         """
         self.get_antenna(AxialMode, synth_only)
+
+    def draw_bowtie_normal_ui(self):
+        """Create Conical Horn UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("Bowtie.jpg", "Bowtie", "10")
+
+        line2 = self.add_line(
+            "line_2",
+            "material",
+            "Substrate Material",
+            "combo",
+            ["FR4_epoxy", "teflon_based", "Rogers RT/duroid 6002 (tm)"],
+        )
+        self.layout_settings.addLayout(line2, 6, 0, 1, 1)
+
+        line4 = self.add_line("line_4", "substrate_height", "Subtsrate height", "edit", "0.254")
+        self.layout_settings.addLayout(line4, 7, 0, 1, 1)
+        self._add_footer(self.create_bowtie_normal_design)
+
+    def create_bowtie_normal_design(self, synth_only=False):
+        """Create a bowtie  antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+
+        self.get_antenna(BowTie, synth_only)
+
+    def draw_bowtie_rounded_ui(self):
+        """Create Conical Horn UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("BowtieRounded.jpg", "BowtieRound", "10")
+        self._add_footer(self.create_bowtie_rounded_design)
+
+    def create_bowtie_rounded_design(self, synth_only=False):
+        """Create a bowtie rounded antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_bowtie_slot_ui(self):
+        """Create Conical Horn UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("BowtieSlot.jpg", "BowtieSlot", "10")
+        self._add_footer(self.create_bowtie_slot_design)
+
+    def create_bowtie_slot_design(self, synth_only=False):
+        """Create a bowtie slot antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_conical_archimedean_ui(self):
+        """Create Conical Archimedean UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("ConicalArchimedean.jpg", "Archimedean", "10")
+        self._add_footer(self.create_conical_archimedean_design)
+
+    def create_conical_archimedean_design(self, synth_only=False):
+        """Create a Conical Archimedean antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_conical_log_ui(self):
+        """Create Conical Log UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("ConicalLog.jpg", "Archimedean", "10")
+        self._add_footer(self.create_conical_log_design)
+
+    def create_conical_log_design(self, synth_only=False):
+        """Create a Conical Log antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_conical_sinuous_ui(self):
+        """Create Conical Sinuous UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("ConicalSinuous.jpg", "Archimedean", "10")
+        self._add_footer(self.create_conical_sinuous_design)
+
+    def create_conical_sinuous_design(self, synth_only=False):
+        """Create a Conical Sinuous antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_dipole_planar_ui(self):
+        """Create Planar Dipole UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("PlanarDipole.jpg", "PlanarDipole", "10")
+        self._add_footer(self.create_planar_dipole_design)
+
+    def create_planar_dipole_design(self, synth_only=False):
+        """Create a Planar Dipole antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_dipole_wire_ui(self):
+        """Create Wire Dipole UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("WireDipole.jpg", "PlanarDipole", "10")
+        self._add_footer(self.create_wire_dipole_design)
+
+    def create_wire_dipole_design(self, synth_only=False):
+        """Create a Wire Dipole antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_conical_horn_corrugated_ui(self):
+        """Create Conical Horn Corrugated UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornConicalCorrugated.jpg", "HornCorrugated", "10")
+        self._add_footer(self.create_horn_corrugated_design)
+
+    def create_horn_corrugated_design(self, synth_only=False):
+        """Create a Conical Horn Corrugated antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_eplane_horn_ui(self):
+        """Create E-Plane UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornEPlane.jpg", "HornEPlane", "10")
+        self._add_footer(self.create_horn_eplane_design)
+
+    def create_horn_eplane_design(self, synth_only=False):
+        """Create a E-Plane horn antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_hplane_horn_ui(self):
+        """Create H-Plane UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornHPlane.jpg", "HornHPlane", "10")
+        self._add_footer(self.create_horn_hplane_design)
+
+    def create_horn_hplane_design(self, synth_only=False):
+        """Create a H-Plane horn antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pyramidal_horn_ui(self):
+        """Create Horn Pyramidal UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornPyramidal.jpg", "HornPyramidal", "10")
+        self._add_footer(self.create_horn_pyramidal_design)
+
+    def create_horn_pyramidal_design(self, synth_only=False):
+        """Create a Horn Pyramidal antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pyramidal_corr_horn_ui(self):
+        """Create Horn Pyramidal Ridged UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornPyramidalRidged.png", "HornPyramidalRid", "10")
+        self._add_footer(self.create_horn_pyramidal_rid_design)
+
+    def create_horn_pyramidal_rid_design(self, synth_only=False):
+        """Create a Conical Horn Pyramidal antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.get_antenna(PyramidalRidged, synth_only)
+
+    def draw_elliptical_horn_ui(self):
+        """Create  Horn Elliptical UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornElliptical.jpg", "HornElliptical", "10")
+        self._add_footer(self.create_horn_elliptical_design)
+
+    def create_horn_elliptical_design(self, synth_only=False):
+        """Create a Horn Elliptical antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_quad_ridged_horn_ui(self):
+        """Create  Quad-Ridged Horn UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("HornQuadRidged.png", "HornQuadRidged", "10")
+        self._add_footer(self.create_horn_quad_design)
+
+    def create_horn_quad_design(self, synth_only=False):
+        """Create a Quad-Ridged antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_log_periodic_array_ui(self):
+        """Create  Log-Periodic Array UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("LogPeriodicArray.png", "LogPeriodicArray", "10")
+        self._add_footer(self.create_log_periodic_array_design)
+
+    def create_log_periodic_array_design(self, synth_only=False):
+        """Create a Log-Periodic Array antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_log_periodic_tooth_ui(self):
+        """Create  Log-Periodic Tooth UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("LogTooth.jpg", "LogTooth", "10")
+        self._add_footer(self.create_log_periodic_tooth_design)
+
+    def create_log_periodic_tooth_design(self, synth_only=False):
+        """Create a Log-Periodic Tooth antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_log_periodic_trap_ui(self):
+        """Create  Log-Periodic Array UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("LogTrap.jpg", "LogTrap", "10")
+        self._add_footer(self.create_log_periodic_trap_design)
+
+    def create_log_periodic_trap_design(self, synth_only=False):
+        """Create a Log-Periodic Trap antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_bicone_ui(self):
+        """Create  Bicone antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("Bicone.jpg", "Bicone", "10")
+        self._add_footer(self.create_log_periodic_trap_design)
+
+    def create_bicone_design(self, synth_only=False):
+        """Create a bicone antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_discone_ui(self):
+        """Create  Discone antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already added to the project.To add new antenna relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("Discone.jpg", "Discone", "10")
+        self._add_footer(self.create_log_periodic_trap_design)
+
+    def create_discone_design(self, synth_only=False):
+        """Create a Discone antenna.
+
+        Parameters
+        ----------
+        synth_only : bool
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from ansys.aedt.toolkits.antennas.common import TransmissionLine
+from ansys.aedt.toolkits.antennas.models.common import TransmissionLine
 from conftest import BasisTest
 
 test_project_name = "Patch_test"
