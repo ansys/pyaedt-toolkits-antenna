@@ -307,19 +307,7 @@ class AxialMode(CommonHelix):
             matname="Teflon (tm)",
         )
         Coax.history.props["Coordinate System"] = coordinate_system
-        # faceId = self._app.modeler.get_faceid_from_position(
-        #     obj_name=Coax.name,
-        #     position=[
-        #         "{}/2+{}".format(diameter, coax_outer_radius),
-        #         "-{}/2".format(feed_pinD),
-        #         "-{}-{}/2-{}/2".format(feed_pinL, wire_diameter, feed_pinD),
-        #     ],
-        # )
 
-        # f_perf = [i for i in Coax.faces if i.id not in
-        # [Coax.bottom_face_z.id, Coax.top_face_z.id]]
-        # o1 = self._app.modeler.create_object_from_face(faceId)
-        # o1.name = "PerfE_Coax_{}".format(antenna_name)
         # Cap
         cap = self._app.modeler.create_cylinder(
             cs_axis=2,
@@ -393,9 +381,9 @@ class AxialMode(CommonHelix):
         cap.group_name = antenna_name
         gnd.group_name = antenna_name
         p1.group_name = antenna_name
-        # o1.group_name = antenna_name
+
         self._app.modeler.translate(
-            [udm, feedCoax, feedPin, Coax, cap, gnd, p1, o1], [pos_x, pos_y, pos_z]
+            [udm, feedCoax, feedPin, Coax, cap, gnd, p1], [pos_x, pos_y, pos_z]
         )
         self.object_list[udm.name] = udm
         self.object_list[feedCoax.name] = feedCoax

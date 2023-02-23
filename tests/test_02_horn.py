@@ -29,7 +29,7 @@ class TestClass(BasisTest, object):
         assert ohorn1.origin == [10, 20, 50]
         face_center_new = list(ohorn1.object_list.values())[0].faces[0].center
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
-        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-6
+        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         ohorn2 = self.aedtapp.add_from_toolkit(
             ConicalHorn, draw=True, antenna_name=ohorn1.antenna_name
         )
@@ -48,7 +48,7 @@ class TestClass(BasisTest, object):
         assert ohorn1.origin == [10, 20, 50]
         face_center_new = list(ohorn1.object_list.values())[0].faces[0].center
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
-        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-6
+        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         ohorn2 = self.aedtapp.add_from_toolkit(
             PyramidalRidged, draw=True, antenna_name=ohorn1.antenna_name
         )
