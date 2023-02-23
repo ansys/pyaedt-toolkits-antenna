@@ -43,9 +43,9 @@ class BowTie(CommonPatch):
     Examples
     --------
     >>> from pyaedt import Hfss
-    >>> from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
+    >>> from ansys.aedt.toolkits.antennas.models.bowtie import BowTie
     >>> hfss = Hfss()
-    >>> patch = hfss.add_from_toolkit(RectangularPatchProbe, draw=True, frequency=20.0,
+    >>> patch = hfss.add_from_toolkit(BowTie, draw=True, frequency=20.0,
     ...                               frequency_unit="GHz")
 
     """
@@ -197,6 +197,8 @@ class BowTie(CommonPatch):
         p1.color = (128, 0, 0)
         p1.history.props["Coordinate System"] = coordinate_system
 
+        self._app.modeler.translate([p1.name, ant2_name, ant.name], [0, 0, sub_h])
+
         if self.huygens_box:
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
@@ -206,11 +208,15 @@ class BowTie(CommonPatch):
                 )
             )
             huygens = self._app.modeler.create_box(
-                position=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
+                position=[
+                    "-{}/2-{}{}".format(sub_x, huygens_dist, self.length_unit),
+                    "-{}/2-{}{}".format(sub_y, huygens_dist, self.length_unit),
+                    "-{}{}".format(huygens_dist, self.length_unit),
+                ],
                 dimensions_list=[
-                    sub_x,
-                    sub_y,
-                    "{}+{}{}".format(sub_h, huygens_dist, self.length_unit),
+                    "{}+2*{}{}".format(sub_x, huygens_dist, self.length_unit),
+                    "{}+2*{}{}".format(sub_y, huygens_dist, self.length_unit),
+                    "{}+2*{}{}".format(sub_h, huygens_dist, self.length_unit),
                 ],
                 name="huygens_" + antenna_name,
                 matname="air",
