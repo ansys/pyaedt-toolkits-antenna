@@ -24,6 +24,7 @@ from pyaedt.misc import list_installed_ansysem
 import pyqtgraph as pg
 import qdarkstyle
 
+from ansys.aedt.toolkits.antennas.models.bowtie import BowTie
 from ansys.aedt.toolkits.antennas.models.helix import AxialMode
 from ansys.aedt.toolkits.antennas.models.horn import ConicalHorn
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchEdge
@@ -898,6 +899,18 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return
 
         self._add_header("Bowtie.jpg", "Bowtie", "10")
+
+        line2 = self.add_line(
+            "line_2",
+            "material",
+            "Substrate Material",
+            "combo",
+            ["FR4_epoxy", "teflon_based", "Rogers RT/duroid 6002 (tm)"],
+        )
+        self.layout_settings.addLayout(line2, 6, 0, 1, 1)
+
+        line4 = self.add_line("line_4", "substrate_height", "Subtsrate height", "edit", "0.254")
+        self.layout_settings.addLayout(line4, 7, 0, 1, 1)
         self._add_footer(self.create_bowtie_normal_design)
 
     def create_bowtie_normal_design(self, synth_only=False):
@@ -907,9 +920,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         ----------
         synth_only : bool
         """
-        self.add_status_bar_message("Antenna not supported yet.")
 
-        # self.get_antenna(AxialMode, synth_only)
+        self.get_antenna(BowTie, synth_only)
 
     def draw_bowtie_rounded_ui(self):
         """Create Conical Horn UI."""

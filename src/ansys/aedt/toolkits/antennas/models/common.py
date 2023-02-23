@@ -367,14 +367,34 @@ class CommonAntenna(object):
     @pyaedt_function_handler()
     def setup_hfss(self):
         """Antenna HFSS setup."""
-
-        port = port_cap = None
-        if "port_{}".format(self.antenna_name) in self.object_list:
+        terminal_references = []
+        port_lump = port = port_cap = None
+        if "port_lump_{}".format(self.antenna_name) in self.object_list:
+            port_lump = self.object_list["port_lump_{}".format(self.antenna_name)]
+            terminal_references = [
+                i
+                for i in port_lump.touching_objects
+                if self._app.modeler[i].object_type == "Sheet"
+                or self._app.materials[self._app.modeler[i].material_name].is_conductor()
+            ]
+            if len(terminal_references) > 1:
+                terminal_references = terminal_references[1:]
+        elif "port_{}".format(self.antenna_name) in self.object_list:
             port = self.object_list["port_{}".format(self.antenna_name)]
-        if "port_cap_{}".format(self.antenna_name) in self.object_list:
-            port_cap = self.object_list["port_cap_{}".format(self.antenna_name)]
-        if port:
-            terminal_references = None
+            if "port_cap_{}".format(self.antenna_name) in self.object_list:
+                port_cap = self.object_list["port_cap_{}".format(self.antenna_name)]
+        if port_lump:
+            port1 = self._app.create_lumped_port_to_sheet(
+                "port_lump_{}".format(self.antenna_name),
+                axisdir=1,
+                impedance=50,
+                portname="port_" + self.antenna_name,
+                renorm=True,
+                deemb=False,
+                reference_object_list=terminal_references,
+            )
+            self.excitations[port1.name] = port1
+        elif port:
             if self._app.solution_type == "Terminal" and port_cap:
                 terminal_references = port_cap.name
             port1 = self._app.create_wave_port_from_sheet(
@@ -541,3 +561,47 @@ class TransmissionLine(object):
 
         width = w_over_h * substrate_height
         return width
+
+    @pyaedt_function_handler()
+    def suspended_strip_calculator(self, wavelength, w1, substrate_height, permittivity):
+        """Suspended stripline calculator.
+
+        Parameters
+        ----------
+        wavelength : float
+        w1 : float
+        substrate_height : float
+            Substrate in meter.
+        permittivity : float
+            Dielectric permittivity
+
+        Returns
+        -------
+        float
+            Effective Permittivity.
+        """
+        Hfrac = 16.0  # H_as_fraction_of_wavelength 1/H
+        H = (wavelength / math.sqrt(permittivity) + substrate_height * Hfrac) / Hfrac
+        heigth_ratio = substrate_height / (H - substrate_height)
+        a = math.pow(0.8621 - 0.125 * math.log(heigth_ratio), 4.0)
+        b = math.pow(0.4986 - 0.1397 * math.log(heigth_ratio), 4.0)
+
+        Width_to_height_ratio = w1 / (H - substrate_height)
+        sqrt_er_eff = math.pow(
+            1.0
+            + heigth_ratio
+            * (a - b * math.log(Width_to_height_ratio))
+            * (1.0 / math.sqrt(permittivity) - 1.0),
+            -1.0,
+        )
+        eff_perm = math.pow(sqrt_er_eff, 2.0)
+
+        if (permittivity >= 6.0) and (permittivity <= 10.0):
+            eff_perm = eff_perm * 1.15  # about 15% larger than calculated
+        if permittivity > 10:
+            eff_perm = eff_perm * 1.25  # about 25% lager then calculated
+
+        if eff_perm >= (permittivity + 1.0) / 2.0:
+            eff_perm = (permittivity + 1.0) / 2.0
+
+        return eff_perm
