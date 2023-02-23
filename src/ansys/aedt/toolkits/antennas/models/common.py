@@ -374,11 +374,25 @@ class CommonAntenna(object):
             terminal_references = [
                 i
                 for i in port_lump.touching_objects
-                if self._app.modeler[i].object_type == "Sheet"
-                or self._app.materials[self._app.modeler[i].material_name].is_conductor()
+                if self._app.modeler[i]
+                and (
+                    self._app.modeler[i].object_type == "Sheet"
+                    or self._app.materials[self._app.modeler[i].material_name].is_conductor()
+                )
             ]
             if len(terminal_references) > 1:
+                axis_dir = [[], []]
+                for edge in port_lump.edges:
+                    if terminal_references[1] in self._app.modeler.get_bodynames_from_position(
+                        edge.midpoint
+                    ):
+                        axis_dir[1] = edge.midpoint
+                    elif terminal_references[0] in self._app.modeler.get_bodynames_from_position(
+                        edge.midpoint
+                    ):
+                        axis_dir[0] = edge.midpoint
                 terminal_references = terminal_references[1:]
+
         elif "port_{}".format(self.antenna_name) in self.object_list:
             port = self.object_list["port_{}".format(self.antenna_name)]
             if "port_cap_{}".format(self.antenna_name) in self.object_list:
@@ -386,7 +400,7 @@ class CommonAntenna(object):
         if port_lump:
             port1 = self._app.create_lumped_port_to_sheet(
                 "port_lump_{}".format(self.antenna_name),
-                axisdir=1,
+                axisdir=axis_dir,
                 impedance=50,
                 portname="port_" + self.antenna_name,
                 renorm=True,

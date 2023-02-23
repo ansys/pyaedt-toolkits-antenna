@@ -27,6 +27,7 @@ import qdarkstyle
 from ansys.aedt.toolkits.antennas.models.bowtie import BowTie
 from ansys.aedt.toolkits.antennas.models.helix import AxialMode
 from ansys.aedt.toolkits.antennas.models.horn import ConicalHorn
+from ansys.aedt.toolkits.antennas.models.horn import PyramidalRidged
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchEdge
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchInset
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchProbe
@@ -1173,7 +1174,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
             return
 
-        self._add_header("HornPyramidalRidegd.png", "HornPyramidalRid", "10")
+        self._add_header("HornPyramidalRidged.png", "HornPyramidalRid", "10")
         self._add_footer(self.create_horn_pyramidal_rid_design)
 
     def create_horn_pyramidal_rid_design(self, synth_only=False):
@@ -1183,9 +1184,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         ----------
         synth_only : bool
         """
-        self.add_status_bar_message("Antenna not supported yet.")
-
-        # self.get_antenna(AxialMode, synth_only)
+        self.get_antenna(PyramidalRidged, synth_only)
 
     def draw_elliptical_horn_ui(self):
         """Create  Horn Elliptical UI."""

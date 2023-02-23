@@ -732,7 +732,7 @@ class RectangularPatchInset(CommonPatch):
                 pos_z,
             ],
             dimension_list=[sub_h, feed_width],
-            name="port_" + antenna_name,
+            name="port_lump_" + antenna_name,
         )
         p1.color = (255, 128, 65)
         p1.history.props["Coordinate System"] = coordinate_system
@@ -779,7 +779,7 @@ class RectangularPatchInset(CommonPatch):
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
             huygens.history.props["Coordinate System"] = coordinate_system
-            huygens.group_name = huygens
+            huygens.group_name = self.antenna_name
             self.object_list[huygens.name] = huygens
         sub.group_name = antenna_name
 
@@ -791,97 +791,6 @@ class RectangularPatchInset(CommonPatch):
         self.object_list[gnd.name] = gnd
         self.object_list[ant.name] = ant
         self.object_list[p1.name] = p1
-
-    @pyaedt_function_handler()
-    def setup_hfss(self):
-        """Rectangular patch antenna inset fed HFSS setup."""
-        # Map parameters
-        sub_h = self.synthesis_parameters.sub_h.hfss_variable
-        sub_x = self.synthesis_parameters.sub_x.hfss_variable
-        sub_y = self.synthesis_parameters.sub_y.hfss_variable
-        pos_x = self.synthesis_parameters.pos_x.hfss_variable
-        pos_y = self.synthesis_parameters.pos_y.hfss_variable
-        pos_z = self.synthesis_parameters.pos_z.hfss_variable
-
-        antenna_name = self.antenna_name
-        coordinate_system = self.coordinate_system
-        length_unit = self.length_unit
-
-        # Create Huygens box
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", length_unit
-                )
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    "-" + sub_x + "/2" "+" + pos_x + "-" + "+" + huygens_dist + length_unit + "/2",
-                    "-" + sub_y + "/2" "+" + pos_y + "-" + "+" + huygens_dist + length_unit + "/2",
-                    pos_z,
-                ],
-                dimensions_list=[
-                    "abs(-" + sub_x + "/2" + "-" + sub_x + "/2)" + "+" + huygens_dist + length_unit,
-                    "abs(-" + sub_y + "/2" + "-" + sub_y + "/2)" + "+" + huygens_dist + length_unit,
-                    "abs(-" + sub_h + ")+" + huygens_dist + length_unit,
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
-
-            mesh_op = self._app.mesh.assign_length_mesh(
-                [huygens.name],
-                maxlength=huygens_dist + length_unit,
-                maxel=None,
-                meshop_name="HuygensBox_Seed_" + antenna_name,
-            )
-
-            self.object_list[huygens.name] = huygens
-            huygens.group_name = antenna_name
-            self.mesh_operations[mesh_op.name] = mesh_op
-
-        # Assign boundary conditions
-        for obj_name in self.object_list:
-            if obj_name.startswith("ant_"):
-                ant_bound = self._app.assign_perfecte_to_sheets(obj_name)
-                ant_bound.name = "PerfE_antenna_" + antenna_name
-                self.boundaries[ant_bound.name] = ant_bound
-                break
-
-        gnd_name = None
-        for obj_name in self.object_list:
-            if obj_name.startswith("gnd_"):
-                gnd_name = obj_name
-                gnd_bound = self._app.assign_perfecte_to_sheets(obj_name)
-                gnd_bound.name = "PerfE_gnd_" + antenna_name
-                self.boundaries[gnd_bound.name] = gnd_bound
-                break
-
-        # Assign port and excitation
-        port = None
-        for obj_name in self.object_list:
-            if obj_name.startswith("port_"):
-                port = self.object_list[obj_name]
-
-        # Excitation
-        if port and gnd_name:
-            port1 = self._app.create_lumped_port_to_sheet(
-                sheet_name=port,
-                axisdir=2,
-                impedance=50,
-                portname="port_" + antenna_name,
-                reference_object_list=[gnd_name],
-            )
-            self.excitations[port1.name] = port1
-            if self._app.solution_type == "Terminal":
-                self.excitations[port1.name + "_T1"] = port1
-
-        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -1185,7 +1094,7 @@ class RectangularPatchEdge(CommonPatch):
                 pos_z,
             ],
             dimension_list=[sub_h, feed_width],
-            name="port_" + antenna_name,
+            name="port_lump_" + antenna_name,
         )
         p1.color = (255, 128, 65)
         p1.history.props["Coordinate System"] = coordinate_system
