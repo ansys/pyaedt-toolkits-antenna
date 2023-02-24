@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'antenna_toolkitrasLQk.ui'
+## Form generated from reading UI file 'antenna_toolkitQUYItw.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.2
 ##
@@ -20,8 +20,9 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
     QGridLayout, QHBoxLayout, QHeaderView, QLabel,
     QLineEdit, QMainWindow, QMenu, QMenuBar,
     QPlainTextEdit, QProgressBar, QPushButton, QSizePolicy,
-    QSpacerItem, QSplitter, QStatusBar, QTabWidget,
-    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
+    QSlider, QSpacerItem, QSplitter, QStatusBar,
+    QTabWidget, QTableWidget, QTableWidgetItem, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -339,23 +340,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_4.addLayout(self.horizontalLayout)
 
-        self.horizontalLayout_2 = QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label_2 = QLabel(self.tab)
-        self.label_2.setObjectName(u"label_2")
-
-        self.horizontalLayout_2.addWidget(self.label_2)
-
-        self.use_grpc_combo = QComboBox(self.tab)
-        self.use_grpc_combo.addItem("")
-        self.use_grpc_combo.addItem("")
-        self.use_grpc_combo.setObjectName(u"use_grpc_combo")
-
-        self.horizontalLayout_2.addWidget(self.use_grpc_combo)
-
-
-        self.verticalLayout_4.addLayout(self.horizontalLayout_2)
-
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.label_5 = QLabel(self.tab)
@@ -453,8 +437,31 @@ class Ui_MainWindow(object):
         self.frame_3.setFrameShadow(QFrame.Raised)
         self.gridLayout_7 = QGridLayout(self.frame_3)
         self.gridLayout_7.setObjectName(u"gridLayout_7")
+        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.gridLayout_7.addItem(self.verticalSpacer_5, 2, 0, 1, 1)
+
         self.gridLayout_8 = QGridLayout()
         self.gridLayout_8.setObjectName(u"gridLayout_8")
+        self.horizontalLayout_19 = QHBoxLayout()
+        self.horizontalLayout_19.setObjectName(u"horizontalLayout_19")
+        self.component_3d = QCheckBox(self.frame_3)
+        self.component_3d.setObjectName(u"component_3d")
+        self.component_3d.setChecked(False)
+
+        self.horizontalLayout_19.addWidget(self.component_3d)
+
+        self.horizontalSpacer_25 = QSpacerItem(101, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_19.addItem(self.horizontalSpacer_25)
+
+        self.horizontalSpacer_26 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+
+        self.horizontalLayout_19.addItem(self.horizontalSpacer_26)
+
+
+        self.gridLayout_8.addLayout(self.horizontalLayout_19, 1, 0, 1, 1)
+
         self.horizontalLayout_16 = QHBoxLayout()
         self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
         self.create_hfss_setup = QCheckBox(self.frame_3)
@@ -490,7 +497,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_17.addItem(self.horizontalSpacer_22)
 
 
-        self.gridLayout_8.addLayout(self.horizontalLayout_17, 3, 0, 1, 1)
+        self.gridLayout_8.addLayout(self.horizontalLayout_17, 4, 0, 1, 1)
 
         self.horizontalLayout_18 = QHBoxLayout()
         self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
@@ -511,31 +518,35 @@ class Ui_MainWindow(object):
 
         self.gridLayout_8.addLayout(self.horizontalLayout_18, 0, 0, 1, 1)
 
-        self.horizontalLayout_19 = QHBoxLayout()
-        self.horizontalLayout_19.setObjectName(u"horizontalLayout_19")
-        self.component_3d = QCheckBox(self.frame_3)
-        self.component_3d.setObjectName(u"component_3d")
-        self.component_3d.setChecked(False)
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.label_7 = QLabel(self.frame_3)
+        self.label_7.setObjectName(u"label_7")
 
-        self.horizontalLayout_19.addWidget(self.component_3d)
+        self.horizontalLayout_6.addWidget(self.label_7)
 
-        self.horizontalSpacer_25 = QSpacerItem(101, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.sweep_slider = QSlider(self.frame_3)
+        self.sweep_slider.setObjectName(u"sweep_slider")
+        self.sweep_slider.setMaximum(100)
+        self.sweep_slider.setSingleStep(5)
+        self.sweep_slider.setValue(20)
+        self.sweep_slider.setTracking(True)
+        self.sweep_slider.setOrientation(Qt.Horizontal)
+        self.sweep_slider.setTickPosition(QSlider.TicksAbove)
+        self.sweep_slider.setTickInterval(5)
 
-        self.horizontalLayout_19.addItem(self.horizontalSpacer_25)
+        self.horizontalLayout_6.addWidget(self.sweep_slider)
 
-        self.horizontalSpacer_26 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        self.slider_value = QLabel(self.frame_3)
+        self.slider_value.setObjectName(u"slider_value")
 
-        self.horizontalLayout_19.addItem(self.horizontalSpacer_26)
+        self.horizontalLayout_6.addWidget(self.slider_value)
 
 
-        self.gridLayout_8.addLayout(self.horizontalLayout_19, 1, 0, 1, 1)
+        self.gridLayout_8.addLayout(self.horizontalLayout_6, 5, 0, 1, 1)
 
 
         self.gridLayout_7.addLayout(self.gridLayout_8, 0, 0, 1, 1)
-
-        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.gridLayout_7.addItem(self.verticalSpacer_5, 1, 0, 1, 1)
 
         self.splitter_2.addWidget(self.frame_3)
         self.frame_4 = QFrame(self.splitter_2)
@@ -824,20 +835,18 @@ class Ui_MainWindow(object):
         self.non_graphical_combo.setItemText(1, QCoreApplication.translate("MainWindow", u"True", None))
 
         self.label.setText(QCoreApplication.translate("MainWindow", u"AEDT Version", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Use Grpc (Linux Default True)", None))
-        self.use_grpc_combo.setItemText(0, QCoreApplication.translate("MainWindow", u"True", None))
-        self.use_grpc_combo.setItemText(1, QCoreApplication.translate("MainWindow", u"False", None))
-
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Available AEDT Sessions", None))
         self.process_id_combo.setItemText(0, QCoreApplication.translate("MainWindow", u"Create New Session", None))
 
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Project Name", None))
         self.browse_project.setText(QCoreApplication.translate("MainWindow", u"Select aedt project", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u" Settings ", None))
+        self.component_3d.setText(QCoreApplication.translate("MainWindow", u"3D Component", None))
         self.create_hfss_setup.setText(QCoreApplication.translate("MainWindow", u"Create Hfss Setup", None))
         self.lattice_pair.setText(QCoreApplication.translate("MainWindow", u"Lattice pair", None))
         self.huygens.setText(QCoreApplication.translate("MainWindow", u"Huygens", None))
-        self.component_3d.setText(QCoreApplication.translate("MainWindow", u"3D Component", None))
+        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Sweep Bandwidth %", None))
+        self.slider_value.setText(QCoreApplication.translate("MainWindow", u"20", None))
         ___qtablewidgetitem = self.property_table.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Property", None));
         ___qtablewidgetitem1 = self.property_table.horizontalHeaderItem(1)

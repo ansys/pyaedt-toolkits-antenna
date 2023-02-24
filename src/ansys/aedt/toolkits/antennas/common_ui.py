@@ -39,6 +39,7 @@ class RunnerHfss(QtCore.QRunnable):
         process_id_combo_splitted = self.hfss_args["process_id_combo_splitted"]
         self.signals.progressed.emit(int(50))
         if selected_process == "Create New Session":
+            settings.use_grpc_api = True
             self.hfss = Hfss(
                 projectname=projectname,
                 specified_version=version,
@@ -46,6 +47,7 @@ class RunnerHfss(QtCore.QRunnable):
                 new_desktop_session=True,
             )
         elif len(process_id_combo_splitted) == 5:
+            settings.use_grpc_api = True
             self.hfss = Hfss(
                 projectname=projectname,
                 specified_version=version,
@@ -53,6 +55,7 @@ class RunnerHfss(QtCore.QRunnable):
                 port=int(process_id_combo_splitted[-1]),
             )
         else:
+            settings.use_grpc_api = False
             self.hfss = Hfss(
                 projectname=projectname,
                 specified_version=version,
@@ -136,12 +139,20 @@ def active_sessions(version=None):
                 if not version or (version and version in cmd[0]):
                     if "-grpcsrv" in cmd:
                         if not version or (version and version in cmd[0]):
-                            sessions.append(
-                                [
-                                    p.pid,
-                                    int(cmd[cmd.index("-grpcsrv") + 1]),
-                                ]
-                            )
+                            try:
+                                sessions.append(
+                                    [
+                                        p.pid,
+                                        int(cmd[cmd.index("-grpcsrv") + 1]),
+                                    ]
+                                )
+                            except IndexError:
+                                sessions.append(
+                                    [
+                                        p.pid,
+                                        -1,
+                                    ]
+                                )
                     else:
                         sessions.append(
                             [
