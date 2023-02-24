@@ -4,7 +4,7 @@ Toolkit reference
 
 This section describes all Antennas available in Antenna Wizard.
 
-Available Atennas are:
+Available Antennas are:
 
 .. currentmodule:: ansys.aedt.toolkits.antennas.models.bowtie
 
