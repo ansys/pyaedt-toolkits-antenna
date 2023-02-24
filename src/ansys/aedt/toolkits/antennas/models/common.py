@@ -343,6 +343,7 @@ class CommonAntenna(object):
 
     @pyaedt_function_handler()
     def update_synthesis_parameters(self, new_params):
+        """Update syntesys variable from antenna list."""
         for k, v in new_params.items():
             if hasattr(self.synthesis_parameters, k):
                 param = getattr(self.synthesis_parameters, k)
@@ -352,13 +353,14 @@ class CommonAntenna(object):
 
     @pyaedt_function_handler()
     def set_variables_in_hfss(self):
+        """Create Hfss design variables."""
         for p in self.synthesis_parameters.__dict__.values():
             if isinstance(p, Property):
                 self._app[p.hfss_variable] = str(p.value) + self.length_unit
 
     @pyaedt_function_handler()
     def init_model(self):
-        # Create radiation boundary
+        """Create radiation boundary."""
         if self._input_parameters.outer_boundary:
             self._app.create_open_region(
                 str(self.frequency) + self.frequency_unit, self.outer_boundary

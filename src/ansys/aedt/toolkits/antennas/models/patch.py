@@ -440,10 +440,12 @@ class RectangularPatchProbe(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
+        """Model in PyDisco. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
+        """Setup in PyDisco. To be implemenented."""
         pass
 
 
@@ -794,10 +796,12 @@ class RectangularPatchInset(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
+        """Model in PyDisco. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
+        """Setup in PyDisco. To be implemenented."""
         pass
 
 
@@ -1156,8 +1160,10 @@ class RectangularPatchEdge(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
+        """Model in PyDisco. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
+        """Setup in PyDisco. To be implemenented."""
         pass

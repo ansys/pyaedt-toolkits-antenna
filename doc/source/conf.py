@@ -1,17 +1,26 @@
 """Sphinx documentation configuration file."""
 from datetime import datetime
+import os
+import pathlib
+import sys
 
 from ansys_sphinx_theme import ansys_favicon
 from ansys_sphinx_theme import pyansys_logo_black
 
+sys.path.append(pathlib.Path(__file__).parent.parent.parent)
+
+path = os.path.join(pathlib.Path(__file__).parent.parent.parent, "src")
+print(path)
+sys.path.append(path)
 from ansys.aedt.toolkits.antennas import __version__
 
+print(__version__)
 # Project information
 project = "ansys-aedt-toolkits-antennas"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS, Inc."
 release = version = __version__
-
+print(copyright)
 # Select desired logo, theme, and declare the html title
 html_logo = pyansys_logo_black
 html_theme = "ansys_sphinx_theme"

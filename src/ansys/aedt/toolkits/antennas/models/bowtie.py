@@ -239,10 +239,12 @@ class BowTie(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
+        """Model in PyDisco. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
+        """Setup in PyDisco. To be implemenented."""
         pass
 
 
@@ -488,8 +490,10 @@ class BowTieRounded(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
+        """Model in PyDisco. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
+        """Setup in PyDisco. To be implemenented."""
         pass
