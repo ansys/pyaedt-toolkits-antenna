@@ -4,3 +4,17 @@
    here.
 
 .. include:: ../../README.rst
+
+.. toctree::
+   :hidden:
+
+
+   Antennas/index
+   Contributing
+
+
+Indices and tables
+==================
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

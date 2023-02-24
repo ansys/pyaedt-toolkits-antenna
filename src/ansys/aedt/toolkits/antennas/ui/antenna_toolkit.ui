@@ -252,31 +252,6 @@
               </layout>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
-               <item>
-                <widget class="QLabel" name="label_2">
-                 <property name="text">
-                  <string>Use Grpc (Linux Default True)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QComboBox" name="use_grpc_combo">
-                 <item>
-                  <property name="text">
-                   <string>True</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>False</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
               <layout class="QHBoxLayout" name="horizontalLayout_3">
                <item>
                 <widget class="QLabel" name="label_5">
@@ -445,8 +420,67 @@
                  <enum>QFrame::Raised</enum>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_7">
+                 <item row="2" column="0">
+                  <spacer name="verticalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
                  <item row="0" column="0">
                   <layout class="QGridLayout" name="gridLayout_8">
+                   <item row="1" column="0">
+                    <layout class="QHBoxLayout" name="horizontalLayout_19">
+                     <item>
+                      <widget class="QCheckBox" name="component_3d">
+                       <property name="text">
+                        <string>3D Component</string>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_25">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeType">
+                        <enum>QSizePolicy::Expanding</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>101</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_26">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeType">
+                        <enum>QSizePolicy::Fixed</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
                    <item row="2" column="0">
                     <layout class="QHBoxLayout" name="horizontalLayout_16">
                      <item>
@@ -493,7 +527,7 @@
                      </item>
                     </layout>
                    </item>
-                   <item row="3" column="0">
+                   <item row="4" column="0">
                     <layout class="QHBoxLayout" name="horizontalLayout_17">
                      <item>
                       <widget class="QCheckBox" name="lattice_pair">
@@ -582,66 +616,50 @@
                      </item>
                     </layout>
                    </item>
-                   <item row="1" column="0">
-                    <layout class="QHBoxLayout" name="horizontalLayout_19">
+                   <item row="5" column="0">
+                    <layout class="QHBoxLayout" name="horizontalLayout_6">
                      <item>
-                      <widget class="QCheckBox" name="component_3d">
+                      <widget class="QLabel" name="label_7">
                        <property name="text">
-                        <string>3D Component</string>
-                       </property>
-                       <property name="checked">
-                        <bool>false</bool>
+                        <string>Sweep Bandwidth %</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <spacer name="horizontalSpacer_25">
+                      <widget class="QSlider" name="sweep_slider">
+                       <property name="maximum">
+                        <number>100</number>
+                       </property>
+                       <property name="singleStep">
+                        <number>5</number>
+                       </property>
+                       <property name="value">
+                        <number>20</number>
+                       </property>
+                       <property name="tracking">
+                        <bool>true</bool>
+                       </property>
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
                        </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Expanding</enum>
+                       <property name="tickPosition">
+                        <enum>QSlider::TicksAbove</enum>
                        </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>101</width>
-                         <height>20</height>
-                        </size>
+                       <property name="tickInterval">
+                        <number>5</number>
                        </property>
-                      </spacer>
+                      </widget>
                      </item>
                      <item>
-                      <spacer name="horizontalSpacer_26">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
+                      <widget class="QLabel" name="slider_value">
+                       <property name="text">
+                        <string>20</string>
                        </property>
-                       <property name="sizeType">
-                        <enum>QSizePolicy::Fixed</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
+                      </widget>
                      </item>
                     </layout>
                    </item>
                   </layout>
-                 </item>
-                 <item row="1" column="0">
-                  <spacer name="verticalSpacer_5">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
                  </item>
                 </layout>
                </widget>

@@ -19,12 +19,12 @@ from PySide6 import QtCore
 from PySide6 import QtGui
 from PySide6 import QtWidgets
 from pyaedt import Hfss
-from pyaedt import settings
 from pyaedt.misc import list_installed_ansysem
 import pyqtgraph as pg
 import qdarkstyle
 
 from ansys.aedt.toolkits.antennas.models.bowtie import BowTie
+from ansys.aedt.toolkits.antennas.models.bowtie import BowTieRounded
 from ansys.aedt.toolkits.antennas.models.helix import AxialMode
 from ansys.aedt.toolkits.antennas.models.horn import ConicalHorn
 from ansys.aedt.toolkits.antennas.models.horn import PyramidalRidged
@@ -96,7 +96,6 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
             self.aedt_version_combo.addItem(ver)
         self.aedt_version_combo.currentTextChanged.connect(self.find_process_ids)
-        self.use_grpc_combo.currentTextChanged.connect(self.find_process_ids)
         self.browse_project.clicked.connect(self.browse_for_project)
 
         tc = self.log_text.textCursor()
@@ -148,6 +147,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionLog_Tooth.triggered.connect(lambda checked: self.draw_log_periodic_tooth_ui())
         self.actionBicone.triggered.connect(lambda checked: self.draw_bicone_ui())
         self.actionDiscone.triggered.connect(lambda checked: self.draw_discone_ui())
+        self.sweep_slider.valueChanged.connect(self.value_changed)
+
+    def value_changed(self):
+        self.slider_value.setText(str(self.sweep_slider.value()))
 
     def write_log_line(self, value):
         self.log_text.insertPlainText(value)
@@ -202,7 +205,6 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def launch_hfss(self):
         non_graphical = eval(self.non_graphical_combo.currentText())
         version = self.aedt_version_combo.currentText()
-        settings.use_grpc_api = eval(self.use_grpc_combo.currentText())
         selected_process = self.process_id_combo.currentText()
         projectname = self.project_name.text()
         process_id_combo_splitted = selected_process.split(" ")
@@ -213,7 +215,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "projectname": projectname,
             "process_id_combo_splitted": process_id_combo_splitted,
         }
-
+        if self.hfss:
+            try:
+                self.hfss.release_desktop(False, False)
+            except:
+                pass
         worker_1 = RunnerHfss()
         worker_1.hfss_args = args
         worker_1.signals.progressed.connect(lambda value: self.update_progress(value))
@@ -274,7 +280,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.hfss.save_project()
         project_file = self.hfss.results_directory[:-7]
         design_name = self.hfss.design_name
-        self.hfss.solve_in_batch(run_in_thread=True)
+        self.hfss.solve_in_batch(run_in_thread=True, num_cores=num_cores)
         self.update_progress(50)
         if self.hfss.last_run_log:
             worker_1 = RunnerAnalsysis()
@@ -524,10 +530,12 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 freq = float(self.frequency.text())
                 setup = self.hfss.create_setup()
                 setup.props["Frequency"] = str(freq) + frequnits
-                sweep1 = setup.add_sweep()
-                sweep1.props["RangeStart"] = str(freq * 0.8) + frequnits
-                sweep1.props["RangeEnd"] = str(freq * 1.2) + frequnits
-                sweep1.update()
+                if int(self.sweep_slider.value()) > 0:
+                    sweep1 = setup.add_sweep()
+                    perc_sweep = (int(self.sweep_slider.value())) / 100
+                    sweep1.props["RangeStart"] = str(freq * (1 - perc_sweep)) + frequnits
+                    sweep1.props["RangeEnd"] = str(freq * (1 + perc_sweep)) + frequnits
+                    sweep1.update()
             self.create_button.setEnabled(False)
         self.progressBar.setValue(66)
 
@@ -933,6 +941,17 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return
 
         self._add_header("BowtieRounded.jpg", "BowtieRound", "10")
+        line2 = self.add_line(
+            "line_2",
+            "material",
+            "Substrate Material",
+            "combo",
+            ["FR4_epoxy", "teflon_based", "Rogers RT/duroid 6002 (tm)"],
+        )
+        self.layout_settings.addLayout(line2, 6, 0, 1, 1)
+
+        line4 = self.add_line("line_4", "substrate_height", "Subtsrate height", "edit", "0.254")
+        self.layout_settings.addLayout(line4, 7, 0, 1, 1)
         self._add_footer(self.create_bowtie_rounded_design)
 
     def create_bowtie_rounded_design(self, synth_only=False):
@@ -942,9 +961,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         ----------
         synth_only : bool
         """
-        self.add_status_bar_message("Antenna not supported yet.")
 
-        # self.get_antenna(AxialMode, synth_only)
+        self.get_antenna(BowTieRounded, synth_only)
 
     def draw_bowtie_slot_ui(self):
         """Create Conical Horn UI."""

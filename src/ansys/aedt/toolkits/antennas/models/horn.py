@@ -341,86 +341,14 @@ class ConicalHorn(CommonHorn):
         self.object_list[cap.name] = cap
         self.object_list[p1.name] = p1
 
-    # @pyaedt_function_handler()
-    # def setup_hfss(self):
-    #     """Conical horn antenna HFSS setup."""
-    #     horn_length = self.synthesis_parameters.horn_length.hfss_variable
-    #     horn_radius = self.synthesis_parameters.horn_radius.hfss_variable
-    #     wg_length = self.synthesis_parameters.wg_length.hfss_variable
-    #     pos_x = self.synthesis_parameters.pos_x.hfss_variable
-    #     pos_y = self.synthesis_parameters.pos_y.hfss_variable
-    #     pos_z = self.synthesis_parameters.pos_z.hfss_variable
-    #     antenna_name = self.antenna_name
-    #     coordinate_system = self.coordinate_system
-    #     length_unit = self.length_unit
-    #
-    #     # Create Huygens box
-    #     if self.huygens_box:
-    #         lightSpeed = constants.SpeedOfLight  # m/s
-    #         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-    #         huygens_dist = str(
-    #             constants.unit_converter(
-    #                 lightSpeed / (10 * freq_hz), "Length", "meter", length_unit
-    #             )
-    #         )
-    #         huygens = self._app.modeler.create_box(
-    #             position=[
-    #                 pos_x + "-" + horn_radius + "-" + huygens_dist + length_unit,
-    #                 pos_y + "-" + horn_radius + "-" + huygens_dist + length_unit,
-    #                 pos_z + "-" + wg_length,
-    #             ],
-    #             dimensions_list=[
-    #                 "2*" + horn_radius + "+" + "2*" + huygens_dist + length_unit,
-    #                 "2*" + horn_radius + "+" + "2*" + huygens_dist + length_unit,
-    #                 huygens_dist + length_unit + "+" + wg_length + "+" + horn_length,
-    #             ],
-    #             name="huygens_" + antenna_name,
-    #             matname="air",
-    #         )
-    #         huygens.display_wireframe = True
-    #         huygens.color = (0, 0, 255)
-    #         huygens.history.props["Coordinate System"] = coordinate_system
-    #
-    #         mesh_op = self._app.mesh.assign_length_mesh(
-    #             [huygens.name],
-    #             maxlength=huygens_dist + length_unit,
-    #             maxel=None,
-    #             meshop_name="HuygensBox_Seed_" + antenna_name,
-    #         )
-    #
-    #         self.object_list[huygens.name] = huygens
-    #         huygens.group_name = antenna_name
-    #         self.mesh_operations[mesh_op.name] = mesh_op
-    #
-    #     # Excitation
-    #     if self._app.solution_type != "Modal":
-    #         self._app.logger.warning("Solution type must be Modal to define the excitation")
-    #
-    #     # Assign port and excitation
-    #     port_cap = None
-    #     port = None
-    #     for obj_name in self.object_list:
-    #         if obj_name.startswith("port_cap_"):
-    #             port_cap = self.object_list[obj_name]
-    #         elif obj_name.startswith("port_"):
-    #             port = self.object_list[obj_name]
-    #
-    #     terminal_references = None
-    #     if self._app.solution_type == "Terminal":
-    #         terminal_references = port_cap.name
-    #     port1 = self._app.create_wave_port_from_sheet(
-    #         sheet=port, portname="port_" + antenna_name, terminal_references=terminal_references
-    #     )
-    #     self.excitations[port1.name] = port1
-    #
-    #     return True
-
     @pyaedt_function_handler()
     def model_disco(self):
+        """Model in PyDisco. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
+        """Setup in PyDisco. To be implemenented."""
         pass
 
 
@@ -1213,8 +1141,10 @@ class PyramidalRidged(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
+        """Model in PyDisco. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
+        """Setup in PyDisco. To be implemenented."""
         pass
