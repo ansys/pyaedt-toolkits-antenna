@@ -280,7 +280,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.hfss.save_project()
         project_file = self.hfss.results_directory[:-7]
         design_name = self.hfss.design_name
-        self.hfss.solve_in_batch(run_in_thread=True, num_cores=num_cores)
+        self.hfss.solve_in_batch(run_in_thread=True, machine="localhost", num_cores=num_cores)
         self.update_progress(50)
         if self.hfss.last_run_log:
             worker_1 = RunnerAnalsysis()
