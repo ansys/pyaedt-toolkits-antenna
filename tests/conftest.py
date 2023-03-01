@@ -164,17 +164,13 @@ new_thread = config["NewThread"]
 
 @pytest.fixture(scope="session", autouse=True)
 def desktop_init():
+    _main = sys.modules["__main__"]
     yield
 
     try:
-        _main = sys.modules["__main__"]
-        try:
-            desktop = _main.oDesktop
-            pid = desktop.GetProcessID()
-            os.kill(pid, 9)
-        except:
-            pass
-        # release_desktop(close_projects=False, close_desktop=True)
+        desktop = _main.oDesktop
+        pid = desktop.GetProcessID()
+        os.kill(pid, 9)
     except:
         pass
 
