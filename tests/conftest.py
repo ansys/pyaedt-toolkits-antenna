@@ -23,13 +23,10 @@ import os
 import shutil
 import sys
 import tempfile
+import time
 
 from pyaedt import pyaedt_logger
 from pyaedt import settings
-
-import ansys.aedt.toolkits.antennas.common_ui
-
-# from pyaedt.generic.general_methods import generate_unique_name
 
 settings.enable_error_handler = False
 settings.enable_desktop_logs = False
@@ -164,25 +161,12 @@ new_thread = config["NewThread"]
 
 @pytest.fixture(scope="session", autouse=True)
 def desktop_init():
+    desktop = Desktop(desktop_version, settings.non_graphical, new_thread)
     _main = sys.modules["__main__"]
     yield
-
     try:
-        desktop = _main.oDesktop
-        pid = desktop.GetProcessID()
-        os.kill(pid, 9)
+        time.sleep(1)
+        desktop.release_desktop(True, True)
+        time.sleep(1)
     except:
         pass
-
-
-@pytest.fixture
-def clean_desktop_messages(desktop_init):
-    """Clear all Desktop app messages."""
-    ansys.aedt.toolkits.antennas.common_ui.logger.clear_messages(level=3)
-
-
-@pytest.fixture
-def clean_desktop(desktop_init):
-    """Close all projects, but don't close Desktop app."""
-    desktop_init.release_desktop(close_projects=True, close_on_exit=False)
-    return desktop_init
