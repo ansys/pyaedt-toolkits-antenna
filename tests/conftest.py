@@ -18,6 +18,7 @@ directory as this module. An example of the contents of local_config.json
 
 """
 import datetime
+import gc
 import json
 import os
 import shutil
@@ -165,8 +166,8 @@ def desktop_init():
     _main = sys.modules["__main__"]
     yield
     try:
-        time.sleep(1)
         desktop.release_desktop(True, True)
         time.sleep(1)
+        gc.collect(3)
     except:
         pass
