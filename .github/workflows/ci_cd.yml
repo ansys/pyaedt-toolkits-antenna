@@ -77,9 +77,10 @@ jobs:
           pip install .[tests]
 
       - name: Testing
+        timeout-minutes: 30
         run: |
           .\.venv\Scripts\Activate.ps1
-          pytest -v
+          pytest -v --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests
 
       - name: Upload Coverage Results
         uses: actions/upload-artifact@v3

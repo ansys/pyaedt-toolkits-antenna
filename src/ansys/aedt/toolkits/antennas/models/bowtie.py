@@ -77,10 +77,10 @@ class BowTie(CommonPatch):
         wavelength = lightSpeed / freq_hz
 
         if (
-            self.material in self._app._materials.mat_names_aedt
-            or self.material in self._app._materials.mat_names_aedt_lower
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
-            mat_props = self._app._materials[self.material]
+            mat_props = self._app.materials[self.material]
         else:
             self._app.logger.warning("Material not found. Create the material before assignment.")
             return parameters
@@ -196,7 +196,7 @@ class BowTie(CommonPatch):
         p1.color = (128, 0, 0)
         p1.history.props["Coordinate System"] = coordinate_system
 
-        self._app.modeler.translate([p1.name, ant2_name, ant.name], [0, 0, sub_h])
+        self._app.modeler.move([p1.name, ant2_name, ant.name], [0, 0, sub_h])
 
         if self.huygens_box:
             lightSpeed = constants.SpeedOfLight  # m/s
@@ -235,7 +235,7 @@ class BowTie(CommonPatch):
         self.object_list[ant.name] = ant
         self.object_list[ant2.name] = ant2
         self.object_list[p1.name] = p1
-        self._app.modeler.translate(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -317,10 +317,10 @@ class BowTieRounded(CommonPatch):
         wavelength = lightSpeed / freq_hz
 
         if (
-            self.material in self._app._materials.mat_names_aedt
-            or self.material in self._app._materials.mat_names_aedt_lower
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
-            mat_props = self._app._materials[self.material]
+            mat_props = self._app.materials[self.material]
         else:
             self._app.logger.warning("Material not found. Create the material before assignment.")
             return parameters
@@ -424,9 +424,9 @@ class BowTieRounded(CommonPatch):
             outer_radius, outer_width, arm_length, port_gap
         )
         round = self._app.modeler.create_circle(self._app.PLANE.XY, [0.0, y_val, 0.0], outer_radius)
-        round.translate([0, "-{}-({}/2)".format(arm_length, port_gap), 0])
+        round.move([0, "-{}-({}/2)".format(arm_length, port_gap), 0])
         round.split(self._app.PLANE.ZX, "PositiveOnly")
-        round.translate([0, "{}+({}/2)".format(arm_length, port_gap), 0])
+        round.move([0, "{}+({}/2)".format(arm_length, port_gap), 0])
         ant.unite(round)
         ant.color = (255, 128, 65)
         ant.transparency = 0.1
@@ -447,7 +447,7 @@ class BowTieRounded(CommonPatch):
         p1.color = (128, 0, 0)
         p1.history.props["Coordinate System"] = coordinate_system
 
-        self._app.modeler.translate([p1.name, ant2_name, ant.name], [0, 0, sub_h])
+        self._app.modeler.move([p1.name, ant2_name, ant.name], [0, 0, sub_h])
 
         if self.huygens_box:
             lightSpeed = constants.SpeedOfLight  # m/s
@@ -486,7 +486,7 @@ class BowTieRounded(CommonPatch):
         self.object_list[ant.name] = ant
         self.object_list[ant2.name] = ant2
         self.object_list[p1.name] = p1
-        self._app.modeler.translate(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
 
     @pyaedt_function_handler()
     def model_disco(self):

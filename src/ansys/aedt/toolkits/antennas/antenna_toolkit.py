@@ -108,7 +108,6 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.antenna2widget = None
         self.touchstone_graph = None
         self.color = -1
-
         self.actionRectangular_with_probe.triggered.connect(
             lambda checked: self.draw_rectangular_probe_ui()
         )

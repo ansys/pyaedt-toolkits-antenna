@@ -18,6 +18,7 @@ directory as this module. An example of the contents of local_config.json
 
 """
 import datetime
+import gc
 import json
 import os
 import shutil
@@ -26,10 +27,6 @@ import tempfile
 
 from pyaedt import pyaedt_logger
 from pyaedt import settings
-
-import ansys.aedt.toolkits.antennas.common_ui
-
-# from pyaedt.generic.general_methods import generate_unique_name
 
 settings.enable_error_handler = False
 settings.enable_desktop_logs = False
@@ -164,29 +161,8 @@ new_thread = config["NewThread"]
 
 @pytest.fixture(scope="session", autouse=True)
 def desktop_init():
+    desktop = Desktop(desktop_version, settings.non_graphical, new_thread)
     yield
-
-    try:
-        _main = sys.modules["__main__"]
-        try:
-            desktop = _main.oDesktop
-            pid = desktop.GetProcessID()
-            os.kill(pid, 9)
-        except:
-            pass
-        # release_desktop(close_projects=False, close_desktop=True)
-    except:
-        pass
-
-
-@pytest.fixture
-def clean_desktop_messages(desktop_init):
-    """Clear all Desktop app messages."""
-    ansys.aedt.toolkits.antennas.common_ui.logger.clear_messages(level=3)
-
-
-@pytest.fixture
-def clean_desktop(desktop_init):
-    """Close all projects, but don't close Desktop app."""
-    desktop_init.release_desktop(close_projects=True, close_on_exit=False)
-    return desktop_init
+    desktop.release_desktop(True, True)
+    del desktop
+    gc.collect()

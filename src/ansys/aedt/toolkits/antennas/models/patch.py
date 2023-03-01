@@ -31,8 +31,8 @@ class CommonPatch(CommonAntenna):
     def material(self, value):
         if (
             value
-            and value not in self._app._materials.mat_names_aedt
-            and value not in self._app._materials.mat_names_aedt_lower
+            and value not in self._app.materials.mat_names_aedt
+            and value not in self._app.materials.mat_names_aedt_lower
         ):
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
                 "Material not found. Create new material before assign"
@@ -145,10 +145,10 @@ class RectangularPatchProbe(CommonPatch):
         wavelength = lightSpeed / freq_hz
 
         if (
-            self.material in self._app._materials.mat_names_aedt
-            or self.material in self._app._materials.mat_names_aedt_lower
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
-            mat_props = self._app._materials[self.material]
+            mat_props = self._app.materials[self.material]
         else:
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
                 "Material not found. Create the material before assignment."
@@ -519,10 +519,10 @@ class RectangularPatchInset(CommonPatch):
         wavelength = lightSpeed / freq_hz
 
         if (
-            self.material in self._app._materials.mat_names_aedt
-            or self.material in self._app._materials.mat_names_aedt_lower
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
-            mat_props = self._app._materials[self.material]
+            mat_props = self._app.materials[self.material]
         else:
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
                 "Material not found. Create the material before assignment."
@@ -875,10 +875,10 @@ class RectangularPatchEdge(CommonPatch):
         wavelength = lightSpeed / freq_hz
 
         if (
-            self.material in self._app._materials.mat_names_aedt
-            or self.material in self._app._materials.mat_names_aedt_lower
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
-            mat_props = self._app._materials[self.material]
+            mat_props = self._app.materials[self.material]
         else:
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
                 "Material not found. Create the material before assignment."
