@@ -1003,7 +1003,7 @@ class PyramidalRidged(CommonHorn):
 
         self._app.modeler.unite([wg_in, air_base])
 
-        self._app.modeler.translate([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
+        self._app.modeler.move([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
 
         cap.group_name = antenna_name
         horn.group_name = antenna_name
