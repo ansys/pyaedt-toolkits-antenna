@@ -77,6 +77,7 @@ jobs:
           pip install .[tests]
 
       - name: Testing
+        timeout-minutes: 30
         run: |
           .\.venv\Scripts\Activate.ps1
           pytest -v --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests
