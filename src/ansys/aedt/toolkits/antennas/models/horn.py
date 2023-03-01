@@ -28,8 +28,8 @@ class CommonHorn(CommonAntenna):
     def material(self, value):
         if (
             value
-            and value not in self._app._materials.mat_names_aedt
-            and value not in self._app._materials.mat_names_aedt_lower
+            and value not in self._app.materials.mat_names_aedt
+            and value not in self._app.materials.mat_names_aedt_lower
         ):
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
                 "Material not found. Create new material before assign"
@@ -121,8 +121,8 @@ class ConicalHorn(CommonHorn):
         wavelength = lightSpeed / freq_hz
         wavelength_in = constants.unit_converter(wavelength, "Length", "meter", "in")
         if (
-            self.material not in self._app._materials.mat_names_aedt
-            or self.material not in self._app._materials.mat_names_aedt_lower
+            self.material not in self._app.materials.mat_names_aedt
+            or self.material not in self._app.materials.mat_names_aedt_lower
         ):
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
                 "Material not found. Create new material before assign."
@@ -418,8 +418,8 @@ class PyramidalRidged(CommonHorn):
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
         if (
-            self.material not in self._app._materials.mat_names_aedt
-            or self.material not in self._app._materials.mat_names_aedt_lower
+            self.material not in self._app.materials.mat_names_aedt
+            or self.material not in self._app.materials.mat_names_aedt_lower
         ):
             self._app.logger.warning("Material not found. Create new material before assign.")
             return parameters
