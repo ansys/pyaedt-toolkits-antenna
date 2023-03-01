@@ -24,7 +24,6 @@ import os
 import shutil
 import sys
 import tempfile
-import time
 
 from pyaedt import pyaedt_logger
 from pyaedt import settings
@@ -163,11 +162,7 @@ new_thread = config["NewThread"]
 @pytest.fixture(scope="session", autouse=True)
 def desktop_init():
     desktop = Desktop(desktop_version, settings.non_graphical, new_thread)
-    _main = sys.modules["__main__"]
     yield
-    try:
-        desktop.release_desktop(True, True)
-        time.sleep(1)
-        gc.collect(3)
-    except:
-        pass
+    desktop.release_desktop(True, True)
+    del desktop
+    gc.collect()
