@@ -80,7 +80,7 @@ jobs:
         timeout-minutes: 30
         run: |
           .\.venv\Scripts\Activate.ps1
-          pytest -v --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests
+          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests
 
       - name: Upload Coverage Results
         uses: actions/upload-artifact@v3
