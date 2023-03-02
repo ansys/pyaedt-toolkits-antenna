@@ -35,7 +35,7 @@ class CommonHelix(CommonAntenna):
 
     @property
     def direction(self):
-        """Helix direction. `0` for Left `1` for right.
+        """Helix direction. ``0`` for left ``1`` for right.
 
         Returns
         -------
@@ -53,7 +53,7 @@ class CommonHelix(CommonAntenna):
 
     @property
     def feeder_length(self):
-        """Helix Feeder Length.
+        """Helix feeder length.
 
         Returns
         -------
@@ -75,33 +75,33 @@ class CommonHelix(CommonAntenna):
 
 
 class AxialMode(CommonHelix):
-    """Manages Axial mode Helix antenna.
+    """Manages axial mode helix antenna.
 
     This class is accessible through the app hfss object.
 
     Parameters
     ----------
     frequency : float, optional
-            Center frequency. The default is ``10.0``.
+        Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-            Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``GHz``.
     material : str, optional
-            Horn material. If material is not defined a new material parametrized will be defined.
-            The default is ``"pec"``.
+        Horn material. If material is not defined a new material parametrized will be defined.
+        The default is ``"pec"``.
     outer_boundary : str, optional
-            Boundary type to use. Options are ``"Radiation"``,
-            ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
     huygens_box : bool, optional
-            Create a Huygens box. The default is ``False``.
+        Create a Huygens box. The default is ``False``.
     length_unit : str, optional
-            Length units. The default is ``"cm"``.
+        Length units. The default is ``"cm"``.
     parametrized : bool, optional
-            Create a parametrized antenna. The default is ``True``.
+        Create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
     :class:`aedt.toolkits.antennas.AxialMode`
-            Antenna object.
+        Antenna object.
 
     Examples
     --------
@@ -139,10 +139,10 @@ class AxialMode(CommonHelix):
     @pyaedt_function_handler()
     def _synthesis(self):
         parameters = {}
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
-        wl_meters = lightSpeed / freq_hz
+        wl_meters = light_speed / freq_hz
         gain_value_dB = self.gain_value
         gain_value_mag = math.pow(10.0, gain_value_dB / 10.0)
 
@@ -266,7 +266,7 @@ class AxialMode(CommonHelix):
         gnd.subtract(cutout, keep_originals=False)
 
         # Negative air
-        feedPin = self._app.modeler.create_cylinder(
+        feed_pin = self._app.modeler.create_cylinder(
             cs_axis=2,
             position=[
                 "{}/2".format(diameter),
@@ -278,9 +278,9 @@ class AxialMode(CommonHelix):
             name="Feed_{}".format(antenna_name),
             matname="pec",
         )
-        feedPin.history.props["Coordinate System"] = coordinate_system
+        feed_pin.history.props["Coordinate System"] = coordinate_system
 
-        feedCoax = self._app.modeler.create_cylinder(
+        feed_coax = self._app.modeler.create_cylinder(
             cs_axis=2,
             position=[
                 "{}/2".format(diameter),
@@ -292,7 +292,7 @@ class AxialMode(CommonHelix):
             name="Feed1_{}".format(antenna_name),
             matname="pec",
         )
-        feedCoax.history.props["Coordinate System"] = coordinate_system
+        feed_coax.history.props["Coordinate System"] = coordinate_system
 
         Coax = self._app.modeler.create_cylinder(
             cs_axis=2,
@@ -338,11 +338,11 @@ class AxialMode(CommonHelix):
         p1.history.props["Coordinate System"] = coordinate_system
 
         if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
+            light_speed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
                 constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
+                    light_speed / (10 * freq_hz), "Length", "meter", self.length_unit
                 )
             )
             huygens = self._app.modeler.create_box(
@@ -376,16 +376,18 @@ class AxialMode(CommonHelix):
             huygens.group_name = antenna_name
 
         udm.group_name = antenna_name
-        feedCoax.group_name = antenna_name
-        feedPin.group_name = antenna_name
+        feed_coax.group_name = antenna_name
+        feed_pin.group_name = antenna_name
         cap.group_name = antenna_name
         gnd.group_name = antenna_name
         p1.group_name = antenna_name
 
-        self._app.modeler.move([udm, feedCoax, feedPin, Coax, cap, gnd, p1], [pos_x, pos_y, pos_z])
+        self._app.modeler.move(
+            [udm, feed_coax, feed_pin, Coax, cap, gnd, p1], [pos_x, pos_y, pos_z]
+        )
         self.object_list[udm.name] = udm
-        self.object_list[feedCoax.name] = feedCoax
-        self.object_list[feedPin.name] = feedPin
+        self.object_list[feed_coax.name] = feed_coax
+        self.object_list[feed_pin.name] = feed_pin
         self.object_list[cap.name] = cap
         self.object_list[gnd.name] = gnd
         self.object_list[p1.name] = p1

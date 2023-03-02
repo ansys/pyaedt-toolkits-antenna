@@ -50,7 +50,7 @@ class CommonAntenna(object):
 
         Returns
         -------
-        float
+        str
         """
         return self._input_parameters.antenna_material
 
@@ -343,7 +343,7 @@ class CommonAntenna(object):
 
     @pyaedt_function_handler()
     def update_synthesis_parameters(self, new_params):
-        """Update syntesys variable from antenna list."""
+        """Update synthesis variable from antenna list."""
         for k, v in new_params.items():
             if hasattr(self.synthesis_parameters, k):
                 param = getattr(self.synthesis_parameters, k)
@@ -465,14 +465,14 @@ class TransmissionLine(object):
     Parameters
     ----------
     frequency : float, optional
-            Center frequency. The default is ``10.0``.
+        Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-            Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``GHz``.
 
     Returns
     -------
     :class:`aedt.toolkits.antennas.common.TransmissionLine`
-            Transmission line calculator object.
+        Transmission line calculator object.
 
     Examples
     --------
@@ -496,13 +496,13 @@ class TransmissionLine(object):
         Parameters
         ----------
         substrate_height : float
-                Substrate height.
+            Substrate height.
         permittivity : float
-                Substrate permittivity.
+            Substrate permittivity.
         impedance : str, optional
-                Impedance. The default is ``50.0``.
+            Impedance. The default is ``50.0``.
         electrical_length : str, optional
-                Electrical length in degrees. The default is ``150.0``.
+            Electrical length in degrees. The default is ``150.0``.
 
         Returns
         -------
@@ -556,11 +556,11 @@ class TransmissionLine(object):
         Parameters
         ----------
         substrate_height : float
-                Substrate height.
+            Substrate height.
         permittivity : float
-                Substrate permittivity.
+            Substrate permittivity.
         impedance : str, optional
-                Impedance. The default is ``50.0``.
+            Impedance. The default is ``50.0``.
 
         Returns
         -------
@@ -610,14 +610,18 @@ class TransmissionLine(object):
             * (1.0 / math.sqrt(permittivity) - 1.0),
             -1.0,
         )
-        eff_perm = math.pow(sqrt_er_eff, 2.0)
+        effective_permittivity = math.pow(sqrt_er_eff, 2.0)
 
         if (permittivity >= 6.0) and (permittivity <= 10.0):
-            eff_perm = eff_perm * 1.15  # about 15% larger than calculated
+            effective_permittivity = (
+                effective_permittivity * 1.15
+            )  # about 15% larger than calculated
         if permittivity > 10:
-            eff_perm = eff_perm * 1.25  # about 25% lager then calculated
+            effective_permittivity = (
+                effective_permittivity * 1.25
+            )  # about 25% lager then calculated
 
-        if eff_perm >= (permittivity + 1.0) / 2.0:
-            eff_perm = (permittivity + 1.0) / 2.0
+        if effective_permittivity >= (permittivity + 1.0) / 2.0:
+            effective_permittivity = (permittivity + 1.0) / 2.0
 
-        return eff_perm
+        return effective_permittivity

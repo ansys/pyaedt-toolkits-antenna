@@ -61,26 +61,26 @@ class ConicalHorn(CommonHorn):
     Parameters
     ----------
     frequency : float, optional
-            Center frequency. The default is ``10.0``.
+        Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-            Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``GHz``.
     material : str, optional
-            Horn material. If material is not defined a new material parametrized will be defined.
-            The default is ``"pec"``.
+        Horn material. If material is not defined a new material parametrized will be defined.
+        The default is ``"pec"``.
     outer_boundary : str, optional
-            Boundary type to use. Options are ``"Radiation"``,
-            ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
     huygens_box : bool, optional
-            Create a Huygens box. The default is ``False``.
+        Create a Huygens box. The default is ``False``.
     length_unit : str, optional
-            Length units. The default is ``"cm"``.
+        Length units. The default is ``"cm"``.
     parametrized : bool, optional
-            Create a parametrized antenna. The default is ``True``.
+        Create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
     :class:`aedt.toolkits.antennas.ConicalHorn`
-            Conical horn object.
+        Conical horn object.
 
     Examples
     --------
@@ -360,26 +360,26 @@ class PyramidalRidged(CommonHorn):
     Parameters
     ----------
     frequency : float, optional
-            Center frequency. The default is ``10.0``.
+        Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-            Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``GHz``.
     material : str, optional
-            Horn material. If material is not defined a new material parametrized will be defined.
-            The default is ``"pec"``.
+        Horn material. If material is not defined a new material parametrized will be defined.
+        The default is ``"pec"``.
     outer_boundary : str, optional
-            Boundary type to use. Options are ``"Radiation"``,
-            ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
     huygens_box : bool, optional
-            Create a Huygens box. The default is ``False``.
+        Create a Huygens box. The default is ``False``.
     length_unit : str, optional
-            Length units. The default is ``"cm"``.
+        Length units. The default is ``"cm"``.
     parametrized : bool, optional
-            Create a parametrized antenna. The default is ``True``.
+        Create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
-    :class:`aedt.toolkits.antennas.ConicalHorn`
-            Conical horn object.
+    :class:`aedt.toolkits.antennas.PyramidalRidged`
+        Pyramidal ridged horn object.
 
     Examples
     --------
@@ -477,7 +477,7 @@ class PyramidalRidged(CommonHorn):
         """Draw conical horn antenna.
         Once the antenna is created, this method will not be used anymore."""
         if self.object_list:
-            self._app.logger.warning("This antenna already exists")
+            self._app.logger.warning("This antenna already exists.")
             return False
 
         self.set_variables_in_hfss()
