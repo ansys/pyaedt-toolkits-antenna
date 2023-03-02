@@ -198,7 +198,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.process_id_combo.addItem("Process {}".format(session[0], session[1]))
             else:
                 self.process_id_combo.addItem(
-                    "Process {} on Grpc {}".format(session[0], session[1])
+                    "Process {} on gRPC {}".format(session[0], session[1])
                 )
 
     def launch_hfss(self):
