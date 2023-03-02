@@ -31,7 +31,7 @@ PyAEDT antenna toolkit
    :alt: Black
 
 
-A Python wrapper for Ansys pyaedt-toolkits ansys.aedt.toolkits.antennas
+A Python wrapper for Ansys pyaedt-toolkits
 
 
 How to install
@@ -42,7 +42,7 @@ At least two installation modes are provided: user and developer.
 For users
 ^^^^^^^^^
 
-In order to install Pypyaedt-toolkits ansys.aedt.toolkits.antennas, make sure you
+In order to install Pyaedt-antenna-toolkits ansys.aedt.toolkits.antennas, make sure you
 have the latest version of `pip`_. To do so, run:
 
 .. code:: bash
@@ -53,12 +53,12 @@ Then, you can simply execute:
 
 .. code:: bash
 
-    python -m pip install ansys-pyaedt-toolkits-ansys-aedt-toolkits-antennas
+    python -m pip install ansys-aedt-toolkits-antennas
 
 For developers
 ^^^^^^^^^^^^^^
 
-Installing Pypyaedt-toolkits ansys.aedt.toolkits.antennas in developer mode allows
+Installing Pyaedt-antenna-toolkits ansys.aedt.toolkits.antennas in developer mode allows
 you to modify the source and enhance it.
 
 Before contributing to the project, please refer to the `PyAnsys Developer's guide`_. You will 
