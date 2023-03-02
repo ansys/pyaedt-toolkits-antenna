@@ -83,29 +83,29 @@ class RectangularPatchProbe(CommonPatch):
     Parameters
     ----------
     frequency : float, optional
-            Center frequency. The default is ``10.0``.
+        Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-            Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``GHz``.
     material : str, optional
-            Substrate material.
-            If material is not defined a new material parametrized will be defined.
-            The default is ``"FR4_epoxy"``.
+        Substrate material.
+        If material is not defined a new material parametrized will be defined.
+        The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
-            Boundary type to use. Options are ``"Radiation"``,
-            ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
     huygens_box : bool, optional
-            Create a Huygens box. The default is ``False``.
+        Create a Huygens box. The default is ``False``.
     length_unit : str, optional
-            Length units. The default is ``"cm"``.
+        Length units. The default is ``"cm"``.
     substrate_height : float, optional
-            Substrate height. The default is ``0.1575``.
+        Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
-            Create a parametrized antenna. The default is ``True``.
+        Create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
     :class:`aedt.toolkits.antennas.RectangularPatchProbe`
-            Patch antenna object.
+        Patch antenna object.
 
     Examples
     --------
@@ -457,29 +457,29 @@ class RectangularPatchInset(CommonPatch):
     Parameters
     ----------
     frequency : float, optional
-            Center frequency. The default is ``10.0``.
+        Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-            Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``GHz``.
     material : str, optional
-            Substrate material.
-            If material is not defined a new material parametrized will be defined.
-            The default is ``"FR4_epoxy"``.
+        Substrate material.
+        If material is not defined a new material parametrized will be defined.
+        The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
-            Boundary type to use. Options are ``"Radiation"``,
-            ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
     huygens_box : bool, optional
-            Create a Huygens box. The default is ``False``.
+        Create a Huygens box. The default is ``False``.
     length_unit : str, optional
-            Length units. The default is ``"cm"``.
+        Length units. The default is ``"cm"``.
     substrate_height : float, optional
-            Substrate height. The default is ``0.1575``.
+        Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
-            Create a parametrized antenna. The default is ``True``.
+        Create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
-    :class:`aedt.toolkits.antennas.RectangularPatchProbe`
-            Patch antenna object.
+    :class:`aedt.toolkits.antennas.RectangularPatchInset`
+        Patch antenna object.
 
     Examples
     --------
@@ -813,29 +813,29 @@ class RectangularPatchEdge(CommonPatch):
     Parameters
     ----------
     frequency : float, optional
-            Center frequency. The default is ``10.0``.
+        Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-            Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``GHz``.
     material : str, optional
-            Substrate material.
-            If material is not defined a new material parametrized will be defined.
-            The default is ``"FR4_epoxy"``.
+        Substrate material.
+        If material is not defined a new material parametrized will be defined.
+        The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
-            Boundary type to use. Options are ``"Radiation"``,
-            ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
     huygens_box : bool, optional
-            Create a Huygens box. The default is ``False``.
+        Create a Huygens box. The default is ``False``.
     length_unit : str, optional
-            Length units. The default is ``"cm"``.
+        Length units. The default is ``"cm"``.
     substrate_height : float, optional
-            Substrate height. The default is ``0.1575``.
+        Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
-            Create a parametrized antenna. The default is ``True``.
+        Create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
-    :class:`aedt.toolkits.antennas.RectangularPatchProbe`
-            Patch antenna object.
+    :class:`aedt.toolkits.antennas.RectangularPatchEdge`
+        Patch antenna object.
 
     Examples
     --------

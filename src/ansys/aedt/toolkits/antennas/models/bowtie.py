@@ -9,36 +9,36 @@ from ansys.aedt.toolkits.antennas.models.patch import CommonPatch
 
 
 class BowTie(CommonPatch):
-    """Manages Bowtie antenna-
+    """Manages Bowtie antenna.
 
     This class is accessible through the app hfss object.
 
     Parameters
     ----------
     frequency : float, optional
-            Center frequency. The default is ``10.0``.
+        Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-            Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``GHz``.
     material : str, optional
-            Substrate material.
-            If material is not defined a new material parametrized will be defined.
-            The default is ``"FR4_epoxy"``.
+        Substrate material.
+        If material is not defined a new material parametrized will be defined.
+        The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
-            Boundary type to use. Options are ``"Radiation"``,
-            ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
     huygens_box : bool, optional
-            Create a Huygens box. The default is ``False``.
+        Create a Huygens box. The default is ``False``.
     length_unit : str, optional
-            Length units. The default is ``"cm"``.
+        Length units. The default is ``"cm"``.
     substrate_height : float, optional
-            Substrate height. The default is ``0.1575``.
+        Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
-            Create a parametrized antenna. The default is ``True``.
+        Create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
     :class:`aedt.toolkits.antennas.RectangularPatchProbe`
-            Patch antenna object.
+        Patch antenna object.
 
     Examples
     --------
@@ -137,7 +137,7 @@ class BowTie(CommonPatch):
         """Draw rectangular patch antenna with coaxial probe.
         Once the antenna is created, this method will not be used anymore."""
         if self.object_list:
-            self._app.logger.warning("This antenna already exists")
+            self._app.logger.warning("This antenna already exists.")
             return False
 
         self.set_variables_in_hfss()
@@ -249,36 +249,36 @@ class BowTie(CommonPatch):
 
 
 class BowTieRounded(CommonPatch):
-    """Manages Bowtie antenna-
+    """Manages bowtie rounded antenna-
 
     This class is accessible through the app hfss object.
 
     Parameters
     ----------
     frequency : float, optional
-            Center frequency. The default is ``10.0``.
+        Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-            Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``GHz``.
     material : str, optional
-            Substrate material.
-            If material is not defined a new material parametrized will be defined.
-            The default is ``"FR4_epoxy"``.
+        Substrate material.
+        If material is not defined a new material parametrized will be defined.
+        The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
-            Boundary type to use. Options are ``"Radiation"``,
-            ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
     huygens_box : bool, optional
-            Create a Huygens box. The default is ``False``.
+        Create a Huygens box. The default is ``False``.
     length_unit : str, optional
-            Length units. The default is ``"cm"``.
+        Length units. The default is ``"cm"``.
     substrate_height : float, optional
-            Substrate height. The default is ``0.1575``.
+        Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
-            Create a parametrized antenna. The default is ``True``.
+        Create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
     :class:`aedt.toolkits.antennas.RectangularPatchProbe`
-            Patch antenna object.
+        Patch antenna object.
 
     Examples
     --------
