@@ -65,7 +65,7 @@ enhance the source. As indicated in :ref:`contributing_aedt`, before
 making a contribution, ensure that you are thoroughly familiar
 with the *PyAnsys Developer's Guide*.
 
-To install the latest package in develper mode, perform these steps:
+To install the latest package in developer mode, perform these steps:
 
 #. Clone the repository:
 
