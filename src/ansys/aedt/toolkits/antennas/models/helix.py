@@ -77,7 +77,7 @@ class CommonHelix(CommonAntenna):
 class AxialMode(CommonHelix):
     """Manages an axial mode helix antenna.
 
-    This class is accessible through the ``Hfss ``object.
+    This class is accessible through the ``Hfss`` object.
 
     Parameters
     ----------
@@ -190,7 +190,8 @@ class AxialMode(CommonHelix):
     def model_hfss(self):
         """Draw a conical horn antenna.
 
-        Once the antenna is created, this method is not used anymore."""
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists.")
             return False
