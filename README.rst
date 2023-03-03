@@ -137,10 +137,10 @@ to guarantee the project's integrity. The following environments commands are pr
 Raw testing
 ^^^^^^^^^^^
 
-If required, you can use Python tools like `black`_, `isort`_, `flake8`_
+If required, you can use Python tools like `black`_, `isort`_, `flake8`_,
 and `pytest`_ from the command line for code style checking, import sorting,
 and testing. However, using these tools does not guarantee that your project
-is being tested in an isolated environment, which is why tools like ``toc``_ exist.
+is being tested in an isolated environment, which is why tools like ``toc`` exist.
 
 
 Using ``pre-commit``
