@@ -750,11 +750,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.layout_settings.addItem(bottom_spacer, 16, 0, 1, 1)
 
     def draw_rectangular_probe_ui(self):
-        """Create Rectangular Patch UI."""
+        """Create rectangular patch antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
         self._add_header("Patch.png", "RectangularPatch", "10")
@@ -788,8 +787,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a rectangular patch UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
         self._add_header("RectInset.jpg", "RectangularPatchInset", "10")
@@ -823,8 +821,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create Rectangular Patch UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
         self._add_header("RectEdge.jpg", "RectangularPatchEdge", "10")
@@ -858,8 +855,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a conical horn UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
         self._add_header("HornConical.jpg", "HornConical", "10")
@@ -881,8 +877,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create an axial mode helix UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, #
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -920,8 +915,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a bowtie antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -956,8 +950,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a bowtime rounded antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -991,8 +984,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a bowtie slot antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1016,8 +1008,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a conical archimedean antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1041,8 +1032,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create Conical Log UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1066,8 +1056,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a conical sinuous antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1091,8 +1080,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create Planar Dipole UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1116,8 +1104,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create Wire Dipole UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1141,8 +1128,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a conical horn corrugated antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1166,8 +1152,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create E-plane horn antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1191,8 +1176,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create an H-plane antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1216,8 +1200,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create Horn Pyramidal UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1241,8 +1224,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a cornical horn pyramidal antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1264,8 +1246,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a horn elliptical antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1289,8 +1270,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a quad-ridged horn antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1314,8 +1294,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a log periodic array antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1339,8 +1318,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a log periodic tooth antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1364,8 +1342,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a log periodic trap antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1389,8 +1366,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a biconical antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
@@ -1414,8 +1390,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """Create a discone antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
-                "Antenna has already been added to the project. To add a new antenna, "
-                "relaunch the Antenna Wizard."
+                "Antenna has already been added to the project. \nTo add a new antenna relaunch the Antenna Wizard."
             )
             return
 
