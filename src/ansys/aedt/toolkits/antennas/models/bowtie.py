@@ -81,7 +81,9 @@ class BowTie(CommonPatch):
         ):
             mat_props = self._app.materials[self.material]
         else:
-            self._app.logger.warning("Material is not found. Create the material before assigning it.")
+            self._app.logger.warning(
+                "Material is not found. Create the material before assigning it."
+            )
             return parameters
 
         subPermittivity = float(mat_props.permittivity.value)
@@ -134,7 +136,7 @@ class BowTie(CommonPatch):
     @pyaedt_function_handler()
     def model_hfss(self):
         """Draw a rectangular patch antenna with a coaxial probe.
-        
+
         Once the antenna is created, this method is not used anymore.
         """
         if self.object_list:
@@ -323,7 +325,9 @@ class BowTieRounded(CommonPatch):
         ):
             mat_props = self._app.materials[self.material]
         else:
-            self._app.logger.warning("Material is not found. Create the material before assigning it.")
+            self._app.logger.warning(
+                "Material is not found. Create the material before assigning it."
+            )
             return parameters
 
         subPermittivity = float(mat_props.permittivity.value)

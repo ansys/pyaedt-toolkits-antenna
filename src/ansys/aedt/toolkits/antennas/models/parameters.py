@@ -10,7 +10,9 @@ class FrozenClass(object):
         if self.__isfrozen:
             if key not in dir(self):
                 raise AttributeError(
-                    "{} is a frozen class. This key does not exist: {}".format(type(self).__name__, key)
+                    "{} is a frozen class. This key does not exist: {}".format(
+                        type(self).__name__, key
+                    )
                 )
         object.__setattr__(self, key, value)
 

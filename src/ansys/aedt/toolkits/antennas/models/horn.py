@@ -161,7 +161,7 @@ class ConicalHorn(CommonHorn):
     @pyaedt_function_handler()
     def model_hfss(self):
         """Draw a conical horn antenna.
-        
+
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists")
@@ -422,7 +422,9 @@ class PyramidalRidged(CommonHorn):
             self.material not in self._app.materials.mat_names_aedt
             or self.material not in self._app.materials.mat_names_aedt_lower
         ):
-            self._app.logger.warning("Material is not found. Create the material before assigning it.")
+            self._app.logger.warning(
+                "Material is not found. Create the material before assigning it."
+            )
             return parameters
 
         scale = lambda x: (1.0 / freq_ghz) * x

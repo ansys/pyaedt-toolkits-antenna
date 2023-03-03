@@ -88,7 +88,7 @@ class RectangularPatchProbe(CommonPatch):
         Frequency units. The default is ``GHz``.
     material : str, optional
         Substrate material.
-        If the material is not defined, a new material, ``parametrized``, is created.ned.
+        If the material is not defined, a new material, ``parametrized``, is created.
         The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
         Boundary type to use. Options are ``"Radiation"``,
@@ -634,7 +634,7 @@ class RectangularPatchInset(CommonPatch):
     @pyaedt_function_handler()
     def model_hfss(self):
         """Draw a rectangular patch antenna inset fed.
-        
+
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists.")
