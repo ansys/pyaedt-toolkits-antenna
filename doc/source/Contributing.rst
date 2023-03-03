@@ -4,11 +4,9 @@
 Contribute
 ==========
 Overall guidance on contributing to a PyAnsys repository appears in
-`Contribute <https://dev.docs.pyansys.com/dev/how-to/contributing.html>`_
+`Contributing <https://dev.docs.pyansys.com/how-to/contributing.html>`_
 in the *PyAnsys Developer's Guide*. Ensure that you are thoroughly familiar
-with this guide, paying particular attention to `Guidelines and Best Practices
-<https://dev.docs.pyansys.com/dev/how-to/index.html>`_, before attempting
-to contribute to PyAEDT.
+with this guide before attempting to contribute to PyAEDT or its toolkits.
  
 The following contribution information is specific to PyAEDT.
 
@@ -43,7 +41,7 @@ This version is automatically kept up to date via GitHub actions.
 Adhere to code style
 --------------------
 PyAEDT is compliant with `PyAnsys code style
-<https://dev.docs.pyansys.com/coding_style/index.html>`_. It uses the tool
+<https://dev.docs.pyansys.com/coding-style/index.html>`_. It uses the tool
 `pre-commit <https://pre-commit.com/>`_ to check the code style. You can install
 and activate this tool with:
 
@@ -147,6 +145,6 @@ Do not write hard-coded values to the registry. Instead, use the Configuration s
 
 Maximum line length
 ~~~~~~~~~~~~~~~~~~~
-Best practice is to keep the length at or below 120 characters for code,
+Best practice is to keep the length at or below 120 characters for code
 and comments. Lines longer than this might not display properly on some terminals
 and tools or might be difficult to follow.

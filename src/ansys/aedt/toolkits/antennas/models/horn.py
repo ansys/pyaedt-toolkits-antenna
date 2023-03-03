@@ -8,7 +8,7 @@ from ansys.aedt.toolkits.antennas.models.common import CommonAntenna
 
 
 class CommonHorn(CommonAntenna):
-    """Base methods common to Horn antennas."""
+    """Provides base methods common to horn antennas."""
 
     def __init__(self, _default_input_parameters, *args, **kwargs):
         CommonAntenna.antenna_type = "Horn"
@@ -32,7 +32,7 @@ class CommonHorn(CommonAntenna):
             and value not in self._app.materials.mat_names_aedt_lower
         ):
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
-                "Material not found. Create new material before assign"
+                "Material is not found. Create the material before assigning it"
             )
         else:
             if value != self.material and self.object_list:
@@ -125,7 +125,7 @@ class ConicalHorn(CommonHorn):
             or self.material not in self._app.materials.mat_names_aedt_lower
         ):
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
-                "Material not found. Create new material before assign."
+                "Material is not found. Create the material before assigning it."
             )
             return parameters
 
@@ -160,8 +160,9 @@ class ConicalHorn(CommonHorn):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw conical horn antenna.
-        Once the antenna is created, this method will not be used anymore."""
+        """Draw a conical horn antenna.
+        
+        Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists")
             return False
@@ -421,7 +422,7 @@ class PyramidalRidged(CommonHorn):
             self.material not in self._app.materials.mat_names_aedt
             or self.material not in self._app.materials.mat_names_aedt_lower
         ):
-            self._app.logger.warning("Material not found. Create new material before assign.")
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
         scale = lambda x: (1.0 / freq_ghz) * x
@@ -475,7 +476,7 @@ class PyramidalRidged(CommonHorn):
     @pyaedt_function_handler()
     def model_hfss(self):
         """Draw conical horn antenna.
-        Once the antenna is created, this method will not be used anymore."""
+        Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
             return False
@@ -1017,7 +1018,7 @@ class PyramidalRidged(CommonHorn):
 
     @pyaedt_function_handler()
     def setup_hfss(self):
-        """Conical horn antenna HFSS setup."""
+        """Set up a conical horn antenna in HFSS."""
         aperture_height = self.synthesis_parameters.aperture_height.hfss_variable
         aperture_width = self.synthesis_parameters.aperture_width.hfss_variable
         wg_length = self.synthesis_parameters.wg_length.hfss_variable
@@ -1141,10 +1142,10 @@ class PyramidalRidged(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemenented."""
+        """Model in PyDiscovery. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemenented."""
+        """Set up model in PyDiscovery. To be implemenented."""
         pass

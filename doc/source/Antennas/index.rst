@@ -1,10 +1,9 @@
-==================
-Toolkit reference
-==================
+=========================
+Antenna toolkit reference
+=========================
 
-This section describes all Antennas available in Antenna Wizard.
-
-Available Antennas are:
+This section describes all classes for antenna types available in
+AEDT's **Antenna Wizard**.
 
 .. currentmodule:: ansys.aedt.toolkits.antennas.models.bowtie
 

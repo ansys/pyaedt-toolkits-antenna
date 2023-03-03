@@ -9,7 +9,7 @@ from ansys.aedt.toolkits.antennas.models.common import CommonAntenna
 
 
 class CommonHelix(CommonAntenna):
-    """Base methods common to Horn antennas."""
+    """Provides base methods common to horn antennas."""
 
     def __init__(self, _default_input_parameters, *args, **kwargs):
         CommonAntenna.antenna_type = "Helix"
@@ -35,7 +35,7 @@ class CommonHelix(CommonAntenna):
 
     @property
     def direction(self):
-        """Helix direction. ``0`` for left ``1`` for right.
+        """Helix direction. ``0`` for left, and ``1`` for right.
 
         Returns
         -------
@@ -75,9 +75,9 @@ class CommonHelix(CommonAntenna):
 
 
 class AxialMode(CommonHelix):
-    """Manages axial mode helix antenna.
+    """Manages an axial mode helix antenna.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the ``Hfss ``object.
 
     Parameters
     ----------
@@ -86,17 +86,17 @@ class AxialMode(CommonHelix):
     frequency_unit : str, optional
         Frequency units. The default is ``GHz``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
-        The default is ``"pec"``.
+        Horn material. If the material is not defined, a new material,
+        ``parametrized``, is defined. The default is ``"pec"``.
     outer_boundary : str, optional
         Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        ``"FEBI"``, ``"PML"``, and ``None``. The default is ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
@@ -188,10 +188,11 @@ class AxialMode(CommonHelix):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw conical horn antenna.
-        Once the antenna is created, this method will not be used anymore."""
+        """Draw a conical horn antenna.
+
+        Once the antenna is created, this method is not used anymore."""
         if self.object_list:
-            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists")
+            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists.")
             return False
 
         self.set_variables_in_hfss()
@@ -394,10 +395,10 @@ class AxialMode(CommonHelix):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemenented."""
+        """Model in PyDiscovery. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemenented."""
+        """Set up model in PyDiscovery. To be implemenented."""
         pass

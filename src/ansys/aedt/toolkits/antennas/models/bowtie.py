@@ -9,9 +9,9 @@ from ansys.aedt.toolkits.antennas.models.patch import CommonPatch
 
 
 class BowTie(CommonPatch):
-    """Manages Bowtie antenna.
+    """Manages a bowtie antenna.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the ``Hfss`` object.
 
     Parameters
     ----------
@@ -20,20 +20,19 @@ class BowTie(CommonPatch):
     frequency_unit : str, optional
         Frequency units. The default is ``GHz``.
     material : str, optional
-        Substrate material.
-        If material is not defined a new material parametrized will be defined.
-        The default is ``"FR4_epoxy"``.
+        Substrate material. If the material is not defined, a new
+        material ``parametrized`` is defined. The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
         Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        ``"FEBI"``, ``"PML"`` and ``None``. The default is ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     substrate_height : float, optional
         Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
@@ -82,7 +81,7 @@ class BowTie(CommonPatch):
         ):
             mat_props = self._app.materials[self.material]
         else:
-            self._app.logger.warning("Material not found. Create the material before assignment.")
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
         subPermittivity = float(mat_props.permittivity.value)
@@ -134,8 +133,10 @@ class BowTie(CommonPatch):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw rectangular patch antenna with coaxial probe.
-        Once the antenna is created, this method will not be used anymore."""
+        """Draw a rectangular patch antenna with a coaxial probe.
+        
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
             return False
@@ -239,19 +240,19 @@ class BowTie(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemenented."""
+        """Model the bowtie antenna in PyDiscovery. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemenented."""
+        """Set up the model in PyDiscovery. To be implemenented."""
         pass
 
 
 class BowTieRounded(CommonPatch):
-    """Manages bowtie rounded antenna-
+    """Manages a bowtie rounded antenna.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the ``Hfss`` object.
 
     Parameters
     ----------
@@ -260,20 +261,20 @@ class BowTieRounded(CommonPatch):
     frequency_unit : str, optional
         Frequency units. The default is ``GHz``.
     material : str, optional
-        Substrate material.
-        If material is not defined a new material parametrized will be defined.
+        Substrate material. If material is not defined, a new
+        material, ``parametrized``is defined.
         The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
         Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        ``"FEBI"``, ``"PML"``, and ``None``. The default is ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     substrate_height : float, optional
         Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
@@ -322,7 +323,7 @@ class BowTieRounded(CommonPatch):
         ):
             mat_props = self._app.materials[self.material]
         else:
-            self._app.logger.warning("Material not found. Create the material before assignment.")
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
         subPermittivity = float(mat_props.permittivity.value)
@@ -376,10 +377,12 @@ class BowTieRounded(CommonPatch):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw rectangular patch antenna with coaxial probe.
-        Once the antenna is created, this method will not be used anymore."""
+        """Draw a rectangular patch antenna with a coaxial probe.
+
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
-            self._app.logger.warning("This antenna already exists")
+            self._app.logger.warning("This antenna already exists.")
             return False
 
         self.set_variables_in_hfss()
@@ -490,10 +493,10 @@ class BowTieRounded(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemenented."""
+        """Model in PyDiscovery. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemenented."""
+        """Set up the model in PyDiscovery. To be implemenented."""
         pass

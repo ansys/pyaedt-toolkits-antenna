@@ -1,5 +1,5 @@
 PyAEDT antenna toolkit
-==============================================
+======================
 |pyansys| |python| |pypi| |GH-CI| |codecov| |MIT| |black|
 
 .. |pyansys| image:: https://img.shields.io/badge/Py-Ansys-ffc107.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAABDklEQVQ4jWNgoDfg5mD8vE7q/3bpVyskbW0sMRUwofHD7Dh5OBkZGBgW7/3W2tZpa2tLQEOyOzeEsfumlK2tbVpaGj4N6jIs1lpsDAwMJ278sveMY2BgCA0NFRISwqkhyQ1q/Nyd3zg4OBgYGNjZ2ePi4rB5loGBhZnhxTLJ/9ulv26Q4uVk1NXV/f///////69du4Zdg78lx//t0v+3S88rFISInD59GqIH2esIJ8G9O2/XVwhjzpw5EAam1xkkBJn/bJX+v1365hxxuCAfH9+3b9/+////48cPuNehNsS7cDEzMTAwMMzb+Q2u4dOnT2vWrMHu9ZtzxP9vl/69RVpCkBlZ3N7enoDXBwEAAA+YYitOilMVAAAAAElFTkSuQmCC
@@ -31,25 +31,27 @@ PyAEDT antenna toolkit
    :alt: Black
 
 
-A Python wrapper for Ansys pyaedt-toolkits
+The ``pyaedt-antenna-toolkit`` package provides a Python wrapper for modeling
+antennas using Ansys Electronics Desktop (AEDT).
 
 
 How to install
 --------------
 
-At least two installation modes are provided: user and developer.
+Two installation modes are provided: user and developer.
 
 For users
 ^^^^^^^^^
 
-In order to install Pyaedt-antenna-toolkits ansys.aedt.toolkits.antennas, make sure you
-have the latest version of `pip`_. To do so, run:
+Before installing the latest ``pyaedt-antenna-toolkit`` package
+in user mode, ensure that you have the latest version of
+`pip`_ by running this command:
 
 .. code:: bash
 
     python -m pip install -U pip
 
-Then, you can simply execute:
+Then, to install the latest package, run this command:
 
 .. code:: bash
 
@@ -58,13 +60,14 @@ Then, you can simply execute:
 For developers
 ^^^^^^^^^^^^^^
 
-Installing Pyaedt-antenna-toolkits ansys.aedt.toolkits.antennas in developer mode allows
-you to modify the source and enhance it.
+Installing this package in developer mode allows you to modify and
+enhance the source. As indicated in :ref:`contributing_aedt`, before
+making a contribution, ensure that you are thoroughly familiar
+with the *PyAnsys Developer's Guide*.
 
-Before contributing to the project, please refer to the `PyAnsys Developer's guide`_. You will 
-need to follow these steps:
+To install the latest package in develper mode, perform these steps:
 
-#. Start by cloning this repository:
+#. Clone the repository:
 
    .. code:: bash
 
@@ -80,13 +83,14 @@ need to follow these steps:
       # Activate it in a POSIX system
       source .venv/bin/activate
 
-      # Activate it in Windows CMD environment
+      # Activate it in a Windows CMD environment
       .venv\Scripts\activate.bat
 
-      # Activate it in Windows Powershell
+      # Activate it in Windows PowerShell
       .venv\Scripts\Activate.ps1
 
-#. Make sure you have the latest required build system and doc, testing, and CI tools:
+#. To ensure that you have the latest required build system and documentation,
+   testing, and CI tools, run this code:
 
    .. code:: bash
 
@@ -96,53 +100,54 @@ need to follow these steps:
       python -m pip install -r requirements/requirements_tests.txt
 
 
-#. Install the project in editable mode:
+#. Install the project in editable mode by run this command:
 
     .. code:: bash
     
       python -m pip install --editable ansys-aedt-toolkits-antennas
     
-    #. Finally, verify your development installation by running:
+#. Verify your development installation by running this command:
 
    .. code:: bash
         
       tox
 
 
-How to testing
---------------
+How to test
+-----------
 
-This project takes advantage of `tox`_. This tool allows to automate common
-development tasks (similar to Makefile) but it is oriented towards Python
-development. 
+This project takes advantage of `tox`_, which is a tool for automating common
+development tasks. While similar to Makefile, ``tox`` is oriented towards Python
+development. It uses *environments*, which are similar to Makefile
+rules, to make it highly customizable.. 
 
-Using tox
-^^^^^^^^^
+Using ``tox``
+^^^^^^^^^^^^^
 
-As Makefile has rules, `tox`_ has environments. In fact, the tool creates its
-own virtual environment so anything being tested is isolated from the project in
-order to guarantee project's integrity. The following environments commands are provided:
+While Makefile has rules, `tox`_ has environments. In fact, ``tox`` creates its
+own virtual environment to isolate anything being tested from the project
+to guarantee the project's integrity. The following environments commands are provided:
 
-- **tox -e style**: will check for coding style quality.
-- **tox -e py**: checks for unit tests.
-- **tox -e py-coverage**: checks for unit testing and code coverage.
-- **tox -e doc**: checs for documentation building process.
+- **tox -e style**: Checks the code style of your project.
+- **tox -e py**: Runs your test suite.
+- **tox -e py-coverage**: Checks your unit tests for code coverage.
+- **tox -e doc**: Builds the documentation of your project.
 
 
 Raw testing
 ^^^^^^^^^^^
 
-If required, you can always call the style commands (`black`_, `isort`_,
-`flake8`_...) or unit testing ones (`pytest`_) from the command line. However,
-this does not guarantee that your project is being tested in an isolated
-environment, which is the reason why tools like `tox`_ exist.
+If required, you can use Python tools like `black`_, `isort`_, `flake8`_
+and `pytest`_ from the command line for code style checking, import sorting,
+and testing. However, using these tools does not guarantee that your project
+is being tested in an isolated environment, which is why tools like ``toc``_ exist.
 
 
-A note on pre-commit
+Using ``pre-commit``
 ^^^^^^^^^^^^^^^^^^^^
 
-The style checks take advantage of `pre-commit`_. Developers are not forced but
-encouraged to install this tool via:
+The style checks take advantage of `pre-commit`_. While developers are not forced to
+install this tool, they are are encouraged to run this command to install it:
 
 .. code:: bash
 
@@ -152,14 +157,15 @@ encouraged to install this tool via:
 Documentation
 -------------
 
-For building documentation, you can either run the usual rules provided in the
-`Sphinx`_ Makefile, such us:
+For building documentation, you can run the usual rules provided in the
+`Sphinx`_ Makefile, like shown in this command:
 
 .. code:: bash
 
     make -C doc/ html && your_browser_name doc/html/index.html
 
-However, the recommended way of checking documentation integrity is using:
+However, the recommended way of checking documentation integrity is by using
+``tox``, like shown in this command:
 
 .. code:: bash
 
@@ -169,8 +175,9 @@ However, the recommended way of checking documentation integrity is using:
 Distributing
 ------------
 
-If you would like to create either source or wheel files, start by installing
-the building requirements and then executing the build module:
+If you would like to create either source or wheel files, run
+the following code to install the building requirements and
+execute the build module:
 
 .. code:: bash
 
