@@ -750,7 +750,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.layout_settings.addItem(bottom_spacer, 16, 0, 1, 1)
 
     def draw_rectangular_probe_ui(self):
-        """Create rectangular patch antenna UI."""
+        """Create a rectangular probe antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -773,18 +773,18 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._add_footer(self.create_rectangular_probe_design)
 
     def create_rectangular_probe_design(self, synth_only=False):
-        """Create a rectangular probe patch.
+        """Create a rectangular probe antenna.
 
         Parameters
         ----------
         synth_only : bool, optional
-            Whether to only synthesize the rectangular probe patch. The default
+            Whether to only synthesize the antenna. The default
             is ``False``.
         """
         self.get_antenna(RectangularPatchProbe, synth_only)
 
     def draw_rectangular_probe_inset_ui(self):
-        """Create a rectangular patch UI."""
+        """Create a rectangular probe patch antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -807,18 +807,18 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._add_footer(self.create_rectangular_probe_inset_design)
 
     def create_rectangular_probe_inset_design(self, synth_only=False):
-        """Create a rectangular probe patch.
+        """Create a rectangular probe patch antenna.
 
         Parameters
         ----------
         synth_only : bool, optional
-            Whether to only synthesize the rectangular probe patch. The default
+            Whether to only synthesize the antenna. The default
             is ``False``.
         """
         self.get_antenna(RectangularPatchInset, synth_only)
 
     def draw_rectangular_probe_edge_ui(self):
-        """Create Rectangular Patch UI."""
+        """Create a rectangular patch antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -841,18 +841,18 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._add_footer(self.create_rectangular_probe_edge_design)
 
     def create_rectangular_probe_edge_design(self, synth_only=False):
-        """Create a rectangular probe patch.
+        """Create a rectangular patch antenna.
 
         Parameters
         ----------
         synth_only : bool, optional
-            Whether to only synthesize the rectangular probe patch. The default
+            Whether to only synthesize the antenna. The default
             is ``False``.
         """
         self.get_antenna(RectangularPatchEdge, synth_only)
 
     def draw_conical_horn_ui(self):
-        """Create a conical horn UI."""
+        """Create a conical horn antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -868,13 +868,13 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         Parameters
         ----------
         synth_only : bool, optional
-            Whether to only synthesize the rectangular probe patch. The default
+            Whether to only synthesize the antenna. The default
             is ``False``.
         """
         self.get_antenna(ConicalHorn, synth_only)
 
     def draw_axial_helix_ui(self):
-        """Create an axial mode helix UI."""
+        """Create an axial mode helix antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -947,7 +947,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.get_antenna(BowTie, synth_only)
 
     def draw_bowtie_rounded_ui(self):
-        """Create a bowtime rounded antenna UI."""
+        """Create a bowtie rounded antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -1005,7 +1005,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.get_antenna(AxialMode, synth_only)
 
     def draw_conical_archimedean_ui(self):
-        """Create a conical archimedean antenna UI."""
+        """Create a conical Archimedean antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -1029,7 +1029,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.get_antenna(AxialMode, synth_only)
 
     def draw_conical_log_ui(self):
-        """Create Conical Log UI."""
+        """Create a conical log antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -1077,7 +1077,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.get_antenna(AxialMode, synth_only)
 
     def draw_dipole_planar_ui(self):
-        """Create Planar Dipole UI."""
+        """Create a planar dipole antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -1101,7 +1101,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.get_antenna(AxialMode, synth_only)
 
     def draw_dipole_wire_ui(self):
-        """Create Wire Dipole UI."""
+        """Create a wire dipole antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -1136,7 +1136,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._add_footer(self.create_horn_corrugated_design)
 
     def create_horn_corrugated_design(self, synth_only=False):
-        """Create a horn corrugated antenna.
+        """Create a conical horn corrugated antenna.
 
         Parameters
         ----------
@@ -1149,7 +1149,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.get_antenna(AxialMode, synth_only)
 
     def draw_eplane_horn_ui(self):
-        """Create E-plane horn antenna UI."""
+        """Create an E-plane horn antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -1173,7 +1173,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.get_antenna(AxialMode, synth_only)
 
     def draw_hplane_horn_ui(self):
-        """Create an H-plane antenna UI."""
+        """Create an H-plane horn antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -1197,7 +1197,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.get_antenna(AxialMode, synth_only)
 
     def draw_pyramidal_horn_ui(self):
-        """Create Horn Pyramidal UI."""
+        """Create a horn pyramidal antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna is already added to project. To add a new antenna, relaunch Antenna Wizard."
@@ -1326,7 +1326,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._add_footer(self.create_log_periodic_tooth_design)
 
     def create_log_periodic_tooth_design(self, synth_only=False):
-        """Create a Log-Periodic Tooth antenna.
+        """Create a log periodic tooth antenna.
 
         Parameters
         ----------
