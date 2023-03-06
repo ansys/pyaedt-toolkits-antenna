@@ -297,7 +297,7 @@ class RectangularPatchProbe(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2" "+" + pos_x, "-" + sub_y + "/2" "+" + pos_y, pos_z],
+            position=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
             dimensions_list=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             matname=self.material,
@@ -308,7 +308,7 @@ class RectangularPatchProbe(CommonPatch):
         # Ground
         gnd = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=["-" + gnd_x + "/2" "+" + pos_x, "-" + gnd_y + "/2" "+" + pos_y, pos_z],
+            position=["-" + gnd_x + "/2", "-" + gnd_y + "/2", "0"],
             dimension_list=[gnd_x, gnd_y],
             name="gnd_" + antenna_name,
         )
@@ -319,9 +319,9 @@ class RectangularPatchProbe(CommonPatch):
         ant = self._app.modeler.create_rectangle(
             csPlane=2,
             position=[
-                "-" + patch_x + "/2" "+" + pos_x,
-                "-" + patch_y + "/2" "+" + pos_y,
-                sub_h + "+" + pos_z,
+                "-" + patch_x + "/2",
+                "-" + patch_y + "/2",
+                sub_h,
             ],
             dimension_list=[patch_x, patch_y],
             name="ant_" + antenna_name,
@@ -332,7 +332,7 @@ class RectangularPatchProbe(CommonPatch):
 
         void = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
+            position=[feed_x, feed_y, "0"],
             radius=coax_outer_rad,
             name="void_" + antenna_name,
         )
@@ -341,7 +341,7 @@ class RectangularPatchProbe(CommonPatch):
 
         feed_pin = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
+            position=[feed_x, feed_y, "0"],
             radius=coax_inner_rad,
             height=sub_h,
             name="feed_pin_" + antenna_name,
@@ -352,7 +352,7 @@ class RectangularPatchProbe(CommonPatch):
 
         feed_coax = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
+            position=[feed_x, feed_y, "0"],
             radius=coax_inner_rad,
             height="-" + feed_length,
             name="feed_coax_" + antenna_name,
@@ -363,7 +363,7 @@ class RectangularPatchProbe(CommonPatch):
 
         coax = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z],
+            position=[feed_x, feed_y, "0"],
             radius=coax_outer_rad,
             height="-" + feed_length,
             name="coax_" + antenna_name,
@@ -374,7 +374,7 @@ class RectangularPatchProbe(CommonPatch):
 
         port_cap = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z + "-" + feed_length],
+            position=[feed_x, feed_y, "-" + feed_length],
             radius=coax_outer_rad,
             height="-" + sub_h + "/" + str(10),
             name="port_cap_" + antenna_name,
@@ -385,12 +385,23 @@ class RectangularPatchProbe(CommonPatch):
 
         p1 = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[feed_x + "+" + pos_x, feed_y + "+" + pos_y, pos_z + "-" + feed_length],
+            position=[feed_x, feed_y, "-" + feed_length],
             radius=coax_outer_rad,
             name="port_" + antenna_name,
         )
         p1.color = (128, 0, 0)
         p1.history.props["Coordinate System"] = coordinate_system
+
+        self.object_list[sub.name] = sub
+        self.object_list[gnd.name] = gnd
+        self.object_list[ant.name] = ant
+        self.object_list[feed_pin.name] = feed_pin
+        self.object_list[feed_coax.name] = feed_coax
+        self.object_list[coax.name] = coax
+        self.object_list[port_cap.name] = port_cap
+        self.object_list[p1.name] = p1
+
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
 
         if self.huygens_box:
             lightSpeed = constants.SpeedOfLight  # m/s
@@ -428,15 +439,6 @@ class RectangularPatchProbe(CommonPatch):
         coax.group_name = antenna_name
         port_cap.group_name = antenna_name
         p1.group_name = antenna_name
-
-        self.object_list[sub.name] = sub
-        self.object_list[gnd.name] = gnd
-        self.object_list[ant.name] = ant
-        self.object_list[feed_pin.name] = feed_pin
-        self.object_list[feed_coax.name] = feed_coax
-        self.object_list[coax.name] = coax
-        self.object_list[port_cap.name] = port_cap
-        self.object_list[p1.name] = p1
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -484,7 +486,7 @@ class RectangularPatchInset(CommonPatch):
     Examples
     --------
     >>> from pyaedt import Hfss
-    >>> from ansys.aedt.toolkits.antennas.patch import RectangularPatchProbe
+    >>> from ansys.aedt.toolkits.antennas.patch import RectangularPatchInset
     >>> hfss = Hfss()
     >>> patch = hfss.add_from_toolkit(RectangularPatchInset, draw=True, frequency=20.0,
     ...                               frequency_unit="GHz")
@@ -662,7 +664,7 @@ class RectangularPatchInset(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2" "+" + pos_x, "-" + sub_y + "/2" "+" + pos_y, pos_z],
+            position=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
             dimensions_list=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             matname=self.material,
@@ -673,7 +675,7 @@ class RectangularPatchInset(CommonPatch):
         # Ground
         gnd = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=["-" + sub_x + "/2" "+" + pos_x, "-" + sub_y + "/2" "+" + pos_y, pos_z],
+            position=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
             dimension_list=[sub_x, sub_y],
             name="gnd_" + antenna_name,
         )
@@ -685,9 +687,9 @@ class RectangularPatchInset(CommonPatch):
         ant = self._app.modeler.create_rectangle(
             csPlane=2,
             position=[
-                "-" + patch_x + "/2" "+" + pos_x,
-                "-" + patch_y + "/2" "+" + pos_y,
-                sub_h + "+" + pos_z,
+                "-" + patch_x + "/2",
+                "-" + patch_y + "/2",
+                sub_h,
             ],
             dimension_list=[patch_x, patch_y],
             name="ant_" + antenna_name,
@@ -699,9 +701,9 @@ class RectangularPatchInset(CommonPatch):
         cutout = self._app.modeler.create_rectangle(
             csPlane=2,
             position=[
-                "-" + feed_width + "/2" + "-" + inset_gap + "+" + pos_x,
-                patch_y + "/2" + "-" + inset_distance + "+" + pos_y,
-                sub_h + "+" + pos_z,
+                "-" + feed_width + "/2" + "-" + inset_gap,
+                patch_y + "/2" + "-" + inset_distance,
+                sub_h,
             ],
             dimension_list=[feed_width + "+2*" + inset_gap, feed_length],
             name="cutout_" + antenna_name,
@@ -714,9 +716,9 @@ class RectangularPatchInset(CommonPatch):
         feed = self._app.modeler.create_rectangle(
             csPlane=2,
             position=[
-                "-" + feed_width + "/2" + "+" + pos_x,
-                patch_y + "/2" "-" + inset_distance + "+" + pos_y,
-                sub_h + "+" + pos_z,
+                "-" + feed_width + "/2",
+                patch_y + "/2" "-" + inset_distance,
+                sub_h,
             ],
             dimension_list=[feed_width, feed_length + "+" + inset_distance],
             name="feed_" + antenna_name,
@@ -729,15 +731,22 @@ class RectangularPatchInset(CommonPatch):
         p1 = self._app.modeler.create_rectangle(
             csPlane=1,
             position=[
-                "-" + feed_width + "/2" + "+" + pos_x,
-                patch_y + "/2" + "+" + feed_length + "+" + pos_y,
-                pos_z,
+                "-" + feed_width + "/2",
+                patch_y + "/2" + "+" + feed_length,
+                "0",
             ],
             dimension_list=[sub_h, feed_width],
             name="port_lump_" + antenna_name,
         )
         p1.color = (255, 128, 65)
         p1.history.props["Coordinate System"] = coordinate_system
+
+        self.object_list[sub.name] = sub
+        self.object_list[gnd.name] = gnd
+        self.object_list[ant.name] = ant
+        self.object_list[p1.name] = p1
+
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
         if self.huygens_box:
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
@@ -783,16 +792,11 @@ class RectangularPatchInset(CommonPatch):
             huygens.history.props["Coordinate System"] = coordinate_system
             huygens.group_name = self.antenna_name
             self.object_list[huygens.name] = huygens
-        sub.group_name = antenna_name
 
+        sub.group_name = antenna_name
         gnd.group_name = antenna_name
         ant.group_name = antenna_name
         p1.group_name = antenna_name
-
-        self.object_list[sub.name] = sub
-        self.object_list[gnd.name] = gnd
-        self.object_list[ant.name] = ant
-        self.object_list[p1.name] = p1
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -1028,7 +1032,7 @@ class RectangularPatchEdge(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2" "+" + pos_x, "-" + sub_y + "/2" "+" + pos_y, pos_z],
+            position=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
             dimensions_list=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             matname=self.material,
@@ -1039,7 +1043,7 @@ class RectangularPatchEdge(CommonPatch):
         # Ground
         gnd = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=["-" + sub_x + "/2" "+" + pos_x, "-" + sub_y + "/2" "+" + pos_y, pos_z],
+            position=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
             dimension_list=[sub_x, sub_y],
             name="gnd_" + antenna_name,
         )
@@ -1051,9 +1055,9 @@ class RectangularPatchEdge(CommonPatch):
         ant = self._app.modeler.create_rectangle(
             csPlane=2,
             position=[
-                "-" + patch_x + "/2" "+" + pos_x,
-                "-" + patch_y + "/2" "+" + pos_y,
-                sub_h + "+" + pos_z,
+                "-" + patch_x + "/2",
+                "-" + patch_y + "/2",
+                sub_h,
             ],
             dimension_list=[patch_x, patch_y],
             name="ant_" + antenna_name,
@@ -1065,9 +1069,9 @@ class RectangularPatchEdge(CommonPatch):
         edge_feed = self._app.modeler.create_rectangle(
             csPlane=2,
             position=[
-                "-" + edge_feed_width + "/2" + "+" + pos_x,
-                pos_y,
-                sub_h + "+" + pos_z,
+                "-" + edge_feed_width + "/2",
+                "0",
+                sub_h,
             ],
             dimension_list=[edge_feed_width, patch_y + "/2" + "+" + edge_feed_length],
             name="cutout_" + antenna_name,
@@ -1078,9 +1082,9 @@ class RectangularPatchEdge(CommonPatch):
         feed = self._app.modeler.create_rectangle(
             csPlane=2,
             position=[
-                "-" + feed_width + "/2" + "+" + pos_x,
-                patch_y + "/2" + "+" + edge_feed_length + "+" + pos_y,
-                sub_h + "+" + pos_z,
+                "-" + feed_width + "/2",
+                patch_y + "/2" + "+" + edge_feed_length,
+                sub_h,
             ],
             dimension_list=[feed_width, feed_length],
             name="feed_" + antenna_name,
@@ -1093,15 +1097,23 @@ class RectangularPatchEdge(CommonPatch):
         p1 = self._app.modeler.create_rectangle(
             csPlane=1,
             position=[
-                "-" + feed_width + "/2" + "+" + pos_x,
-                patch_y + "/2" + "+" + edge_feed_length + "+" + feed_length + "+" + pos_y,
-                pos_z,
+                "-" + feed_width + "/2",
+                patch_y + "/2" + "+" + edge_feed_length + "+" + feed_length,
+                "0",
             ],
             dimension_list=[sub_h, feed_width],
             name="port_lump_" + antenna_name,
         )
         p1.color = (255, 128, 65)
         p1.history.props["Coordinate System"] = coordinate_system
+
+        self.object_list[sub.name] = sub
+        self.object_list[gnd.name] = gnd
+        self.object_list[ant.name] = ant
+        self.object_list[p1.name] = p1
+
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+
         if self.huygens_box:
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
@@ -1112,11 +1124,9 @@ class RectangularPatchEdge(CommonPatch):
             )
             huygens = self._app.modeler.create_box(
                 position=[
-                    "-" + sub_x + "/2"
-                    "+" + pos_x + "-" + "+" + huygens_dist + self.length_unit + "/2",
-                    "-" + sub_y + "/2"
-                    "+" + pos_y + "-" + "+" + huygens_dist + self.length_unit + "/2",
-                    pos_z,
+                    "-" + sub_x + "/2" "-" + "+" + huygens_dist + self.length_unit + "/2",
+                    "-" + sub_y + "/2" "-" + "+" + huygens_dist + self.length_unit + "/2",
+                    "0",
                 ],
                 dimensions_list=[
                     "abs(-"
@@ -1152,11 +1162,6 @@ class RectangularPatchEdge(CommonPatch):
         gnd.group_name = antenna_name
         ant.group_name = antenna_name
         p1.group_name = antenna_name
-
-        self.object_list[sub.name] = sub
-        self.object_list[gnd.name] = gnd
-        self.object_list[ant.name] = ant
-        self.object_list[p1.name] = p1
 
     @pyaedt_function_handler()
     def model_disco(self):
