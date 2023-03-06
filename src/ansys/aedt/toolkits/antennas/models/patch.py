@@ -10,7 +10,7 @@ from ansys.aedt.toolkits.antennas.models.common import TransmissionLine
 
 
 class CommonPatch(CommonAntenna):
-    """Base methods common to Patch antennas."""
+    """Provides base methods common to patch antennas."""
 
     def __init__(self, _default_input_parameters, *args, **kwargs):
         CommonAntenna.antenna_type = "Patch"
@@ -35,7 +35,7 @@ class CommonPatch(CommonAntenna):
             and value not in self._app.materials.mat_names_aedt_lower
         ):
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
-                "Material not found. Create new material before assign"
+                "Material is not found. Create the material before assigning it."
             )
         else:
             if value != self.material and self.object_list:
@@ -76,9 +76,9 @@ class CommonPatch(CommonAntenna):
 
 
 class RectangularPatchProbe(CommonPatch):
-    """Manages rectangular patch antenna with coaxial probe.
+    """Manages a rectangular patch antenna with a coaxial probe.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the ``Hfss`` object.
 
     Parameters
     ----------
@@ -88,19 +88,19 @@ class RectangularPatchProbe(CommonPatch):
         Frequency units. The default is ``GHz``.
     material : str, optional
         Substrate material.
-        If material is not defined a new material parametrized will be defined.
+        If the material is not defined, a new material, ``parametrized``, is created.
         The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
         Boundary type to use. Options are ``"Radiation"``,
         ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     substrate_height : float, optional
         Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
@@ -151,7 +151,7 @@ class RectangularPatchProbe(CommonPatch):
             mat_props = self._app.materials[self.material]
         else:
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
-                "Material not found. Create the material before assignment."
+                "Material is not found. Create the material before assigning it."
             )
             return parameters
 
@@ -269,7 +269,7 @@ class RectangularPatchProbe(CommonPatch):
         """Draw rectangular patch antenna with coaxial probe.
         Once the antenna is created, this method will not be used anymore."""
         if self.object_list:
-            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists")
+            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists.")
             return False
 
         self.set_variables_in_hfss()
@@ -440,19 +440,19 @@ class RectangularPatchProbe(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemenented."""
+        """Model in PyDiscovery. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemenented."""
+        """Set up the model in PyDiscovery. To be implemenented."""
         pass
 
 
 class RectangularPatchInset(CommonPatch):
-    """Manages rectangular patch antenna inset fed.
+    """Manages a rectangular patch antenna inset fed.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the ``Hfss`` object.
 
     Parameters
     ----------
@@ -461,20 +461,19 @@ class RectangularPatchInset(CommonPatch):
     frequency_unit : str, optional
         Frequency units. The default is ``GHz``.
     material : str, optional
-        Substrate material.
-        If material is not defined a new material parametrized will be defined.
-        The default is ``"FR4_epoxy"``.
+        Substrate material. If the material is not defined, a new
+        material, ``parametrized``, is created. The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
         Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        ``"FEBI"``, ``"PML"``, and ``None``. The default is ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     substrate_height : float, optional
         Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
@@ -525,7 +524,7 @@ class RectangularPatchInset(CommonPatch):
             mat_props = self._app.materials[self.material]
         else:
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
-                "Material not found. Create the material before assignment."
+                "Material is not found. Create the material before assigning it."
             )
             return parameters
 
@@ -634,10 +633,11 @@ class RectangularPatchInset(CommonPatch):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw rectangular patch antenna inset fed.
-        Once the antenna is created, this method will not be used anymore."""
+        """Draw a rectangular patch antenna inset fed.
+
+        Once the antenna is created, this method is not used anymore."""
         if self.object_list:
-            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists")
+            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists.")
             return False
 
         self.set_variables_in_hfss()
@@ -796,19 +796,19 @@ class RectangularPatchInset(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemenented."""
+        """Model in PyDiscovery. To be implemenented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemenented."""
+        """Set up the model in PyDiscovery. To be implemenented."""
         pass
 
 
 class RectangularPatchEdge(CommonPatch):
-    """Manages rectangular patch edge antenna inset fed.
+    """Manages a rectangular patch edge antenna inset fed.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the ``Hfss`` object.
 
     Parameters
     ----------
@@ -817,20 +817,20 @@ class RectangularPatchEdge(CommonPatch):
     frequency_unit : str, optional
         Frequency units. The default is ``GHz``.
     material : str, optional
-        Substrate material.
-        If material is not defined a new material parametrized will be defined.
+        Substrate material. If the material is not defined,
+        a new material, ``parametrized``, is created.
         The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
         Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        ``"FEBI"``, ``"PML"``, and ``None``. The default is ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     substrate_height : float, optional
         Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna. The default is ``True``.
 
     Returns
     -------
@@ -881,7 +881,7 @@ class RectangularPatchEdge(CommonPatch):
             mat_props = self._app.materials[self.material]
         else:
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
-                "Material not found. Create the material before assignment."
+                "Material is not found. Create the material before assigning it."
             )
             return parameters
 
@@ -1000,10 +1000,11 @@ class RectangularPatchEdge(CommonPatch):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw rectangular patch edge antenna inset fed.
-        Once the antenna is created, this method will not be used anymore."""
+        """Draw a rectangular patch edge antenna inset fed.
+
+        Once the antenna is created, this method is not used anymore."""
         if self.object_list:
-            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists")
+            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists.")
             return False
 
         self.set_variables_in_hfss()
@@ -1165,5 +1166,5 @@ class RectangularPatchEdge(CommonPatch):
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemenented."""
+        """Set up the model in PyDisco. To be implemenented."""
         pass
