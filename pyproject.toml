@@ -25,7 +25,7 @@ classifiers = [
 ]
 dependencies = [
     "build==0.8.0",
-    "twine==4.0.1",
+    "twine==4.0.2",
     "pyaedt @ git+https://github.com/pyansys/pyaedt.git",
     "importlib-metadata >=4.0",
     "pyside6==6.4.0",
