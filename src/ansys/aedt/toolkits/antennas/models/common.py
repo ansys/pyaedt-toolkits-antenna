@@ -12,7 +12,7 @@ from ansys.aedt.toolkits.antennas.models.parameters import SynthesisParameters
 
 
 class CommonAntenna(object):
-    """Base methods common to antennas toolkit."""
+    """Provides base methods common to the antennas toolkit."""
 
     antenna_type = ""
 
@@ -46,7 +46,7 @@ class CommonAntenna(object):
 
     @property
     def antenna_material(self):
-        """Metal to be assigned to material Frequency.
+        """Metal assigned to the material frequency.
 
         Returns
         -------
@@ -64,7 +64,7 @@ class CommonAntenna(object):
 
     @property
     def frequency(self):
-        """Center Frequency.
+        """Center frequency.
 
         Returns
         -------
@@ -119,7 +119,7 @@ class CommonAntenna(object):
 
     @property
     def huygens_box(self):
-        """Enable Huygens box.
+        """Indicator for if a Huygens box is enabled.
 
         Returns
         -------
@@ -152,7 +152,7 @@ class CommonAntenna(object):
 
     @property
     def coordinate_system(self):
-        """Reference Coordinate system.
+        """Reference coordinate system.
 
         Returns
         -------
@@ -302,16 +302,16 @@ class CommonAntenna(object):
 
     @pyaedt_function_handler()
     def create_3dcomponent(self, component_file=None, component_name=None, replace=False):
-        """Create 3DComponent of the antenna.
+        """Create 3D Component of the antenna.
 
         Parameters
         ----------
         component_file : str, optional
-            Full path to the A3DCOMP file. The default is the pyaedt folder.
+            Full path to the A3DCOMP file. The default is the ``pyaedt`` folder.
         component_name : str, optional
             Name of the component. The default is the antenna name.
         replace : bool, optional
-            Whether to replace antenna with a 3DComponent. The default is ``False``.
+            Whether to replace the antenna with a 3D Component. The default is ``False``.
 
         Returns
         -------
@@ -436,7 +436,7 @@ class CommonAntenna(object):
 
     @pyaedt_function_handler()
     def update_synthesis_parameters(self, new_params):
-        """Update synthesis variable from antenna list."""
+        """Update synthesis parameter from the antenna list."""
         for k, v in new_params.items():
             if hasattr(self.synthesis_parameters, k):
                 param = getattr(self.synthesis_parameters, k)
@@ -446,14 +446,14 @@ class CommonAntenna(object):
 
     @pyaedt_function_handler()
     def set_variables_in_hfss(self):
-        """Create Hfss design variables."""
+        """Create HFSS design variables."""
         for p in self.synthesis_parameters.__dict__.values():
             if isinstance(p, Property):
                 self._app[p.hfss_variable] = str(p.value) + self.length_unit
 
     @pyaedt_function_handler()
     def init_model(self):
-        """Create radiation boundary."""
+        """Create a radiation boundary."""
         if self._input_parameters.outer_boundary:
             self._app.create_open_region(
                 str(self.frequency) + self.frequency_unit, self.outer_boundary
@@ -461,7 +461,7 @@ class CommonAntenna(object):
 
     @pyaedt_function_handler()
     def setup_hfss(self):
-        """Antenna HFSS setup."""
+        """Set up an antenna in HFSS."""
         terminal_references = []
         port_lump = port = port_cap = None
         if "port_lump_{}".format(self.antenna_name) in self.object_list:
@@ -553,7 +553,7 @@ class CommonAntenna(object):
 
 
 class TransmissionLine(object):
-    """Base methods common to transmission line calculation.
+    """Provides base methods common to transmission line calculation.
 
     Parameters
     ----------
@@ -687,7 +687,7 @@ class TransmissionLine(object):
         Returns
         -------
         float
-            Effective Permittivity.
+            Effective permittivity.
         """
         Hfrac = 16.0  # H_as_fraction_of_wavelength 1/H
         H = (wavelength / math.sqrt(permittivity) + substrate_height * Hfrac) / Hfrac
