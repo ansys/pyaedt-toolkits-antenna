@@ -24,7 +24,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "build==0.8.0",
+    "build==0.10.0",
     "twine==4.0.2",
     "pyaedt @ git+https://github.com/pyansys/pyaedt.git",
     "importlib-metadata >=4.0",
