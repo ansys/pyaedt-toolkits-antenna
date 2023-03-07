@@ -220,8 +220,8 @@ class CommonAntenna(object):
 
         Returns
         -------
-        str.
-            Path of the 3DComponent file or 3DComponent name.
+        :class:`pyaedt.modeler.object3d.Object3d`
+            3D object.
 
         Examples
         --------
