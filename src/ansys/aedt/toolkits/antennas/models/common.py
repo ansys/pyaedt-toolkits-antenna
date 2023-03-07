@@ -208,6 +208,99 @@ class CommonAntenna(object):
             self.set_variables_in_hfss()
 
     @pyaedt_function_handler()
+    def create_lattice_pair(self, lattice_height=None, bottom_extend=False):
+        """Create a lattice pair box.
+
+        Parameters
+        ----------
+        lattice_height : str, optional
+            Height of the lattice pair box.
+        bottom_extend : bool, optional
+            Whether to extend the lattice pair in the bottom side. The default is ``False``.
+
+        Returns
+        -------
+        :class:`pyaedt.modeler.object3d.Object3d`
+            3D object.
+
+        Examples
+        --------
+        >>> from pyaedt import Hfss
+        >>> from ansys.aedt.toolkits.antennas.horn import ConicalHorn
+        >>> hfss = Hfss()
+        >>> horn = hfss.add_from_toolkit(ConicalHorn, draw=True)
+        >>> horn = horn.create_lattice_pair(lattice_height="20mm")
+        """
+        if not lattice_height:
+            lightSpeed = constants.SpeedOfLight  # m/s
+            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
+            wavelength = lightSpeed / freq_hz
+            lattice_height = str(wavelength / 10.0) + "meter"
+
+        self.synthesis_parameters.add_parameter("lattice_height", lattice_height)
+
+        hfss_parameter = self.synthesis_parameters.lattice_height.hfss_variable
+        self._app[hfss_parameter] = self.synthesis_parameters.lattice_height.value
+
+        bounding_box = self._app.modeler.get_group_bounding_box(self.antenna_name)
+        bounding_dim = [
+            abs(bounding_box[0] - bounding_box[3]),
+            abs(bounding_box[1] - bounding_box[4]),
+            abs(bounding_box[2] - bounding_box[5]),
+        ]
+
+        if bottom_extend:
+            lattice_box = self._app.modeler.modeler.create_box(
+                position=[
+                    str(bounding_box[0]) + self._app.modeler.modeler.model_units,
+                    str(bounding_box[1]) + self._app.modeler.modeler.model_units,
+                    str(bounding_box[2])
+                    + self._app.modeler.modeler.model_units
+                    + "-"
+                    + hfss_parameter,
+                ],
+                dimensions_list=[
+                    str(bounding_dim[0]) + self._app.modeler.modeler.model_units,
+                    str(bounding_dim[1]) + self._app.modeler.modeler.model_units,
+                    str(bounding_dim[2])
+                    + self._app.modeler.modeler.model_units
+                    + "+2*"
+                    + hfss_parameter,
+                ],
+                matname="vacuum",
+            )
+        else:
+            lattice_box = self._app.modeler.modeler.create_box(
+                position=[
+                    str(bounding_box[0]) + self._app.modeler.modeler.model_units,
+                    str(bounding_box[1]) + self._app.modeler.modeler.model_units,
+                    str(bounding_box[2]) + self._app.modeler.modeler.model_units,
+                ],
+                dimensions_list=[
+                    str(bounding_dim[0]) + self._app.modeler.modeler.model_units,
+                    str(bounding_dim[1]) + self._app.modeler.modeler.model_units,
+                    str(bounding_dim[2])
+                    + self._app.modeler.modeler.model_units
+                    + "+"
+                    + hfss_parameter,
+                ],
+                matname="vacuum",
+            )
+
+        lattice1 = self._app.assign_lattice_pair(
+            face_couple=[lattice_box.bottom_face_x.id, lattice_box.top_face_x.id]
+        )
+        self.boundaries[lattice1.name] = lattice1
+        lattice2 = self._app.assign_lattice_pair(
+            face_couple=[lattice_box.bottom_face_y.id, lattice_box.top_face_y.id]
+        )
+        self.boundaries[lattice2.name] = lattice2
+
+        self.object_list[lattice_box.name] = lattice_box
+
+        return lattice_box
+
+    @pyaedt_function_handler()
     def create_3dcomponent(self, component_file=None, component_name=None, replace=False):
         """Create 3D Component of the antenna.
 
