@@ -853,7 +853,7 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Value", None));
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.design), QCoreApplication.translate("MainWindow", u" Design ", None))
         self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Analyze Project", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.analysis), QCoreApplication.translate("MainWindow", u" Analysys ", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.analysis), QCoreApplication.translate("MainWindow", u" Analysis ", None))
         self.release_button.setText(QCoreApplication.translate("MainWindow", u" Close Antenna Wizard ", None))
         self.menuAntennas.setTitle(QCoreApplication.translate("MainWindow", u"Antennas", None))
         self.menuPatch.setTitle(QCoreApplication.translate("MainWindow", u"Patch", None))
