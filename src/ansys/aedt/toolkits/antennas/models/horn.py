@@ -184,7 +184,7 @@ class ConicalHorn(CommonHorn):
         # Negative air
         neg_air = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[pos_x, pos_y, pos_z],
+            position=["0", "0", "0"],
             radius=wg_radius,
             height="-" + wg_length,
             matname="vacuum",
@@ -194,7 +194,7 @@ class ConicalHorn(CommonHorn):
         # Wall
         wall = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[pos_x, pos_y, pos_z],
+            position=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
             height="-" + wg_length,
             name="wg_outer_" + antenna_name,
@@ -210,7 +210,7 @@ class ConicalHorn(CommonHorn):
         # Input
         wg_in = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[pos_x, pos_y, pos_z],
+            position=["0", "0", "0"],
             radius=wg_radius,
             height="-" + wg_length,
             name="wg_inner_" + antenna_name,
@@ -221,7 +221,7 @@ class ConicalHorn(CommonHorn):
         # Cap
         cap = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[pos_x, pos_y, pos_z + "-" + wg_length],
+            position=["0", "0", "-" + wg_length],
             radius=wg_radius + "+" + wall_thickness,
             height="-" + wall_thickness,
             name="port_cap_" + antenna_name,
@@ -232,7 +232,7 @@ class ConicalHorn(CommonHorn):
         # P1
         p1 = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[pos_x, pos_y, pos_z + "-" + wg_length],
+            position=["0", "0", "-" + wg_length],
             radius=wg_radius,
             name="port_" + antenna_name,
         )
@@ -242,28 +242,28 @@ class ConicalHorn(CommonHorn):
         # Horn wall
         base = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[pos_x, pos_y, pos_z],
+            position=["0", "0", "0"],
             radius=wg_radius,
         )
         base.history.props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[pos_x, pos_y, pos_z],
+            position=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
         )
         base_wall.history.props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[pos_x, pos_y, pos_z + "+" + horn_length],
+            position=["0", "0", horn_length],
             radius=horn_radius,
         )
         horn_top.history.props["Coordinate System"] = coordinate_system
 
         horn_sheet = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[pos_x, pos_y, pos_z + "+" + horn_length],
+            position=["0", "0", horn_length],
             radius=horn_radius + "+" + wall_thickness,
         )
         horn_sheet.history.props["Coordinate System"] = coordinate_system
@@ -279,14 +279,14 @@ class ConicalHorn(CommonHorn):
 
         air_base = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[pos_x, pos_y, pos_z],
+            position=["0", "0", "0"],
             radius=wg_radius,
         )
         air_base.history.props["Coordinate System"] = coordinate_system
 
         air_top = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[pos_x, pos_y, pos_z + "+" + horn_length],
+            position=["0", "0", horn_length],
             radius=horn_radius,
         )
         air_top.history.props["Coordinate System"] = coordinate_system
@@ -304,6 +304,14 @@ class ConicalHorn(CommonHorn):
 
         cap.color = (132, 132, 192)
         p1.color = (128, 0, 0)
+
+        self.object_list[wg_in.name] = wg_in
+        self.object_list[horn_sheet.name] = horn_sheet
+        self.object_list[cap.name] = cap
+        self.object_list[p1.name] = p1
+
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+
         if self.huygens_box:
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
@@ -336,11 +344,6 @@ class ConicalHorn(CommonHorn):
         horn_sheet.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
-
-        self.object_list[wg_in.name] = wg_in
-        self.object_list[horn_sheet.name] = horn_sheet
-        self.object_list[cap.name] = cap
-        self.object_list[p1.name] = p1
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -1006,32 +1009,12 @@ class PyramidalRidged(CommonHorn):
 
         self._app.modeler.unite([wg_in, air_base])
 
-        self._app.modeler.move([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
-
-        cap.group_name = antenna_name
-        horn.group_name = antenna_name
-        wg_in.group_name = antenna_name
-        p1.group_name = antenna_name
-
         self.object_list[cap.name] = cap
         self.object_list[horn.name] = horn
         self.object_list[wg_in.name] = wg_in
         self.object_list[p1.name] = p1
 
-    @pyaedt_function_handler()
-    def setup_hfss(self):
-        """Set up a conical horn antenna in HFSS."""
-        aperture_height = self.synthesis_parameters.aperture_height.hfss_variable
-        aperture_width = self.synthesis_parameters.aperture_width.hfss_variable
-        wg_length = self.synthesis_parameters.wg_length.hfss_variable
-        flare_length = self.synthesis_parameters.flare_length.hfss_variable
-        wall_thickness = self.synthesis_parameters.wall_thickness.hfss_variable
-        pos_x = self.synthesis_parameters.pos_x.hfss_variable
-        pos_y = self.synthesis_parameters.pos_y.hfss_variable
-        pos_z = self.synthesis_parameters.pos_z.hfss_variable
-        antenna_name = self.antenna_name
-        coordinate_system = self.coordinate_system
-        length_unit = self.length_unit
+        self._app.modeler.move([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
 
         # Create Huygens box
         if self.huygens_box:
@@ -1039,7 +1022,7 @@ class PyramidalRidged(CommonHorn):
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
                 constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", length_unit
+                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
                 )
             )
             huygens = self._app.modeler.create_box(
@@ -1049,7 +1032,7 @@ class PyramidalRidged(CommonHorn):
                     + aperture_width
                     + "/2-"
                     + huygens_dist
-                    + length_unit
+                    + self.length_unit
                     + "-2*"
                     + wall_thickness,
                     pos_y
@@ -1060,7 +1043,7 @@ class PyramidalRidged(CommonHorn):
                     + wall_thickness
                     + "-"
                     + huygens_dist
-                    + length_unit,
+                    + self.length_unit,
                     pos_z + "-" + wg_length + "-" + wall_thickness,
                 ],
                 dimensions_list=[
@@ -1068,12 +1051,12 @@ class PyramidalRidged(CommonHorn):
                     + "+"
                     + "2*"
                     + huygens_dist
-                    + length_unit
+                    + self.length_unit
                     + "+2*"
                     + wall_thickness,
-                    aperture_height + "+" + "2*" + huygens_dist + length_unit,
+                    aperture_height + "+" + "2*" + huygens_dist + self.length_unit,
                     huygens_dist
-                    + length_unit
+                    + self.length_unit
                     + "+"
                     + wg_length
                     + "+"
@@ -1090,7 +1073,7 @@ class PyramidalRidged(CommonHorn):
 
             mesh_op = self._app.mesh.assign_length_mesh(
                 [huygens.name],
-                maxlength=huygens_dist + length_unit,
+                maxlength=huygens_dist + self.length_unit,
                 maxel=None,
                 meshop_name="HuygensBox_Seed_" + antenna_name,
             )
@@ -1101,46 +1084,10 @@ class PyramidalRidged(CommonHorn):
 
         self._app.change_material_override(True)
 
-        # Excitation
-        if self._app.solution_type != "Modal" and int(self._app.aedt_version_id[-3:]) < 231:
-            self._app.logger.warning("Solution type must be Modal to define the excitation")
-            return True
-
-        # Assign port and excitation
-        port_cap = None
-        port = None
-        for obj_name in self.object_list:
-            if obj_name.startswith("port_cap_"):
-                port_cap = self.object_list[obj_name]
-            elif obj_name.startswith("port_"):
-                port = self.object_list[obj_name]
-
-        if self._app.solution_type == "Terminal":
-            port1 = self._app._create_waveport_driven(
-                objectname=port.name,
-                int_line_start=port.faces[0].edges[1].midpoint,
-                int_line_stop=port.faces[0].edges[3].midpoint,
-                portname="port_" + antenna_name,
-            )
-        else:
-            if int(self._app.aedt_version_id[-3:]) < 231:
-                port1 = self._app.create_wave_port(
-                    port.faces[0].id,
-                    port.faces[0].edges[0].midpoint,
-                    port.faces[0].edges[2].midpoint,
-                    portname="port_" + antenna_name,
-                )
-            else:
-                port1 = self._app.create_wave_port(
-                    port.faces[0].id,
-                    port.faces[0].edges[1].midpoint,
-                    port.faces[0].edges[3].midpoint,
-                    portname="port_" + antenna_name,
-                )
-
-        self.excitations[port1.name] = port1
-
-        return True
+        cap.group_name = antenna_name
+        horn.group_name = antenna_name
+        wg_in.group_name = antenna_name
+        p1.group_name = antenna_name
 
     @pyaedt_function_handler()
     def model_disco(self):
