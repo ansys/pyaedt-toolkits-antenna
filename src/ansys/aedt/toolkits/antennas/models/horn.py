@@ -1098,3 +1098,297 @@ class PyramidalRidged(CommonHorn):
     def setup_disco(self):
         """Set up model in PyDiscovery. To be implemenented."""
         pass
+
+
+class CorrugatedHorn(CommonHorn):
+    """Manages corrugated horn antenna.
+
+    This class is accessible through the app hfss object.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``GHz``.
+    material : str, optional
+        Horn material. If material is not defined a new material parametrized will be defined.
+        The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+    huygens_box : bool, optional
+        Create a Huygens box. The default is ``False``.
+    length_unit : str, optional
+        Length units. The default is ``"cm"``.
+    parametrized : bool, optional
+        Create a parametrized antenna. The default is ``True``.
+
+    Returns
+    -------
+    :class:`aedt.toolkits.antennas.CorrugatedHorn`
+        Conical horn object.
+
+    Examples
+    --------
+    >>> from pyaedt import Hfss
+    >>> from ansys.aedt.toolkits.antennas.horn import CorrugatedHorn
+    >>> hfss = Hfss()
+    >>> horn = hfss.add_from_toolkit(CorrugatedHorn, draw=True, frequency=20.0,
+    ...                              frequency_unit="GHz",
+    ...                              outer_boundary=None, huygens_box=True, length_unit="cm",
+    ...                              coordinate_system="CS1", antenna_name="HornAntenna",
+    ...                              origin=[1, 100, 50])
+
+    """
+
+    _default_input_parameters = {
+        "antenna_name": None,
+        "antenna_material": "pec",
+        "origin": [0, 0, 0],
+        "length_unit": None,
+        "coordinate_system": "Global",
+        "frequency": 10.0,
+        "frequency_unit": "GHz",
+        "material": "pec",
+        "outer_boundary": None,
+        "huygens_box": False,
+    }
+
+    def __init__(self, *args, **kwargs):
+        CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
+
+        self._parameters = self._synthesis()
+        self.update_synthesis_parameters(self._parameters)
+
+    @pyaedt_function_handler()
+    def _synthesis(self):
+        parameters = {}
+        freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            or self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            ansys.aedt.toolkits.antennas.common_ui.logger.warning(
+                "Material is not found. Create the material before assigning it."
+            )
+            return parameters
+
+        wg_radius_mm = round(11.7 * 10.4 / freq_ghz, 3)
+        wg_length_mm = round(30.0 * 10.4 / freq_ghz, 3)
+        wall_thickness_mm = round(2.0 * 10.4 / freq_ghz, 3)
+        flare_angle = 20
+        notches = 25.0
+        notch_width_mm = round(2.0 * 10.4 / freq_ghz, 3)
+        notch_depth_mm = round(7.5 * 10.4 / freq_ghz, 3)
+        tooth_width_mm = round(2.0 * 10.4 / freq_ghz, 3)
+
+        wg_radius = constants.unit_converter(wg_radius_mm, "Length", "mm", self.length_unit)
+        parameters["wg_radius"] = wg_radius
+        wg_length = constants.unit_converter(wg_length_mm, "Length", "mm", self.length_unit)
+        parameters["wg_length"] = wg_length
+        wall_thickness = constants.unit_converter(
+            wall_thickness_mm, "Length", "mm", self.length_unit
+        )
+        parameters["wall_thickness"] = wall_thickness
+        parameters["flare_angle"] = flare_angle
+        parameters["notches"] = notches
+        notch_width = constants.unit_converter(notch_width_mm, "Length", "mm", self.length_unit)
+        parameters["notch_width"] = notch_width
+        notch_depth = constants.unit_converter(notch_depth_mm, "Length", "mm", self.length_unit)
+        parameters["notch_depth"] = notch_depth
+        tooth_width = constants.unit_converter(tooth_width_mm, "Length", "mm", self.length_unit)
+        parameters["tooth_width"] = tooth_width
+
+        parameters["pos_x"] = self.origin[0]
+        parameters["pos_y"] = self.origin[1]
+        parameters["pos_z"] = self.origin[2]
+
+        myKeys = list(parameters.keys())
+        myKeys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+
+        return parameters_out
+
+    @pyaedt_function_handler()
+    def model_hfss(self):
+        """Draw a conical horn antenna.
+
+        Once the antenna is created, this method is not used anymore."""
+        if self.object_list:
+            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists")
+            return False
+
+        self.set_variables_in_hfss()
+
+        # Map parameters
+        wall_thickness = self.synthesis_parameters.wall_thickness.hfss_variable
+        wg_length = self.synthesis_parameters.wg_length.hfss_variable
+        wg_radius = self.synthesis_parameters.wg_radius.hfss_variable
+        self._app[self.synthesis_parameters.flare_angle.hfss_variable] = (
+            str(self.synthesis_parameters.flare_angle.value) + "deg"
+        )
+        flare_angle_rad = self.synthesis_parameters.flare_angle.hfss_variable + "*pi/180"
+        notches = self.synthesis_parameters.notches.hfss_variable
+        self._app[notches] = str(self.synthesis_parameters.notches.value)
+        notch_width = self.synthesis_parameters.notch_width.hfss_variable
+        notch_depth = self.synthesis_parameters.notch_depth.hfss_variable
+        tooth_width = self.synthesis_parameters.tooth_width.hfss_variable
+
+        pos_x = self.synthesis_parameters.pos_x.hfss_variable
+        pos_y = self.synthesis_parameters.pos_y.hfss_variable
+        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        antenna_name = self.antenna_name
+        coordinate_system = self.coordinate_system
+
+        l = self._app.variable_manager[wg_length].numeric_value
+        n = self._app.variable_manager[notches].numeric_value
+        Ka = "atan(" + flare_angle_rad + ")"
+
+        # Based on inputs calculate minimum feed length for geometry to work,
+        # and loop until user inputs value above minimum required.
+        pts = []
+        zStart = "0.0"
+
+        pts.append([wg_radius, "0.0", "0.0"])
+
+        if l > 0.0:
+            zStart = wg_length
+            pts.append([wg_radius, 0, zStart])
+
+        count = 1
+        N = 1
+
+        while count <= n:
+            # Create constants K1 through K3, used in coordinate calculations.
+            K1 = str((N - 1)) + "*" + "(" + notch_width + "+" + tooth_width + ")"
+            K2 = "(" + str(N) + "*" + notch_width + ")+(" + str(N - 1) + ")*" + tooth_width
+            K3 = str(N) + "*" + "(" + notch_width + "+" + tooth_width + ")"
+            xdel1 = K1 + "*" + Ka
+            xdel2 = K2 + "*" + Ka
+            xdel3 = K3 + "*" + Ka
+            c1 = K1
+            c2 = K2
+            c3 = K3
+            del1 = xdel1
+            del2 = xdel2
+            del3 = xdel3
+
+            # Create individual components of necessary points
+            c1x = wg_radius + "+" + notch_depth + "+" + del1
+            c1z = zStart + "+" + c1
+            c2x = wg_radius + "+" + notch_depth + "+" + del2
+            c2z = zStart + "+" + c2
+            c3x = wg_radius + "+" + del2
+            c3z = zStart + "+" + c2
+            c4x = wg_radius + "+" + del3
+            c4z = zStart + "+" + c3
+
+            # Begin drawing corrugations
+            pts.append([c1x, 0, c1z])
+            pts.append([c2x, 0, c2z])
+            pts.append([c3x, 0, c3z])
+            pts.append([c4x, 0, c4z])
+
+            count2 = count + 1
+            count = count2
+
+            N = count
+
+        # Draw end of horn and exterior outline.
+        # This calculation is what required the minimum feed length test,
+        # or calculated x-axis point for exterior could end up BEHIND port plane.
+
+        temp1 = c4x + "+" + wall_thickness
+        endx = temp1 + "+" + notch_depth
+        pts.append([endx, 0, c4z])
+        out1 = endx
+        out2 = wg_radius + "+" + wall_thickness
+        out3 = c4z
+        zpart = out3 + "-" + "((" + out1 + "-" + out2 + ") /" + Ka + ")"
+        finx = out2
+        finz = zpart
+        pts.append([finx, 0, finz])
+        pts.append([finx, 0, 0])
+
+        pts.append([pts[0][0], pts[0][1], pts[0][2]])
+
+        horn = self._app.modeler.create_polyline(
+            position_list=pts,
+            cover_surface=True,
+            name="horn" + antenna_name,
+            matname=self.material,
+        )
+        horn = self._app.modeler.sweep_around_axis(0)
+        horn.history.props["Coordinate System"] = coordinate_system
+        horn.color = (132, 132, 193)
+
+        # Cap
+        cap = self._app.modeler.create_cylinder(
+            cs_axis=2,
+            position=["0", "0", "-" + wg_length],
+            radius=wg_radius + "+" + wall_thickness,
+            height="-" + wall_thickness,
+            name="port_cap_" + antenna_name,
+            matname="pec",
+        )
+        cap.history.props["Coordinate System"] = coordinate_system
+
+        # P1
+        p1 = self._app.modeler.create_circle(
+            cs_plane=2,
+            position=["0", "0", "-" + wg_length],
+            radius=wg_radius,
+            name="port_" + antenna_name,
+        )
+        p1.color = (128, 0, 0)
+        p1.history.props["Coordinate System"] = coordinate_system
+
+        self.object_list[horn.name] = horn
+        self.object_list[cap.name] = cap
+        self.object_list[p1.name] = p1
+
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+
+        if self.huygens_box:
+            lightSpeed = constants.SpeedOfLight  # m/s
+            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
+            huygens_dist = str(
+                constants.unit_converter(
+                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
+                )
+            )
+            huygens = self._app.modeler.create_box(
+                position=[
+                    pos_x + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
+                    pos_y + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
+                    pos_z + "-" + wg_length,
+                ],
+                dimensions_list=[
+                    "2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
+                    "2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
+                    huygens_dist + self.length_unit + "+" + wg_length + "+" + horn_length,
+                ],
+                name="huygens_" + antenna_name,
+                matname="air",
+            )
+            huygens.display_wireframe = True
+            huygens.color = (0, 0, 255)
+            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.group_name = antenna_name
+            self.object_list[huygens.name] = huygens
+
+        wg_in.group_name = antenna_name
+        horn_sheet.group_name = antenna_name
+        cap.group_name = antenna_name
+        p1.group_name = antenna_name
+
+    @pyaedt_function_handler()
+    def model_disco(self):
+        """Model in PyDisco. To be implemenented."""
+        pass
+
+    @pyaedt_function_handler()
+    def setup_disco(self):
+        """Setup in PyDisco. To be implemenented."""
+        pass
