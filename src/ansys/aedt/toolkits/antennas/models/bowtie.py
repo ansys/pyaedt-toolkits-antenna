@@ -9,7 +9,7 @@ from ansys.aedt.toolkits.antennas.models.patch import CommonPatch
 
 
 class BowTie(CommonPatch):
-    """Manages a bowtie antenna.
+    """Manages a bowtie antenna [1]_.
 
     This class is accessible through the ``Hfss`` object.
 
@@ -38,6 +38,11 @@ class BowTie(CommonPatch):
     -------
     :class:`aedt.toolkits.antennas.RectangularPatchProbe`
         Patch antenna object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
+        Modern Antenna Handbook, New York, 2008.
 
     Examples
     --------
@@ -252,7 +257,7 @@ class BowTie(CommonPatch):
 
 
 class BowTieRounded(CommonPatch):
-    """Manages a bowtie rounded antenna.
+    """Manages a bowtie rounded antenna [1]_.
 
     This class is accessible through the ``Hfss`` object.
 
@@ -282,6 +287,11 @@ class BowTieRounded(CommonPatch):
     -------
     :class:`aedt.toolkits.antennas.RectangularPatchProbe`
         Patch antenna object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
+        Modern Antenna Handbook, New York, 2008.
 
     Examples
     --------

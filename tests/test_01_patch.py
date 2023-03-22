@@ -49,8 +49,8 @@ class TestClass(BasisTest, object):
         opatch = self.aedtapp.add_from_toolkit(
             RectangularPatchProbe, draw=True, frequency=1.0, origin=[500, 500, 0]
         )
-        component_name = opatch.create_3dcomponent(replace=True)
-        assert list(self.aedtapp.modeler.user_defined_components.keys())[0] == component_name
+        component = opatch.create_3dcomponent(replace=True)
+        assert list(self.aedtapp.modeler.user_defined_components.keys())[0] == component.name
 
     def test_01d_rectangular_patch_probe_lattice_pair(self):
         self.aedtapp.design_name = "rectangular_patch_probe"
@@ -122,8 +122,8 @@ class TestClass(BasisTest, object):
         opatch = self.aedtapps[1].add_from_toolkit(
             RectangularPatchInset, draw=True, frequency=1.0, origin=[500, 500, 0]
         )
-        component_name = opatch.create_3dcomponent(replace=True)
-        assert list(self.aedtapps[1].modeler.user_defined_components.keys())[0] == component_name
+        component = opatch.create_3dcomponent(replace=True)
+        assert list(self.aedtapps[1].modeler.user_defined_components.keys())[0] == component.name
 
     def test_02d_rectangular_patch_inset_lattice_pair(self):
         opatch1 = self.aedtapps[1].add_from_toolkit(
@@ -192,8 +192,8 @@ class TestClass(BasisTest, object):
         opatch = self.aedtapps[2].add_from_toolkit(
             RectangularPatchEdge, draw=True, frequency=1.0, origin=[500, 500, 0]
         )
-        component_name = opatch.create_3dcomponent(replace=True)
-        assert list(self.aedtapps[2].modeler.user_defined_components.keys())[0] == component_name
+        component = opatch.create_3dcomponent(replace=True)
+        assert list(self.aedtapps[2].modeler.user_defined_components.keys())[0] == component.name
 
     def test_03d_rectangular_patch_inset_lattice_pair(self):
         opatch1 = self.aedtapps[2].add_from_toolkit(

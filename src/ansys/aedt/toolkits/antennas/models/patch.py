@@ -76,7 +76,7 @@ class CommonPatch(CommonAntenna):
 
 
 class RectangularPatchProbe(CommonPatch):
-    """Manages a rectangular patch antenna with a coaxial probe.
+    """Manages a rectangular patch antenna with a coaxial probe [1]_.
 
     This class is accessible through the ``Hfss`` object.
 
@@ -106,6 +106,10 @@ class RectangularPatchProbe(CommonPatch):
     -------
     :class:`aedt.toolkits.antennas.RectangularPatchProbe`
         Patch antenna object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Microstrip Antennas," Antenna Theory, 2nd Ed. New York: Wiley, 1997.
 
     Examples
     --------
@@ -452,7 +456,7 @@ class RectangularPatchProbe(CommonPatch):
 
 
 class RectangularPatchInset(CommonPatch):
-    """Manages a rectangular patch antenna inset fed.
+    """Manages a rectangular patch antenna inset fed [1]_.
 
     This class is accessible through the ``Hfss`` object.
 
@@ -481,6 +485,10 @@ class RectangularPatchInset(CommonPatch):
     -------
     :class:`aedt.toolkits.antennas.RectangularPatchInset`
         Patch antenna object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Microstrip Antennas," Antenna Theory, 2nd Ed. New York: Wiley, 1997.
 
     Examples
     --------
@@ -810,7 +818,7 @@ class RectangularPatchInset(CommonPatch):
 
 
 class RectangularPatchEdge(CommonPatch):
-    """Manages a rectangular patch edge antenna inset fed.
+    """Manages a rectangular patch edge antenna inset fed [1]_.
 
     This class is accessible through the ``Hfss`` object.
 
@@ -840,6 +848,10 @@ class RectangularPatchEdge(CommonPatch):
     -------
     :class:`aedt.toolkits.antennas.RectangularPatchEdge`
         Patch antenna object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Microstrip Antennas," Antenna Theory, 2nd Ed. New York: Wiley, 1997.
 
     Examples
     --------

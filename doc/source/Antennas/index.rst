@@ -31,6 +31,7 @@ AEDT's **Antenna Wizard**.
 
    ConicalHorn
    PyramidalRidged
+   CorrugatedHorn
 
 .. currentmodule:: ansys.aedt.toolkits.antennas.models.patch
 

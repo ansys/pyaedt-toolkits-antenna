@@ -316,7 +316,8 @@ class CommonAntenna(object):
         Returns
         -------
         str.
-            Path of the 3DComponent file or 3DComponent name.
+            Path of the 3DComponent file or
+            :class:`pyaedt.modeler.components_3d.UserDefinedComponent`.
 
         Examples
         --------
@@ -355,7 +356,7 @@ class CommonAntenna(object):
         )
 
         if replace:
-            self._app.modeler.replace_3dcomponent(
+            user_defined_component = self._app.modeler.replace_3dcomponent(
                 component_name=component_name,
                 variables_to_include=parameters,
                 object_list=list(self.object_list.keys()),
@@ -368,10 +369,7 @@ class CommonAntenna(object):
                 self._app.modeler.oeditor.Delete(
                     ["NAME:Selections", "Selections:=", self.antenna_name]
                 )
-
-            user_defined_component = self._app.modeler.add_new_user_defined_component()
-            self._app.modeler.refresh_all_ids()
-            return user_defined_component[0]
+            return user_defined_component
         return component_file
 
     @pyaedt_function_handler()
@@ -449,7 +447,10 @@ class CommonAntenna(object):
         """Create HFSS design variables."""
         for p in self.synthesis_parameters.__dict__.values():
             if isinstance(p, Property):
-                self._app[p.hfss_variable] = str(p.value) + self.length_unit
+                if "angle" in p.hfss_variable:
+                    self._app[p.hfss_variable] = str(p.value) + "deg"
+                else:
+                    self._app[p.hfss_variable] = str(p.value) + self.length_unit
 
     @pyaedt_function_handler()
     def init_model(self):
