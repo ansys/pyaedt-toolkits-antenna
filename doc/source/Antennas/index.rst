@@ -38,7 +38,7 @@ User can then click the Generate button and create the antenna in Electronics De
   :alt: AEDT Generated Antenna
 
 Moving to Analysis Tab, user can click Analyze Project button. AEDT project will be saved, closed and solved.
-At the end of the simulation, results will be loaded in UI.
+At the end of the simulation, results are loaded in UI.
 
 
 .. image:: ../Resources/results.png
