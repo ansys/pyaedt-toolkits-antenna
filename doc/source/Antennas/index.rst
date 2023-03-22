@@ -22,7 +22,7 @@ After Electronics Desktop is launched, user can move to design tab and select on
   :width: 800
   :alt: Antenna Toolkit UI, Design Tab
 
-Once antenna is loaded the user can clich on Syntesys button and generate the antenna parameters
+Once the antenna is loaded the user can click on the Synthesis button and generate the antenna parameters
 
 
 .. image:: ../Resources/antenna_toolkit_synth.png
@@ -30,15 +30,15 @@ Once antenna is loaded the user can clich on Syntesys button and generate the an
   :alt: Antenna Toolkit UI, Synthesis Tab
 
 
-User can then click on the Generate button and create the antenna in Electronics Desktop.
+User can then click the Generate button and create the antenna in Electronics Desktop.
 
 
 .. image:: ../Resources/aedt_antenna.png
   :width: 800
   :alt: AEDT Generated Antenna
 
-Moving to Analysis Tab, user can click on Analyze Project button. AEDT project will be saved, closed and solved.
-At the end of the simulation, results will be loaded in UI.
+Moving to Analysis Tab, user can click Analyze Project button. AEDT project will be saved, closed and solved.
+At the end of the simulation, results are loaded in UI.
 
 
 .. image:: ../Resources/results.png
