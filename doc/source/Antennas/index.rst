@@ -1,9 +1,8 @@
-=========================
-Antenna toolkit reference
-=========================
+============================
+Antenna toolkit UI reference
+============================
 
-This section describes all classes for antenna types available in
-AEDT's **Antenna Wizard**.
+This section describes User interface available  in AEDT's **Antenna Wizard**.
 To run **Antenna Wizard**, you must have a licensed copy of Ansys Electronics
 Desktop (AEDT) installed.
 
@@ -13,7 +12,6 @@ Electronics Desktop session or create a new session.
 .. image:: ../Resources/antenna_toolkit_p1.png
   :width: 800
   :alt: Antenna Toolkit UI, Settings Tab
-  :target: https://www.ansys.com/products/electronics
 
 
 After Electronics Desktop is launched, user can move to design tab and select one antenna from the menu.
@@ -23,48 +21,32 @@ After Electronics Desktop is launched, user can move to design tab and select on
 .. image:: ../Resources/antenna_toolkit.png
   :width: 800
   :alt: Antenna Toolkit UI, Design Tab
-  :target: https://www.ansys.com/products/electronics
+
+Once antenna is loaded the user can clich on Syntesys button and generate the antenna parameters
 
 
-
-.. currentmodule:: ansys.aedt.toolkits.antennas.models.bowtie
-
-.. autosummary::
-   :toctree: _autosummary
-   :nosignatures:
-
-   BowTie
-   BowTieRounded
-
-.. currentmodule:: ansys.aedt.toolkits.antennas.models.helix
-
-.. autosummary::
-   :toctree: _autosummary
-   :nosignatures:
+.. image:: ../Resources/antenna_toolkit_synth.png
+  :width: 800
+  :alt: Antenna Toolkit UI, Synthesis Tab
 
 
-   AxialMode
+User can then click on the Generate button and create the antenna in Electronics Desktop.
 
-.. currentmodule:: ansys.aedt.toolkits.antennas.models.horn
 
-.. autosummary::
-   :toctree: _autosummary
-   :nosignatures:
+.. image:: ../Resources/aedt_antenna.png
+  :width: 800
+  :alt: AEDT Generated Antenna
 
-   ConicalHorn
-   PyramidalRidged
-   CorrugatedHorn
+Moving to Analysis Tab, user can click on Analyze Project button. AEDT project will be saved, closed and solved.
+At the end of the simulation, results will be loaded in UI.
 
-.. currentmodule:: ansys.aedt.toolkits.antennas.models.patch
 
-.. autosummary::
-   :toctree: _autosummary
-   :nosignatures:
+.. image:: ../Resources/results.png
+  :width: 800
+  :alt: Results view
 
-   RectangularPatchEdge
-   RectangularPatchProbe
-   RectangularPatchInset
-
+User can now iterate by changing some of the parameters in the Design tab and click Analyze Project button again.
+Results will be overlapped.
 
 
 
