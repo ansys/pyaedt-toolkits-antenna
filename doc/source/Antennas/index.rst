@@ -30,7 +30,7 @@ Once the antenna is loaded the user can click on the Synthesis button and genera
   :alt: Antenna Toolkit UI, Synthesis Tab
 
 
-User can then click on the Generate button and create the antenna in Electronics Desktop.
+User can then click the Generate button and create the antenna in Electronics Desktop.
 
 
 .. image:: ../Resources/aedt_antenna.png
