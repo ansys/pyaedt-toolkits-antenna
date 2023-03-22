@@ -22,7 +22,7 @@ After Electronics Desktop is launched, user can move to design tab and select on
   :width: 800
   :alt: Antenna Toolkit UI, Design Tab
 
-Once antenna is loaded the user can clich on Syntesys button and generate the antenna parameters
+Once the antenna is loaded the user can click on the Synthesis button and generate the antenna parameters
 
 
 .. image:: ../Resources/antenna_toolkit_synth.png
