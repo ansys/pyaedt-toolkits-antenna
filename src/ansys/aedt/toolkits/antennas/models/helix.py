@@ -75,7 +75,7 @@ class CommonHelix(CommonAntenna):
 
 
 class AxialMode(CommonHelix):
-    """Manages an axial mode helix antenna.
+    """Manages an axial mode helix antenna [1]_.
 
     This class is accessible through the ``Hfss`` object.
 
@@ -102,6 +102,11 @@ class AxialMode(CommonHelix):
     -------
     :class:`aedt.toolkits.antennas.AxialMode`
         Antenna object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
+    Modern Antenna Handbook, New York, 2008.
 
     Examples
     --------

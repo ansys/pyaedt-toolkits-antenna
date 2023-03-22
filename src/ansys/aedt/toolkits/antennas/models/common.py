@@ -447,7 +447,10 @@ class CommonAntenna(object):
         """Create HFSS design variables."""
         for p in self.synthesis_parameters.__dict__.values():
             if isinstance(p, Property):
-                self._app[p.hfss_variable] = str(p.value) + self.length_unit
+                if "angle" in p.hfss_variable:
+                    self._app[p.hfss_variable] = str(p.value) + "deg"
+                else:
+                    self._app[p.hfss_variable] = str(p.value) + self.length_unit
 
     @pyaedt_function_handler()
     def init_model(self):

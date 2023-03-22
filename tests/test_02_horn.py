@@ -116,6 +116,7 @@ class TestClass(BasisTest, object):
 
     def test_03_corrugated_horn(self):
         self.aedtapp = self.add_app(design_name="corrugated_horn")
+        self.aedtapp.solution_type = "Modal"
         ohorn1 = self.aedtapp.add_from_toolkit(
             CorrugatedHorn, draw=True, frequency=10.0, huygens_box=True
         )

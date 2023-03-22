@@ -54,7 +54,7 @@ class CommonHorn(CommonAntenna):
 
 
 class ConicalHorn(CommonHorn):
-    """Manages conical horn antenna.
+    """Manages conical horn antenna [1]_.
 
     This class is accessible through the app hfss object.
 
@@ -81,6 +81,11 @@ class ConicalHorn(CommonHorn):
     -------
     :class:`aedt.toolkits.antennas.ConicalHorn`
         Conical horn object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
+    Modern Antenna Handbook, New York, 2008.
 
     Examples
     --------
@@ -357,7 +362,7 @@ class ConicalHorn(CommonHorn):
 
 
 class PyramidalRidged(CommonHorn):
-    """Manages pyramidal ridged horn antenna.
+    """Manages pyramidal ridged horn antenna [1]_.
 
     This class is accessible through the app hfss object.
 
@@ -384,6 +389,11 @@ class PyramidalRidged(CommonHorn):
     -------
     :class:`aedt.toolkits.antennas.PyramidalRidged`
         Pyramidal ridged horn object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
+    Modern Antenna Handbook, New York, 2008.
 
     Examples
     --------
@@ -1103,7 +1113,7 @@ class PyramidalRidged(CommonHorn):
 class CorrugatedHorn(CommonHorn):
     """Manages corrugated horn antenna.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the app hfss object [1]_.
 
     Parameters
     ----------
@@ -1128,6 +1138,11 @@ class CorrugatedHorn(CommonHorn):
     -------
     :class:`aedt.toolkits.antennas.CorrugatedHorn`
         Conical horn object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Horn Antennas," Antenna Theory Analysis,
+    3rd ed. Hoboken: Wiley, 2005, sec. 13.6, pp. 785-791.
 
     Examples
     --------
@@ -1228,7 +1243,7 @@ class CorrugatedHorn(CommonHorn):
         self._app[self.synthesis_parameters.flare_angle.hfss_variable] = (
             str(self.synthesis_parameters.flare_angle.value) + "deg"
         )
-        flare_angle_rad = self.synthesis_parameters.flare_angle.hfss_variable + "*pi/180"
+        flare_angle = self.synthesis_parameters.flare_angle.hfss_variable
         notches = self.synthesis_parameters.notches.hfss_variable
         self._app[notches] = str(self.synthesis_parameters.notches.value)
         notch_width = self.synthesis_parameters.notch_width.hfss_variable
@@ -1243,7 +1258,7 @@ class CorrugatedHorn(CommonHorn):
 
         l = self._app.variable_manager[wg_length].numeric_value
         n = self._app.variable_manager[notches].numeric_value
-        Ka = "atan(" + flare_angle_rad + ")"
+        Ka = "tan(" + flare_angle + ")"
 
         # Based on inputs calculate minimum feed length for geometry to work,
         # and loop until user inputs value above minimum required.
@@ -1264,9 +1279,9 @@ class CorrugatedHorn(CommonHorn):
             K1 = str((N - 1)) + "*" + "(" + notch_width + "+" + tooth_width + ")"
             K2 = "(" + str(N) + "*" + notch_width + ")+(" + str(N - 1) + ")*" + tooth_width
             K3 = str(N) + "*" + "(" + notch_width + "+" + tooth_width + ")"
-            xdel1 = K1 + "*" + Ka
-            xdel2 = K2 + "*" + Ka
-            xdel3 = K3 + "*" + Ka
+            xdel1 = "(" + K1 + ")*" + Ka
+            xdel2 = "(" + K2 + ")*" + Ka
+            xdel3 = "(" + K3 + ")*" + Ka
             c1 = K1
             c2 = K2
             c3 = K3
@@ -1305,7 +1320,7 @@ class CorrugatedHorn(CommonHorn):
         out1 = endx
         out2 = wg_radius + "+" + wall_thickness
         out3 = c4z
-        zpart = out3 + "-" + "((" + out1 + "-" + out2 + ") /" + Ka + ")"
+        zpart = out3 + "-" + "(((" + out1 + ")-(" + out2 + ")) /(" + Ka + "))"
         finx = out2
         finz = zpart
         pts.append([finx, 0, finz])
@@ -1315,18 +1330,18 @@ class CorrugatedHorn(CommonHorn):
 
         horn = self._app.modeler.create_polyline(
             position_list=pts,
-            cover_surface=True,
+            cover_surface=False,
             name="horn" + antenna_name,
             matname=self.material,
         )
-        horn = self._app.modeler.sweep_around_axis(0)
+        horn = horn.sweep_around_axis(2)
         horn.history.props["Coordinate System"] = coordinate_system
         horn.color = (132, 132, 193)
 
         # Cap
         cap = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "-" + wg_length],
+            position=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
             height="-" + wall_thickness,
             name="port_cap_" + antenna_name,
@@ -1337,7 +1352,7 @@ class CorrugatedHorn(CommonHorn):
         # P1
         p1 = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "-" + wg_length],
+            position=["0", "0", "0"],
             radius=wg_radius,
             name="port_" + antenna_name,
         )
@@ -1360,14 +1375,14 @@ class CorrugatedHorn(CommonHorn):
             )
             huygens = self._app.modeler.create_box(
                 position=[
-                    pos_x + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
-                    pos_y + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
-                    pos_z + "-" + wg_length,
+                    pos_x + "-(" + endx + ")-" + huygens_dist + self.length_unit,
+                    pos_y + "-(" + endx + ")-" + huygens_dist + self.length_unit,
+                    pos_z,
                 ],
                 dimensions_list=[
-                    "2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
-                    "2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
-                    huygens_dist + self.length_unit + "+" + wg_length + "+" + horn_length,
+                    "2*(" + endx + ")+" + "2*" + huygens_dist + self.length_unit,
+                    "2*(" + endx + ")+" + "2*" + huygens_dist + self.length_unit,
+                    huygens_dist + self.length_unit + "+" + c4z,
                 ],
                 name="huygens_" + antenna_name,
                 matname="air",
@@ -1378,8 +1393,7 @@ class CorrugatedHorn(CommonHorn):
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
 
-        wg_in.group_name = antenna_name
-        horn_sheet.group_name = antenna_name
+        horn.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
 

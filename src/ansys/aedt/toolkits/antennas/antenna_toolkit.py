@@ -27,6 +27,7 @@ from ansys.aedt.toolkits.antennas.models.bowtie import BowTie
 from ansys.aedt.toolkits.antennas.models.bowtie import BowTieRounded
 from ansys.aedt.toolkits.antennas.models.helix import AxialMode
 from ansys.aedt.toolkits.antennas.models.horn import ConicalHorn
+from ansys.aedt.toolkits.antennas.models.horn import CorrugatedHorn
 from ansys.aedt.toolkits.antennas.models.horn import PyramidalRidged
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchEdge
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchInset
@@ -166,8 +167,12 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             return
         if self.hfss and sel and key in self.hfss.variable_manager.independent_variable_names:
-            if self.oantenna.length_unit not in val:
-                val = val + self.oantenna.length_unit
+            if "angle" in key:
+                if "deg" not in val:
+                    val = val + "deg"
+            else:
+                if self.oantenna.length_unit not in val:
+                    val = val + self.oantenna.length_unit
             self.hfss[key] = val
             ansys.aedt.toolkits.antennas.common_ui.logger.info(
                 "Key {} updated to value {}.".format(key, val)
@@ -549,7 +554,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for par, value in self.oantenna._parameters.items():
             item = QtWidgets.QTableWidgetItem(par)
             self.property_table.setItem(i, 0, item)
-            item = QtWidgets.QTableWidgetItem(str(round(value, 3)) + self.oantenna.length_unit)
+            if "angle" in par:
+                item = QtWidgets.QTableWidgetItem(str(round(value, 3)) + "deg")
+            else:
+                item = QtWidgets.QTableWidgetItem(str(round(value, 3)) + self.oantenna.length_unit)
             self.property_table.setItem(i, 1, item)
             i += 1
 
@@ -1144,9 +1152,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.add_status_bar_message("Antenna not supported yet.")
-
-        # self.get_antenna(AxialMode, synth_only)
+        self.get_antenna(CorrugatedHorn, synth_only)
 
     def draw_eplane_horn_ui(self):
         """Create an E-plane horn antenna UI."""
