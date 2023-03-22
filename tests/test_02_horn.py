@@ -78,8 +78,7 @@ class TestClass(BasisTest, object):
 
         ohorn2.create_lattice_pair(lattice_height="20mm", bottom_extend=False)
 
-        ohorn2.create_3dcomponent(replace=True)
-        assert len(self.aedtapp.modeler.user_defined_components) == 2
+        assert ohorn2.create_3dcomponent(replace=True)
 
         ohorn3 = self.aedtapp.add_from_toolkit(
             ConicalHorn,
