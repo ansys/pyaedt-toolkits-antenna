@@ -42,7 +42,7 @@ class BowTie(CommonPatch):
     Notes
     -----
     .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
-    Modern Antenna Handbook, New York, 2008.
+        Modern Antenna Handbook, New York, 2008.
 
     Examples
     --------
@@ -291,7 +291,7 @@ class BowTieRounded(CommonPatch):
     Notes
     -----
     .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
-    Modern Antenna Handbook, New York, 2008.
+        Modern Antenna Handbook, New York, 2008.
 
     Examples
     --------

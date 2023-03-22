@@ -106,16 +106,16 @@ class AxialMode(CommonHelix):
     Notes
     -----
     .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
-    Modern Antenna Handbook, New York, 2008.
+        Modern Antenna Handbook, New York, 2008.
 
     Examples
     --------
     >>> from pyaedt import Hfss
-    >>> from ansys.aedt.toolkits.antennas.horn import ConicalHorn
+    >>> from ansys.aedt.toolkits.antennas.helix import AxialMode
     >>> hfss = Hfss()
-    >>> horn = hfss.add_from_toolkit(ConicalHorn, draw=True, frequency=20.0, frequency_unit="GHz",
+    >>> horn = hfss.add_from_toolkit(AxialMode, draw=True, frequency=20.0, frequency_unit="GHz",
     ...                              outer_boundary=None, huygens_box=True, length_unit="cm",
-    ...                              coordinate_system="CS1", antenna_name="HornAntenna",
+    ...                              coordinate_system="CS1", antenna_name="HelixAntenna",
     ...                              origin=[1, 100, 50])
 
     """

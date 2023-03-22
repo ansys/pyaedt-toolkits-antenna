@@ -85,7 +85,7 @@ class ConicalHorn(CommonHorn):
     Notes
     -----
     .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
-    Modern Antenna Handbook, New York, 2008.
+        Modern Antenna Handbook, New York, 2008.
 
     Examples
     --------
@@ -393,7 +393,7 @@ class PyramidalRidged(CommonHorn):
     Notes
     -----
     .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
-    Modern Antenna Handbook, New York, 2008.
+        Modern Antenna Handbook, New York, 2008.
 
     Examples
     --------
@@ -1142,7 +1142,7 @@ class CorrugatedHorn(CommonHorn):
     Notes
     -----
     .. [1] C. Balanis, "Horn Antennas," Antenna Theory Analysis,
-    3rd ed. Hoboken: Wiley, 2005, sec. 13.6, pp. 785-791.
+        3rd ed. Hoboken: Wiley, 2005, sec. 13.6, pp. 785-791.
 
     Examples
     --------
