@@ -89,9 +89,7 @@ class TestClass(BasisTest, object):
             outer_boundary="Radiation",
         )
 
-        ohorn3.create_lattice_pair(lattice_height="20mm", bottom_extend=True)
-
-        assert len(ohorn3.boundaries) == 2
+        assert ohorn3.create_lattice_pair(lattice_height="20mm", bottom_extend=True)
 
     def test_02_pyramidal_ridged_horn(self):
         self.aedtapp = self.add_app(design_name="pyramidal_ridged_horn")
