@@ -449,6 +449,8 @@ class CommonAntenna(object):
             if isinstance(p, Property):
                 if "angle" in p.hfss_variable:
                     self._app[p.hfss_variable] = str(p.value) + "deg"
+                elif "ratio" in p.hfss_variable:
+                    self._app[p.hfss_variable] = str(p.value)
                 else:
                     self._app[p.hfss_variable] = str(p.value) + self.length_unit
 
