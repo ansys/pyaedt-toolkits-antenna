@@ -1657,7 +1657,6 @@ class EllipticalHorn(CommonHorn):
         )
 
         self._app.modeler.connect([air_base, air_top])
-
         self._app.modeler.unite([wg_in, air_base])
 
         wg_in.name = "internal_" + antenna_name
