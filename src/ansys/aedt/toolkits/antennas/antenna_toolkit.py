@@ -28,6 +28,7 @@ from ansys.aedt.toolkits.antennas.models.bowtie import BowTieRounded
 from ansys.aedt.toolkits.antennas.models.helix import AxialMode
 from ansys.aedt.toolkits.antennas.models.horn import ConicalHorn
 from ansys.aedt.toolkits.antennas.models.horn import CorrugatedHorn
+from ansys.aedt.toolkits.antennas.models.horn import EllipticalHorn
 from ansys.aedt.toolkits.antennas.models.horn import PyramidalRidged
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchEdge
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchInset
@@ -170,6 +171,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if "angle" in key:
                 if "deg" not in val:
                     val = val + "deg"
+            elif "ratio" in key:
+                val = val
             else:
                 if self.oantenna.length_unit not in val:
                     val = val + self.oantenna.length_unit
@@ -556,6 +559,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.property_table.setItem(i, 0, item)
             if "angle" in par:
                 item = QtWidgets.QTableWidgetItem(str(round(value, 3)) + "deg")
+            elif "ratio" in par:
+                item = QtWidgets.QTableWidgetItem(str(round(value, 3)))
             else:
                 item = QtWidgets.QTableWidgetItem(str(round(value, 3)) + self.oantenna.length_unit)
             self.property_table.setItem(i, 1, item)
@@ -1268,9 +1273,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.add_status_bar_message("Antenna not supported yet.")
-
-        # self.get_antenna(AxialMode, synth_only)
+        self.get_antenna(EllipticalHorn, synth_only)
 
     def draw_quad_ridged_horn_ui(self):
         """Create a quad-ridged horn antenna UI."""
