@@ -28,6 +28,7 @@ from ansys.aedt.toolkits.antennas.models.bowtie import BowTieRounded
 from ansys.aedt.toolkits.antennas.models.helix import AxialMode
 from ansys.aedt.toolkits.antennas.models.horn import ConicalHorn
 from ansys.aedt.toolkits.antennas.models.horn import CorrugatedHorn
+from ansys.aedt.toolkits.antennas.models.horn import EPlaneHorn
 from ansys.aedt.toolkits.antennas.models.horn import EllipticalHorn
 from ansys.aedt.toolkits.antennas.models.horn import PyramidalRidged
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchEdge
@@ -122,7 +123,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionH_Plane.triggered.connect(lambda checked: self.draw_hplane_horn_ui())
         self.actionPyramidal.triggered.connect(lambda checked: self.draw_pyramidal_horn_ui())
         self.actionPyramidal_Ridged.triggered.connect(
-            lambda checked: self.draw_pyramidal_corr_horn_ui()
+            lambda checked: self.draw_pyramidal_rid_horn_ui()
         )
         self.actionQuad_Ridged.triggered.connect(lambda checked: self.draw_quad_ridged_horn_ui())
         self.actionAxial.triggered.connect(lambda checked: self.draw_axial_helix_ui())
@@ -1179,9 +1180,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.add_status_bar_message("Antenna not supported yet.")
-
-        # self.get_antenna(AxialMode, synth_only)
+        self.get_antenna(EPlaneHorn, synth_only)
 
     def draw_hplane_horn_ui(self):
         """Create an H-plane horn antenna UI."""
@@ -1231,8 +1230,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # self.get_antenna(AxialMode, synth_only)
 
-    def draw_pyramidal_corr_horn_ui(self):
-        """Create a cornical horn pyramidal antenna UI."""
+    def draw_pyramidal_rid_horn_ui(self):
+        """Create a pyramidal ridged horn antenna UI."""
         if self.create_button and not self.create_button.isEnabled():
             self.add_status_bar_message(
                 "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."

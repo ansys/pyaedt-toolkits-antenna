@@ -1,3 +1,4 @@
+from ansys.aedt.toolkits.antennas.models.common import StandardWaveguide
 from ansys.aedt.toolkits.antennas.models.common import TransmissionLine
 from conftest import BasisTest
 
@@ -8,6 +9,7 @@ class TestClass(BasisTest, object):
     def setup_class(self):
         BasisTest.my_setup(self)
         self.tl_calc = TransmissionLine()
+        self.wg_standard = StandardWaveguide()
 
     def teardown_class(self):
         BasisTest.my_teardown(self)
@@ -27,3 +29,9 @@ class TestClass(BasisTest, object):
             substrate_height=0.15, permittivity=4.4, impedance=100
         )
         assert w2 - 0.012117786 < 1e-6
+
+    def test_03_find_waveguide(self):
+        w_dim = self.wg_standard.get_waveguide_dimensions("WR-2300", "cm")
+        assert w_dim[0] - 58.41999999 < 1e-6
+        w_name = self.wg_standard.find_waveguide(10, "GHz")
+        assert w_name == "WR-102"
