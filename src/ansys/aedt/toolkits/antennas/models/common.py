@@ -577,8 +577,6 @@ class TransmissionLine(object):
     >>> tl_calc.stripline_calculator(substrate_height=10, permittivity=2.2, impedance=60)
     """
 
-    antenna_type = ""
-
     def __init__(self, frequency=10, frequency_unit="GHz"):
         self.frequency = frequency
         self.frequency_unit = frequency_unit
@@ -721,3 +719,184 @@ class TransmissionLine(object):
             effective_permittivity = (permittivity + 1.0) / 2.0
 
         return effective_permittivity
+
+
+class StandardWaveguide(object):
+    """Provides base methods common to stabdard waveguides.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``GHz``.
+
+    Returns
+    -------
+    :class:`aedt.toolkits.antennas.common.StandardWaveguide`
+        Standard waveguide object.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antennas.common import StandardWaveguide
+    >>> wg_calc = StandardWaveguide()
+    >>> wg_dim = wg_calc.get_waveguide_dimensions("WR-75")
+    """
+
+    wg = {}
+    wg["WR-2300"] = [23.0, 11.5, 0.15]
+    wg["WR-2100"] = [21.0, 10.5, 0.125]
+    wg["WR-1800"] = [18.0, 9.0, 0.125]
+    wg["WR-1500"] = [15.0, 7.5, 0.125]
+    wg["WR-1150"] = [11.5, 5.75, 0.125]
+    wg["WR-975"] = [9.75, 4.875, 0.125]
+    wg["WR-770"] = [7.7, 3.850, 0.125]
+    wg["WR-650"] = [6.5, 3.25, 0.08]
+    wg["WR-510"] = [5.1, 2.55, 0.08]
+    wg["WR-430"] = [4.3, 2.15, 0.08]
+    wg["WR-340"] = [3.4, 1.7, 0.08]
+    wg["WR-284"] = [2.84, 1.34, 0.08]
+    wg["WR-229"] = [2.29, 1.145, 0.064]
+    wg["WR-187"] = [1.872, 0.872, 0.064]
+    wg["WR-159"] = [1.53, 0.795, 0.064]
+    wg["WR-137"] = [1.372, 0.622, 0.064]
+    wg["WR-112"] = [1.122, 0.497, 0.064]
+    wg["WR-102"] = [1.02, 0.51, 0.064]
+    wg["WR-90"] = [0.9, 0.4, 0.05]
+    wg["WR-75"] = [0.75, 0.375, 0.05]
+    wg["WR-62"] = [0.622, 0.311, 0.04]
+    wg["WR-51"] = [0.51, 0.255, 0.04]
+    wg["WR-42"] = [0.42, 0.17, 0.04]
+    wg["WR-34"] = [0.34, 0.17, 0.04]
+    wg["WR-28"] = [0.28, 0.14, 0.04]
+    wg["WR-22"] = [0.224, 0.112, 0.04]
+    wg["WR-19"] = [0.188, 0.094, 0.04]
+    wg["WR-15"] = [0.148, 0.074, 0.04]
+    wg["WR-12"] = [0.122, 0.061, 0.04]
+    wg["WR-10"] = [0.1, 0.05, 0.04]
+    wg["WR-8"] = [0.08, 0.04, 0.02]
+    wg["WR-7"] = [0.065, 0.0325, 0.02]
+    wg["WR-5"] = [0.0510, 0.0255, 0.02]
+
+    def __init__(self, frequency=10, frequency_unit="GHz"):
+        self.frequency = frequency
+        self.frequency_unit = frequency_unit
+
+    @property
+    def waveguide_list(self):
+        return self.wg.keys()
+
+    @pyaedt_function_handler()
+    def get_waveguide_dimensions(self, name, units="mm"):
+        """Strip line calculator.
+
+        Parameters
+        ----------
+        name : str
+            Waveguide name.
+        units : str
+           Dimension units. The default is ``mm``.
+
+        Returns
+        -------
+        list
+            Waveguide dimensions.
+        """
+
+        if name in self.wg:
+            wg_dim = []
+            for dbl in self.wg[name]:
+                wg_dim.append(constants.unit_converter(dbl, "Length", "in", units))
+            return wg_dim
+        else:
+            return False
+
+    @pyaedt_function_handler()
+    def find_waveguide(self, freq, units="GHz"):  # pragma: no cover
+        """Find the closest standard waveguide for the operational frequency.
+
+        Parameters
+        ----------
+        freq : float
+            Operational frequency.
+        units : str
+           Input frequency units. The default is ``GHz``.
+
+        Returns
+        -------
+        str
+            Waveguide name.
+        """
+
+        freq = constants.unit_converter(freq, "Frequency", units, "GHz")
+        op_freq = freq * 0.8
+
+        if op_freq >= 140:
+            wg_name = "WR-5"
+        elif op_freq >= 110:
+            wg_name = "WR-7"
+        elif op_freq >= 90:
+            wg_name = "WR-8"
+        elif op_freq >= 75:
+            wg_name = "WR-10"
+        elif op_freq >= 60:
+            wg_name = "WR-12"
+        elif op_freq >= 50:
+            wg_name = "WR-15"
+        elif op_freq >= 40:
+            wg_name = "WR-19"
+        elif op_freq >= 33:
+            wg_name = "WR-22"
+        elif op_freq >= 26.50:
+            wg_name = "WR-28"
+        elif op_freq >= 22:
+            wg_name = "WR-34"
+        elif op_freq >= 18:
+            wg_name = "WR-42"
+        elif op_freq >= 15:
+            wg_name = "WR-51"
+        elif op_freq >= 12.4:
+            wg_name = "WR-62"
+        elif op_freq >= 10:
+            wg_name = "WR-75"
+        elif op_freq >= 8.2:
+            wg_name = "WR-90"
+        elif op_freq >= 6.95:
+            wg_name = "WR-102"
+        elif op_freq >= 7.05:
+            wg_name = "WR-112"
+        elif op_freq >= 5.85:
+            wg_name = "WR-137"
+        elif op_freq >= 4.9:
+            wg_name = "WR-159"
+        elif op_freq >= 3.95:
+            wg_name = "WR-187"
+        elif op_freq >= 3.3:
+            wg_name = "WR-229"
+        elif op_freq >= 2.6:
+            wg_name = "WR-284"
+        elif op_freq >= 2.2:
+            wg_name = "WR-340"
+        elif op_freq >= 1.70:
+            wg_name = "WR-430"
+        elif op_freq >= 1.45:
+            wg_name = "WR-510"
+        elif op_freq >= 1.12:
+            wg_name = "WR-650"
+        elif op_freq >= 0.96:
+            wg_name = "WR-770"
+        elif op_freq >= 0.75:
+            wg_name = "WR-975"
+        elif op_freq >= 0.64:
+            wg_name = "WR-1150"
+        elif op_freq >= 0.49:
+            wg_name = "WR-1500"
+        elif op_freq >= 0.41:
+            wg_name = "WR-1800"
+        elif op_freq >= 0.35:
+            wg_name = "WR-2100"
+        elif op_freq > 0:
+            wg_name = "WR-2300"
+        else:
+            wg_name = None
+        return wg_name
