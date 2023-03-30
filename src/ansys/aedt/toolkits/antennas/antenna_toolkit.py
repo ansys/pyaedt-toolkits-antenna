@@ -37,7 +37,7 @@ from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchInset
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchProbe
 from ansys.aedt.toolkits.antennas.ui.antennas_main import Ui_MainWindow
 
-current_path = os.path.join(os.getcwd(), "ui", "images")
+current_path = os.path.join(os.path.realpath(__file__), "ui", "images")
 os.environ["QT_API"] = "pyside6"
 
 import logging
