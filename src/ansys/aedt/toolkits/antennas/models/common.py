@@ -465,6 +465,44 @@ class CommonAntenna(object):
     @pyaedt_function_handler()
     def setup_hfss(self):
         """Set up an antenna in HFSS."""
+
+        for obj_name in self.object_list.keys():
+            if (
+                obj_name.startswith("PerfE")
+                or obj_name.startswith("gnd_")
+                or obj_name.startswith("ant_")
+            ):
+                self._app.assign_perfecte_to_sheets(obj_name)
+            elif obj_name.startswith("coax"):
+                obj = self.object_list[obj_name]
+                face_id = obj.faces[0].edges[0].id
+                for face in obj.faces:
+                    if len(face.edges) == 2:
+                        face_id = face.id
+                        break
+                coax_bound = self._app.assign_perfecte_to_sheets(face_id)
+                coax_bound.name = "PerfE_" + obj_name
+                self.boundaries[coax_bound.name] = coax_bound
+                break
+            elif obj_name.startswith("huygens_"):
+                if self.huygens_box:
+                    lightSpeed = constants.SpeedOfLight  # m/s
+                    freq_hz = constants.unit_converter(
+                        self.frequency, "Freq", self.frequency_unit, "Hz"
+                    )
+                    huygens_dist = str(
+                        constants.unit_converter(
+                            lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
+                        )
+                    )
+                    mesh_op = self._app.mesh.assign_length_mesh(
+                        [obj_name],
+                        maxlength=huygens_dist + self.length_unit,
+                        maxel=None,
+                        meshop_name="HuygensBox_Seed_" + self.antenna_name,
+                    )
+                    self.mesh_operations[mesh_op.name] = mesh_op
+
         terminal_references = []
         port_lump = port = port_cap = None
         if "port_lump_{}".format(self.antenna_name) in self.object_list:
@@ -515,42 +553,6 @@ class CommonAntenna(object):
                 terminal_references=terminal_references,
             )
             self.excitations[port1.name] = port1
-        for obj_name in self.object_list.keys():
-            if (
-                obj_name.startswith("PerfE")
-                or obj_name.startswith("gnd_")
-                or obj_name.startswith("ant_")
-            ):
-                self._app.assign_perfecte_to_sheets(obj_name)
-            elif obj_name.startswith("coax"):
-                obj = self.object_list[obj_name]
-                face_id = obj.faces[0].edges[0].id
-                for face in obj.faces:
-                    if len(face.edges) == 2:
-                        face_id = face.id
-                        break
-                coax_bound = self._app.assign_perfecte_to_sheets(face_id)
-                coax_bound.name = "PerfE_" + obj_name
-                self.boundaries[coax_bound.name] = coax_bound
-                break
-            elif obj_name.startswith("huygens_"):
-                if self.huygens_box:
-                    lightSpeed = constants.SpeedOfLight  # m/s
-                    freq_hz = constants.unit_converter(
-                        self.frequency, "Freq", self.frequency_unit, "Hz"
-                    )
-                    huygens_dist = str(
-                        constants.unit_converter(
-                            lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                        )
-                    )
-                    mesh_op = self._app.mesh.assign_length_mesh(
-                        [obj_name],
-                        maxlength=huygens_dist + self.length_unit,
-                        maxel=None,
-                        meshop_name="HuygensBox_Seed_" + self.antenna_name,
-                    )
-                    self.mesh_operations[mesh_op.name] = mesh_op
 
         return True
 
