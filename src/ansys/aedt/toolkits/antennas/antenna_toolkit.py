@@ -12,7 +12,7 @@ from ansys.aedt.toolkits.antennas.common_ui import handler
 from ansys.aedt.toolkits.antennas.common_ui import line_colors
 from ansys.aedt.toolkits.antennas.common_ui import logger
 
-current_path = Path(os.getcwd())
+current_path = Path(os.path.dirname(os.path.realpath(__file__)))
 package_path = current_path.parents[3]
 sys.path.append(os.path.abspath(package_path))
 from PySide6 import QtCore
@@ -1426,6 +1426,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    desktop_pid = None
+    desktop_version = None
     if len(sys.argv) > 2:
         desktop_pid = sys.argv[1]
         desktop_version = sys.argv[2]
