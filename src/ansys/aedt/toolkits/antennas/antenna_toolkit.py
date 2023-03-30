@@ -47,7 +47,7 @@ logger.addHandler(handler)
 
 
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self, desktop_pid=None, desktop_version=None):
         super(ApplicationWindow, self).__init__()
         self.__thread = QtCore.QThreadPool()
         self.__thread.setMaxThreadCount(4)
@@ -151,6 +151,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionBicone.triggered.connect(lambda checked: self.draw_bicone_ui())
         self.actionDiscone.triggered.connect(lambda checked: self.draw_discone_ui())
         self.sweep_slider.valueChanged.connect(self.value_changed)
+        if desktop_pid or desktop_version:
+            self.launch_hfss(desktop_pid, desktop_version)
 
     def value_changed(self):
         self.slider_value.setText(str(self.sweep_slider.value()))
@@ -211,10 +213,14 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     "Process {} on gRPC {}".format(session[0], session[1])
                 )
 
-    def launch_hfss(self):
+    def launch_hfss(self, pid=None, version=None):
         non_graphical = eval(self.non_graphical_combo.currentText())
-        version = self.aedt_version_combo.currentText()
-        selected_process = self.process_id_combo.currentText()
+        if version is None:
+            version = self.aedt_version_combo.currentText()
+        if pid:
+            selected_process = "Process {}".format(pid)
+        else:
+            selected_process = self.process_id_combo.currentText()
         projectname = self.project_name.text()
         process_id_combo_splitted = selected_process.split(" ")
         args = {
@@ -1420,6 +1426,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    w = ApplicationWindow()
+    if len(sys.argv) > 2:
+        desktop_pid = sys.argv[1]
+        desktop_version = sys.argv[2]
+    w = ApplicationWindow(desktop_pid, desktop_version)
     w.show()
     sys.exit(app.exec())
