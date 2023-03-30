@@ -37,7 +37,7 @@ from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchInset
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchProbe
 from ansys.aedt.toolkits.antennas.ui.antennas_main import Ui_MainWindow
 
-current_path = os.path.join(os.path.realpath(__file__), "ui", "images")
+image_path = os.path.join(os.path.realpath(__file__), "ui", "images")
 os.environ["QT_API"] = "pyside6"
 
 import logging
@@ -62,13 +62,13 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setStyleSheet(qdarkstyle.load_stylesheet(qt_api="pyside6"))
         icon = QtGui.QIcon()
         icon.addFile(
-            os.path.join(current_path, "logo_cropped.png"),
+            os.path.join(image_path, "logo_cropped.png"),
             QtCore.QSize(),
             QtGui.QIcon.Normal,
             QtGui.QIcon.Off,
         )
         icon.addFile(
-            os.path.join(current_path, "logo_cropped.png"),
+            os.path.join(image_path, "logo_cropped.png"),
             QtCore.QSize(),
             QtGui.QIcon.Normal,
             QtGui.QIcon.On,
@@ -723,7 +723,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.layout_settings.addItem(top_spacer, 2, 0, 1, 1)
 
-        image = self.add_image(os.path.join(current_path, image_name))
+        image = self.add_image(os.path.join(image_path, image_name))
         self.layout_settings.addLayout(image, 0, 0, 1, 1)
 
         line1 = self.add_line("line_1", "antenna_name", "Antenna Name", "edit", antenna_name)
