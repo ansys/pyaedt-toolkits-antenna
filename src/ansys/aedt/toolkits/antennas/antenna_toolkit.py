@@ -30,6 +30,7 @@ from ansys.aedt.toolkits.antennas.models.horn import ConicalHorn
 from ansys.aedt.toolkits.antennas.models.horn import CorrugatedHorn
 from ansys.aedt.toolkits.antennas.models.horn import EPlaneHorn
 from ansys.aedt.toolkits.antennas.models.horn import EllipticalHorn
+from ansys.aedt.toolkits.antennas.models.horn import HPlaneHorn
 from ansys.aedt.toolkits.antennas.models.horn import PyramidalRidged
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchEdge
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchInset
@@ -1202,9 +1203,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.add_status_bar_message("Antenna not supported yet.")
-
-        # self.get_antenna(AxialMode, synth_only)
+        self.get_antenna(HPlaneHorn, synth_only)
 
     def draw_pyramidal_horn_ui(self):
         """Create a horn pyramidal antenna UI."""
