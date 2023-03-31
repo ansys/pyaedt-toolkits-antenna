@@ -54,7 +54,7 @@ class CommonHorn(CommonAntenna):
         pass
 
 
-class ConicalHorn(CommonHorn):
+class Conical(CommonHorn):
     """Manages conical horn antenna [1]_.
 
     This class is accessible through the app hfss object.
@@ -429,7 +429,6 @@ class PyramidalRidged(CommonHorn):
     @pyaedt_function_handler()
     def _synthesis(self):
         parameters = {}
-        lightSpeed = constants.SpeedOfLight  # m/s
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
         if (
@@ -1102,7 +1101,7 @@ class PyramidalRidged(CommonHorn):
         pass
 
 
-class CorrugatedHorn(CommonHorn):
+class Corrugated(CommonHorn):
     """Manages corrugated horn antenna.
 
     This class is accessible through the app hfss object [1]_.
@@ -1400,7 +1399,7 @@ class CorrugatedHorn(CommonHorn):
         pass
 
 
-class EllipticalHorn(CommonHorn):
+class Elliptical(CommonHorn):
     """Manages elliptical horn antenna.
 
     This class is accessible through the app hfss object [1]_.
@@ -1712,7 +1711,7 @@ class EllipticalHorn(CommonHorn):
         pass
 
 
-class EPlaneHorn(CommonHorn):
+class EPlane(CommonHorn):
     """Manages E plane horn antenna [1]_.
 
     This class is accessible through the app hfss object.
@@ -1840,7 +1839,7 @@ class EPlaneHorn(CommonHorn):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw conical horn antenna.
+        """Draw E plane horn antenna.
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
@@ -2126,7 +2125,7 @@ class EPlaneHorn(CommonHorn):
         pass
 
 
-class HPlaneHorn(CommonHorn):
+class HPlane(CommonHorn):
     """Manages H plane horn antenna [1]_.
 
     This class is accessible through the app hfss object.
@@ -2254,7 +2253,7 @@ class HPlaneHorn(CommonHorn):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw conical horn antenna.
+        """Draw H plane horn antenna.
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
@@ -2517,6 +2516,1053 @@ class HPlaneHorn(CommonHorn):
             huygens.history.props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
+
+        cap.group_name = antenna_name
+        horn.group_name = antenna_name
+        wg_in.group_name = antenna_name
+        p1.group_name = antenna_name
+
+    @pyaedt_function_handler()
+    def model_disco(self):
+        """Model in PyDiscovery. To be implemenented."""
+        pass
+
+    @pyaedt_function_handler()
+    def setup_disco(self):
+        """Set up model in PyDiscovery. To be implemenented."""
+        pass
+
+
+class Pyramidal(CommonHorn):
+    """Manages pyramidal horn antenna [1]_.
+
+    This class is accessible through the app hfss object.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``GHz``.
+    material : str, optional
+        Horn material. If material is not defined a new material parametrized will be defined.
+        The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+    huygens_box : bool, optional
+        Create a Huygens box. The default is ``False``.
+    length_unit : str, optional
+        Length units. The default is ``"cm"``.
+    parametrized : bool, optional
+        Create a parametrized antenna. The default is ``True``.
+
+    Returns
+    -------
+    :class:`aedt.toolkits.antennas.Pyramidal`
+        Pyramidal horn object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
+        Modern Antenna Handbook, New York, 2008.
+
+    Examples
+    --------
+    >>> from pyaedt import Hfss
+    >>> from ansys.aedt.toolkits.antennas.horn import Pyramidal
+    >>> hfss = Hfss()
+    >>> horn = hfss.add_from_toolkit(Pyramidal, draw=True, frequency=20.0,
+    ...                              outer_boundary=None, huygens_box=True, length_unit="cm",
+    ...                              coordinate_system="CS1", antenna_name="HornAntenna",
+    ...                              origin=[1, 100, 50])
+
+    """
+
+    _default_input_parameters = {
+        "antenna_name": None,
+        "origin": [0, 0, 0],
+        "length_unit": None,
+        "coordinate_system": "Global",
+        "frequency": 10.0,
+        "frequency_unit": "GHz",
+        "material": "pec",
+        "outer_boundary": None,
+        "huygens_box": False,
+    }
+
+    def __init__(self, *args, **kwargs):
+        CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
+
+        self._parameters = self._synthesis()
+        self.update_synthesis_parameters(self._parameters)
+
+    @pyaedt_function_handler()
+    def _synthesis(self):
+        parameters = {}
+        freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            or self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning(
+                "Material is not found. Create the material before assigning it."
+            )
+            return parameters
+
+        scale = lambda x: (10.0 / freq_ghz) * x
+
+        def scale_value(value, round_val=3, doScale=True):
+            if doScale:
+                value = scale(value)
+            return round(value, round_val)
+
+        wg_length_in = scale_value(1.0)
+        flare_a_in = scale_value(1.8)
+        flare_b_in = scale_value(1.4)
+        horn_length_in = scale_value(3.0)
+
+        wg_obj = StandardWaveguide()
+        wg_name = wg_obj.find_waveguide(freq_ghz)
+        if wg_name:
+            wg_dim_in = wg_obj.get_waveguide_dimensions(wg_name, self.length_unit)
+            wg_a = wg_dim_in[0]
+            wg_b = wg_dim_in[1]
+            wall_thickness = wg_dim_in[2]
+        else:
+            wg_a_in = scale_value(0.9)
+            wg_a = constants.unit_converter(wg_a_in, "Length", "in", self.length_unit)
+            wg_b_in = scale_value(0.4)
+            wg_b = constants.unit_converter(wg_b_in, "Length", "in", self.length_unit)
+            wall_thickness_in = scale_value(0.02)
+            wall_thickness = constants.unit_converter(
+                wall_thickness_in, "Length", "in", self.length_unit
+            )
+
+        wg_length = constants.unit_converter(wg_length_in, "Length", "in", self.length_unit)
+        parameters["wg_length"] = wg_length
+        flare_a = constants.unit_converter(flare_a_in, "Length", "in", self.length_unit)
+        parameters["flare_a"] = flare_a
+        flare_b = constants.unit_converter(flare_b_in, "Length", "in", self.length_unit)
+        parameters["flare_b"] = flare_b
+        horn_length = constants.unit_converter(horn_length_in, "Length", "in", self.length_unit)
+        parameters["horn_length"] = horn_length
+        parameters["wg_width"] = wg_a
+        parameters["wg_height"] = wg_b
+        parameters["wall_thickness"] = wall_thickness
+
+        parameters["pos_x"] = self.origin[0]
+        parameters["pos_y"] = self.origin[1]
+        parameters["pos_z"] = self.origin[2]
+
+        myKeys = list(parameters.keys())
+        myKeys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+
+        return parameters_out
+
+    @pyaedt_function_handler()
+    def model_hfss(self):
+        """Draw pyramidal horn antenna.
+        Once the antenna is created, this method is not used anymore."""
+        if self.object_list:
+            self._app.logger.warning("This antenna already exists.")
+            return False
+
+        self.set_variables_in_hfss()
+
+        # Map parameters
+        wg_length = self.synthesis_parameters.wg_length.hfss_variable
+        flare_a = self.synthesis_parameters.flare_a.hfss_variable
+        flare_b = self.synthesis_parameters.flare_b.hfss_variable
+        horn_length = self.synthesis_parameters.horn_length.hfss_variable
+        wg_width = self.synthesis_parameters.wg_width.hfss_variable
+        wg_height = self.synthesis_parameters.wg_height.hfss_variable
+        wall_thickness = self.synthesis_parameters.wall_thickness.hfss_variable
+        pos_x = self.synthesis_parameters.pos_x.hfss_variable
+        pos_y = self.synthesis_parameters.pos_y.hfss_variable
+        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        antenna_name = self.antenna_name
+        coordinate_system = self.coordinate_system
+
+        # Base of the horn
+        # Air
+        air = self._app.modeler.create_box(
+            position=[
+                "-" + wg_width + "/2",
+                "-" + wg_height + "/2",
+                "-" + wg_length,
+            ],
+            dimensions_list=[wg_width, wg_height, wg_length],
+            matname="vacuum",
+        )
+        air.history.props["Coordinate System"] = coordinate_system
+
+        # Wall
+        wall = self._app.modeler.create_box(
+            position=[
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "-" + wg_height + "/2" + "-" + wall_thickness,
+                "-" + wg_length,
+            ],
+            dimensions_list=[
+                wg_width + "+2*" + wall_thickness,
+                wg_height + "+2*" + wall_thickness,
+                wg_length,
+            ],
+            name="wall_" + antenna_name,
+            matname="vacuum",
+        )
+        wall.history.props["Coordinate System"] = coordinate_system
+
+        # Subtract
+        new_wall = self._app.modeler.subtract(
+            tool_list=[air.name], blank_list=[wall.name], keep_originals=False
+        )
+
+        # Top of the horn
+        # Input
+        wg_in = self._app.modeler.create_box(
+            position=[
+                "-" + wg_width + "/2",
+                "-" + wg_height + "/2",
+                "-" + wg_length,
+            ],
+            dimensions_list=[wg_width, wg_height, wg_length],
+            name="wg_inner" + antenna_name,
+            matname="vacuum",
+        )
+        wg_in.history.props["Coordinate System"] = coordinate_system
+        wg_in.color = (128, 255, 255)
+
+        # Cap
+        cap = self._app.modeler.create_box(
+            position=[
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "-" + wg_height + "/2" + "-" + wall_thickness,
+                "-" + wg_length,
+            ],
+            dimensions_list=[
+                wg_width + "+" + "2*" + wall_thickness,
+                wg_height + "+2*" + wall_thickness,
+                "-" + wall_thickness,
+            ],
+            name="port_cap_" + antenna_name,
+            matname="pec",
+        )
+        cap.history.props["Coordinate System"] = coordinate_system
+        cap.color = (132, 132, 193)
+
+        # P1
+        p1 = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + wg_width + "/2",
+                "-" + wg_height + "/2",
+                "-" + wg_length,
+            ],
+            dimension_list=[wg_width, wg_height],
+            name="port_" + antenna_name,
+        )
+        p1.color = (128, 0, 0)
+        p1.history.props["Coordinate System"] = coordinate_system
+
+        # Horn wall
+        base = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + wg_width + "/2",
+                "-" + wg_height + "/2",
+                "0",
+            ],
+            dimension_list=[wg_width, wg_height],
+            name="base_" + antenna_name,
+        )
+        base.history.props["Coordinate System"] = coordinate_system
+
+        base_wall = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "-" + wg_height + "/2" + "-" + wall_thickness,
+                "0",
+            ],
+            dimension_list=[
+                wg_width + "+" + "2*" + wall_thickness,
+                wg_height + "+2*" + wall_thickness,
+            ],
+            name="base_wall_" + antenna_name,
+        )
+        base_wall.history.props["Coordinate System"] = coordinate_system
+
+        horn_top = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + flare_a + "/2",
+                "-" + flare_b + "/2",
+                horn_length,
+            ],
+            dimension_list=[flare_a, flare_b],
+            name="horn_top_" + antenna_name,
+        )
+        horn_top.history.props["Coordinate System"] = coordinate_system
+
+        horn = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + flare_a + "/2" + "-" + wall_thickness,
+                "-" + flare_b + "/2" + "-" + wall_thickness,
+                horn_length,
+            ],
+            dimension_list=[
+                flare_a + "+" + "2*" + wall_thickness,
+                flare_b + "+" + "2*" + wall_thickness,
+            ],
+            name="horn_" + antenna_name,
+        )
+        horn.history.props["Coordinate System"] = coordinate_system
+
+        self._app.modeler.connect([horn, base_wall])
+        self._app.modeler.connect([base, horn_top])
+
+        new_wall = self._app.modeler.subtract(
+            tool_list=[base.name], blank_list=[horn.name], keep_originals=False
+        )
+
+        new_horn = self._app.modeler.unite([horn.name, wall.name])
+
+        horn.color = (132, 132, 193)
+        horn.material_name = self.material
+
+        # Air base
+        air_base = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + wg_width + "/2",
+                "-" + wg_height + "/2",
+                "0",
+            ],
+            dimension_list=[
+                wg_width,
+                wg_height,
+            ],
+            name="air_base_" + antenna_name,
+        )
+        air_base.history.props["Coordinate System"] = coordinate_system
+
+        # Air top
+        air_top = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + flare_a + "/2",
+                "-" + flare_b + "/2",
+                horn_length,
+            ],
+            dimension_list=[
+                flare_a,
+                flare_b,
+            ],
+            name="air_top_" + antenna_name,
+        )
+        air_top.history.props["Coordinate System"] = coordinate_system
+
+        self._app.modeler.connect([air_base.name, air_top.name])
+
+        self._app.modeler.unite([wg_in, air_base])
+
+        self.object_list[cap.name] = cap
+        self.object_list[horn.name] = horn
+        self.object_list[wg_in.name] = wg_in
+        self.object_list[p1.name] = p1
+
+        self._app.modeler.move([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
+
+        # Create Huygens box
+        if self.huygens_box:
+            lightSpeed = constants.SpeedOfLight  # m/s
+            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
+            huygens_dist = str(
+                constants.unit_converter(
+                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
+                )
+            )
+            huygens = self._app.modeler.create_box(
+                position=[
+                    pos_x
+                    + "-"
+                    + flare_a
+                    + "/2-"
+                    + huygens_dist
+                    + self.length_unit
+                    + "-"
+                    + wall_thickness,
+                    pos_y
+                    + "-"
+                    + flare_b
+                    + "/2"
+                    + "-"
+                    + wall_thickness
+                    + "-"
+                    + huygens_dist
+                    + self.length_unit,
+                    pos_z + "-" + wg_length + "-" + wall_thickness,
+                ],
+                dimensions_list=[
+                    flare_a + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
+                    flare_b + "+" + "2*" + huygens_dist + self.length_unit + "+" + wall_thickness,
+                    huygens_dist
+                    + self.length_unit
+                    + "+"
+                    + wg_length
+                    + "+"
+                    + wall_thickness
+                    + "+"
+                    + horn_length,
+                ],
+                name="huygens_" + antenna_name,
+                matname="air",
+            )
+            huygens.display_wireframe = True
+            huygens.color = (0, 0, 255)
+            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.group_name = antenna_name
+            self.object_list[huygens.name] = huygens
+
+        cap.group_name = antenna_name
+        horn.group_name = antenna_name
+        wg_in.group_name = antenna_name
+        p1.group_name = antenna_name
+
+    @pyaedt_function_handler()
+    def model_disco(self):
+        """Model in PyDiscovery. To be implemenented."""
+        pass
+
+    @pyaedt_function_handler()
+    def setup_disco(self):
+        """Set up model in PyDiscovery. To be implemenented."""
+        pass
+
+
+class QuadRidged(CommonHorn):
+    """Manages quad-ridged horn antenna [1]_, [2]_, [3]_.
+
+    This class is accessible through the app hfss object.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``GHz``.
+    material : str, optional
+        Horn material. If material is not defined a new material parametrized will be defined.
+        The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+    huygens_box : bool, optional
+        Create a Huygens box. The default is ``False``.
+    length_unit : str, optional
+        Length units. The default is ``"cm"``.
+    parametrized : bool, optional
+        Create a parametrized antenna. The default is ``True``.
+
+    Returns
+    -------
+    :class:`aedt.toolkits.antennas.PyramidalRidged`
+        Pyramidal ridged horn object.
+
+    Notes
+    -----
+    .. [1] K. L. Walton and V. C. Sundberg, "Broadband ridged horn design,"
+        Microwave J., vol. 4, pp. 96-101, Apr. 1964.
+    .. [2] C. Bruns et al., "Analysis and Simulations of a 1-18 GHz
+        Broadband Double-Ridged Horn Antenna,"
+        IEEE Electromag. Compat., vol. 45, pp. 55-60, Feb 2003.
+    .. [3] C. Balanis, "Horn Antennas," Antenna Theory Analysis,
+        3rd ed. Hoboken: Wiley, 2005, ch. 13.
+
+    Examples
+    --------
+    >>> from pyaedt import Hfss
+    >>> from ansys.aedt.toolkits.antennas.horn import QuadRidged
+    >>> hfss = Hfss()
+    >>> horn = hfss.add_from_toolkit(QuadRidged, draw=True, frequency=20.0,
+    ...                              outer_boundary=None, huygens_box=True, length_unit="cm",
+    ...                              coordinate_system="CS1", antenna_name="HornAntenna",
+    ...                              origin=[1, 100, 50])
+
+    """
+
+    _default_input_parameters = {
+        "antenna_name": None,
+        "origin": [0, 0, 0],
+        "length_unit": None,
+        "coordinate_system": "Global",
+        "frequency": 10.0,
+        "frequency_unit": "GHz",
+        "material": "pec",
+        "outer_boundary": None,
+        "huygens_box": False,
+    }
+
+    def __init__(self, *args, **kwargs):
+        CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
+
+        self._parameters = self._synthesis()
+        self.update_synthesis_parameters(self._parameters)
+
+    @pyaedt_function_handler()
+    def _synthesis(self):
+        parameters = {}
+        freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            or self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning(
+                "Material is not found. Create the material before assigning it."
+            )
+            return parameters
+
+        scale = lambda x: (5.0 / freq_ghz) * x
+
+        def scale_value(value, round_val=3, doScale=True):
+            if doScale:
+                value = scale(value)
+            return round(value, round_val)
+
+        aperture_width = scale_value(89.6)
+        flare_length = scale_value(64.0)
+        wall_thickness = scale_value(5.0)
+        wg_width = scale_value(25.6)
+        wg_length = scale_value(64.0)
+        ridge_width = scale_value(4.48)
+        ridge_spacing = scale_value(4.8)
+        ridge_height_1 = scale_value(10.4)
+        ridge_height_2 = scale_value(12.96)
+        ridge_height_3 = scale_value(14.56)
+        ridge_height_4 = scale_value(16.0)
+        ridge_height_5 = scale_value(16.96)
+        ridge_height_6 = scale_value(16.48)
+        ridge_height_7 = scale_value(16.0)
+        ridge_height_8 = scale_value(14.56)
+        ridge_height_9 = scale_value(12.64)
+        ridge_height_10 = scale_value(9.92)
+
+        parameters["aperture_width"] = aperture_width
+        flare_length = constants.unit_converter(flare_length, "Length", "mm", self.length_unit)
+        parameters["flare_length"] = flare_length
+        wall_thickness = constants.unit_converter(wall_thickness, "Length", "mm", self.length_unit)
+        parameters["wall_thickness"] = wall_thickness
+        wg_width = constants.unit_converter(wg_width, "Length", "mm", self.length_unit)
+        parameters["wg_width"] = wg_width
+        wg_length = constants.unit_converter(wg_length, "Length", "mm", self.length_unit)
+        parameters["wg_length"] = wg_length
+        ridge_width = constants.unit_converter(ridge_width, "Length", "mm", self.length_unit)
+        parameters["ridge_width"] = ridge_width
+        ridge_spacing = constants.unit_converter(ridge_spacing, "Length", "mm", self.length_unit)
+        parameters["ridge_spacing"] = ridge_spacing
+        ridge_height_1 = constants.unit_converter(ridge_height_1, "Length", "mm", self.length_unit)
+        parameters["ridge_height_1"] = ridge_height_1
+        ridge_height_2 = constants.unit_converter(ridge_height_2, "Length", "mm", self.length_unit)
+        parameters["ridge_height_2"] = ridge_height_2
+        ridge_height_3 = constants.unit_converter(ridge_height_3, "Length", "mm", self.length_unit)
+        parameters["ridge_height_3"] = ridge_height_3
+        ridge_height_4 = constants.unit_converter(ridge_height_4, "Length", "mm", self.length_unit)
+        parameters["ridge_height_4"] = ridge_height_4
+        ridge_height_5 = constants.unit_converter(ridge_height_5, "Length", "mm", self.length_unit)
+        parameters["ridge_height_5"] = ridge_height_5
+        ridge_height_6 = constants.unit_converter(ridge_height_6, "Length", "mm", self.length_unit)
+        parameters["ridge_height_6"] = ridge_height_6
+        ridge_height_7 = constants.unit_converter(ridge_height_7, "Length", "mm", self.length_unit)
+        parameters["ridge_height_7"] = ridge_height_7
+        ridge_height_8 = constants.unit_converter(ridge_height_8, "Length", "mm", self.length_unit)
+        parameters["ridge_height_8"] = ridge_height_8
+        ridge_height_9 = constants.unit_converter(ridge_height_9, "Length", "mm", self.length_unit)
+        parameters["ridge_height_9"] = ridge_height_9
+        ridge_height_10 = constants.unit_converter(
+            ridge_height_10, "Length", "mm", self.length_unit
+        )
+        parameters["ridge_height_10"] = ridge_height_10
+
+        parameters["pos_x"] = self.origin[0]
+        parameters["pos_y"] = self.origin[1]
+        parameters["pos_z"] = self.origin[2]
+
+        myKeys = list(parameters.keys())
+        myKeys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+
+        return parameters_out
+
+    @pyaedt_function_handler()
+    def model_hfss(self):
+        """Draw conical horn antenna.
+        Once the antenna is created, this method is not used anymore."""
+        if self.object_list:
+            self._app.logger.warning("This antenna already exists.")
+            return False
+
+        self.set_variables_in_hfss()
+
+        # Map parameters
+        aperture_width = self.synthesis_parameters.aperture_width.hfss_variable
+        flare_length = self.synthesis_parameters.flare_length.hfss_variable
+        wall_thickness = self.synthesis_parameters.wall_thickness.hfss_variable
+        wg_width = self.synthesis_parameters.wg_width.hfss_variable
+        wg_length = self.synthesis_parameters.wg_length.hfss_variable
+        ridge_width = self.synthesis_parameters.ridge_width.hfss_variable
+        ridge_spacing = self.synthesis_parameters.ridge_spacing.hfss_variable
+        ridge_height_1 = self.synthesis_parameters.ridge_height_1.hfss_variable
+        ridge_height_2 = self.synthesis_parameters.ridge_height_2.hfss_variable
+        ridge_height_3 = self.synthesis_parameters.ridge_height_3.hfss_variable
+        ridge_height_4 = self.synthesis_parameters.ridge_height_4.hfss_variable
+        ridge_height_5 = self.synthesis_parameters.ridge_height_5.hfss_variable
+        ridge_height_6 = self.synthesis_parameters.ridge_height_6.hfss_variable
+        ridge_height_7 = self.synthesis_parameters.ridge_height_7.hfss_variable
+        ridge_height_8 = self.synthesis_parameters.ridge_height_8.hfss_variable
+        ridge_height_9 = self.synthesis_parameters.ridge_height_9.hfss_variable
+        ridge_height_10 = self.synthesis_parameters.ridge_height_10.hfss_variable
+
+        pos_x = self.synthesis_parameters.pos_x.hfss_variable
+        pos_y = self.synthesis_parameters.pos_y.hfss_variable
+        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        antenna_name = self.antenna_name
+        coordinate_system = self.coordinate_system
+
+        # Base of the horn
+        # Air
+        air = self._app.modeler.create_box(
+            position=[
+                "-" + wg_width + "/2",
+                "-" + wg_width + "/2",
+                "-" + wg_length,
+            ],
+            dimensions_list=[wg_width, wg_width, wg_length],
+            matname="vacuum",
+        )
+        air.history.props["Coordinate System"] = coordinate_system
+
+        # Wall
+        wall = self._app.modeler.create_box(
+            position=[
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "-" + wg_length,
+            ],
+            dimensions_list=[
+                wg_width + "+2*" + wall_thickness,
+                wg_width + "+2*" + wall_thickness,
+                wg_length,
+            ],
+            name="wall_" + antenna_name,
+            matname="vacuum",
+        )
+        wall.history.props["Coordinate System"] = coordinate_system
+
+        # Subtract
+        new_wall = self._app.modeler.subtract(
+            tool_list=[air.name], blank_list=[wall.name], keep_originals=False
+        )
+
+        # Top of the horn
+        # Input
+        wg_in = self._app.modeler.create_box(
+            position=[
+                "-" + wg_width + "/2",
+                "-" + wg_width + "/2",
+                "-" + wg_length,
+            ],
+            dimensions_list=[wg_width, wg_width, wg_length],
+            name="wg_inner" + antenna_name,
+            matname="vacuum",
+        )
+        wg_in.history.props["Coordinate System"] = coordinate_system
+        wg_in.color = (128, 255, 255)
+
+        # Cap
+        cap = self._app.modeler.create_box(
+            position=[
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "-" + wg_length,
+            ],
+            dimensions_list=[
+                wg_width + "+" + "2*" + wall_thickness,
+                wg_width + "+2*" + wall_thickness,
+                "-" + wall_thickness,
+            ],
+            name="port_cap_" + antenna_name,
+            matname="pec",
+        )
+        cap.history.props["Coordinate System"] = coordinate_system
+        cap.color = (132, 132, 193)
+
+        # P1
+        p1 = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + wg_width + "/2",
+                "-" + wg_width + "/2",
+                "-" + wg_length,
+            ],
+            dimension_list=[wg_width, wg_width],
+            name="port_" + antenna_name,
+        )
+        p1.color = (128, 0, 0)
+        p1.history.props["Coordinate System"] = coordinate_system
+
+        # Horn wall
+        base = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + wg_width + "/2",
+                "-" + wg_width + "/2",
+                "0",
+            ],
+            dimension_list=[wg_width, wg_width],
+            name="base_" + antenna_name,
+        )
+        base.history.props["Coordinate System"] = coordinate_system
+
+        base_wall = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "-" + wg_width + "/2" + "-" + wall_thickness,
+                "0",
+            ],
+            dimension_list=[
+                wg_width + "+" + "2*" + wall_thickness,
+                wg_width + "+2*" + wall_thickness,
+            ],
+            name="base_wall_" + antenna_name,
+        )
+        base_wall.history.props["Coordinate System"] = coordinate_system
+
+        horn_top = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + aperture_width + "/2",
+                "-" + aperture_width + "/2",
+                flare_length,
+            ],
+            dimension_list=[aperture_width, aperture_width],
+            name="horn_top_" + antenna_name,
+        )
+        horn_top.history.props["Coordinate System"] = coordinate_system
+
+        horn = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + aperture_width + "/2" + "-" + wall_thickness,
+                "-" + aperture_width + "/2" + "-" + wall_thickness,
+                flare_length,
+            ],
+            dimension_list=[
+                aperture_width + "+" + "2*" + wall_thickness,
+                aperture_width + "+" + "2*" + wall_thickness,
+            ],
+            name="horn_" + antenna_name,
+        )
+        horn.history.props["Coordinate System"] = coordinate_system
+
+        # Ridge
+        position_ridge_1 = []
+        position_ridge_2 = []
+        position_ridge_3 = []
+        position_ridge_4 = []
+        ridged_tapers = [
+            ridge_height_1,
+            ridge_height_2,
+            ridge_height_3,
+            ridge_height_4,
+            ridge_height_5,
+            ridge_height_6,
+            ridge_height_7,
+            ridge_height_8,
+            ridge_height_9,
+            ridge_height_10,
+        ]
+        x = "0"
+        for i in range(10):
+            y = (
+                "("
+                + wg_width
+                + "/2+("
+                + aperture_width
+                + "-"
+                + wg_width
+                + ")/2*"
+                + str(i)
+                + "/10-"
+                + str(ridged_tapers[i])
+                + ")"
+            )
+            z = flare_length + "*" + str(i) + "/10"
+
+            position_ridge_1.append([x, y, z])
+            position_ridge_2.append([x, "-" + y, z])
+            position_ridge_3.append([y, x, z])
+            position_ridge_4.append(["-" + y, x, z])
+
+        y = aperture_width + "/2"
+        z = flare_length
+        position_ridge_1.append([x, y, z])
+        position_ridge_2.append([x, "-" + y, z])
+        position_ridge_3.append([y, x, z])
+        position_ridge_4.append(["-" + y, x, z])
+
+        y = wg_width + "/2"
+        z = "0"
+        position_ridge_1.append([x, y, z])
+        position_ridge_2.append([x, "-" + y, z])
+        position_ridge_3.append([y, x, z])
+        position_ridge_4.append(["-" + y, x, z])
+
+        ridge1 = self._app.modeler.create_polyline(
+            position_list=position_ridge_1,
+            cover_surface=True,
+            name="ridge_1" + antenna_name,
+            matname=self.material,
+        )
+        ridge1 = self._app.modeler.thicken_sheet(ridge1, ridge_width, True)
+        ridge1.history.props["Coordinate System"] = coordinate_system
+        ridge1.color = (132, 132, 193)
+
+        ridge2 = self._app.modeler.create_polyline(
+            position_list=position_ridge_2,
+            cover_surface=True,
+            name="ridge_2" + antenna_name,
+            matname=self.material,
+        )
+        ridge2 = self._app.modeler.thicken_sheet(ridge2, ridge_width, True)
+        ridge2.history.props["Coordinate System"] = coordinate_system
+        ridge2.color = (132, 132, 193)
+
+        ridge3 = self._app.modeler.create_polyline(
+            position_list=position_ridge_3,
+            cover_surface=True,
+            name="ridge_3" + antenna_name,
+            matname=self.material,
+        )
+        ridge3 = self._app.modeler.thicken_sheet(ridge3, ridge_width, True)
+        ridge3.history.props["Coordinate System"] = coordinate_system
+        ridge3.color = (132, 132, 193)
+
+        ridge4 = self._app.modeler.create_polyline(
+            position_list=position_ridge_4,
+            cover_surface=True,
+            name="ridge_4" + antenna_name,
+            matname=self.material,
+        )
+        ridge4 = self._app.modeler.thicken_sheet(ridge4, ridge_width, True)
+        ridge4.history.props["Coordinate System"] = coordinate_system
+        ridge4.color = (132, 132, 193)
+
+        # Connectors of the ridge
+        # Connector
+        connector1 = self._app.modeler.create_box(
+            position=[
+                "-" + ridge_width + "/2",
+                "-" + wg_width + "/2",
+                "-" + wg_length,
+            ],
+            dimensions_list=[
+                ridge_width,
+                "(" + wg_width + "-" + ridge_spacing + ")/2",
+                wg_length,
+            ],
+            name="connector_" + antenna_name,
+            matname="pec",
+        )
+        connector1.history.props["Coordinate System"] = coordinate_system
+        connector1.color = (132, 132, 193)
+
+        connector2 = self._app.modeler.create_box(
+            position=[
+                "-" + ridge_width + "/2",
+                wg_width + "/2",
+                "-" + wg_length,
+            ],
+            dimensions_list=[
+                ridge_width,
+                "-(" + wg_width + "-" + ridge_spacing + ")/2",
+                wg_length,
+            ],
+            name="connector_" + antenna_name,
+            matname="pec",
+        )
+        connector2.history.props["Coordinate System"] = coordinate_system
+        connector2.color = (132, 132, 193)
+
+        connector3 = self._app.modeler.create_box(
+            position=[
+                "-" + wg_width + "/2",
+                "-" + ridge_width + "/2",
+                "-" + wg_length,
+            ],
+            dimensions_list=[
+                "(" + wg_width + "-" + ridge_spacing + ")/2",
+                ridge_width,
+                wg_length,
+            ],
+            name="connector_" + antenna_name,
+            matname="pec",
+        )
+        connector3.history.props["Coordinate System"] = coordinate_system
+        connector3.color = (132, 132, 193)
+
+        connector4 = self._app.modeler.create_box(
+            position=[
+                wg_width + "/2",
+                "-" + ridge_width + "/2",
+                "-" + wg_length,
+            ],
+            dimensions_list=[
+                "-(" + wg_width + "-" + ridge_spacing + ")/2",
+                ridge_width,
+                wg_length,
+            ],
+            name="connector_" + antenna_name,
+            matname="pec",
+        )
+        connector4.history.props["Coordinate System"] = coordinate_system
+        connector4.color = (132, 132, 193)
+
+        # Connect pieces
+        self._app.modeler.connect([horn.name, base_wall.name])
+        self._app.modeler.connect([base.name, horn_top.name])
+
+        self._app.modeler.subtract(horn.name, base.name, False)
+        self._app.modeler.unite(
+            [
+                horn,
+                wall,
+                ridge1,
+                ridge2,
+                ridge3,
+                ridge4,
+                connector1,
+                connector2,
+                connector3,
+                connector4,
+            ]
+        )
+        horn.color = (255, 128, 65)
+        horn.material_name = self.material
+
+        # Air base
+        air_base = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + wg_width + "/2",
+                "-" + wg_width + "/2",
+                "0",
+            ],
+            dimension_list=[
+                wg_width,
+                wg_width,
+            ],
+            name="air_base_" + antenna_name,
+        )
+        air_base.history.props["Coordinate System"] = coordinate_system
+
+        # Air top
+        air_top = self._app.modeler.create_rectangle(
+            csPlane=2,
+            position=[
+                "-" + aperture_width + "/2",
+                "-" + aperture_width + "/2",
+                flare_length,
+            ],
+            dimension_list=[
+                aperture_width,
+                aperture_width,
+            ],
+            name="air_top_" + antenna_name,
+        )
+        air_top.history.props["Coordinate System"] = coordinate_system
+
+        self._app.modeler.connect([air_base.name, air_top.name])
+
+        self._app.modeler.unite([wg_in, air_base])
+
+        self.object_list[cap.name] = cap
+        self.object_list[horn.name] = horn
+        self.object_list[wg_in.name] = wg_in
+        self.object_list[p1.name] = p1
+
+        self._app.modeler.move([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
+
+        # Create Huygens box
+        if self.huygens_box:
+            lightSpeed = constants.SpeedOfLight  # m/s
+            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
+            huygens_dist = str(
+                constants.unit_converter(
+                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
+                )
+            )
+            huygens = self._app.modeler.create_box(
+                position=[
+                    pos_x
+                    + "-"
+                    + aperture_width
+                    + "/2-"
+                    + huygens_dist
+                    + self.length_unit
+                    + "-"
+                    + wall_thickness,
+                    pos_y
+                    + "-"
+                    + aperture_width
+                    + "/2"
+                    + "-"
+                    + wall_thickness
+                    + "-"
+                    + huygens_dist
+                    + self.length_unit,
+                    pos_z + "-" + wg_length + "-" + wall_thickness,
+                ],
+                dimensions_list=[
+                    aperture_width
+                    + "+"
+                    + "2*"
+                    + huygens_dist
+                    + self.length_unit
+                    + "+2*"
+                    + wall_thickness,
+                    aperture_width
+                    + "+"
+                    + "2*"
+                    + huygens_dist
+                    + self.length_unit
+                    + "+2*"
+                    + wall_thickness,
+                    huygens_dist
+                    + self.length_unit
+                    + "+"
+                    + wg_length
+                    + "+"
+                    + wall_thickness
+                    + "+"
+                    + flare_length,
+                ],
+                name="huygens_" + antenna_name,
+                matname="air",
+            )
+            huygens.display_wireframe = True
+            huygens.color = (0, 0, 255)
+            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.group_name = antenna_name
+            self.object_list[huygens.name] = huygens
+
+        self._app.change_material_override(True)
 
         cap.group_name = antenna_name
         horn.group_name = antenna_name
