@@ -26,12 +26,14 @@ import qdarkstyle
 from ansys.aedt.toolkits.antennas.models.bowtie import BowTie
 from ansys.aedt.toolkits.antennas.models.bowtie import BowTieRounded
 from ansys.aedt.toolkits.antennas.models.helix import AxialMode
-from ansys.aedt.toolkits.antennas.models.horn import ConicalHorn
-from ansys.aedt.toolkits.antennas.models.horn import CorrugatedHorn
-from ansys.aedt.toolkits.antennas.models.horn import EPlaneHorn
-from ansys.aedt.toolkits.antennas.models.horn import EllipticalHorn
-from ansys.aedt.toolkits.antennas.models.horn import HPlaneHorn
+from ansys.aedt.toolkits.antennas.models.horn import Conical
+from ansys.aedt.toolkits.antennas.models.horn import Corrugated
+from ansys.aedt.toolkits.antennas.models.horn import EPlane
+from ansys.aedt.toolkits.antennas.models.horn import Elliptical
+from ansys.aedt.toolkits.antennas.models.horn import HPlane
+from ansys.aedt.toolkits.antennas.models.horn import Pyramidal
 from ansys.aedt.toolkits.antennas.models.horn import PyramidalRidged
+from ansys.aedt.toolkits.antennas.models.horn import QuadRidged
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchEdge
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchInset
 from ansys.aedt.toolkits.antennas.models.patch import RectangularPatchProbe
@@ -892,7 +894,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.get_antenna(ConicalHorn, synth_only)
+        self.get_antenna(Conical, synth_only)
 
     def draw_axial_helix_ui(self):
         """Create an axial mode helix antenna UI."""
@@ -1165,7 +1167,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.get_antenna(CorrugatedHorn, synth_only)
+        self.get_antenna(Corrugated, synth_only)
 
     def draw_eplane_horn_ui(self):
         """Create an E-plane horn antenna UI."""
@@ -1187,7 +1189,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.get_antenna(EPlaneHorn, synth_only)
+        self.get_antenna(EPlane, synth_only)
 
     def draw_hplane_horn_ui(self):
         """Create an H-plane horn antenna UI."""
@@ -1209,7 +1211,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.get_antenna(HPlaneHorn, synth_only)
+        self.get_antenna(HPlane, synth_only)
 
     def draw_pyramidal_horn_ui(self):
         """Create a horn pyramidal antenna UI."""
@@ -1231,9 +1233,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.add_status_bar_message("Antenna not supported yet.")
-
-        # self.get_antenna(AxialMode, synth_only)
+        self.get_antenna(Pyramidal, synth_only)
 
     def draw_pyramidal_rid_horn_ui(self):
         """Create a pyramidal ridged horn antenna UI."""
@@ -1277,7 +1277,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.get_antenna(EllipticalHorn, synth_only)
+        self.get_antenna(Elliptical, synth_only)
 
     def draw_quad_ridged_horn_ui(self):
         """Create a quad-ridged horn antenna UI."""
@@ -1299,9 +1299,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.add_status_bar_message("Antenna not supported yet.")
-
-        # self.get_antenna(AxialMode, synth_only)
+        self.get_antenna(QuadRidged, synth_only)
 
     def draw_log_periodic_array_ui(self):
         """Create a log periodic array antenna UI."""

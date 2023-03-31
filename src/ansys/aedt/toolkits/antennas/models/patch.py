@@ -76,9 +76,9 @@ class CommonPatch(CommonAntenna):
 
 
 class RectangularPatchProbe(CommonPatch):
-    """Manages a rectangular patch antenna with a coaxial probe [1]_.
+    """Manages a rectangular patch antenna with a coaxial probe.
 
-    This class is accessible through the ``Hfss`` object.
+    This class is accessible through the ``Hfss`` object [1]_.
 
     Parameters
     ----------
@@ -456,9 +456,9 @@ class RectangularPatchProbe(CommonPatch):
 
 
 class RectangularPatchInset(CommonPatch):
-    """Manages a rectangular patch antenna inset fed [1]_.
+    """Manages a rectangular patch antenna inset fed.
 
-    This class is accessible through the ``Hfss`` object.
+    This class is accessible through the ``Hfss`` object [1]_.
 
     Parameters
     ----------
@@ -818,9 +818,9 @@ class RectangularPatchInset(CommonPatch):
 
 
 class RectangularPatchEdge(CommonPatch):
-    """Manages a rectangular patch edge antenna inset fed [1]_.
+    """Manages a rectangular patch edge antenna inset fed.
 
-    This class is accessible through the ``Hfss`` object.
+    This class is accessible through the ``Hfss`` object [1]_.
 
     Parameters
     ----------

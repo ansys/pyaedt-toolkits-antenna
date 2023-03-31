@@ -9,9 +9,9 @@ from ansys.aedt.toolkits.antennas.models.patch import CommonPatch
 
 
 class BowTie(CommonPatch):
-    """Manages a bowtie antenna [1]_.
+    """Manages a bowtie antenna.
 
-    This class is accessible through the ``Hfss`` object.
+    This class is accessible through the ``Hfss`` object [1]_.
 
     Parameters
     ----------
@@ -257,9 +257,9 @@ class BowTie(CommonPatch):
 
 
 class BowTieRounded(CommonPatch):
-    """Manages a bowtie rounded antenna [1]_.
+    """Manages a bowtie rounded antenna.
 
-    This class is accessible through the ``Hfss`` object.
+    This class is accessible through the ``Hfss`` object [1]_.
 
     Parameters
     ----------

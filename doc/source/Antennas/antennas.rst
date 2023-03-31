@@ -23,7 +23,6 @@ Currently available antennas are:
    :toctree: _autosummary
    :nosignatures:
 
-
    AxialMode
 
 .. currentmodule:: ansys.aedt.toolkits.antennas.models.horn
@@ -32,9 +31,14 @@ Currently available antennas are:
    :toctree: _autosummary
    :nosignatures:
 
-   ConicalHorn
+   Conical
+   Corrugated
+   Elliptical
+   EPlane
+   HPlane
+   Pyramidal
    PyramidalRidged
-   CorrugatedHorn
+   QuadRidged
 
 .. currentmodule:: ansys.aedt.toolkits.antennas.models.patch
 

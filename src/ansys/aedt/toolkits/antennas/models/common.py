@@ -724,7 +724,7 @@ class TransmissionLine(object):
 
 
 class StandardWaveguide(object):
-    """Provides base methods common to stabdard waveguides.
+    """Provides base methods common to standard waveguides.
 
     Parameters
     ----------
