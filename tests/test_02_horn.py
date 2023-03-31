@@ -70,7 +70,7 @@ class TestClass(BasisTest, object):
         assert len(ohorn1.boundaries) == 2
 
         ohorn2 = self.aedtapp.add_from_toolkit(
-            ConicalHorn,
+            Conical,
             draw=True,
             frequency=1.0,
             origin=[1500, 1000, 0],
@@ -82,7 +82,7 @@ class TestClass(BasisTest, object):
         assert ohorn2.create_3dcomponent(replace=True)
 
         ohorn3 = self.aedtapp.add_from_toolkit(
-            ConicalHorn,
+            Conical,
             draw=True,
             frequency=1.0,
             origin=[1500, 1500, 0],

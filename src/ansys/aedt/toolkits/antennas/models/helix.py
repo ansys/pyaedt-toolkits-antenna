@@ -75,9 +75,9 @@ class CommonHelix(CommonAntenna):
 
 
 class AxialMode(CommonHelix):
-    """Manages an axial mode helix antenna [1]_.
+    """Manages an axial mode helix antenna.
 
-    This class is accessible through the ``Hfss`` object.
+    This class is accessible through the ``Hfss`` object [1]_.
 
     Parameters
     ----------

@@ -55,9 +55,9 @@ class CommonHorn(CommonAntenna):
 
 
 class Conical(CommonHorn):
-    """Manages conical horn antenna [1]_.
+    """Manages conical horn antenna.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the app hfss object [1]_.
 
     Parameters
     ----------
@@ -363,9 +363,9 @@ class Conical(CommonHorn):
 
 
 class PyramidalRidged(CommonHorn):
-    """Manages pyramidal ridged horn antenna [1]_.
+    """Manages pyramidal ridged horn antenna.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the app hfss object [1]_.
 
     Parameters
     ----------
@@ -1712,9 +1712,9 @@ class Elliptical(CommonHorn):
 
 
 class EPlane(CommonHorn):
-    """Manages E plane horn antenna [1]_.
+    """Manages E plane horn antenna.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the app hfss object [1]_.
 
     Parameters
     ----------
@@ -2126,9 +2126,9 @@ class EPlane(CommonHorn):
 
 
 class HPlane(CommonHorn):
-    """Manages H plane horn antenna [1]_.
+    """Manages H plane horn antenna.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the app hfss object [1]_.
 
     Parameters
     ----------
@@ -2534,9 +2534,9 @@ class HPlane(CommonHorn):
 
 
 class Pyramidal(CommonHorn):
-    """Manages pyramidal horn antenna [1]_.
+    """Manages pyramidal horn antenna.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the app hfss object [1]_.
 
     Parameters
     ----------
@@ -2946,9 +2946,9 @@ class Pyramidal(CommonHorn):
 
 
 class QuadRidged(CommonHorn):
-    """Manages quad-ridged horn antenna [1]_, [2]_, [3]_.
+    """Manages quad-ridged horn antenna.
 
-    This class is accessible through the app hfss object.
+    This class is accessible through the app hfss object [1]_, [2]_, [3]_.
 
     Parameters
     ----------
