@@ -902,14 +902,6 @@
      <addaction name="actionVivaldi_2"/>
      <addaction name="actionVivaldi_Stepped"/>
     </widget>
-    <widget class="QMenu" name="menuWaveguide">
-     <property name="title">
-      <string>Waveguide</string>
-     </property>
-     <addaction name="actionCircular"/>
-     <addaction name="actionRectangular"/>
-     <addaction name="actionRectangular_Slot"/>
-    </widget>
     <addaction name="menuBowtie"/>
     <addaction name="menuConical_Spiral"/>
     <addaction name="menuCustom"/>
@@ -924,24 +916,8 @@
     <addaction name="menuPlanar_Spiral"/>
     <addaction name="menuSlot"/>
     <addaction name="menuVivaldi"/>
-    <addaction name="menuWaveguide"/>
-   </widget>
-   <widget class="QMenu" name="menuReflectors">
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="title">
-     <string>Reflectors</string>
-    </property>
-    <addaction name="actionCassegrain"/>
-    <addaction name="actionGregorian"/>
-    <addaction name="actionParabolic"/>
-    <addaction name="actionSplash_Plate"/>
    </widget>
    <addaction name="menuAntennas"/>
-   <addaction name="menuReflectors"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionRectangular_with_probe">
