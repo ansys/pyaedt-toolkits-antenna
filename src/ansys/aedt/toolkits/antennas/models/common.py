@@ -164,7 +164,7 @@ class CommonAntenna(object):
     def coordinate_system(self, value):
         self._input_parameters.coordinate_system = value
         for antenna_obj in self.object_list:
-            self.object_list[antenna_obj].history.props[
+            self.object_list[antenna_obj].history().props[
                 "Coordinate System"
             ] = self._input_parameters.coordinate_system
 
@@ -534,23 +534,23 @@ class CommonAntenna(object):
             if "port_cap_{}".format(self.antenna_name) in self.object_list:
                 port_cap = self.object_list["port_cap_{}".format(self.antenna_name)]
         if port_lump:
-            port1 = self._app.create_lumped_port_to_sheet(
-                "port_lump_{}".format(self.antenna_name),
-                axisdir=axis_dir,
+            port1 = self._app.lumped_port(
+                signal="port_lump_{}".format(self.antenna_name),
+                reference=terminal_references,
                 impedance=50,
-                portname="port_" + self.antenna_name,
-                renorm=True,
-                deemb=False,
-                reference_object_list=terminal_references,
+                name="port_" + self.antenna_name,
+                renormalize=True,
+                deembed=False,
             )
+
             self.excitations[port1.name] = port1
         elif port:
             if self._app.solution_type == "Terminal" and port_cap:
                 terminal_references = port_cap.name
-            port1 = self._app.create_wave_port_from_sheet(
-                sheet=port,
-                portname="port_" + self.antenna_name,
-                terminal_references=terminal_references,
+            port1 = self._app.wave_port(
+                signal=port,
+                reference=terminal_references,
+                name="port_" + self.antenna_name,
             )
             self.excitations[port1.name] = port1
 
