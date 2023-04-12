@@ -195,7 +195,7 @@ class Conical(CommonHorn):
             height="-" + wg_length,
             matname="vacuum",
         )
-        neg_air.history.props["Coordinate System"] = coordinate_system
+        neg_air.history().props["Coordinate System"] = coordinate_system
 
         # Wall
         wall = self._app.modeler.create_cylinder(
@@ -206,7 +206,7 @@ class Conical(CommonHorn):
             name="wg_outer_" + antenna_name,
             matname=self.material,
         )
-        wall.history.props["Coordinate System"] = coordinate_system
+        wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
         new_wall = self._app.modeler.subtract(
@@ -222,7 +222,7 @@ class Conical(CommonHorn):
             name="wg_inner_" + antenna_name,
             matname="vacuum",
         )
-        wg_in.history.props["Coordinate System"] = coordinate_system
+        wg_in.history().props["Coordinate System"] = coordinate_system
 
         # Cap
         cap = self._app.modeler.create_cylinder(
@@ -233,7 +233,7 @@ class Conical(CommonHorn):
             name="port_cap_" + antenna_name,
             matname="pec",
         )
-        cap.history.props["Coordinate System"] = coordinate_system
+        cap.history().props["Coordinate System"] = coordinate_system
 
         # P1
         p1 = self._app.modeler.create_circle(
@@ -243,7 +243,7 @@ class Conical(CommonHorn):
             name="port_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         # Horn wall
         base = self._app.modeler.create_circle(
@@ -251,28 +251,28 @@ class Conical(CommonHorn):
             position=["0", "0", "0"],
             radius=wg_radius,
         )
-        base.history.props["Coordinate System"] = coordinate_system
+        base.history().props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_circle(
             cs_plane=2,
             position=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
         )
-        base_wall.history.props["Coordinate System"] = coordinate_system
+        base_wall.history().props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_circle(
             cs_plane=2,
             position=["0", "0", horn_length],
             radius=horn_radius,
         )
-        horn_top.history.props["Coordinate System"] = coordinate_system
+        horn_top.history().props["Coordinate System"] = coordinate_system
 
         horn_sheet = self._app.modeler.create_circle(
             cs_plane=2,
             position=["0", "0", horn_length],
             radius=horn_radius + "+" + wall_thickness,
         )
-        horn_sheet.history.props["Coordinate System"] = coordinate_system
+        horn_sheet.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.connect([horn_sheet.name, base_wall.name])
         self._app.modeler.connect([base.name, horn_top.name])
@@ -288,14 +288,14 @@ class Conical(CommonHorn):
             position=["0", "0", "0"],
             radius=wg_radius,
         )
-        air_base.history.props["Coordinate System"] = coordinate_system
+        air_base.history().props["Coordinate System"] = coordinate_system
 
         air_top = self._app.modeler.create_circle(
             cs_plane=2,
             position=["0", "0", horn_length],
             radius=horn_radius,
         )
-        air_top.history.props["Coordinate System"] = coordinate_system
+        air_top.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.connect([air_base, air_top])
 
@@ -342,7 +342,7 @@ class Conical(CommonHorn):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
 
@@ -526,7 +526,7 @@ class PyramidalRidged(CommonHorn):
             dimensions_list=[wg_width, wg_height, wg_length],
             matname="vacuum",
         )
-        air.history.props["Coordinate System"] = coordinate_system
+        air.history().props["Coordinate System"] = coordinate_system
 
         # Wall
         wall = self._app.modeler.create_box(
@@ -543,7 +543,7 @@ class PyramidalRidged(CommonHorn):
             name="wall_" + antenna_name,
             matname="vacuum",
         )
-        wall.history.props["Coordinate System"] = coordinate_system
+        wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
         new_wall = self._app.modeler.subtract(
@@ -562,7 +562,7 @@ class PyramidalRidged(CommonHorn):
             name="wg_inner" + antenna_name,
             matname="vacuum",
         )
-        wg_in.history.props["Coordinate System"] = coordinate_system
+        wg_in.history().props["Coordinate System"] = coordinate_system
         wg_in.color = (128, 255, 255)
 
         # Cap
@@ -580,7 +580,7 @@ class PyramidalRidged(CommonHorn):
             name="port_cap_" + antenna_name,
             matname="pec",
         )
-        cap.history.props["Coordinate System"] = coordinate_system
+        cap.history().props["Coordinate System"] = coordinate_system
         cap.color = (132, 132, 193)
 
         # P1
@@ -595,7 +595,7 @@ class PyramidalRidged(CommonHorn):
             name="port_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         # Horn wall
         base = self._app.modeler.create_rectangle(
@@ -608,7 +608,7 @@ class PyramidalRidged(CommonHorn):
             dimension_list=[wg_width, wg_height],
             name="base_" + antenna_name,
         )
-        base.history.props["Coordinate System"] = coordinate_system
+        base.history().props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -623,7 +623,7 @@ class PyramidalRidged(CommonHorn):
             ],
             name="base_wall_" + antenna_name,
         )
-        base_wall.history.props["Coordinate System"] = coordinate_system
+        base_wall.history().props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -635,7 +635,7 @@ class PyramidalRidged(CommonHorn):
             dimension_list=[aperture_width, aperture_height],
             name="horn_top_" + antenna_name,
         )
-        horn_top.history.props["Coordinate System"] = coordinate_system
+        horn_top.history().props["Coordinate System"] = coordinate_system
 
         horn = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -650,7 +650,7 @@ class PyramidalRidged(CommonHorn):
             ],
             name="horn_" + antenna_name,
         )
-        horn.history.props["Coordinate System"] = coordinate_system
+        horn.history().props["Coordinate System"] = coordinate_system
 
         # Ridge
         def ridge_position(sign="+"):
@@ -924,7 +924,7 @@ class PyramidalRidged(CommonHorn):
             matname=self.material,
         )
         ridge = self._app.modeler.thicken_sheet(ridge, ridge_width, True)
-        ridge.history.props["Coordinate System"] = coordinate_system
+        ridge.history().props["Coordinate System"] = coordinate_system
         ridge.color = (132, 132, 193)
 
         mridge = self._app.modeler.create_polyline(
@@ -934,7 +934,7 @@ class PyramidalRidged(CommonHorn):
             matname=self.material,
         )
         mridge = self._app.modeler.thicken_sheet(mridge, ridge_width, True)
-        mridge.history.props["Coordinate System"] = coordinate_system
+        mridge.history().props["Coordinate System"] = coordinate_system
         mridge.color = (132, 132, 193)
 
         # Connectors of the ridge
@@ -953,7 +953,7 @@ class PyramidalRidged(CommonHorn):
             name="connector_" + antenna_name,
             matname="pec",
         )
-        connector.history.props["Coordinate System"] = coordinate_system
+        connector.history().props["Coordinate System"] = coordinate_system
         connector.color = (132, 132, 193)
 
         # Bottom connector
@@ -971,7 +971,7 @@ class PyramidalRidged(CommonHorn):
             name="bconnector_" + antenna_name,
             matname="pec",
         )
-        bconnector.history.props["Coordinate System"] = coordinate_system
+        bconnector.history().props["Coordinate System"] = coordinate_system
         bconnector.color = (132, 132, 193)
 
         # Connect pieces
@@ -997,7 +997,7 @@ class PyramidalRidged(CommonHorn):
             ],
             name="air_base_" + antenna_name,
         )
-        air_base.history.props["Coordinate System"] = coordinate_system
+        air_base.history().props["Coordinate System"] = coordinate_system
 
         # Air top
         air_top = self._app.modeler.create_rectangle(
@@ -1013,7 +1013,7 @@ class PyramidalRidged(CommonHorn):
             ],
             name="air_top_" + antenna_name,
         )
-        air_top.history.props["Coordinate System"] = coordinate_system
+        air_top.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.connect([air_base.name, air_top.name])
 
@@ -1079,7 +1079,7 @@ class PyramidalRidged(CommonHorn):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
 
@@ -1326,7 +1326,7 @@ class Corrugated(CommonHorn):
             matname=self.material,
         )
         horn = horn.sweep_around_axis(2)
-        horn.history.props["Coordinate System"] = coordinate_system
+        horn.history().props["Coordinate System"] = coordinate_system
         horn.color = (132, 132, 193)
 
         # Cap
@@ -1338,7 +1338,7 @@ class Corrugated(CommonHorn):
             name="port_cap_" + antenna_name,
             matname="pec",
         )
-        cap.history.props["Coordinate System"] = coordinate_system
+        cap.history().props["Coordinate System"] = coordinate_system
 
         # P1
         p1 = self._app.modeler.create_circle(
@@ -1348,7 +1348,7 @@ class Corrugated(CommonHorn):
             name="port_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         self.object_list[horn.name] = horn
         self.object_list[cap.name] = cap
@@ -1380,7 +1380,7 @@ class Corrugated(CommonHorn):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
 
@@ -1543,7 +1543,7 @@ class Elliptical(CommonHorn):
             height="-" + wg_length,
             matname="vacuum",
         )
-        neg_air.history.props["Coordinate System"] = coordinate_system
+        neg_air.history().props["Coordinate System"] = coordinate_system
 
         # Wall
         wall = self._app.modeler.create_cylinder(
@@ -1554,7 +1554,7 @@ class Elliptical(CommonHorn):
             name="wg_outer_" + antenna_name,
             matname=self.material,
         )
-        wall.history.props["Coordinate System"] = coordinate_system
+        wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
         new_wall = self._app.modeler.subtract(
@@ -1570,7 +1570,7 @@ class Elliptical(CommonHorn):
             name="wg_inner_" + antenna_name,
             matname="vacuum",
         )
-        wg_in.history.props["Coordinate System"] = coordinate_system
+        wg_in.history().props["Coordinate System"] = coordinate_system
 
         # Cap
         cap = self._app.modeler.create_cylinder(
@@ -1581,7 +1581,7 @@ class Elliptical(CommonHorn):
             name="port_cap_" + antenna_name,
             matname="pec",
         )
-        cap.history.props["Coordinate System"] = coordinate_system
+        cap.history().props["Coordinate System"] = coordinate_system
 
         # P1
         p1 = self._app.modeler.create_circle(
@@ -1591,7 +1591,7 @@ class Elliptical(CommonHorn):
             name="port_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         # Horn wall
         base = self._app.modeler.create_circle(
@@ -1599,14 +1599,14 @@ class Elliptical(CommonHorn):
             position=["0", "0", "0"],
             radius=wg_radius,
         )
-        base.history.props["Coordinate System"] = coordinate_system
+        base.history().props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_circle(
             cs_plane=2,
             position=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
         )
-        base_wall.history.props["Coordinate System"] = coordinate_system
+        base_wall.history().props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_ellipse(
             cs_plane=2,
@@ -1614,7 +1614,7 @@ class Elliptical(CommonHorn):
             major_radius=horn_radius,
             ratio=ellipse_ratio,
         )
-        horn_top.history.props["Coordinate System"] = coordinate_system
+        horn_top.history().props["Coordinate System"] = coordinate_system
 
         horn_sheet = self._app.modeler.create_ellipse(
             cs_plane=2,
@@ -1622,7 +1622,7 @@ class Elliptical(CommonHorn):
             major_radius=horn_radius + "+" + wall_thickness,
             ratio=ellipse_ratio,
         )
-        horn_sheet.history.props["Coordinate System"] = coordinate_system
+        horn_sheet.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.connect([horn_sheet.name, base_wall.name])
         self._app.modeler.connect([base.name, horn_top.name])
@@ -1638,7 +1638,7 @@ class Elliptical(CommonHorn):
             position=["0", "0", "0"],
             radius=wg_radius,
         )
-        air_base.history.props["Coordinate System"] = coordinate_system
+        air_base.history().props["Coordinate System"] = coordinate_system
 
         air_top = self._app.modeler.create_ellipse(
             cs_plane=2,
@@ -1691,7 +1691,7 @@ class Elliptical(CommonHorn):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
 
@@ -1871,7 +1871,7 @@ class EPlane(CommonHorn):
             dimensions_list=[wg_width, wg_height, wg_length],
             matname="vacuum",
         )
-        air.history.props["Coordinate System"] = coordinate_system
+        air.history().props["Coordinate System"] = coordinate_system
 
         # Wall
         wall = self._app.modeler.create_box(
@@ -1888,7 +1888,7 @@ class EPlane(CommonHorn):
             name="wall_" + antenna_name,
             matname="vacuum",
         )
-        wall.history.props["Coordinate System"] = coordinate_system
+        wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
         new_wall = self._app.modeler.subtract(
@@ -1907,7 +1907,7 @@ class EPlane(CommonHorn):
             name="wg_inner" + antenna_name,
             matname="vacuum",
         )
-        wg_in.history.props["Coordinate System"] = coordinate_system
+        wg_in.history().props["Coordinate System"] = coordinate_system
         wg_in.color = (128, 255, 255)
 
         # Cap
@@ -1925,7 +1925,7 @@ class EPlane(CommonHorn):
             name="port_cap_" + antenna_name,
             matname="pec",
         )
-        cap.history.props["Coordinate System"] = coordinate_system
+        cap.history().props["Coordinate System"] = coordinate_system
         cap.color = (132, 132, 193)
 
         # P1
@@ -1940,7 +1940,7 @@ class EPlane(CommonHorn):
             name="port_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         # Horn wall
         base = self._app.modeler.create_rectangle(
@@ -1953,7 +1953,7 @@ class EPlane(CommonHorn):
             dimension_list=[wg_width, wg_height],
             name="base_" + antenna_name,
         )
-        base.history.props["Coordinate System"] = coordinate_system
+        base.history().props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -1968,7 +1968,7 @@ class EPlane(CommonHorn):
             ],
             name="base_wall_" + antenna_name,
         )
-        base_wall.history.props["Coordinate System"] = coordinate_system
+        base_wall.history().props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -1980,7 +1980,7 @@ class EPlane(CommonHorn):
             dimension_list=[wg_width, flare],
             name="horn_top_" + antenna_name,
         )
-        horn_top.history.props["Coordinate System"] = coordinate_system
+        horn_top.history().props["Coordinate System"] = coordinate_system
 
         horn = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -1995,7 +1995,7 @@ class EPlane(CommonHorn):
             ],
             name="horn_" + antenna_name,
         )
-        horn.history.props["Coordinate System"] = coordinate_system
+        horn.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.connect([horn, base_wall])
         self._app.modeler.connect([base, horn_top])
@@ -2023,7 +2023,7 @@ class EPlane(CommonHorn):
             ],
             name="air_base_" + antenna_name,
         )
-        air_base.history.props["Coordinate System"] = coordinate_system
+        air_base.history().props["Coordinate System"] = coordinate_system
 
         # Air top
         air_top = self._app.modeler.create_rectangle(
@@ -2039,7 +2039,7 @@ class EPlane(CommonHorn):
             ],
             name="air_top_" + antenna_name,
         )
-        air_top.history.props["Coordinate System"] = coordinate_system
+        air_top.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.connect([air_base.name, air_top.name])
 
@@ -2105,7 +2105,7 @@ class EPlane(CommonHorn):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
 
@@ -2285,7 +2285,7 @@ class HPlane(CommonHorn):
             dimensions_list=[wg_width, wg_height, wg_length],
             matname="vacuum",
         )
-        air.history.props["Coordinate System"] = coordinate_system
+        air.history().props["Coordinate System"] = coordinate_system
 
         # Wall
         wall = self._app.modeler.create_box(
@@ -2302,7 +2302,7 @@ class HPlane(CommonHorn):
             name="wall_" + antenna_name,
             matname="vacuum",
         )
-        wall.history.props["Coordinate System"] = coordinate_system
+        wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
         new_wall = self._app.modeler.subtract(
@@ -2321,7 +2321,7 @@ class HPlane(CommonHorn):
             name="wg_inner" + antenna_name,
             matname="vacuum",
         )
-        wg_in.history.props["Coordinate System"] = coordinate_system
+        wg_in.history().props["Coordinate System"] = coordinate_system
         wg_in.color = (128, 255, 255)
 
         # Cap
@@ -2339,7 +2339,7 @@ class HPlane(CommonHorn):
             name="port_cap_" + antenna_name,
             matname="pec",
         )
-        cap.history.props["Coordinate System"] = coordinate_system
+        cap.history().props["Coordinate System"] = coordinate_system
         cap.color = (132, 132, 193)
 
         # P1
@@ -2354,7 +2354,7 @@ class HPlane(CommonHorn):
             name="port_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         # Horn wall
         base = self._app.modeler.create_rectangle(
@@ -2367,7 +2367,7 @@ class HPlane(CommonHorn):
             dimension_list=[wg_width, wg_height],
             name="base_" + antenna_name,
         )
-        base.history.props["Coordinate System"] = coordinate_system
+        base.history().props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -2382,7 +2382,7 @@ class HPlane(CommonHorn):
             ],
             name="base_wall_" + antenna_name,
         )
-        base_wall.history.props["Coordinate System"] = coordinate_system
+        base_wall.history().props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -2394,7 +2394,7 @@ class HPlane(CommonHorn):
             dimension_list=[flare, wg_height],
             name="horn_top_" + antenna_name,
         )
-        horn_top.history.props["Coordinate System"] = coordinate_system
+        horn_top.history().props["Coordinate System"] = coordinate_system
 
         horn = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -2409,7 +2409,7 @@ class HPlane(CommonHorn):
             ],
             name="horn_" + antenna_name,
         )
-        horn.history.props["Coordinate System"] = coordinate_system
+        horn.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.connect([horn, base_wall])
         self._app.modeler.connect([base, horn_top])
@@ -2437,7 +2437,7 @@ class HPlane(CommonHorn):
             ],
             name="air_base_" + antenna_name,
         )
-        air_base.history.props["Coordinate System"] = coordinate_system
+        air_base.history().props["Coordinate System"] = coordinate_system
 
         # Air top
         air_top = self._app.modeler.create_rectangle(
@@ -2453,7 +2453,7 @@ class HPlane(CommonHorn):
             ],
             name="air_top_" + antenna_name,
         )
-        air_top.history.props["Coordinate System"] = coordinate_system
+        air_top.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.connect([air_base.name, air_top.name])
 
@@ -2513,7 +2513,7 @@ class HPlane(CommonHorn):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
 
@@ -2697,7 +2697,7 @@ class Pyramidal(CommonHorn):
             dimensions_list=[wg_width, wg_height, wg_length],
             matname="vacuum",
         )
-        air.history.props["Coordinate System"] = coordinate_system
+        air.history().props["Coordinate System"] = coordinate_system
 
         # Wall
         wall = self._app.modeler.create_box(
@@ -2714,7 +2714,7 @@ class Pyramidal(CommonHorn):
             name="wall_" + antenna_name,
             matname="vacuum",
         )
-        wall.history.props["Coordinate System"] = coordinate_system
+        wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
         new_wall = self._app.modeler.subtract(
@@ -2733,7 +2733,7 @@ class Pyramidal(CommonHorn):
             name="wg_inner" + antenna_name,
             matname="vacuum",
         )
-        wg_in.history.props["Coordinate System"] = coordinate_system
+        wg_in.history().props["Coordinate System"] = coordinate_system
         wg_in.color = (128, 255, 255)
 
         # Cap
@@ -2751,7 +2751,7 @@ class Pyramidal(CommonHorn):
             name="port_cap_" + antenna_name,
             matname="pec",
         )
-        cap.history.props["Coordinate System"] = coordinate_system
+        cap.history().props["Coordinate System"] = coordinate_system
         cap.color = (132, 132, 193)
 
         # P1
@@ -2766,7 +2766,7 @@ class Pyramidal(CommonHorn):
             name="port_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         # Horn wall
         base = self._app.modeler.create_rectangle(
@@ -2779,7 +2779,7 @@ class Pyramidal(CommonHorn):
             dimension_list=[wg_width, wg_height],
             name="base_" + antenna_name,
         )
-        base.history.props["Coordinate System"] = coordinate_system
+        base.history().props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -2794,7 +2794,7 @@ class Pyramidal(CommonHorn):
             ],
             name="base_wall_" + antenna_name,
         )
-        base_wall.history.props["Coordinate System"] = coordinate_system
+        base_wall.history().props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -2806,7 +2806,7 @@ class Pyramidal(CommonHorn):
             dimension_list=[flare_a, flare_b],
             name="horn_top_" + antenna_name,
         )
-        horn_top.history.props["Coordinate System"] = coordinate_system
+        horn_top.history().props["Coordinate System"] = coordinate_system
 
         horn = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -2821,7 +2821,7 @@ class Pyramidal(CommonHorn):
             ],
             name="horn_" + antenna_name,
         )
-        horn.history.props["Coordinate System"] = coordinate_system
+        horn.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.connect([horn, base_wall])
         self._app.modeler.connect([base, horn_top])
@@ -2849,7 +2849,7 @@ class Pyramidal(CommonHorn):
             ],
             name="air_base_" + antenna_name,
         )
-        air_base.history.props["Coordinate System"] = coordinate_system
+        air_base.history().props["Coordinate System"] = coordinate_system
 
         # Air top
         air_top = self._app.modeler.create_rectangle(
@@ -2865,7 +2865,7 @@ class Pyramidal(CommonHorn):
             ],
             name="air_top_" + antenna_name,
         )
-        air_top.history.props["Coordinate System"] = coordinate_system
+        air_top.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.connect([air_base.name, air_top.name])
 
@@ -2925,7 +2925,7 @@ class Pyramidal(CommonHorn):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
 
@@ -3145,7 +3145,7 @@ class QuadRidged(CommonHorn):
             dimensions_list=[wg_width, wg_width, wg_length],
             matname="vacuum",
         )
-        air.history.props["Coordinate System"] = coordinate_system
+        air.history().props["Coordinate System"] = coordinate_system
 
         # Wall
         wall = self._app.modeler.create_box(
@@ -3162,7 +3162,7 @@ class QuadRidged(CommonHorn):
             name="wall_" + antenna_name,
             matname="vacuum",
         )
-        wall.history.props["Coordinate System"] = coordinate_system
+        wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
         new_wall = self._app.modeler.subtract(
@@ -3181,7 +3181,7 @@ class QuadRidged(CommonHorn):
             name="wg_inner" + antenna_name,
             matname="vacuum",
         )
-        wg_in.history.props["Coordinate System"] = coordinate_system
+        wg_in.history().props["Coordinate System"] = coordinate_system
         wg_in.color = (128, 255, 255)
 
         # Cap
@@ -3199,7 +3199,7 @@ class QuadRidged(CommonHorn):
             name="port_cap_" + antenna_name,
             matname="pec",
         )
-        cap.history.props["Coordinate System"] = coordinate_system
+        cap.history().props["Coordinate System"] = coordinate_system
         cap.color = (132, 132, 193)
 
         # P1
@@ -3214,7 +3214,7 @@ class QuadRidged(CommonHorn):
             name="port_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         # Horn wall
         base = self._app.modeler.create_rectangle(
@@ -3227,7 +3227,7 @@ class QuadRidged(CommonHorn):
             dimension_list=[wg_width, wg_width],
             name="base_" + antenna_name,
         )
-        base.history.props["Coordinate System"] = coordinate_system
+        base.history().props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -3242,7 +3242,7 @@ class QuadRidged(CommonHorn):
             ],
             name="base_wall_" + antenna_name,
         )
-        base_wall.history.props["Coordinate System"] = coordinate_system
+        base_wall.history().props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -3254,7 +3254,7 @@ class QuadRidged(CommonHorn):
             dimension_list=[aperture_width, aperture_width],
             name="horn_top_" + antenna_name,
         )
-        horn_top.history.props["Coordinate System"] = coordinate_system
+        horn_top.history().props["Coordinate System"] = coordinate_system
 
         horn = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -3269,7 +3269,7 @@ class QuadRidged(CommonHorn):
             ],
             name="horn_" + antenna_name,
         )
-        horn.history.props["Coordinate System"] = coordinate_system
+        horn.history().props["Coordinate System"] = coordinate_system
 
         # Ridge
         position_ridge_1 = []
@@ -3331,7 +3331,7 @@ class QuadRidged(CommonHorn):
             matname=self.material,
         )
         ridge1 = self._app.modeler.thicken_sheet(ridge1, ridge_width, True)
-        ridge1.history.props["Coordinate System"] = coordinate_system
+        ridge1.history().props["Coordinate System"] = coordinate_system
         ridge1.color = (132, 132, 193)
 
         ridge2 = self._app.modeler.create_polyline(
@@ -3341,7 +3341,7 @@ class QuadRidged(CommonHorn):
             matname=self.material,
         )
         ridge2 = self._app.modeler.thicken_sheet(ridge2, ridge_width, True)
-        ridge2.history.props["Coordinate System"] = coordinate_system
+        ridge2.history().props["Coordinate System"] = coordinate_system
         ridge2.color = (132, 132, 193)
 
         ridge3 = self._app.modeler.create_polyline(
@@ -3351,7 +3351,7 @@ class QuadRidged(CommonHorn):
             matname=self.material,
         )
         ridge3 = self._app.modeler.thicken_sheet(ridge3, ridge_width, True)
-        ridge3.history.props["Coordinate System"] = coordinate_system
+        ridge3.history().props["Coordinate System"] = coordinate_system
         ridge3.color = (132, 132, 193)
 
         ridge4 = self._app.modeler.create_polyline(
@@ -3361,7 +3361,7 @@ class QuadRidged(CommonHorn):
             matname=self.material,
         )
         ridge4 = self._app.modeler.thicken_sheet(ridge4, ridge_width, True)
-        ridge4.history.props["Coordinate System"] = coordinate_system
+        ridge4.history().props["Coordinate System"] = coordinate_system
         ridge4.color = (132, 132, 193)
 
         # Connectors of the ridge
@@ -3380,7 +3380,7 @@ class QuadRidged(CommonHorn):
             name="connector_" + antenna_name,
             matname="pec",
         )
-        connector1.history.props["Coordinate System"] = coordinate_system
+        connector1.history().props["Coordinate System"] = coordinate_system
         connector1.color = (132, 132, 193)
 
         connector2 = self._app.modeler.create_box(
@@ -3397,7 +3397,7 @@ class QuadRidged(CommonHorn):
             name="connector_" + antenna_name,
             matname="pec",
         )
-        connector2.history.props["Coordinate System"] = coordinate_system
+        connector2.history().props["Coordinate System"] = coordinate_system
         connector2.color = (132, 132, 193)
 
         connector3 = self._app.modeler.create_box(
@@ -3414,7 +3414,7 @@ class QuadRidged(CommonHorn):
             name="connector_" + antenna_name,
             matname="pec",
         )
-        connector3.history.props["Coordinate System"] = coordinate_system
+        connector3.history().props["Coordinate System"] = coordinate_system
         connector3.color = (132, 132, 193)
 
         connector4 = self._app.modeler.create_box(
@@ -3431,7 +3431,7 @@ class QuadRidged(CommonHorn):
             name="connector_" + antenna_name,
             matname="pec",
         )
-        connector4.history.props["Coordinate System"] = coordinate_system
+        connector4.history().props["Coordinate System"] = coordinate_system
         connector4.color = (132, 132, 193)
 
         # Connect pieces
@@ -3470,7 +3470,7 @@ class QuadRidged(CommonHorn):
             ],
             name="air_base_" + antenna_name,
         )
-        air_base.history.props["Coordinate System"] = coordinate_system
+        air_base.history().props["Coordinate System"] = coordinate_system
 
         # Air top
         air_top = self._app.modeler.create_rectangle(
@@ -3486,7 +3486,7 @@ class QuadRidged(CommonHorn):
             ],
             name="air_top_" + antenna_name,
         )
-        air_top.history.props["Coordinate System"] = coordinate_system
+        air_top.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.connect([air_base.name, air_top.name])
 
@@ -3558,7 +3558,7 @@ class QuadRidged(CommonHorn):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
 

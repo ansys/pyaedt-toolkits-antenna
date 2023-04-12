@@ -152,6 +152,57 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionLog_Tooth.triggered.connect(lambda checked: self.draw_log_periodic_tooth_ui())
         self.actionBicone.triggered.connect(lambda checked: self.draw_bicone_ui())
         self.actionDiscone.triggered.connect(lambda checked: self.draw_discone_ui())
+        self.actionBlade.triggered.connect(lambda checked: self.draw_blade_ui())
+        self.actionWire_2.triggered.connect(lambda checked: self.draw_wire_monopole_ui())
+        self.actionWire_with_Infinite_Gnd.triggered.connect(
+            lambda checked: self.draw_wire_monopole_inf_gnd_ui()
+        )
+        self.actionCircular_Disc.triggered.connect(
+            lambda checked: self.draw_monopole_circuilar_disc_ui()
+        )
+        self.actionElliptical_Base_Strip.triggered.connect(
+            lambda checked: self.draw_monopole_elliptical_ui()
+        )
+        self.actionVertical_Trapezoidal.triggered.connect(
+            lambda checked: self.draw_monopole_trapezoid_ui()
+        )
+        self.actionPlanar_Inverted.triggered.connect(lambda checked: self.draw_pifa_planar_ui())
+        self.actionShorting_Pin.triggered.connect(lambda checked: self.draw_pifa_shorting_pin_ui())
+        self.actionShorting_Plate.triggered.connect(
+            lambda checked: self.draw_pifa_shorting_plate_ui()
+        )
+        self.actionPlanar_Archimedean.triggered.connect(
+            lambda checked: self.draw_pspiral_archimedean_ui()
+        )
+        self.actionPlanar_Archimedean_Cavity.triggered.connect(
+            lambda checked: self.draw_pspiral_archimedean_cavity_ui()
+        )
+        self.actionPlanar_Log.triggered.connect(lambda checked: self.draw_pspiral_log_ui())
+        self.actionPlanar_Log_Cavity.triggered.connect(
+            lambda checked: self.draw_pspiral_log_cavity_ui()
+        )
+        self.actionPlanar_Sinous.triggered.connect(lambda checked: self.draw_pspiral_sinuous_ui())
+        self.actionPlanar_Sinous_Cavity.triggered.connect(
+            lambda checked: self.draw_pspiral_sinuous_cavity_ui()
+        )
+        self.actionVivaldi_2.triggered.connect(lambda checked: self.draw_vivaldi_ui())
+        self.actionVivaldi_Stepped.triggered.connect(lambda checked: self.draw_vivaldi_stepper_ui())
+        self.actionSlot_Gap.triggered.connect(lambda checked: self.draw_slot_gap_ui())
+        self.actionSlot_T_Bar.triggered.connect(lambda checked: self.draw_slot_tbar_ui())
+        self.actionSlot_Microstrip.triggered.connect(lambda checked: self.draw_slot_microstrip_ui())
+        self.actionSlot_Cavity_Backed_Array.triggered.connect(
+            lambda checked: self.draw_slot_cavity_ui()
+        )
+        self.actionElliptical_Edge_2.triggered.connect(
+            lambda checked: self.draw_patch_elliptical_edge_ui()
+        )
+        self.actionElliptical_Inset.triggered.connect(
+            lambda checked: self.draw_patch_elliptical_inset_ui()
+        )
+        self.actionElliptical_with_Probe.triggered.connect(
+            lambda checked: self.draw_patch_elliptical_probe_ui()
+        )
+
         self.sweep_slider.valueChanged.connect(self.value_changed)
         if desktop_pid or desktop_version:
             self.launch_hfss(desktop_pid, desktop_version)
@@ -232,6 +283,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "projectname": projectname,
             "process_id_combo_splitted": process_id_combo_splitted,
         }
+        print(args)
         if self.hfss:
             try:
                 self.hfss.release_desktop(False, False)
@@ -240,7 +292,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         worker_1 = RunnerHfss()
         worker_1.hfss_args = args
         worker_1.signals.progressed.connect(lambda value: self.update_progress(value))
-        worker_1.signals.completed.connect(lambda: self.update_hfss(worker_1))
+        worker_1.signals.completed.connect(lambda: self.update_hfss(worker_1, version))
 
         self.__thread.start(worker_1)
         pass
@@ -250,7 +302,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.progressBar.isHidden():
             self.progressBar.setVisible(True)
 
-    def update_hfss(self, worker_1):
+    def update_hfss(
+        self,
+        worker_1,
+        version=None,
+    ):
         if worker_1.pid != -1:
             module = sys.modules["__main__"]
             try:
@@ -269,7 +325,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 del module.oAnsoftApplication
             except AttributeError:
                 pass
-            version = self.aedt_version_combo.currentText()
+            if version is None:
+                version = self.aedt_version_combo.currentText()
 
             self.hfss = Hfss(
                 specified_version=version,
@@ -1406,7 +1463,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return
 
         self._add_header("Discone.jpg", "Discone", "10")
-        self._add_footer(self.create_log_periodic_trap_design)
+        self._add_footer(self.create_discone_design)
 
     def create_discone_design(self, synth_only=False):
         """Create a discone antenna.
@@ -1419,6 +1476,560 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """
         self.add_status_bar_message("Antenna not supported yet.")
 
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_blade_ui(self):
+        """Create a discone antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("Blade_Antenna.jpg", "Blade", "10")
+        self._add_footer(self.create_blade_design)
+
+    def create_blade_design(self, synth_only=False):
+        """Create a discone antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_wire_monopole_ui(self):
+        """Create a discone antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("WireMonopole.jpg", "Wire", "10")
+        self._add_footer(self.create_wire_monopole_design)
+
+    def create_wire_monopole_design(self, synth_only=False):
+        """Create a wire monopole antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_wire_monopole_inf_gnd_ui(self):
+        """Create a wire monopole with infinite ground antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("WireMonopole_InfGnd.jpg", "Wire", "10")
+        self._add_footer(self.create_wire_monopole_inf_gnd_design)
+
+    def create_wire_monopole_inf_gnd_design(self, synth_only=False):
+        """Create a wire monopole circular disc antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_monopole_circuilar_disc_ui(self):
+        """Create a wire monopole with infinite ground antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("CircularDiscMonopole.png", "Wire", "10")
+        self._add_footer(self.draw_monopole_circuilar_disc_design)
+
+    def draw_monopole_circuilar_disc_design(self, synth_only=False):
+        """Create a wire monopole circular disc antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_monopole_elliptical_ui(self):
+        """Create a wire monopole elliptical base strip antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("EllipticalBaseStripMonopole.png", "Elliptica", "10")
+        self._add_footer(self.draw_monopole_elliptical_design)
+
+    def draw_monopole_elliptical_design(self, synth_only=False):
+        """Create a wire monopole elliptical base strip antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_monopole_trapezoid_ui(self):
+        """Create a wire monopole vertical trapezoid antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("VerticalTrapezoidalMonopole.png", "Trapezoid", "10")
+        self._add_footer(self.draw_monopole_elliptical_design)
+
+    def draw_monopole_elliptical_design(self, synth_only=False):
+        """Create a wire monopole vertical trapezoid antenna antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pifa_planar_ui(self):
+        """Create a PIFA planar antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("PlanarInvertedF.jpg", "Trapezoid", "10")
+        self._add_footer(self.draw_pifa_planar_design)
+
+    def draw_pifa_planar_design(self, synth_only=False):
+        """Create a PIFA planar antenna antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pifa_shorting_pin_ui(self):
+        """Create a PIFA shorting pin antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("ShortingPin.jpg", "Trapezoid", "10")
+        self._add_footer(self.draw_pifa_planar_design)
+
+    def draw_pifa_shorting_pin_design(self, synth_only=False):
+        """Create a PIFA shorting pin antenna antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pifa_shorting_plate_ui(self):
+        """Create a PIFA shorting plate antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("ShortingPlate.jpg", "Trapezoid", "10")
+        self._add_footer(self.draw_pifa_planar_design)
+
+    def draw_pifa_shorting_plate_design(self, synth_only=False):
+        """Create a PIFA shorting plate antenna antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pspiral_archimedean_ui(self):
+        """Create a Planar Spiral Archimedean antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("PlanarArchimedean.jpg", "Archi", "10")
+        self._add_footer(self.draw_pspiral_archimedean_design)
+
+    def draw_pspiral_archimedean_design(self, synth_only=False):
+        """Create a Planar Spiral Archimedean antenna antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pspiral_archimedean_cavity_ui(self):
+        """Create a Planar Spiral Archimedean cavity antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("PlanarArchimedeanCavity.jpg", "Cavity", "10")
+        self._add_footer(self.draw_pspiral_archimedean_cavity_design)
+
+    def draw_pspiral_archimedean_cavity_design(self, synth_only=False):
+        """Create a Planar Spiral Archimedean cavity antenna antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pspiral_log_ui(self):
+        """Create a Planar Log antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("PlanarLog.jpg", "Log", "10")
+        self._add_footer(self.draw_pspiral_log_design)
+
+    def draw_pspiral_log_design(self, synth_only=False):
+        """Create a Planar Log antenna antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pspiral_log_cavity_ui(self):
+        """Create a Planar Log cavity antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("PlanarLogCavity.jpg", "Log", "10")
+        self._add_footer(self.draw_pspiral_log_cavity_design)
+
+    def draw_pspiral_log_cavity_design(self, synth_only=False):
+        """Create a Planar Log cavity antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pspiral_sinuous_ui(self):
+        """Create a Planar sinuous antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("PlanarSinuous.jpg", "sinous", "10")
+        self._add_footer(self.draw_pspiral_sinuous_design)
+
+    def draw_pspiral_sinuous_design(self, synth_only=False):
+        """Create a Planar Log sinuous antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_pspiral_sinuous_cavity_ui(self):
+        """Create a Planar sinuous cavity antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("PlanarSinuousCavity.jpg", "sinuous", "10")
+        self._add_footer(self.draw_pspiral_sinuous_cavity_design)
+
+    def draw_pspiral_sinuous_cavity_design(self, synth_only=False):
+        """Create a Planar sinuous cavity antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_slot_cavity_ui(self):
+        """Create a Slot gap antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("SlotCavityBackedArray.png", "sinuous", "10")
+        self._add_footer(self.draw_slot_cavity_design)
+
+    def draw_slot_cavity_design(self, synth_only=False):
+        """Create a Slot cavity backed antenna array.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_slot_gap_ui(self):
+        """Create a Slot gap antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("SlotGap.jpg", "sinuous", "10")
+        self._add_footer(self.draw_slot_gap_design)
+
+    def draw_slot_gap_design(self, synth_only=False):
+        """Create a Slot gap antenna antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_slot_microstrip_ui(self):
+        """Create a Slot microstrip antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("SlotMicrostrip.jpg", "Slot", "10")
+        self._add_footer(self.draw_slot_microstrip_design)
+
+    def draw_slot_microstrip_design(self, synth_only=False):
+        """Create a Slot gap microstrip antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_slot_tbar_ui(self):
+        """Create a Slot T-Bar antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("SlotTBar.png", "Slot", "10")
+        self._add_footer(self.draw_slot_tbar_design)
+
+    def draw_slot_tbar_design(self, synth_only=False):
+        """Create a Slot T-Bar antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_vivaldi_ui(self):
+        """Create a vivaldi antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("Vivaldi.jpg", "Vivaldi", "10")
+        self._add_footer(self.draw_vivaldi_design)
+
+    def draw_vivaldi_design(self, synth_only=False):
+        """Create a Vivaldi antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_vivaldi_stepper_ui(self):
+        """Create a vivaldi stepped antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("VivaldiStepped.jpg", "Vivaldi", "10")
+        self._add_footer(self.draw_vivaldi_stepped_design)
+
+    def draw_vivaldi_stepped_design(self, synth_only=False):
+        """Create a Vivaldi stepped antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_patch_elliptical_edge_ui(self):
+        """Create a patch elliptical edge antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("EllipticalEdge.jpg", "Elliptical", "10")
+        self._add_footer(self.draw_patch_elliptical_edge_design)
+
+    def draw_patch_elliptical_edge_design(self, synth_only=False):
+        """Create a patch elliptical edge antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_patch_elliptical_inset_ui(self):
+        """Create a patch elliptical inset antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("EllipticalInset.jpg", "Elliptical", "10")
+        self._add_footer(self.draw_patch_elliptical_inset_design)
+
+    def draw_patch_elliptical_inset_design(self, synth_only=False):
+        """Create a patch elliptical inset antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
+        # self.get_antenna(AxialMode, synth_only)
+
+    def draw_patch_elliptical_probe_ui(self):
+        """Create a patch elliptical inset antenna UI."""
+        if self.create_button and not self.create_button.isEnabled():
+            self.add_status_bar_message(
+                "Antenna already exists in project. To add a new antenna, relaunch Antenna Wizard."
+            )
+            return
+
+        self._add_header("EllipticalProbe.jpg", "Elliptical", "10")
+        self._add_footer(self.draw_patch_elliptical_probe_design)
+
+    def draw_patch_elliptical_probe_design(self, synth_only=False):
+        """Create a patch elliptical probe antenna.
+
+        Parameters
+        ----------
+        synth_only : bool, optional
+            Whether to only synthesize the antenna. The default
+            is ``False``.
+        """
+        self.add_status_bar_message("Antenna not supported yet.")
         # self.get_antenna(AxialMode, synth_only)
 
 
