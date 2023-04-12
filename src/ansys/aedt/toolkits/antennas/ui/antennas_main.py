@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'antenna_toolkitQUYItw.ui'
+## Form generated from reading UI file 'antenna_toolkitQlOmDQ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.2
 ##
@@ -622,6 +622,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.progressBar)
 
         MainWindow.setCentralWidget(self.centralwidget)
+        self.statusbar = QStatusBar(MainWindow)
+        self.statusbar.setObjectName(u"statusbar")
+        MainWindow.setStatusBar(self.statusbar)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 1047, 28))
@@ -657,18 +660,9 @@ class Ui_MainWindow(object):
         self.menuSlot.setObjectName(u"menuSlot")
         self.menuVivaldi = QMenu(self.menuAntennas)
         self.menuVivaldi.setObjectName(u"menuVivaldi")
-        self.menuWaveguide = QMenu(self.menuAntennas)
-        self.menuWaveguide.setObjectName(u"menuWaveguide")
-        self.menuReflectors = QMenu(self.menubar)
-        self.menuReflectors.setObjectName(u"menuReflectors")
-        self.menuReflectors.setFont(font)
         MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar(MainWindow)
-        self.statusbar.setObjectName(u"statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
         self.menubar.addAction(self.menuAntennas.menuAction())
-        self.menubar.addAction(self.menuReflectors.menuAction())
         self.menuAntennas.addAction(self.menuBowtie.menuAction())
         self.menuAntennas.addAction(self.menuConical_Spiral.menuAction())
         self.menuAntennas.addAction(self.menuCustom.menuAction())
@@ -683,7 +677,6 @@ class Ui_MainWindow(object):
         self.menuAntennas.addAction(self.menuPlanar_Spiral.menuAction())
         self.menuAntennas.addAction(self.menuSlot.menuAction())
         self.menuAntennas.addAction(self.menuVivaldi.menuAction())
-        self.menuAntennas.addAction(self.menuWaveguide.menuAction())
         self.menuPatch.addAction(self.actionRectangular_with_probe)
         self.menuPatch.addAction(self.actionRectangular_Inset)
         self.menuPatch.addAction(self.actionRectangular_Edge)
@@ -733,13 +726,6 @@ class Ui_MainWindow(object):
         self.menuSlot.addAction(self.actionSlot_T_Bar)
         self.menuVivaldi.addAction(self.actionVivaldi_2)
         self.menuVivaldi.addAction(self.actionVivaldi_Stepped)
-        self.menuWaveguide.addAction(self.actionCircular)
-        self.menuWaveguide.addAction(self.actionRectangular)
-        self.menuWaveguide.addAction(self.actionRectangular_Slot)
-        self.menuReflectors.addAction(self.actionCassegrain)
-        self.menuReflectors.addAction(self.actionGregorian)
-        self.menuReflectors.addAction(self.actionParabolic)
-        self.menuReflectors.addAction(self.actionSplash_Plate)
 
         self.retranslateUi(MainWindow)
 
@@ -853,7 +839,7 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Value", None));
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.design), QCoreApplication.translate("MainWindow", u" Design ", None))
         self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"Analyze Project", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.analysis), QCoreApplication.translate("MainWindow", u" Analysis ", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.analysis), QCoreApplication.translate("MainWindow", u" Analysys ", None))
         self.release_button.setText(QCoreApplication.translate("MainWindow", u" Close Antenna Wizard ", None))
         self.menuAntennas.setTitle(QCoreApplication.translate("MainWindow", u"Antennas", None))
         self.menuPatch.setTitle(QCoreApplication.translate("MainWindow", u"Patch", None))
@@ -870,7 +856,5 @@ class Ui_MainWindow(object):
         self.menuPlanar_Spiral.setTitle(QCoreApplication.translate("MainWindow", u"Planar Spiral", None))
         self.menuSlot.setTitle(QCoreApplication.translate("MainWindow", u"Slot", None))
         self.menuVivaldi.setTitle(QCoreApplication.translate("MainWindow", u"Vivaldi", None))
-        self.menuWaveguide.setTitle(QCoreApplication.translate("MainWindow", u"Waveguide", None))
-        self.menuReflectors.setTitle(QCoreApplication.translate("MainWindow", u"Reflectors", None))
     # retranslateUi
 
