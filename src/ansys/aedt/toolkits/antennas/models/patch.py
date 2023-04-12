@@ -307,7 +307,7 @@ class RectangularPatchProbe(CommonPatch):
             matname=self.material,
         )
         sub.color = (0, 128, 0)
-        sub.history.props["Coordinate System"] = coordinate_system
+        sub.history().props["Coordinate System"] = coordinate_system
 
         # Ground
         gnd = self._app.modeler.create_rectangle(
@@ -317,7 +317,7 @@ class RectangularPatchProbe(CommonPatch):
             name="gnd_" + antenna_name,
         )
         gnd.color = (255, 128, 65)
-        gnd.history.props["Coordinate System"] = coordinate_system
+        gnd.history().props["Coordinate System"] = coordinate_system
 
         # Antenna
         ant = self._app.modeler.create_rectangle(
@@ -332,7 +332,7 @@ class RectangularPatchProbe(CommonPatch):
         )
         ant.color = (255, 128, 65)
         ant.transparency = 0.1
-        ant.history.props["Coordinate System"] = coordinate_system
+        ant.history().props["Coordinate System"] = coordinate_system
 
         void = self._app.modeler.create_circle(
             cs_plane=2,
@@ -352,7 +352,7 @@ class RectangularPatchProbe(CommonPatch):
             matname="pec",
         )
         feed_pin.color = (255, 128, 65)
-        feed_pin.history.props["Coordinate System"] = coordinate_system
+        feed_pin.history().props["Coordinate System"] = coordinate_system
 
         feed_coax = self._app.modeler.create_cylinder(
             cs_axis=2,
@@ -363,7 +363,7 @@ class RectangularPatchProbe(CommonPatch):
             matname="pec",
         )
         feed_coax.color = (255, 128, 65)
-        feed_coax.history.props["Coordinate System"] = coordinate_system
+        feed_coax.history().props["Coordinate System"] = coordinate_system
 
         coax = self._app.modeler.create_cylinder(
             cs_axis=2,
@@ -374,7 +374,7 @@ class RectangularPatchProbe(CommonPatch):
             matname="Teflon (tm)",
         )
         coax.color = (128, 255, 255)
-        coax.history.props["Coordinate System"] = coordinate_system
+        coax.history().props["Coordinate System"] = coordinate_system
 
         port_cap = self._app.modeler.create_cylinder(
             cs_axis=2,
@@ -385,7 +385,7 @@ class RectangularPatchProbe(CommonPatch):
             matname="pec",
         )
         port_cap.color = (132, 132, 193)
-        port_cap.history.props["Coordinate System"] = coordinate_system
+        port_cap.history().props["Coordinate System"] = coordinate_system
 
         p1 = self._app.modeler.create_circle(
             cs_plane=2,
@@ -394,7 +394,7 @@ class RectangularPatchProbe(CommonPatch):
             name="port_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         self.object_list[sub.name] = sub
         self.object_list[gnd.name] = gnd
@@ -431,7 +431,7 @@ class RectangularPatchProbe(CommonPatch):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
 
@@ -678,7 +678,7 @@ class RectangularPatchInset(CommonPatch):
             matname=self.material,
         )
         sub.color = (0, 128, 0)
-        sub.history.props["Coordinate System"] = coordinate_system
+        sub.history().props["Coordinate System"] = coordinate_system
 
         # Ground
         gnd = self._app.modeler.create_rectangle(
@@ -689,7 +689,7 @@ class RectangularPatchInset(CommonPatch):
         )
         gnd.color = (255, 128, 65)
         gnd.transparency = 0.1
-        gnd.history.props["Coordinate System"] = coordinate_system
+        gnd.history().props["Coordinate System"] = coordinate_system
 
         # Antenna
         ant = self._app.modeler.create_rectangle(
@@ -704,7 +704,7 @@ class RectangularPatchInset(CommonPatch):
         )
         ant.color = (255, 128, 65)
         ant.transparency = 0.1
-        ant.history.props["Coordinate System"] = coordinate_system
+        ant.history().props["Coordinate System"] = coordinate_system
 
         cutout = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -717,7 +717,7 @@ class RectangularPatchInset(CommonPatch):
             name="cutout_" + antenna_name,
         )
         cutout.color = (255, 128, 65)
-        cutout.history.props["Coordinate System"] = coordinate_system
+        cutout.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.subtract(ant, cutout, False)
 
@@ -732,7 +732,7 @@ class RectangularPatchInset(CommonPatch):
             name="feed_" + antenna_name,
         )
         feed.color = (255, 128, 65)
-        feed.history.props["Coordinate System"] = coordinate_system
+        feed.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.unite([ant, feed])
 
@@ -747,7 +747,7 @@ class RectangularPatchInset(CommonPatch):
             name="port_lump_" + antenna_name,
         )
         p1.color = (255, 128, 65)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         self.object_list[sub.name] = sub
         self.object_list[gnd.name] = gnd
@@ -797,7 +797,7 @@ class RectangularPatchInset(CommonPatch):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = self.antenna_name
             self.object_list[huygens.name] = huygens
 
@@ -1051,7 +1051,7 @@ class RectangularPatchEdge(CommonPatch):
             matname=self.material,
         )
         sub.color = (0, 128, 0)
-        sub.history.props["Coordinate System"] = coordinate_system
+        sub.history().props["Coordinate System"] = coordinate_system
 
         # Ground
         gnd = self._app.modeler.create_rectangle(
@@ -1062,7 +1062,7 @@ class RectangularPatchEdge(CommonPatch):
         )
         gnd.color = (255, 128, 65)
         gnd.transparency = 0.1
-        gnd.history.props["Coordinate System"] = coordinate_system
+        gnd.history().props["Coordinate System"] = coordinate_system
 
         # Antenna
         ant = self._app.modeler.create_rectangle(
@@ -1077,7 +1077,7 @@ class RectangularPatchEdge(CommonPatch):
         )
         ant.color = (255, 128, 65)
         ant.transparency = 0.1
-        ant.history.props["Coordinate System"] = coordinate_system
+        ant.history().props["Coordinate System"] = coordinate_system
 
         edge_feed = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -1090,7 +1090,7 @@ class RectangularPatchEdge(CommonPatch):
             name="cutout_" + antenna_name,
         )
         edge_feed.color = (255, 128, 65)
-        edge_feed.history.props["Coordinate System"] = coordinate_system
+        edge_feed.history().props["Coordinate System"] = coordinate_system
 
         feed = self._app.modeler.create_rectangle(
             csPlane=2,
@@ -1103,7 +1103,7 @@ class RectangularPatchEdge(CommonPatch):
             name="feed_" + antenna_name,
         )
         feed.color = (255, 128, 65)
-        feed.history.props["Coordinate System"] = coordinate_system
+        feed.history().props["Coordinate System"] = coordinate_system
 
         self._app.modeler.unite([ant, edge_feed, feed])
 
@@ -1118,7 +1118,7 @@ class RectangularPatchEdge(CommonPatch):
             name="port_lump_" + antenna_name,
         )
         p1.color = (255, 128, 65)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         self.object_list[sub.name] = sub
         self.object_list[gnd.name] = gnd
@@ -1167,7 +1167,7 @@ class RectangularPatchEdge(CommonPatch):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
             self.object_list[huygens.name] = huygens
 
