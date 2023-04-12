@@ -245,7 +245,7 @@ class AxialMode(CommonHelix):
             upd_library="syslib",
             name="helix",
         )
-        udm.history.props["Coordinate System"] = coordinate_system
+        udm.history().props["Coordinate System"] = coordinate_system
         udm.material_name = "pec"
         self._app.modeler.split(udm, "XY", "PositiveOnly")
         gnd = self._app.modeler.create_rectangle(
@@ -258,7 +258,7 @@ class AxialMode(CommonHelix):
             [groundx, groundy],
             name="gnd_" + antenna_name,
         )
-        gnd.history.props["Coordinate System"] = coordinate_system
+        gnd.history().props["Coordinate System"] = coordinate_system
 
         cutout = self._app.modeler.create_circle(
             cs_plane=2,
@@ -269,7 +269,7 @@ class AxialMode(CommonHelix):
             ],
             radius=coax_outer_radius,
         )
-        cutout.history.props["Coordinate System"] = coordinate_system
+        cutout.history().props["Coordinate System"] = coordinate_system
         gnd.subtract(cutout, keep_originals=False)
 
         # Negative air
@@ -285,7 +285,7 @@ class AxialMode(CommonHelix):
             name="Feed_{}".format(antenna_name),
             matname="pec",
         )
-        feed_pin.history.props["Coordinate System"] = coordinate_system
+        feed_pin.history().props["Coordinate System"] = coordinate_system
 
         feed_coax = self._app.modeler.create_cylinder(
             cs_axis=2,
@@ -299,7 +299,7 @@ class AxialMode(CommonHelix):
             name="Feed1_{}".format(antenna_name),
             matname="pec",
         )
-        feed_coax.history.props["Coordinate System"] = coordinate_system
+        feed_coax.history().props["Coordinate System"] = coordinate_system
 
         Coax = self._app.modeler.create_cylinder(
             cs_axis=2,
@@ -313,7 +313,7 @@ class AxialMode(CommonHelix):
             name="coax_{}".format(antenna_name),
             matname="Teflon (tm)",
         )
-        Coax.history.props["Coordinate System"] = coordinate_system
+        Coax.history().props["Coordinate System"] = coordinate_system
 
         # Cap
         cap = self._app.modeler.create_cylinder(
@@ -328,7 +328,7 @@ class AxialMode(CommonHelix):
             name="port_cap_" + antenna_name,
             matname="pec",
         )
-        cap.history.props["Coordinate System"] = coordinate_system
+        cap.history().props["Coordinate System"] = coordinate_system
 
         # P1
         p1 = self._app.modeler.create_circle(
@@ -342,7 +342,7 @@ class AxialMode(CommonHelix):
             name="port_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history.props["Coordinate System"] = coordinate_system
+        p1.history().props["Coordinate System"] = coordinate_system
 
         if self.huygens_box:
             light_speed = constants.SpeedOfLight  # m/s
@@ -379,7 +379,7 @@ class AxialMode(CommonHelix):
             )
             huygens.display_wireframe = True
             huygens.color = (0, 0, 255)
-            huygens.history.props["Coordinate System"] = coordinate_system
+            huygens.history().props["Coordinate System"] = coordinate_system
             huygens.group_name = antenna_name
 
         udm.group_name = antenna_name
