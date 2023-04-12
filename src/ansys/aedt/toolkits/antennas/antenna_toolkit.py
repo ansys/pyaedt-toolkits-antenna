@@ -232,6 +232,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             "projectname": projectname,
             "process_id_combo_splitted": process_id_combo_splitted,
         }
+        print(args)
         if self.hfss:
             try:
                 self.hfss.release_desktop(False, False)
@@ -240,7 +241,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         worker_1 = RunnerHfss()
         worker_1.hfss_args = args
         worker_1.signals.progressed.connect(lambda value: self.update_progress(value))
-        worker_1.signals.completed.connect(lambda: self.update_hfss(worker_1))
+        worker_1.signals.completed.connect(lambda: self.update_hfss(worker_1, version))
 
         self.__thread.start(worker_1)
         pass
@@ -250,7 +251,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.progressBar.isHidden():
             self.progressBar.setVisible(True)
 
-    def update_hfss(self, worker_1):
+    def update_hfss(
+        self,
+        worker_1,
+        version=None,
+    ):
         if worker_1.pid != -1:
             module = sys.modules["__main__"]
             try:
@@ -269,7 +274,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 del module.oAnsoftApplication
             except AttributeError:
                 pass
-            version = self.aedt_version_combo.currentText()
+            if version is None:
+                version = self.aedt_version_combo.currentText()
 
             self.hfss = Hfss(
                 specified_version=version,
