@@ -25,6 +25,7 @@ import qdarkstyle
 
 from ansys.aedt.toolkits.antennas.models.bowtie import BowTie
 from ansys.aedt.toolkits.antennas.models.bowtie import BowTieRounded
+from ansys.aedt.toolkits.antennas.models.bowtie import BowTieSlot
 from ansys.aedt.toolkits.antennas.models.helix import AxialMode
 from ansys.aedt.toolkits.antennas.models.horn import Conical
 from ansys.aedt.toolkits.antennas.models.horn import Corrugated
@@ -1029,9 +1030,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.add_status_bar_message("Antenna not supported yet.")
-
-        # self.get_antenna(AxialMode, synth_only)
+        self.get_antenna(BowTieSlot, synth_only)
 
     def draw_conical_archimedean_ui(self):
         """Create a conical Archimedean antenna UI."""

@@ -8,7 +8,7 @@ name = "ansys-aedt-toolkits-antennas"
 dynamic = ["version"]
 description = "A python toolkit to design antennas with Ansys AEDT."
 readme = "README.rst"
-requires-python = ">=3.9"
+requires-python = ">=3.7"
 license = {file = "LICENSE"}
 authors = [
     {name = "ANSYS, Inc.", email = "pyansys.support@ansys.com"},

@@ -775,7 +775,7 @@ class BowTieSlot(CommonPatch):
 
         slot.color = (255, 128, 65)
 
-        self._app.modeler.move([p1.name, slot.name, ref.name, sub.name], [0, 0, sub_h])
+        self._app.modeler.move([p1.name, slot.name, ref.name], [0, 0, sub_h])
 
         if self.huygens_box:
             lightSpeed = constants.SpeedOfLight  # m/s
