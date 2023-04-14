@@ -1,4 +1,4 @@
-horn
+Horn
 ====
 This section list the available horns:
 

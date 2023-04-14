@@ -1,4 +1,4 @@
-helix
+Helix
 =====
 This section list the available helix antennas:
 
