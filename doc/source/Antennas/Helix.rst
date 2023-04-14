@@ -15,14 +15,11 @@ The API must be used using PyAEDT as in the following example:
 
     from pyaedt import Hfss
     from ansys.aedt.toolkits.antennas.models.helix import AxialMode
-    aedtapp = Hfss(specified_version="2023.1",
-                      non_graphical=False,
-                      new_desktop_session=True,
-                      close_on_exit=True,
-                      student_version=False):
+
+    aedtapp = Hfss(specified_version="2023.1", non_graphical=False)
     # Create antenna
     ohorn = aedtapp.add_from_toolkit(AxialMode, draw=True)
-     ...
+    ...
     aedtapp.release_desktop()
 
 
