@@ -21,7 +21,7 @@ The API must be used using PyAEDT as in the following example:
                       non_graphical=False,
                       new_desktop_session=True,
                       close_on_exit=True,
-                      ):
+                      student_version=False):
     # Create antenna
     ohorn = aedtapp.add_from_toolkit(BowTie, draw=True)
     ...
