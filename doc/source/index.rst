@@ -1,21 +1,20 @@
+PyAEDT Antenna toolkit documentation  |version|
+===============================================
+
 ..
-   Just reuse the root readme to avoid duplicating the documentation.
-   Provide any documentation specific to your online documentation
-   here.
+   Simply reuse the root readme
 
 .. include:: ../../README.rst
 
 .. toctree::
    :hidden:
 
-
+   Antennas/antenna_wizard
    Antennas/index
-   Antennas/antennas
    Contributing
 
 
 Indices and tables
 ==================
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
