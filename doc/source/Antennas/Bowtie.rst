@@ -1,4 +1,4 @@
-Bowtie
+bowtie
 ======
 This section list the available bowtie antennas:
 

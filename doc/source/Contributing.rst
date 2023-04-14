@@ -27,7 +27,7 @@ Post issues
 Use the `PyAEDT Issues <https://github.com/pyansys/pyaedt-antenna-toolkit/issues>`_
 page to submit questions, report bugs, and request new features.
 
-View PyAEDT Antenna toolkit documentation
+View antenna toolkit documentation
 -----------------------------------------
 Documentation for the latest development version, which tracks the
 ``main`` branch, is hosted at  `PyAEDT Antenna toolkit Documentation <https://aedt.antenna.toolkit.docs.pyansys.com/>`_.
@@ -35,9 +35,9 @@ This version is automatically kept up to date via GitHub actions.
 
 Adhere to code style
 --------------------
-PyAEDT Antenna toolkit is compliant with `PyAnsys code style
+PyAEDT antenna toolkit is compliant with `PyAnsys code style
 <https://dev.docs.pyansys.com/coding-style/index.html>`_. It uses the tool
-`pre-commit <https://pre-commit.com/>`_ to check the code style. You can install
+`pre-commit <https://pre-commit.com/>`_ to select the code style. You can install
 and activate this tool with:
 
 .. code:: bash

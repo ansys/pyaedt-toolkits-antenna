@@ -1,4 +1,4 @@
-Patch
+patch
 ======
 This section list the available patch antennas:
 

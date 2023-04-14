@@ -1,4 +1,4 @@
-PyAEDT Antenna toolkit documentation  |version|
+PyAEDT antenna toolkit documentation  |version|
 ===============================================
 
 ..

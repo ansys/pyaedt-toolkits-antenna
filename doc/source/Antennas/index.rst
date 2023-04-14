@@ -1,5 +1,5 @@
 =====================
-Toolkit API Reference
+Toolkit API reference
 =====================
 
 This section describes all classes for antenna types available in the toolkit:
@@ -7,10 +7,10 @@ This section describes all classes for antenna types available in the toolkit:
 .. toctree::
    :maxdepth: 2
 
-   Horn
-   BowTie
-   Helix
-   Patch
+   horn
+   bowtie
+   helix
+   patch
 
 
 
