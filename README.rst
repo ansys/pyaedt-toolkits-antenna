@@ -96,7 +96,7 @@ if you have PyAEDT installed, you can skip step 2:
 
 #. Open AEDT manually, create an HFSS design and run the toolkit:
 
-.. image:: ./Resources/toolkit_in_AEDT.png
+.. image:: doc/source/Resources/toolkit_in_AEDT.png
   :width: 800
   :alt: PyAEDT toolkit installed
 
@@ -136,12 +136,7 @@ if you have installed the toolkit in the virtual environment you can skip step 2
 
 .. 
 
-
-
-
-
-
-.. image:: ./Resources/antenna_toolkit.png
+.. image:: doc/source/Resources/antenna_toolkit.png
   :width: 800
   :alt: Antenna Toolkit UI, Design Tab
 
@@ -200,7 +195,7 @@ if you have installed the toolkit in the virtual environment you can skip step 2
         # Desktop is released here
         aedtapp.release_desktop()
 
-.. image:: ./Resources/horn_hfss.png
+.. image:: doc/source/Resources/horn_hfss.png
   :width: 800
   :alt: Conical horn in HFSS
 
