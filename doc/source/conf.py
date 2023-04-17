@@ -5,8 +5,8 @@ import pathlib
 import sys
 
 from ansys_sphinx_theme import ansys_favicon
-from ansys_sphinx_theme import pyansys_logo_black
 from ansys_sphinx_theme import get_version_match
+from ansys_sphinx_theme import pyansys_logo_black
 
 sys.path.append(pathlib.Path(__file__).parent.parent.parent)
 
