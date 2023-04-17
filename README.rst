@@ -134,7 +134,7 @@ if you have installed the toolkit in the virtual environment you can skip step 2
 
       python .venv\Lib\site-packages\ansys\aedt\toolkits\antennas\antenna_toolkit.py
 
-.. image:: doc/source/Resources/antenna_toolkit.png
+.. image:: ./doc/source/Resources/antenna_toolkit.png
   :width: 800
   :alt: Antenna Toolkit UI, Design Tab
 
@@ -193,7 +193,7 @@ if you have installed the toolkit in the virtual environment you can skip step 2
         # Desktop is released here
         aedtapp.release_desktop()
 
-.. image:: doc/source/Resources/horn_hfss.png
+.. image:: ./doc/source/Resources/horn_hfss.png
   :width: 800
   :alt: Conical horn in HFSS
 
