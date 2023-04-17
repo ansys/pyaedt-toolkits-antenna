@@ -6,6 +6,12 @@ on:
       - "*"
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
 
 env:
   MAIN_PYTHON_VERSION: '3.9'
