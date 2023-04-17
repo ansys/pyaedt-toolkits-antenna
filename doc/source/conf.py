@@ -20,6 +20,7 @@ project = "ansys-aedt-toolkits-antennas"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS, Inc."
 release = version = __version__
+cname = os.getenv("DOCUMENTATION_CNAME", "nocname.com")
 print(copyright)
 # Select desired logo, theme, and declare the html title
 html_logo = pyansys_logo_black
@@ -34,12 +35,26 @@ html_context = {
     "doc_path": "doc/source",
 }
 html_theme_options = {
-    "github_url": "https://github.com/pyansys/pyaedt-toolkits.git",
+    "github_url": "https://github.com/pyansys/pyaedt-antenna-toolkit",
     "show_prev_next": False,
     "show_breadcrumbs": True,
+    "collapse_navigation": True,
+    "use_edit_page_button": True,
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],
+    "icon_links": [
+        {
+            "name": "Support",
+            "url": "https://github.com/pyansys/pyaedt-antenna-toolkit/discussions",
+            "icon": "fa fa-comment fa-fw",
+        },
+    ],
+    "switcher": {
+        "json_url": f"https://{cname}/versions.json",
+        "version_match": get_version_match(__version__),
+    },
+    "collapse_navigation": True,
 }
 
 # Sphinx extensions
