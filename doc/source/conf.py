@@ -26,7 +26,7 @@ print(copyright)
 # Select desired logo, theme, and declare the html title
 html_logo = pyansys_logo_black
 html_theme = "ansys_sphinx_theme"
-html_short_title = html_title = "pypyaedt-toolkits-ansys-aedt-toolkits-antennas"
+html_short_title = html_title = "ansys-aedt-toolkits-antennas"
 
 # specify the location of your github repo
 html_context = {
