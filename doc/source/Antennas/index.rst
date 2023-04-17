@@ -1,52 +1,16 @@
-============================
-Antenna toolkit UI reference
-============================
+=====================
+Toolkit API reference
+=====================
 
-This section describes User interface available  in AEDT's **Antenna Wizard**.
-To run **Antenna Wizard**, you must have a licensed copy of Ansys Electronics
-Desktop (AEDT) installed.
+This section describes all classes for antenna types available in the toolkit:
 
-Once Antenna Wizard is launched user can choose settings from first page and connect to an existing
-Electronics Desktop session or create a new session.
+.. toctree::
+   :maxdepth: 2
 
-.. image:: ../Resources/antenna_toolkit_p1.png
-  :width: 800
-  :alt: Antenna Toolkit UI, Settings Tab
-
-
-After Electronics Desktop is launched, user can move to design tab and select one antenna from the menu.
-
-
-
-.. image:: ../Resources/antenna_toolkit.png
-  :width: 800
-  :alt: Antenna Toolkit UI, Design Tab
-
-Once the antenna is loaded the user can click on the Synthesis button and generate the antenna parameters
-
-
-.. image:: ../Resources/antenna_toolkit_synth.png
-  :width: 800
-  :alt: Antenna Toolkit UI, Synthesis Tab
-
-
-User can then click the Generate button and create the antenna in Electronics Desktop.
-
-
-.. image:: ../Resources/aedt_antenna.png
-  :width: 800
-  :alt: AEDT Generated Antenna
-
-Moving to Analysis Tab, user can click Analyze Project button. AEDT project will be saved, closed and solved.
-At the end of the simulation, results are loaded in UI.
-
-
-.. image:: ../Resources/results.png
-  :width: 800
-  :alt: Results view
-
-User can now iterate by changing some of the parameters in the Design tab and click Analyze Project button again.
-Results will be overlapped.
+   horn
+   bowtie
+   helix
+   patch
 
 
 

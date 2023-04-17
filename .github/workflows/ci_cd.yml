@@ -6,6 +6,12 @@ on:
       - "*"
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
 
 env:
   MAIN_PYTHON_VERSION: '3.9'
@@ -94,7 +100,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: [doc-style]
     steps:
-      - uses: pyansys/actions/doc-build@v4
+      - name: update packages
+        run: |
+          sudo apt-get update
+
+      - name: build doc   
+        uses: pyansys/actions/doc-build@v4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
