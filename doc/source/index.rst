@@ -9,9 +9,9 @@ PyAEDT antenna toolkit documentation  |version|
 .. toctree::
    :hidden:
 
+   Getting_started
    Antennas/antenna_wizard
    Antennas/index
-   Install
    Contributing
 
 

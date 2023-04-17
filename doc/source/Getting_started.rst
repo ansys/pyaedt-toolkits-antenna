@@ -1,12 +1,14 @@
-==============
-How to Install
-==============
+===============
+Getting started
+===============
+
+To run this toolkit, you must have a licensed copy of Ansys Electronics Desktop (AEDT) installed.
 
 The toolkit could be used inside AEDT or launched from a python console. Toolkit features are accessible from the
 user interface **Antenna Wizard** or the directly from the API.
 
-How to install the toolkit inside AEDT
---------------------------------------
+Install the toolkit inside AEDT and run the UI
+----------------------------------------------
 
 The toolkit could be installed inside AEDT using
 `PyAEDT <https://aedt.docs.pyansys.com/version/stable//>`_.
@@ -73,8 +75,8 @@ if you have PyAEDT installed, you can skip step 2:
   :width: 800
   :alt: PyAEDT toolkit installed
 
-How to install the toolkit in the console and run the UI
---------------------------------------------------------
+Install the toolkit in the console and run the UI
+-------------------------------------------------
 
 If you have an existing virtual environment you can skip step 1,
 if you have installed the toolkit in the virtual environment you can skip step 2:
@@ -107,14 +109,12 @@ if you have installed the toolkit in the virtual environment you can skip step 2
 
       python .venv\Lib\site-packages\ansys\aedt\toolkits\antennas\antenna_toolkit.py
 
-..
-
 .. image:: ./Resources/antenna_toolkit.png
   :width: 800
   :alt: Antenna Toolkit UI, Design Tab
 
-How to install the toolkit in the console and use the API
----------------------------------------------------------
+Install the toolkit in the console and use the API
+--------------------------------------------------
 
 If you have an existing virtual environment you can skip step 1,
 if you have installed the toolkit in the virtual environment you can skip step 2:

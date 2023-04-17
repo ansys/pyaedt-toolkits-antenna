@@ -24,8 +24,8 @@ development mode, run:
 
 Post issues
 -----------
-Use the `PyAEDT Issues <https://github.com/pyansys/pyaedt-antenna-toolkit/issues>`_
-page to submit questions, report bugs, and request new features.
+Use the `PyAEDT Antenna toolkit Issues <https://github.com/pyansys/pyaedt-antenna-toolkit/issues>`_ page
+to submit questions, report bugs, and request new features.
 
 View antenna toolkit documentation
 -----------------------------------------
