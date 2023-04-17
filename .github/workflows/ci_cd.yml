@@ -102,7 +102,7 @@ jobs:
     steps:
       - name: update packages
         run: |
-          run apt-get update
+          sudo apt-get update
 
       - name: build doc   
         uses: pyansys/actions/doc-build@v4
