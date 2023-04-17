@@ -8,41 +8,36 @@ Overall guidance on contributing to a PyAnsys repository appears in
 in the *PyAnsys Developer's Guide*. Ensure that you are thoroughly familiar
 with this guide before attempting to contribute to PyAEDT or its toolkits.
  
-The following contribution information is specific to PyAEDT.
+The following contribution information is specific to PyAEDT Antenna toolkit.
 
 Clone the repository
 --------------------
-To clone and install the latest version of PyAEDT in
+To clone and install the latest version of PyAEDT Antenna toolkit in
 development mode, run:
 
 .. code::
 
-    git clone https://github.com/pyansys/pyaedt
-    cd pyaedt
+    git clone https://github.com/pyansys/pyaedt-antenna-toolkit.git
+    cd pyaedt-antenna-toolkit
     python -m pip install --upgrade pip
     pip install -e .
 
 Post issues
 -----------
-Use the `PyAEDT Issues <https://github.com/pyansys/pyaedt/issues>`_
+Use the `PyAEDT Issues <https://github.com/pyansys/pyaedt-antenna-toolkit/issues>`_
 page to submit questions, report bugs, and request new features.
 
-To reach the support team, email `pyansys.support@ansys.com <pyansys.support@ansys.com>`_.
-
-View PyAEDT documentation
--------------------------
-Documentation for the latest stable release of PyAEDT is hosted at
-`PyAEDT Documentation <https://aedt.docs.pyansys.com>`_.  
-
+View antenna toolkit documentation
+-----------------------------------------
 Documentation for the latest development version, which tracks the
-``main`` branch, is hosted at  `Development PyAEDT Documentation <https://aedt.docs.pyansys.com/dev/>`_.
+``main`` branch, is hosted at  `PyAEDT Antenna toolkit Documentation <https://aedt.antenna.toolkit.docs.pyansys.com/>`_.
 This version is automatically kept up to date via GitHub actions.
 
 Adhere to code style
 --------------------
-PyAEDT is compliant with `PyAnsys code style
+PyAEDT antenna toolkit is compliant with `PyAnsys code style
 <https://dev.docs.pyansys.com/coding-style/index.html>`_. It uses the tool
-`pre-commit <https://pre-commit.com/>`_ to check the code style. You can install
+`pre-commit <https://pre-commit.com/>`_ to select the code style. You can install
 and activate this tool with:
 
 .. code:: bash
@@ -67,81 +62,6 @@ For example::
   codespell................................................................Passed
   fix requirements.txt.....................................................Passed
   blacken-docs.............................................................Passed
-
-Log errors
-~~~~~~~~~~
-PyAEDT has an internal logging tool named ``Messenger``
-and a log file that is automatically generated in the project
-folder.
-
-The following examples demonstrate how ``Messenger`` is used to
-write both to the internal AEDT message windows and the log file:
-
-.. code:: python
-
-    self.logger.error("This is an error message.")
-    self.logger.warning("This is a warning message.")
-    self.logger.info("This is an info message.")
-
-These examples demonstrate how to write messages only to the log file:
-
-.. code:: python
-
-    self.logger.error("This is an error message.")
-    self.logger.warning("This is a warning message.")
-    self.logger.info("This is an info message.")
-
-
-Handle exceptions
-~~~~~~~~~~~~~~~~~
-PyAEDT uses a specific decorator, ``@pyaedt_function_handler``,
-to handle exceptions caused by methods and by the AEDT API.
-This exception handler decorator makes PyAEDT fault tolerant
-to errors that can occur in any method.
-
-For example:
-
-.. code:: python
-
-   @pyaedt_function_handler()
-   def my_method(self, var):
-       pass
-
-Every method can return a value of ``True`` when successful or 
-``False`` when failed. When a failure occurs, the error
-handler returns information about the error in both the console and
-log file.
-
-Here is an example of an error:
-
-.. code::
-
-   ----------------------------------------------------------------------------------
-   PyAEDT error on method create_box:  General or AEDT error. Check again
-   the arguments provided:
-       position = [0, 0, 0]
-       dimensions_list = [0, 10, 10]
-       name = None
-       matname = None
-   ----------------------------------------------------------------------------------
-
-   (-2147352567, 'Exception occurred.', (0, None, None, None, 0, -2147024381), None)
-     File "C:\GIT\repos\AnsysAutomation\PyAEDT\Primitives.py", line 1930, in create_box
-       o.name = self.oeditor.createbox(vArg1, vArg2)
-
-   ************************************************************
-   Method Docstring:
-
-   Create a box.
-
-   Parameters
-   ----------
-   ...
-
-
-Hard-coded values
-~~~~~~~~~~~~~~~~~~
-Do not write hard-coded values to the registry. Instead, use the Configuration service.
 
 Maximum line length
 ~~~~~~~~~~~~~~~~~~~
