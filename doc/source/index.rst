@@ -11,6 +11,7 @@ PyAEDT antenna toolkit documentation  |version|
 
    Antennas/antenna_wizard
    Antennas/index
+   Install
    Contributing
 
 
