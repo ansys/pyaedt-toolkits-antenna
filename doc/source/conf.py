@@ -22,7 +22,9 @@ copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS, Inc."
 release = version = __version__
 cname = os.getenv("DOCUMENTATION_CNAME", "nocname.com")
+switcher_version = get_version_match(__version__)
 print(copyright)
+
 # Select desired logo, theme, and declare the html title
 html_logo = pyansys_logo_black
 html_theme = "ansys_sphinx_theme"
@@ -36,6 +38,11 @@ html_context = {
     "doc_path": "doc/source",
 }
 html_theme_options = {
+    "switcher": {
+        "json_url": f"https://{cname}/versions.json",
+        "version_match": switcher_version,
+    },
+    "check_switcher": False,
     "github_url": "https://github.com/pyansys/pyaedt-antenna-toolkit.git",
     "show_prev_next": False,
     "show_breadcrumbs": True,
@@ -51,10 +58,6 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
-    "switcher": {
-        "json_url": f"https://{cname}/versions.json",
-        "version_match": get_version_match(__version__),
-    },
     "collapse_navigation": True,
 }
 
@@ -70,6 +73,10 @@ extensions = [
     "sphinx_copybutton",
     "recommonmark",
     "numpydoc",
+    "nbsphinx",
+    "myst_parser",
+    "jupyter_sphinx",
+    "sphinx_design",
 ]
 
 # Intersphinx mapping
