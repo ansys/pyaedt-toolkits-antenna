@@ -74,7 +74,6 @@ extensions = [
     "recommonmark",
     "numpydoc",
     "nbsphinx",
-    "myst_parser",
     "jupyter_sphinx",
     "sphinx_design",
 ]
