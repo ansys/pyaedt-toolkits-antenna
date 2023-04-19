@@ -4,6 +4,7 @@ import os
 import pathlib
 import sys
 
+# from ansys_sphinx_theme import get_version_match
 from ansys_sphinx_theme import ansys_favicon
 from ansys_sphinx_theme import pyansys_logo_black
 
@@ -20,11 +21,12 @@ project = "ansys-aedt-toolkits-antennas"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS, Inc."
 release = version = __version__
+cname = os.getenv("DOCUMENTATION_CNAME", "nocname.com")
 print(copyright)
 # Select desired logo, theme, and declare the html title
 html_logo = pyansys_logo_black
 html_theme = "ansys_sphinx_theme"
-html_short_title = html_title = "pypyaedt-toolkits-ansys-aedt-toolkits-antennas"
+html_short_title = html_title = "ansys-aedt-toolkits-antennas"
 
 # specify the location of your github repo
 html_context = {
@@ -34,20 +36,35 @@ html_context = {
     "doc_path": "doc/source",
 }
 html_theme_options = {
-    "github_url": "https://github.com/pyansys/pyaedt-toolkits.git",
+    "github_url": "https://github.com/pyansys/pyaedt-antenna-toolkit.git",
     "show_prev_next": False,
     "show_breadcrumbs": True,
+    "collapse_navigation": True,
+    "use_edit_page_button": True,
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],
+    "icon_links": [
+        {
+            "name": "Support",
+            "url": "https://github.com/pyansys/pyaedt-antenna-toolkit/discussions",
+            "icon": "fa fa-comment fa-fw",
+        },
+    ],
+    "collapse_navigation": True,
 }
 
 # Sphinx extensions
 extensions = [
-    "sphinx_copybutton",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
+    "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.coverage",
+    "sphinx_copybutton",
+    "recommonmark",
     "numpydoc",
 ]
 
@@ -81,6 +98,10 @@ numpydoc_validation_checks = {
 
 # static path
 html_static_path = ["_static"]
+
+html_css_files = [
+    "custom.css",
+]
 
 html_favicon = ansys_favicon
 

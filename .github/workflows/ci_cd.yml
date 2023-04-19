@@ -14,7 +14,7 @@ on:
         default: 'warning'
 
 env:
-  MAIN_PYTHON_VERSION: '3.9'
+  MAIN_PYTHON_VERSION: '3.10'
   DOCUMENTATION_CNAME: 'aedt.antenna.toolkit.docs.pyansys.com'
   LIBRARY_NAME: 'ansys-aedt-toolkits-antennas'
   LIBRARY_NAMESPACE: 'ansys.aedt.toolkits.antennas'
@@ -104,7 +104,7 @@ jobs:
         run: |
           sudo apt-get update
 
-      - name: build doc   
+      - name: build doc
         uses: pyansys/actions/doc-build@v4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
