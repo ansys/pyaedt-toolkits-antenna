@@ -74,8 +74,6 @@ extensions = [
     "recommonmark",
     "numpydoc",
     "nbsphinx",
-    "jupyter_sphinx",
-    "sphinx_design",
 ]
 
 # Intersphinx mapping
