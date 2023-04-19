@@ -60,10 +60,15 @@ html_theme_options = {
 
 # Sphinx extensions
 extensions = [
-    "sphinx_copybutton",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
+    "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.coverage",
+    "sphinx_copybutton",
+    "recommonmark",
     "numpydoc",
 ]
 
@@ -97,6 +102,10 @@ numpydoc_validation_checks = {
 
 # static path
 html_static_path = ["_static"]
+
+html_css_files = [
+    "custom.css",
+]
 
 html_favicon = ansys_favicon
 
