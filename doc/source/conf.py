@@ -4,8 +4,8 @@ import os
 import pathlib
 import sys
 
+# from ansys_sphinx_theme import get_version_match
 from ansys_sphinx_theme import ansys_favicon
-from ansys_sphinx_theme import get_version_match
 from ansys_sphinx_theme import pyansys_logo_black
 
 sys.path.append(pathlib.Path(__file__).parent.parent.parent)
@@ -36,7 +36,7 @@ html_context = {
     "doc_path": "doc/source",
 }
 html_theme_options = {
-    "github_url": "https://github.com/pyansys/pyaedt-antenna-toolkit",
+    "github_url": "https://github.com/pyansys/pyaedt-antenna-toolkit.git",
     "show_prev_next": False,
     "show_breadcrumbs": True,
     "collapse_navigation": True,
@@ -51,10 +51,6 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
-    "switcher": {
-        "json_url": f"https://{cname}/versions.json",
-        "version_match": get_version_match(__version__),
-    },
     "collapse_navigation": True,
 }
 
