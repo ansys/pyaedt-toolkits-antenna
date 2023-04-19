@@ -6,6 +6,7 @@ This section list the available horns:
 
 .. autosummary::
    :toctree: _autosummary
+   :nosignatures:
 
    Conical
    Corrugated
