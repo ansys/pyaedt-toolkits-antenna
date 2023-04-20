@@ -1,6 +1,6 @@
 Horn
 ====
-This section list the available horns:
+This section lists the available horns:
 
 .. currentmodule:: ansys.aedt.toolkits.antennas.models.horn
 
