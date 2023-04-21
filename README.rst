@@ -31,7 +31,7 @@ In addition to the runtime dependencies listed in the installation information, 
 requires Ansys Electronics Desktop (AEDT) 2022 R1 or later. The AEDT Student Version is also supported.
 
 Documentation and issues
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 In addition to installation and usage information, the toolkit
 documentation provides
 `API reference <https://aedt.antenna.toolkit.docs.pyansys.com/version/dev/Antennas/antennas.html>`_,
@@ -42,7 +42,7 @@ On the `PyAEDT Antenna toolkit Issues <https://github.com/pyansys/pyaedt-antenna
 create issues to submit questions, report bugs, and request new features.
 
 License
--------
+~~~~~~~
 PyAEDT Antenna toolkit is licensed under the MIT license.
 
 This module makes no commercial claim over Ansys whatsoever.
