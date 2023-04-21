@@ -60,7 +60,7 @@ jobs:
 
   tests:
     name: "Tests"
-    runs-on: pyaedt-toolkit-1
+    runs-on: pyaedt-toolkits
     # needs: [smoke-tests]
     steps:
       - uses: actions/checkout@v3
