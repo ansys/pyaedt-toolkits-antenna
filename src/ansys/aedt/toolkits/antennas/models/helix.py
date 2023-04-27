@@ -202,7 +202,6 @@ class AxialMode(CommonHelix):
             return False
 
         self.set_variables_in_hfss()
-        self._app
         # Map parameters
         groundx = self.synthesis_parameters.groundx.hfss_variable
         groundy = self.synthesis_parameters.groundy.hfss_variable
