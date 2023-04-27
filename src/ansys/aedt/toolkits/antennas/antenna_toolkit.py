@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from pathlib import Path
+import re
 import sys
 
 import ansys.aedt.toolkits.antennas.common_ui
@@ -26,6 +27,7 @@ import qdarkstyle
 from ansys.aedt.toolkits.antennas.models.bowtie import BowTie
 from ansys.aedt.toolkits.antennas.models.bowtie import BowTieRounded
 from ansys.aedt.toolkits.antennas.models.bowtie import BowTieSlot
+from ansys.aedt.toolkits.antennas.models.conical_spiral import Archimedean
 from ansys.aedt.toolkits.antennas.models.helix import AxialMode
 from ansys.aedt.toolkits.antennas.models.horn import Conical
 from ansys.aedt.toolkits.antennas.models.horn import Corrugated
@@ -226,10 +228,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             return
         if self.hfss and sel and key in self.hfss.variable_manager.independent_variable_names:
+            ratio_re = re.compile("|".join(["ratio", "coefficient", "points", "number"]))
             if "angle" in key:
                 if "deg" not in val:
                     val = val + "deg"
-            elif "ratio" in key:
+            elif ratio_re.search(key):
                 val = val
             else:
                 if self.oantenna.length_unit not in val:
@@ -559,7 +562,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if not self.hfss:
             self.add_status_bar_message("Launch HFSS.")
-        huygens = self.huygens.isChecked()
+        # huygens = self.huygens.isChecked()
         component3d = self.component_3d.isChecked()
         create_setup = self.create_hfss_setup.isChecked()
         lattice_pair = self.lattice_pair.isChecked()
@@ -571,7 +574,6 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 draw=False,
                 frequency_unit=frequnits,
                 length_unit=model_units,
-                huygens_box=huygens,
             )
         self.progressBar.setValue(33)
 
@@ -579,7 +581,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         y_pos = float(self.y_position.text())
         z_pos = float(self.z_position.text())
         self.oantenna.origin = [x_pos, y_pos, z_pos]
-        self.oantenna.frequency = float(self.frequency.text())
+        if "frequency" in self.__dir__():
+            self.oantenna.frequency = float(self.frequency.text())
+        elif "start_frequency" in self.__dir__() and "stop_frequency" in self.__dir__():
+            self.oantenna.start_frequency = float(self.start_frequency.text())
+            self.oantenna.stop_frequency = float(self.stop_frequency.text())
         self.oantenna.outer_boundary = (
             None
             if self.parameters["boundary"].currentText() == "None"
@@ -605,7 +611,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if component3d:
                 self.oantenna.create_3dcomponent(replace=True)
             if create_setup:
-                freq = float(self.frequency.text())
+                freq = float(self.oantenna.frequency)
                 setup = self.hfss.create_setup()
                 setup.props["Frequency"] = str(freq) + frequnits
                 if int(self.sweep_slider.value()) > 0:
@@ -625,9 +631,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for par, value in self.oantenna._parameters.items():
             item = QtWidgets.QTableWidgetItem(par)
             self.property_table.setItem(i, 0, item)
+            ratio_re = re.compile("|".join(["ratio", "coefficient", "points", "number"]))
             if "angle" in par:
                 item = QtWidgets.QTableWidgetItem(str(round(value, 3)) + "deg")
-            elif "ratio" in par:
+            elif ratio_re.search(par):
                 item = QtWidgets.QTableWidgetItem(str(round(value, 3)))
             else:
                 item = QtWidgets.QTableWidgetItem(str(round(value, 3)) + self.oantenna.length_unit)
@@ -789,8 +796,18 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         line1 = self.add_line("line_1", "antenna_name", "Antenna Name", "edit", antenna_name)
         self.layout_settings.addLayout(line1, 3, 0, 1, 1)
 
-        line2 = self.add_line("line_2", "frequency", "Frequency", "edit", str(frequency))
-        self.layout_settings.addLayout(line2, 4, 0, 1, 1)
+        if not isinstance(frequency, list):
+            line2 = self.add_line("line_2", "frequency", "Frequency", "edit", str(frequency))
+            self.layout_settings.addLayout(line2, 4, 0, 1, 1)
+        elif len(frequency) == 2:
+            line2 = self.add_line(
+                "line_2", "start_frequency", "Start frequency", "edit", str(frequency[0])
+            )
+            self.layout_settings.addLayout(line2, 4, 0, 1, 1)
+            line3 = self.add_line(
+                "line_2", "stop_frequency", "Stop frequency", "edit", str(frequency[1])
+            )
+            self.layout_settings.addLayout(line3, 5, 0, 1, 1)
 
         # line3 = self.add_line("line_2", "antenna_material", "Antenna Material", "combo",
         #                       ["pec", "copper", "aluminum", "steel"])
@@ -1091,7 +1108,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             )
             return
 
-        self._add_header("ConicalArchimedean.jpg", "Archimedean", "10")
+        self._add_header("ConicalArchimedean.jpg", "Archimedean", ["4", "10"])
         self._add_footer(self.create_conical_archimedean_design)
 
     def create_conical_archimedean_design(self, synth_only=False):
@@ -1103,9 +1120,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Whether to only synthesize the antenna. The default
             is ``False``.
         """
-        self.add_status_bar_message("Antenna not supported yet.")
-
-        # self.get_antenna(AxialMode, synth_only)
+        self.get_antenna(Archimedean, synth_only)
 
     def draw_conical_log_ui(self):
         """Create a conical log antenna UI."""

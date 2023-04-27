@@ -50,6 +50,16 @@ class CommonConicalSpiral(CommonAntenna):
                 self.set_variables_in_hfss()
 
     @property
+    def frequency(self):
+        """Central frequency.
+
+        Returns
+        -------
+        float
+        """
+        return (self.stop_frequency - self.start_frequency) / 2.0 + self.start_frequency
+
+    @property
     def start_frequency(self):
         """Start frequency.
 
@@ -62,7 +72,6 @@ class CommonConicalSpiral(CommonAntenna):
     @start_frequency.setter
     def start_frequency(self, value):
         self._input_parameters.start_frequency = value
-        self.frequency = (self.stop_frequency - self.start_frequency) / 2.0 + self.start_frequency
         if self.object_list:
             parameters = self._synthesis()
             self.update_synthesis_parameters(parameters)
@@ -81,7 +90,6 @@ class CommonConicalSpiral(CommonAntenna):
     @stop_frequency.setter
     def stop_frequency(self, value):
         self._input_parameters.stop_frequency = value
-        self.frequency = (self.stop_frequency - self.start_frequency) / 2.0 + self.start_frequency
         if self.object_list:
             parameters = self._synthesis()
             self.update_synthesis_parameters(parameters)
@@ -200,12 +208,14 @@ class Archimedean(CommonConicalSpiral):
         parameters["offset_angle"] = offset_angle
         parameters["spiral_coefficient"] = spiral_coefficient
         parameters["inner_rad"] = round(inner_rad, 2)
-        parameters["turns"] = round((outer_rad_calc_cm - inner_rad_cm) / 2.0 / math.pi / 0.1, 2)
+        parameters["turns_number"] = round(
+            (outer_rad_calc_cm - inner_rad_cm) / 2.0 / math.pi / 0.1, 2
+        )
         parameters["cone_height"] = round(
             (outer_rad_calc - inner_rad) * math.tan(math.radians(66.66)), 2
         )
         parameters["points"] = points
-        parameters["arms"] = arms
+        parameters["arms_number"] = arms
         parameters["port_extension"] = port_extension
 
         parameters["pos_x"] = self.origin[0]
@@ -239,11 +249,11 @@ class Archimedean(CommonConicalSpiral):
         spiral_coefficient = self.synthesis_parameters.spiral_coefficient.hfss_variable
         self._app[spiral_coefficient] = str(self.synthesis_parameters.spiral_coefficient.value)
         inner_rad = self.synthesis_parameters.inner_rad.hfss_variable
-        turns = self.synthesis_parameters.turns.hfss_variable
-        self._app[turns] = str(self.synthesis_parameters.turns.value)
+        turns = self.synthesis_parameters.turns_number.hfss_variable
+        self._app[turns] = str(self.synthesis_parameters.turns_number.value)
         cone_height = self.synthesis_parameters.cone_height.hfss_variable
-        arms = self.synthesis_parameters.arms.hfss_variable
-        self._app[arms] = str(self.synthesis_parameters.arms.value)
+        arms = self.synthesis_parameters.arms_number.hfss_variable
+        self._app[arms] = str(self.synthesis_parameters.arms_number.value)
         points = self.synthesis_parameters.points.hfss_variable
         self._app[points] = str(self.synthesis_parameters.points.value)
         port_extension = self.synthesis_parameters.port_extension.hfss_variable
@@ -281,13 +291,14 @@ class Archimedean(CommonConicalSpiral):
             name="archimidean",
         )
         for part in obj_udm.parts:
-            part.history().props["Coordinate System"] = coordinate_system
-            if "AntennaArm" in part.name:
-                part.name = "ant_" + part.name + antenna_name
+            comp = obj_udm.parts[part]
+            comp.history().props["Coordinate System"] = coordinate_system
+            if "AntennaArm" in comp.name:
+                comp.name = "ant_" + comp.name + antenna_name
             else:
-                part.name = "port_lump_" + antenna_name
+                comp.name = "port_lump_" + antenna_name
 
-            self.object_list[part.name] = part
+            self.object_list[comp.name] = comp
 
         obj_udm.move([pos_x, pos_y, pos_z])
 
