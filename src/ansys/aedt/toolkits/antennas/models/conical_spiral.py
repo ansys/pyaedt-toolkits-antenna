@@ -33,7 +33,7 @@ class CommonConicalSpiral(CommonAntenna):
             and value not in self._app.materials.mat_names_aedt_lower
         ):
             ansys.aedt.toolkits.antennas.common_ui.logger.warning(
-                "Material is not found. Create the material before assigning it"
+                "Material is not found. Create the material before assigning it."
             )
         else:
             if value != self.material and self.object_list:
