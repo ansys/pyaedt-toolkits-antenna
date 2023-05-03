@@ -562,7 +562,6 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if not self.hfss:
             self.add_status_bar_message("Launch HFSS.")
-        # huygens = self.huygens.isChecked()
         component3d = self.component_3d.isChecked()
         create_setup = self.create_hfss_setup.isChecked()
         lattice_pair = self.lattice_pair.isChecked()
