@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'antenna_toolkitQlOmDQ.ui'
+## Form generated from reading UI file 'antenna_toolkit.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.4.2
+## Created by: Qt User Interface Compiler version 6.5.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -501,20 +501,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_18 = QHBoxLayout()
         self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
-        self.huygens = QCheckBox(self.frame_3)
-        self.huygens.setObjectName(u"huygens")
-        self.huygens.setChecked(True)
-
-        self.horizontalLayout_18.addWidget(self.huygens)
-
-        self.horizontalSpacer_23 = QSpacerItem(107, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_18.addItem(self.horizontalSpacer_23)
-
-        self.horizontalSpacer_24 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
-
-        self.horizontalLayout_18.addItem(self.horizontalSpacer_24)
-
 
         self.gridLayout_8.addLayout(self.horizontalLayout_18, 0, 0, 1, 1)
 
@@ -622,9 +608,6 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.progressBar)
 
         MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QStatusBar(MainWindow)
-        self.statusbar.setObjectName(u"statusbar")
-        MainWindow.setStatusBar(self.statusbar)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 1047, 28))
@@ -661,6 +644,9 @@ class Ui_MainWindow(object):
         self.menuVivaldi = QMenu(self.menuAntennas)
         self.menuVivaldi.setObjectName(u"menuVivaldi")
         MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QStatusBar(MainWindow)
+        self.statusbar.setObjectName(u"statusbar")
+        MainWindow.setStatusBar(self.statusbar)
 
         self.menubar.addAction(self.menuAntennas.menuAction())
         self.menuAntennas.addAction(self.menuBowtie.menuAction())
@@ -729,7 +715,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.frequnits.setCurrentIndex(3)
         self.units.setCurrentIndex(1)
 
@@ -830,7 +816,6 @@ class Ui_MainWindow(object):
         self.component_3d.setText(QCoreApplication.translate("MainWindow", u"3D Component", None))
         self.create_hfss_setup.setText(QCoreApplication.translate("MainWindow", u"Create Hfss Setup", None))
         self.lattice_pair.setText(QCoreApplication.translate("MainWindow", u"Lattice pair", None))
-        self.huygens.setText(QCoreApplication.translate("MainWindow", u"Huygens", None))
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Sweep Bandwidth %", None))
         self.slider_value.setText(QCoreApplication.translate("MainWindow", u"20", None))
         ___qtablewidgetitem = self.property_table.horizontalHeaderItem(0)
