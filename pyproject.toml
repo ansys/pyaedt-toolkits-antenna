@@ -28,7 +28,7 @@ dependencies = [
     "twine==4.0.2",
     "pyaedt",
     "importlib-metadata >=4.0",
-    "pyside6==6.5.0",
+    "pyside6==6.5.1.1",
     "pyqtgraph",
     "qdarkstyle",
 ]
