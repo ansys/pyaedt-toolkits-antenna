@@ -1,12 +1,11 @@
+from ansys.aedt.toolkits.antennas.backend import models
+from ansys.aedt.toolkits.antennas.backend.common.api_generic import ToolkitGeneric
 from ansys.aedt.toolkits.antennas.backend.common.logger_handler import logger
 from ansys.aedt.toolkits.antennas.backend.common.properties import properties
-from ansys.aedt.toolkits.antennas.backend.common.api_generic import ToolkitGeneric
-
-from ansys.aedt.toolkits.antennas.backend import models
 
 
 class Toolkit(ToolkitGeneric):
-    """Template API to control the toolkit workflow.
+    """API to control the toolkit workflow.
 
     This class provides methods to synthesize and create antennas.
 
@@ -99,7 +98,7 @@ class Toolkit(ToolkitGeneric):
         self.oantenna._parameters = self.oantenna._synthesis()
 
         # Update properties
-        oantenna_public_props = (name for name in self.oantenna.__dir__() if not name.startswith('_'))
+        oantenna_public_props = (name for name in self.oantenna.__dir__() if not name.startswith("_"))
         for antenna_prop in oantenna_public_props:
             if antenna_prop in properties.__dir__():
                 setattr(properties, antenna_prop, getattr(self.oantenna, antenna_prop))
@@ -123,5 +122,3 @@ class Toolkit(ToolkitGeneric):
                     sweep1.update()
 
         return True
-
-

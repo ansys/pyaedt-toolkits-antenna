@@ -15,9 +15,9 @@ on:
 
 env:
   MAIN_PYTHON_VERSION: '3.10'
-  DOCUMENTATION_CNAME: 'aedt.toolkit.template.docs.pyansys.com'
-  LIBRARY_NAME: 'ansys-aedt-toolkits-template'
-  LIBRARY_NAMESPACE: 'ansys.aedt.toolkits.template'
+  DOCUMENTATION_CNAME: 'aedt.antenna.toolkit.docs.pyansys.com'
+  LIBRARY_NAME: 'ansys-aedt-toolkits-antennas'
+  LIBRARY_NAMESPACE: 'ansys.aedt.toolkits.antennas'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -91,7 +91,7 @@ jobs:
         timeout-minutes: 30
         run: |
           .\.venv\Scripts\Activate.ps1
-          pytest -v --cov=pyaedt-toolkit-template --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests
+          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests
 
       - name: Upload Coverage Results
         uses: actions/upload-artifact@v3
@@ -141,7 +141,7 @@ jobs:
           export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
           export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
-          pytest -v --cov=pyaedt-toolkit-template --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests
+          pytest -v --cov=pyaedt-antenna-toolkit- --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests
         env:
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 

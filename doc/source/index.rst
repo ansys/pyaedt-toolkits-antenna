@@ -1,5 +1,5 @@
-PyAEDT toolkit template documentation  |version|
-================================================
+Antenna toolkit documentation  |version|
+========================================
 
 ..
    Simply reuse the root readme
@@ -9,7 +9,6 @@ PyAEDT toolkit template documentation  |version|
 .. toctree::
    :hidden:
 
-   Toolkit_template
    Getting_started
    Toolkit/ui
    Toolkit/index

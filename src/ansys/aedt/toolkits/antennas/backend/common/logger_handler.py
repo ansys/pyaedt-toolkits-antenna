@@ -2,7 +2,7 @@ import logging
 import os.path
 import tempfile
 
-from ansys.aedt.toolkits.template.backend.common.properties import properties
+from ansys.aedt.toolkits.antennas.backend.common.properties import properties
 
 # Create a logger
 logger = logging.getLogger(__name__)

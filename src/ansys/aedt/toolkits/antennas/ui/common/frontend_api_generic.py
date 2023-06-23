@@ -8,7 +8,7 @@ from PySide6 import QtWidgets
 import qdarkstyle
 import requests
 
-from ansys.aedt.toolkits.template.ui.common.logger_handler import logger
+from ansys.aedt.toolkits.antennas.ui.common.logger_handler import logger
 
 
 class FrontendGeneric(object):
