@@ -130,10 +130,10 @@ This section shows how to install the toolkit in an specific python environment 
       import time
 
       # Import backend services
-      from ansys.aedt.toolkits.template.backend.service import ToolkitService
+      from ansys.aedt.toolkits.template.backend.api import Toolkit
 
       # Backend object
-      service = ToolkitService()
+      service = Toolkit()
 
       # Get service properties
       properties = service.get_properties()

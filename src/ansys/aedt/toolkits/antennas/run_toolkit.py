@@ -27,7 +27,7 @@ import subprocess
 python_path = sys.executable
 
 # Define the command to start the Flask application
-backend_file = os.path.join(backend.__path__[0], "backend.py")
+backend_file = os.path.join(backend.__path__[0], "rest_api.py")
 backend_command = [python_path, backend_file]
 
 

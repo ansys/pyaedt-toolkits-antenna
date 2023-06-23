@@ -1,20 +1,20 @@
 from ansys.aedt.toolkits.antennas.backend.common.logger_handler import logger
 from ansys.aedt.toolkits.antennas.backend.common.properties import properties
-from ansys.aedt.toolkits.antennas.backend.common.service_generic import ServiceGeneric
+from ansys.aedt.toolkits.antennas.backend.common.api_generic import ToolkitGeneric
 
 from ansys.aedt.toolkits.antennas.backend import models
 
 
-class ToolkitService(ServiceGeneric):
+class Toolkit(ToolkitGeneric):
     """Template API to control the toolkit workflow.
 
     This class provides methods to synthesize and create antennas.
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
+    >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
     >>> import time
-    >>> service = ToolkitService()
+    >>> service = Toolkit()
     >>> msg1 = service.launch_aedt()
     >>> response = service.get_thread_status()
     >>> while response[0] == 0:
@@ -24,7 +24,7 @@ class ToolkitService(ServiceGeneric):
     """
 
     def __init__(self):
-        ServiceGeneric.__init__(self)
+        ToolkitGeneric.__init__(self)
         self.oantenna = None
         self.antennas = []
         self.antenna_names = []
@@ -46,9 +46,9 @@ class ToolkitService(ServiceGeneric):
 
         Examples
         --------
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
         >>> import time
-        >>> service = ToolkitService()
+        >>> service = Toolkit()
         >>> msg1 = service.launch_aedt()
         >>> response = service.get_thread_status()
         >>> while response[0] == 0:

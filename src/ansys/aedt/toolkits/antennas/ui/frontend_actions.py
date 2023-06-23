@@ -4,9 +4,9 @@ import sys
 
 from PySide6 import QtWidgets
 
-from ansys.aedt.toolkits.antennas.ui.common.frontend_ui import Ui_MainWindow
-from ansys.aedt.toolkits.antennas.ui.common.logger_handler import logger
-from ansys.aedt.toolkits.antennas.ui.frontend_toolkit import ToolkitFrontend
+from ansys.aedt.toolkits.template.ui.common.frontend_ui import Ui_MainWindow
+from ansys.aedt.toolkits.template.ui.common.logger_handler import logger
+from ansys.aedt.toolkits.template.ui.frontend_api import ToolkitFrontend
 
 os.environ["QT_API"] = "pyside6"
 

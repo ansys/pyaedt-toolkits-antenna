@@ -12,5 +12,5 @@
   "url" : "127.0.0.1",
   "port" : 5001,
   "debug" : true,
-  "log_file" : "C:\\temp\\backend.log"
+  "log_file" : "backend.log"
 }

@@ -106,7 +106,7 @@ class BasisTest(object):
         subfolder="",
     ):
         if "oDesktop" not in dir(self._main):
-            self.desktop = Desktop(desktop_version, settings.non_graphical, new_thread)
+            self.desktop = Desktop(desktop_version, settings.non_graphical, True)
             self.desktop.disable_autosave()
         if project_name:
             example_project = os.path.join(

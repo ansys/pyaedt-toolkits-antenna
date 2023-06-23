@@ -3,9 +3,9 @@ from flask import jsonify
 from flask import request
 
 from ansys.aedt.toolkits.antennas.backend.common.logger_handler import logger
-from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
+from ansys.aedt.toolkits.antennas.backend.api import Toolkit
 
-service = ToolkitService()
+service = Toolkit()
 settings = service.get_properties()
 
 app = Flask(__name__)

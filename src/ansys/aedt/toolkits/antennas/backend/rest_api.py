@@ -1,9 +1,9 @@
-from ansys.aedt.toolkits.antennas.backend.common.backend_generic import app
-from ansys.aedt.toolkits.antennas.backend.common.backend_generic import jsonify
-from ansys.aedt.toolkits.antennas.backend.common.backend_generic import logger
+from ansys.aedt.toolkits.antennas.backend.common.rest_api_generic import app
+from ansys.aedt.toolkits.antennas.backend.common.rest_api_generic import jsonify
+from ansys.aedt.toolkits.antennas.backend.common.rest_api_generic import logger
 from flask import request
-from ansys.aedt.toolkits.antennas.backend.common.backend_generic import service
-from ansys.aedt.toolkits.antennas.backend.common.backend_generic import settings
+from ansys.aedt.toolkits.antennas.backend.common.rest_api_generic import service
+from ansys.aedt.toolkits.antennas.backend.common.rest_api_generic import settings
 from ansys.aedt.toolkits.antennas.backend.common.multithreading_server import MultithreadingServer
 
 

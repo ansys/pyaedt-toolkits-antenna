@@ -1,7 +1,8 @@
 import logging
 import os.path
+import tempfile
 
-from ansys.aedt.toolkits.antennas.backend.common.properties import properties
+from ansys.aedt.toolkits.template.backend.common.properties import properties
 
 # Create a logger
 logger = logging.getLogger(__name__)
@@ -10,8 +11,13 @@ if properties.debug:
     logger.setLevel(logging.DEBUG)
 
     # Create a file handler for the logger
-    if os.path.exists(properties.log_file):
-        log_file = properties.log_file
+    if properties.log_file:
+        temp_dir = os.path.join(tempfile.gettempdir(), properties.log_file)
+        if not os.path.exists(temp_dir):
+            file = open(temp_dir, "w")
+            file.close()
+
+        log_file = properties.log_file = temp_dir
         file_handler = logging.FileHandler(log_file)
 
         # Set the log format

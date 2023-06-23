@@ -10,7 +10,7 @@ from ansys.aedt.toolkits.antennas.backend.common.thread_manager import ThreadMan
 thread = ThreadManager()
 
 
-class ServiceGeneric(object):
+class ToolkitGeneric(object):
     """Generic API to control the toolkits.
 
     It provides basic functions to control AEDT and properties to share between backend and frontend.
@@ -18,8 +18,8 @@ class ServiceGeneric(object):
     Examples
     --------
     >>> import time
-    >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-    >>> service = ToolkitService()
+    >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+    >>> service = Toolkit()
     >>> properties = service.get_properties()
     >>> new_properties = {"aedt_version": "2022.2"}
     >>> service.set_properties(new_properties)
@@ -67,8 +67,8 @@ class ServiceGeneric(object):
 
         Examples
         --------
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.set_properties({"property1": value1, "property2": value2})
 
         """
@@ -99,8 +99,8 @@ class ServiceGeneric(object):
 
         Examples
         --------
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.get_properties()
         {"property1": value1, "property2": value2}
         """
@@ -117,8 +117,8 @@ class ServiceGeneric(object):
 
         Examples
         --------
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.get_thread_status()
         """
         thread_running = thread.is_thread_running()
@@ -146,8 +146,8 @@ class ServiceGeneric(object):
 
         Examples
         --------
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> msg = service.launch_aedt()
         >>> response = service.get_thread_status()
         >>> while response[0] == 0:
@@ -187,8 +187,8 @@ class ServiceGeneric(object):
 
         Examples
         --------
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.installed_aedt_version()
         ["2021.1", "2021.2", "2022.1"]
         """
@@ -213,8 +213,8 @@ class ServiceGeneric(object):
 
         Examples
         --------
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.aedt_sessions()
         [[pid1, grpc_port1], [pid2, grpc_port2]]
         """
@@ -274,8 +274,8 @@ class ServiceGeneric(object):
         Examples
         --------
         >>> import time
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
@@ -312,8 +312,8 @@ class ServiceGeneric(object):
         Examples
         --------
         >>> import time
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
@@ -393,8 +393,8 @@ class ServiceGeneric(object):
         Examples
         --------
         >>> import time
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
@@ -469,8 +469,8 @@ class ServiceGeneric(object):
         Examples
         --------
         >>> import time
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
@@ -557,8 +557,8 @@ class ServiceGeneric(object):
         Examples
         --------
         >>> import time
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
@@ -604,8 +604,8 @@ class ServiceGeneric(object):
         Examples
         --------
         >>> import time
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
@@ -633,8 +633,8 @@ class ServiceGeneric(object):
         Examples
         --------
         >>> import time
-        >>> from ansys.aedt.toolkits.antennas.backend.service import ToolkitService
-        >>> service = ToolkitService()
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> service = Toolkit()
         >>> service.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)

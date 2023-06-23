@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import tempfile
 
 with open(os.path.join(os.path.dirname(__file__), "general_properties.json")) as fh:
     general_settings = json.load(fh)
@@ -15,7 +16,15 @@ if debug:
     logger.setLevel(logging.DEBUG)
 
     # Create a file handler for the logger
-    if os.path.exists(log_file):
+
+    if log_file:
+        temp_dir = os.path.join(tempfile.gettempdir(), log_file)
+        if not os.path.exists(temp_dir):
+            file = open(temp_dir, "w")
+            file.close()
+
+        log_file = temp_dir
+        file_handler = logging.FileHandler(log_file)
         file_handler = logging.FileHandler(log_file)
 
         # Set the log format
