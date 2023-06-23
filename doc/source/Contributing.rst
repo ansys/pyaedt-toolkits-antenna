@@ -1,5 +1,3 @@
-.. _contributing_aedt:
-
 ==========
 Contribute
 ==========
@@ -8,34 +6,34 @@ Overall guidance on contributing to a PyAnsys repository appears in
 in the *PyAnsys Developer's Guide*. Ensure that you are thoroughly familiar
 with this guide before attempting to contribute to PyAEDT or its toolkits.
  
-The following contribution information is specific to PyAEDT Antenna toolkit.
+The following contribution information is specific to PyAEDT toolkits.
 
 Clone the repository
 --------------------
-To clone and install the latest version of PyAEDT Antenna toolkit in
+To clone and install the latest version of this toolkit in
 development mode, run:
 
 .. code::
 
-    git clone https://github.com/pyansys/pyaedt-antenna-toolkit.git
-    cd pyaedt-antenna-toolkit
+    git clone https://github.com/ansys/pyaedt-toolkit-template.git
+    cd pyaedt-toolkit-template
     python -m pip install --upgrade pip
     pip install -e .
 
 Post issues
 -----------
-Use the `PyAEDT Antenna toolkit Issues <https://github.com/pyansys/pyaedt-antenna-toolkit/issues>`_ page
+Use the `PyAEDT toolkit template issues <https://github.com/ansys/pyaedt-toolkit-template/issues>`_ page
 to submit questions, report bugs, and request new features.
 
-View antenna toolkit documentation
+View toolkit documentation
 -----------------------------------------
 Documentation for the latest development version, which tracks the
-``main`` branch, is hosted at  `PyAEDT Antenna toolkit Documentation <https://aedt.antenna.toolkit.docs.pyansys.com/>`_.
+``main`` branch, is hosted at  `PyAEDT Toolkit Template Documentation <https://aedt.toolkit.template.docs.pyansys.com/>`_.
 This version is automatically kept up to date via GitHub actions.
 
 Adhere to code style
 --------------------
-PyAEDT antenna toolkit is compliant with `PyAnsys code style
+PyAEDT toolkit is compliant with `PyAnsys code style
 <https://dev.docs.pyansys.com/coding-style/index.html>`_. It uses the tool
 `pre-commit <https://pre-commit.com/>`_ to select the code style. You can install
 and activate this tool with:

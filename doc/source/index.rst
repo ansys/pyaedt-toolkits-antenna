@@ -1,5 +1,5 @@
-PyAEDT antenna toolkit documentation  |version|
-===============================================
+PyAEDT toolkit template documentation  |version|
+================================================
 
 ..
    Simply reuse the root readme
@@ -9,9 +9,10 @@ PyAEDT antenna toolkit documentation  |version|
 .. toctree::
    :hidden:
 
+   Toolkit_template
    Getting_started
-   Antennas/antenna_wizard
-   Antennas/index
+   Toolkit/ui
+   Toolkit/index
    Contributing
 
 
