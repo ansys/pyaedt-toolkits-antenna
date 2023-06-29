@@ -63,11 +63,12 @@ class BowTie(CommonPatch):
     _default_input_parameters = {
         "antenna_name": "",
         "origin": [0, 0, 0],
-        "length_unit": 'cm',
+        "length_unit": "cm",
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",
         "material": "FR4_epoxy",
+        "material_properties": {"permittivity": 4.4},
         "outer_boundary": "",
         "huygens_box": False,
         "substrate_height": 0.1575,
@@ -85,37 +86,33 @@ class BowTie(CommonPatch):
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
         wavelength = lightSpeed / freq_hz
 
-        if (
-                self.material in self._app.materials.mat_names_aedt
-                or self.material in self._app.materials.mat_names_aedt_lower
+        if self._app and (
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
             mat_props = self._app.materials[self.material]
+            permittivity = mat_props.permittivity.value
+            self._input_parameters.material_properties["permittivity"] = permittivity
+
+        elif self.material_properties:
+            permittivity = self.material_properties["permittivity"]
         else:
-            self._app.logger.warning(
-                "Material is not found. Create the material before assigning it."
-            )
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(mat_props.permittivity.value)
+        subPermittivity = float(permittivity)
 
-        sub_meters = constants.unit_converter(
-            self.substrate_height, "Length", self.length_unit, "meter"
-        )
+        sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         tl = TransmissionLine()
-        eff_Permittivity = tl.suspended_strip_calculator(
-            wavelength, wavelength / 80.0, sub_meters, subPermittivity
-        )
+        eff_Permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, subPermittivity)
 
         eff_wl_meters = wavelength / math.sqrt(eff_Permittivity)
-        eff_wl_working_units = constants.unit_converter(
-            eff_wl_meters, output_units=self.length_unit
-        )
+        eff_wl_working_units = constants.unit_converter(eff_wl_meters, output_units=self.length_unit)
         correction_factor = 0.65
         arm_length = correction_factor * math.sqrt(
-                math.pow(eff_wl_working_units / 4.0, 2)
-                - math.pow(eff_wl_working_units / 80.0 / 2.0, 2)
-            )
+            math.pow(eff_wl_working_units / 4.0, 2) - math.pow(eff_wl_working_units / 80.0 / 2.0, 2)
+        )
         inner_width = correction_factor * eff_wl_working_units / 80.0
         outer_width = correction_factor * eff_wl_working_units / 80.0 * 18.0
         port_gap = correction_factor * eff_wl_working_units / 80.0
@@ -178,12 +175,8 @@ class BowTie(CommonPatch):
         sub.history().props["Coordinate System"] = coordinate_system
         array_points = [["{}/2".format(inner_width), "{}/2".format(port_gap), 0]]
         array_points.append(["-{}/2".format(inner_width), "{}/2".format(port_gap), 0])
-        array_points.append(
-            ["-{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0]
-        )
-        array_points.append(
-            ["{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0]
-        )
+        array_points.append(["-{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0])
+        array_points.append(["{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0])
         array_points.append(["{}/2".format(inner_width), "{}/2".format(port_gap), 0])
         ant = self._app.modeler.create_polyline(array_points, cover_surface=True, name="ant_arm")
         ant.color = (255, 128, 65)
@@ -211,9 +204,7 @@ class BowTie(CommonPatch):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
@@ -331,38 +322,27 @@ class BowTieRounded(CommonPatch):
         wavelength = lightSpeed / freq_hz
 
         if (
-                self.material in self._app.materials.mat_names_aedt
-                or self.material in self._app.materials.mat_names_aedt_lower
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
             mat_props = self._app.materials[self.material]
         else:
-            self._app.logger.warning(
-                "Material is not found. Create the material before assigning it."
-            )
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
         subPermittivity = float(mat_props.permittivity.value)
 
-        sub_meters = constants.unit_converter(
-            self.substrate_height, "Length", self.length_unit, "meter"
-        )
+        sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         tl = TransmissionLine()
-        eff_Permittivity = tl.suspended_strip_calculator(
-            wavelength, wavelength / 80.0, sub_meters, subPermittivity
-        )
+        eff_Permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, subPermittivity)
 
         eff_wl_meters = wavelength / math.sqrt(eff_Permittivity)
-        eff_wl_working_units = constants.unit_converter(
-            eff_wl_meters, output_units=self.length_unit
-        )
+        eff_wl_working_units = constants.unit_converter(eff_wl_meters, output_units=self.length_unit)
         correction_factor = 0.58
         arm_length = round(
             correction_factor
-            * math.sqrt(
-                math.pow(eff_wl_working_units / 4.0, 2)
-                - math.pow(eff_wl_working_units / 80.0 / 2.0, 2)
-            ),
+            * math.sqrt(math.pow(eff_wl_working_units / 4.0, 2) - math.pow(eff_wl_working_units / 80.0 / 2.0, 2)),
             2,
         )
         inner_width = round(correction_factor * eff_wl_working_units / 80.0, 2)
@@ -430,12 +410,8 @@ class BowTieRounded(CommonPatch):
         sub.history().props["Coordinate System"] = coordinate_system
         array_points = [["{}/2".format(inner_width), "{}/2".format(port_gap), 0]]
         array_points.append(["-{}/2".format(inner_width), "{}/2".format(port_gap), 0])
-        array_points.append(
-            ["-{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0]
-        )
-        array_points.append(
-            ["{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0]
-        )
+        array_points.append(["-{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0])
+        array_points.append(["{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0])
         array_points.append(["{}/2".format(inner_width), "{}/2".format(port_gap), 0])
         ant = self._app.modeler.create_polyline(array_points, cover_surface=True, name="ant_arm")
         y_val = "if({0}>={1}/2,{2}-{1}/2/tan(asin({1}/2/{0}))+{3}/2 ,{2})".format(
@@ -471,9 +447,7 @@ class BowTieRounded(CommonPatch):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
@@ -591,38 +565,27 @@ class BowTieSlot(CommonPatch):
         wavelength = lightSpeed / freq_hz
 
         if (
-                self.material in self._app.materials.mat_names_aedt
-                or self.material in self._app.materials.mat_names_aedt_lower
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
             mat_props = self._app.materials[self.material]
         else:
-            self._app.logger.warning(
-                "Material is not found. Create the material before assigning it."
-            )
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
         subPermittivity = float(mat_props.permittivity.value)
 
-        sub_meters = constants.unit_converter(
-            self.substrate_height, "Length", self.length_unit, "meter"
-        )
+        sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         tl = TransmissionLine()
-        eff_Permittivity = tl.suspended_strip_calculator(
-            wavelength, wavelength / 80.0, sub_meters, subPermittivity
-        )
+        eff_Permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, subPermittivity)
 
         eff_wl_meters = wavelength / math.sqrt(eff_Permittivity)
-        eff_wl_working_units = constants.unit_converter(
-            eff_wl_meters, output_units=self.length_unit
-        )
+        eff_wl_working_units = constants.unit_converter(eff_wl_meters, output_units=self.length_unit)
         correction_factor = 1.275
         arm_length = round(
             correction_factor
-            * math.sqrt(
-                math.pow(eff_wl_working_units / 4.0, 2)
-                - math.pow(eff_wl_working_units / 80.0 / 2.0, 2)
-            ),
+            * math.sqrt(math.pow(eff_wl_working_units / 4.0, 2) - math.pow(eff_wl_working_units / 80.0 / 2.0, 2)),
             2,
         )
         inner_width = round(correction_factor * eff_wl_working_units / 80.0, 2)
@@ -782,9 +745,7 @@ class BowTieSlot(CommonPatch):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[

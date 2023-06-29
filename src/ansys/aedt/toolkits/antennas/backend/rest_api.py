@@ -1,10 +1,11 @@
+from flask import request
+
+from ansys.aedt.toolkits.antennas.backend.common.multithreading_server import MultithreadingServer
 from ansys.aedt.toolkits.antennas.backend.common.rest_api_generic import app
 from ansys.aedt.toolkits.antennas.backend.common.rest_api_generic import jsonify
 from ansys.aedt.toolkits.antennas.backend.common.rest_api_generic import logger
-from flask import request
 from ansys.aedt.toolkits.antennas.backend.common.rest_api_generic import service
 from ansys.aedt.toolkits.antennas.backend.common.rest_api_generic import settings
-from ansys.aedt.toolkits.antennas.backend.common.multithreading_server import MultithreadingServer
 
 
 @app.route("/create_antenna", methods=["POST"])
@@ -27,7 +28,7 @@ def create_antennay_call():
 
     response = service.get_antenna(antenna, synth_only=synth_only)
     if response:
-        return jsonify("Antenna created"), 200
+        return jsonify(response), 200
     else:
         return jsonify("Antenna not created"), 500
 

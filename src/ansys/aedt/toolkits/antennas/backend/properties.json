@@ -13,6 +13,7 @@
   "frequency_unit" : "GHz",
   "substrate_height": 0.0,
   "material": "pec",
+  "material_properties": {},
   "huygens_box": false,
   "start_frequency": 0.0,
   "stop_frequency": 0.0,

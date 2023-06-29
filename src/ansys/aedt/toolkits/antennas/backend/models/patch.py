@@ -1,12 +1,10 @@
 from collections import OrderedDict
 import math
 
-from ansys.aedt.toolkits.antennas.backend.common.logger_handler import logger
-
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
-
+from ansys.aedt.toolkits.antennas.backend.common.logger_handler import logger
 from ansys.aedt.toolkits.antennas.backend.models.common import CommonAntenna
 from ansys.aedt.toolkits.antennas.backend.models.common import TransmissionLine
 
@@ -31,25 +29,36 @@ class CommonPatch(CommonAntenna):
 
     @material.setter
     def material(self, value):
-        if (
-            value
-            and value not in self._app.materials.mat_names_aedt
-            and value not in self._app.materials.mat_names_aedt_lower
-        ):
-            logger.debug("Material not defined")
-        else:
-            if value != self.material and self.object_list:
-                for antenna_obj in self.object_list:
-                    if (
-                        self.object_list[antenna_obj].material_name == self.material.lower()
-                        and "coax" not in antenna_obj
-                    ):
-                        self.object_list[antenna_obj].material_name = value
+        if self._app:
+            if (
+                value
+                and value not in self._app.materials.mat_names_aedt
+                and value not in self._app.materials.mat_names_aedt_lower
+            ):
+                logger.debug("Material not defined")
+            else:
+                if value != self.material and self.object_list:
+                    for antenna_obj in self.object_list:
+                        if (
+                            self.object_list[antenna_obj].material_name == self.material.lower()
+                            and "coax" not in antenna_obj
+                        ):
+                            self.object_list[antenna_obj].material_name = value
 
-                self._input_parameters.material = value
-                parameters = self._synthesis()
-                self.update_synthesis_parameters(parameters)
-                self.set_variables_in_hfss()
+                    self._input_parameters.material = value
+                    parameters = self._synthesis()
+                    self.update_synthesis_parameters(parameters)
+                    self.set_variables_in_hfss()
+
+    @property
+    def material_properties(self):
+        """Substrate material properties.
+
+        Returns
+        -------
+        str
+        """
+        return self._input_parameters.material_properties
 
     @property
     def substrate_height(self):
@@ -132,6 +141,7 @@ class RectangularPatchProbe(CommonPatch):
         "frequency": 10.0,
         "frequency_unit": "GHz",
         "material": "FR4_epoxy",
+        "material_properties": {"permittivity": 4.4},
         "outer_boundary": "",
         "huygens_box": False,
         "substrate_height": 0.1575,
@@ -139,7 +149,6 @@ class RectangularPatchProbe(CommonPatch):
 
     def __init__(self, *args, **kwargs):
         CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
-
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
 
@@ -151,22 +160,23 @@ class RectangularPatchProbe(CommonPatch):
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
         wavelength = lightSpeed / freq_hz
 
-        if (
+        if self._app and (
             self.material in self._app.materials.mat_names_aedt
             or self.material in self._app.materials.mat_names_aedt_lower
         ):
             mat_props = self._app.materials[self.material]
+            permittivity = mat_props.permittivity.value
+            self._input_parameters.material_properties["permittivity"] = permittivity
+
+        elif self.material_properties:
+            permittivity = self.material_properties["permittivity"]
         else:
-            ansys.aedt.toolkits.antennas.common_ui.logger.warning(
-                "Material is not found. Create the material before assigning it."
-            )
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(mat_props.permittivity.value)
+        subPermittivity = float(permittivity)
 
-        sub_meters = constants.unit_converter(
-            self.substrate_height, "Length", self.length_unit, "meter"
-        )
+        sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((subPermittivity + 1.0) / 2.0))
 
@@ -186,12 +196,7 @@ class RectangularPatchProbe(CommonPatch):
         # eff_WL_meters = wavelength / math.sqrt(eff_Permittivity)
 
         k = 2.0 * math.pi / eff_Permittivity
-        G = (
-            math.pi
-            * patch_width
-            / (120.0 * math.pi * wavelength)
-            * (1.0 - math.pow(k * sub_meters, 2) / 24)
-        )
+        G = math.pi * patch_width / (120.0 * math.pi * wavelength) * (1.0 - math.pow(k * sub_meters, 2) / 24)
 
         # impedance at edge of patch
         Res = 1.0 / (2.0 * G)
@@ -213,17 +218,13 @@ class RectangularPatchProbe(CommonPatch):
         parameters["sub_h"] = sub_h
 
         sub_x = round(
-            constants.unit_converter(
-                1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit
-            ),
+            constants.unit_converter(1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit),
             1,
         )
         parameters["sub_x"] = sub_x
 
         sub_y = round(
-            constants.unit_converter(
-                1.5 * patch_length + 6.0 * sub_meters, "Length", "meter", length_unit
-            ),
+            constants.unit_converter(1.5 * patch_length + 6.0 * sub_meters, "Length", "meter", length_unit),
             1,
         )
         parameters["sub_y"] = sub_y
@@ -240,20 +241,12 @@ class RectangularPatchProbe(CommonPatch):
         )
         parameters["coax_outer_rad"] = coax_outer_rad
 
-        feed_length = round(
-            constants.unit_converter(wavelength / 6.0, "Length", "meter", length_unit), 2
-        )
+        feed_length = round(constants.unit_converter(wavelength / 6.0, "Length", "meter", length_unit), 2)
         parameters["feed_length"] = feed_length
 
         if self.huygens_box:
-            gnd_x = (
-                constants.unit_converter((299792458 / freq_hz / 4), "Length", "meter", length_unit)
-                + sub_x
-            )
-            gnd_y = (
-                constants.unit_converter((299792458 / freq_hz / 4), "Length", "meter", length_unit)
-                + sub_y
-            )
+            gnd_x = constants.unit_converter((299792458 / freq_hz / 4), "Length", "meter", length_unit) + sub_x
+            gnd_y = constants.unit_converter((299792458 / freq_hz / 4), "Length", "meter", length_unit) + sub_y
         else:
             gnd_x = sub_x
             gnd_y = sub_y
@@ -414,9 +407,7 @@ class RectangularPatchProbe(CommonPatch):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
@@ -514,6 +505,7 @@ class RectangularPatchInset(CommonPatch):
         "frequency": 10.0,
         "frequency_unit": "GHz",
         "material": "FR4_epoxy",
+        "material_properties": {"permittivity": 4.4},
         "outer_boundary": "",
         "huygens_box": False,
         "substrate_height": 0.1575,
@@ -533,24 +525,25 @@ class RectangularPatchInset(CommonPatch):
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
         wavelength = lightSpeed / freq_hz
 
-        if (
+        if self._app and (
             self.material in self._app.materials.mat_names_aedt
             or self.material in self._app.materials.mat_names_aedt_lower
         ):
             mat_props = self._app.materials[self.material]
+            permittivity = mat_props.permittivity.value
+            self._input_parameters.material_properties["permittivity"] = permittivity
+
+        elif self.material_properties:
+            permittivity = self.material_properties["permittivity"]
         else:
-            ansys.aedt.toolkits.antennas.common_ui.logger.warning(
-                "Material is not found. Create the material before assigning it."
-            )
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(mat_props.permittivity.value)
+        subPermittivity = float(permittivity)
 
         patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((subPermittivity + 1.0) / 2.0))
 
-        sub_meters = constants.unit_converter(
-            self.substrate_height, "Length", self.length_unit, "meter"
-        )
+        sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         eff_Permittivity = (subPermittivity + 1.0) / 2.0 + (subPermittivity - 1.0) / 2.0 * math.pow(
             1.0 + 12.0 * sub_meters / patch_width, -0.5
@@ -568,12 +561,7 @@ class RectangularPatchInset(CommonPatch):
         # eff_WL_meters = wavelength / math.sqrt(eff_Permittivity)
 
         k = 2.0 * math.pi / eff_Permittivity
-        G = (
-            math.pi
-            * patch_width
-            / (120.0 * math.pi * wavelength)
-            * (1.0 - math.pow(k * sub_meters, 2) / 24)
-        )
+        G = math.pi * patch_width / (120.0 * math.pi * wavelength) * (1.0 - math.pow(k * sub_meters, 2) / 24)
 
         # impedance at edge of patch
         Res = 1.0 / (2.0 * G)
@@ -581,9 +569,7 @@ class RectangularPatchInset(CommonPatch):
 
         # quarterwave_imped = math.sqrt(50.0 * Res)
 
-        uStrip = self._transmission_line_calculator.microstrip_calculator(
-            sub_meters, subPermittivity, 50.0, 150.0
-        )
+        uStrip = self._transmission_line_calculator.microstrip_calculator(sub_meters, subPermittivity, 50.0, 150.0)
 
         microstrip_width = uStrip[0]
         microstrip_length = uStrip[1]
@@ -598,35 +584,25 @@ class RectangularPatchInset(CommonPatch):
         parameters["sub_h"] = sub_h
 
         sub_x = round(
-            constants.unit_converter(
-                1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit
-            ),
+            constants.unit_converter(1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit),
             1,
         )
         parameters["sub_x"] = sub_x
 
         sub_y = round(
-            constants.unit_converter(
-                2.1 * (microstrip_length + patch_length / 2), "Length", "meter", length_unit
-            ),
+            constants.unit_converter(2.1 * (microstrip_length + patch_length / 2), "Length", "meter", length_unit),
             2,
         )
         parameters["sub_y"] = sub_y
 
         inset_distance = round(
-            constants.unit_converter(
-                patch_length / 2 - inset_distance_meter, "Length", "meter", length_unit
-            ),
+            constants.unit_converter(patch_length / 2 - inset_distance_meter, "Length", "meter", length_unit),
             4,
         )
         parameters["inset_distance"] = inset_distance
 
-        microstrip_length = constants.unit_converter(
-            microstrip_length, "Length", "meter", length_unit
-        )
-        microstrip_width = constants.unit_converter(
-            microstrip_width, "Length", "meter", length_unit
-        )
+        microstrip_length = constants.unit_converter(microstrip_length, "Length", "meter", length_unit)
+        microstrip_width = constants.unit_converter(microstrip_width, "Length", "meter", length_unit)
 
         inset_gap = round(microstrip_width / 2, 3)
         parameters["inset_gap"] = inset_gap
@@ -653,7 +629,7 @@ class RectangularPatchInset(CommonPatch):
 
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
-            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists.")
+            self._app.logger.warning("This antenna already exists.")
             return False
 
         self.set_variables_in_hfss()
@@ -765,37 +741,17 @@ class RectangularPatchInset(CommonPatch):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
-                    "-" + sub_x + "/2"
-                    "+" + pos_x + "-" + "+" + huygens_dist + self.length_unit + "/2",
-                    "-" + sub_y + "/2"
-                    "+" + pos_y + "-" + "+" + huygens_dist + self.length_unit + "/2",
+                    "-" + sub_x + "/2" "+" + pos_x + "-" + "+" + huygens_dist + self.length_unit + "/2",
+                    "-" + sub_y + "/2" "+" + pos_y + "-" + "+" + huygens_dist + self.length_unit + "/2",
                     pos_z,
                 ],
                 dimensions_list=[
-                    "abs(-"
-                    + sub_x
-                    + "/2"
-                    + "-"
-                    + sub_x
-                    + "/2)"
-                    + "+"
-                    + huygens_dist
-                    + self.length_unit,
-                    "abs(-"
-                    + sub_y
-                    + "/2"
-                    + "-"
-                    + sub_y
-                    + "/2)"
-                    + "+"
-                    + huygens_dist
-                    + self.length_unit,
+                    "abs(-" + sub_x + "/2" + "-" + sub_x + "/2)" + "+" + huygens_dist + self.length_unit,
+                    "abs(-" + sub_y + "/2" + "-" + sub_y + "/2)" + "+" + huygens_dist + self.length_unit,
                     "abs(-" + sub_h + ")+" + huygens_dist + self.length_unit,
                 ],
                 name="huygens_" + antenna_name,
@@ -880,6 +836,7 @@ class RectangularPatchEdge(CommonPatch):
         "frequency": 10.0,
         "frequency_unit": "GHz",
         "material": "FR4_epoxy",
+        "material_properties": {"permittivity": 4.4},
         "outer_boundary": "",
         "huygens_box": False,
         "substrate_height": 0.1575,
@@ -887,7 +844,6 @@ class RectangularPatchEdge(CommonPatch):
 
     def __init__(self, *args, **kwargs):
         CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
-
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
 
@@ -899,22 +855,25 @@ class RectangularPatchEdge(CommonPatch):
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
         wavelength = lightSpeed / freq_hz
 
-        if (
+        if self._app and (
             self.material in self._app.materials.mat_names_aedt
             or self.material in self._app.materials.mat_names_aedt_lower
         ):
             mat_props = self._app.materials[self.material]
+            permittivity = mat_props.permittivity.value
+            self._input_parameters.material_properties["permittivity"] = permittivity
+
+        elif self.material_properties:
+            permittivity = self.material_properties["permittivity"]
         else:
-            logger.debug("Material is not found")
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(mat_props.permittivity.value)
+        subPermittivity = float(permittivity)
 
         patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((subPermittivity + 1.0) / 2.0))
 
-        sub_meters = constants.unit_converter(
-            self.substrate_height, "Length", self.length_unit, "meter"
-        )
+        sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         eff_Permittivity = (subPermittivity + 1.0) / 2.0 + (subPermittivity - 1.0) / 2.0 * math.pow(
             1.0 + 12.0 * sub_meters / patch_width, -0.5
@@ -932,12 +891,7 @@ class RectangularPatchEdge(CommonPatch):
         # eff_WL_meters = wavelength / math.sqrt(eff_Permittivity)
 
         k = 2.0 * math.pi / eff_Permittivity
-        G = (
-            math.pi
-            * patch_width
-            / (120.0 * math.pi * wavelength)
-            * (1.0 - math.pow(k * sub_meters, 2) / 24)
-        )
+        G = math.pi * patch_width / (120.0 * math.pi * wavelength) * (1.0 - math.pow(k * sub_meters, 2) / 24)
 
         # impedance at edge of patch
         Res = 1.0 / (2.0 * G)
@@ -952,9 +906,7 @@ class RectangularPatchEdge(CommonPatch):
         microstrip_edge_width = uStrip1[0]
         microstrip_edge_length = uStrip1[1]
 
-        uStrip2 = self._transmission_line_calculator.microstrip_calculator(
-            sub_meters, subPermittivity, 50.0, 150.0
-        )
+        uStrip2 = self._transmission_line_calculator.microstrip_calculator(sub_meters, subPermittivity, 50.0, 150.0)
 
         microstrip_width = uStrip2[0]
         microstrip_length = uStrip2[1]
@@ -969,9 +921,7 @@ class RectangularPatchEdge(CommonPatch):
         parameters["sub_h"] = sub_h
 
         sub_x = round(
-            constants.unit_converter(
-                1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit
-            ),
+            constants.unit_converter(1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit),
             1,
         )
         parameters["sub_x"] = sub_x
@@ -1027,7 +977,7 @@ class RectangularPatchEdge(CommonPatch):
 
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
-            ansys.aedt.toolkits.antennas.common_ui.logger.warning("This antenna already exists.")
+            self._app.logger.warning("This antenna already exists.")
             return False
 
         self.set_variables_in_hfss()
@@ -1138,9 +1088,7 @@ class RectangularPatchEdge(CommonPatch):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
@@ -1149,24 +1097,8 @@ class RectangularPatchEdge(CommonPatch):
                     "0",
                 ],
                 dimensions_list=[
-                    "abs(-"
-                    + sub_x
-                    + "/2"
-                    + "-"
-                    + sub_x
-                    + "/2)"
-                    + "+"
-                    + huygens_dist
-                    + self.length_unit,
-                    "abs(-"
-                    + sub_y
-                    + "/2"
-                    + "-"
-                    + sub_y
-                    + "/2)"
-                    + "+"
-                    + huygens_dist
-                    + self.length_unit,
+                    "abs(-" + sub_x + "/2" + "-" + sub_x + "/2)" + "+" + huygens_dist + self.length_unit,
+                    "abs(-" + sub_y + "/2" + "-" + sub_y + "/2)" + "+" + huygens_dist + self.length_unit,
                     "abs(-" + sub_h + ")+" + huygens_dist + self.length_unit,
                 ],
                 name="huygens_" + antenna_name,

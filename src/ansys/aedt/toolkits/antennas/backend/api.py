@@ -56,17 +56,16 @@ class Toolkit(ToolkitGeneric):
         >>> msg3 = service.get_antenna("BowTie")
         """
 
-        if not self.aedtapp:
-            # Connect to AEDT design
-            self.connect_design("Hfss")
-
-        if not self.aedtapp:
-            logger.debug("HFSS design not connected")
-            return False
-
         if self.oantenna:
             logger.debug("Antenna is already created")
             return False
+
+        if not synth_only and not self.aedtapp:
+            # Connect to AEDT design
+            self.connect_design("Hfss")
+            if not self.aedtapp:
+                logger.debug("HFSS design not connected")
+                return False
 
         freq_units = properties.frequency_unit
 
@@ -103,6 +102,13 @@ class Toolkit(ToolkitGeneric):
             if antenna_prop in properties.__dir__():
                 setattr(properties, antenna_prop, getattr(self.oantenna, antenna_prop))
 
+        antenna_parameters = {}
+
+        oantenna_public_parameters = (
+            name for name in self.oantenna.synthesis_parameters.__dict__ if not name.startswith("_")
+        )
+        for param in oantenna_public_parameters:
+            antenna_parameters[param] = self.oantenna.synthesis_parameters.__getattribute__(param).value
         if not synth_only:
             if not self.oantenna.object_list:
                 self.oantenna.init_model()
@@ -120,5 +126,6 @@ class Toolkit(ToolkitGeneric):
                     sweep1.props["RangeStart"] = str(freq * (1 - perc_sweep)) + freq_units
                     sweep1.props["RangeEnd"] = str(freq * (1 + perc_sweep)) + freq_units
                     sweep1.update()
-
-        return True
+        elif synth_only:
+            self.oantenna = None
+        return antenna_parameters

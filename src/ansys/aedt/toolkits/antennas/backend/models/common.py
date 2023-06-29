@@ -32,9 +32,8 @@ class CommonAntenna(object):
         if self._input_parameters.length_unit is None:
             self._input_parameters.length_unit = self._app.modeler.model_units
 
-        self._input_parameters.antenna_name = self._check_antenna_name(
-            self._input_parameters.antenna_name
-        )
+        if self._app:
+            self._input_parameters.antenna_name = self._check_antenna_name(self._input_parameters.antenna_name)
 
         self.synthesis_parameters = SynthesisParameters()
         self.synthesis_parameters.antenna_name = self._input_parameters.antenna_name
@@ -184,9 +183,7 @@ class CommonAntenna(object):
             for antenna_obj in self.object_list:
                 self.object_list[antenna_obj].group_name = value
             if len(list(self._app.modeler.oeditor.GetObjectsInGroup(self.antenna_name))) == 0:
-                self._app.modeler.oeditor.Delete(
-                    ["NAME:Selections", "Selections:=", self.antenna_name]
-                )
+                self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", self.antenna_name])
             self._input_parameters.antenna_name = value
 
     @property
@@ -254,18 +251,12 @@ class CommonAntenna(object):
                 position=[
                     str(bounding_box[0]) + self._app.modeler.modeler.model_units,
                     str(bounding_box[1]) + self._app.modeler.modeler.model_units,
-                    str(bounding_box[2])
-                    + self._app.modeler.modeler.model_units
-                    + "-"
-                    + hfss_parameter,
+                    str(bounding_box[2]) + self._app.modeler.modeler.model_units + "-" + hfss_parameter,
                 ],
                 dimensions_list=[
                     str(bounding_dim[0]) + self._app.modeler.modeler.model_units,
                     str(bounding_dim[1]) + self._app.modeler.modeler.model_units,
-                    str(bounding_dim[2])
-                    + self._app.modeler.modeler.model_units
-                    + "+2*"
-                    + hfss_parameter,
+                    str(bounding_dim[2]) + self._app.modeler.modeler.model_units + "+2*" + hfss_parameter,
                 ],
                 matname="vacuum",
             )
@@ -279,21 +270,14 @@ class CommonAntenna(object):
                 dimensions_list=[
                     str(bounding_dim[0]) + self._app.modeler.modeler.model_units,
                     str(bounding_dim[1]) + self._app.modeler.modeler.model_units,
-                    str(bounding_dim[2])
-                    + self._app.modeler.modeler.model_units
-                    + "+"
-                    + hfss_parameter,
+                    str(bounding_dim[2]) + self._app.modeler.modeler.model_units + "+" + hfss_parameter,
                 ],
                 matname="vacuum",
             )
 
-        lattice1 = self._app.assign_lattice_pair(
-            face_couple=[lattice_box.bottom_face_x.id, lattice_box.top_face_x.id]
-        )
+        lattice1 = self._app.assign_lattice_pair(face_couple=[lattice_box.bottom_face_x.id, lattice_box.top_face_x.id])
         self.boundaries[lattice1.name] = lattice1
-        lattice2 = self._app.assign_lattice_pair(
-            face_couple=[lattice_box.bottom_face_y.id, lattice_box.top_face_y.id]
-        )
+        lattice2 = self._app.assign_lattice_pair(face_couple=[lattice_box.bottom_face_y.id, lattice_box.top_face_y.id])
         self.boundaries[lattice2.name] = lattice2
 
         self.object_list[lattice_box.name] = lattice_box
@@ -328,9 +312,7 @@ class CommonAntenna(object):
         >>> horn = horn.create_3dcomponent()
         """
         if not component_file:
-            component_file = os.path.join(
-                self._app.working_directory, self.antenna_name + ".a3dcomp"
-            )
+            component_file = os.path.join(self._app.working_directory, self.antenna_name + ".a3dcomp")
         if not component_name:
             component_name = self.antenna_name
 
@@ -366,9 +348,7 @@ class CommonAntenna(object):
                 reference_cs=self.coordinate_system,
             )
             if self._app.modeler.oeditor.GetObjectsInGroup(self.antenna_name).count == 0:
-                self._app.modeler.oeditor.Delete(
-                    ["NAME:Selections", "Selections:=", self.antenna_name]
-                )
+                self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", self.antenna_name])
             return user_defined_component
         return component_file
 
@@ -422,14 +402,12 @@ class CommonAntenna(object):
         if (
             not antenna_name
             or len(list(self._app.modeler.oeditor.GetObjectsInGroup(antenna_name))) > 0
-            or any(
-                antenna_name in variables
-                for variables in list(self._app.variable_manager.variables.keys())
-            )
+            or any(antenna_name in variables for variables in list(self._app.variable_manager.variables.keys()))
         ):
             antenna_name = generate_unique_name(self.antenna_type)
-            while len(list(self._app.modeler.oeditor.GetObjectsInGroup(antenna_name))) > 0:
-                antenna_name = generate_unique_name(self.antenna_type)
+            if self._app:
+                while len(list(self._app.modeler.oeditor.GetObjectsInGroup(antenna_name))) > 0:
+                    antenna_name = generate_unique_name(self.antenna_type)
         return antenna_name
 
     @pyaedt_function_handler()
@@ -458,20 +436,14 @@ class CommonAntenna(object):
     def init_model(self):
         """Create a radiation boundary."""
         if self._input_parameters.outer_boundary:
-            self._app.create_open_region(
-                str(self.frequency) + self.frequency_unit, self.outer_boundary
-            )
+            self._app.create_open_region(str(self.frequency) + self.frequency_unit, self.outer_boundary)
 
     @pyaedt_function_handler()
     def setup_hfss(self):
         """Set up an antenna in HFSS."""
 
         for obj_name in self.object_list.keys():
-            if (
-                obj_name.startswith("PerfE")
-                or obj_name.startswith("gnd_")
-                or obj_name.startswith("ant_")
-            ):
+            if obj_name.startswith("PerfE") or obj_name.startswith("gnd_") or obj_name.startswith("ant_"):
                 bound = self._app.assign_perfecte_to_sheets(obj_name)
                 bound.name = "PerfE_" + obj_name
                 self.boundaries[bound.name] = bound
@@ -489,13 +461,9 @@ class CommonAntenna(object):
             elif obj_name.startswith("huygens_"):
                 if self.huygens_box:
                     lightSpeed = constants.SpeedOfLight  # m/s
-                    freq_hz = constants.unit_converter(
-                        self.frequency, "Freq", self.frequency_unit, "Hz"
-                    )
+                    freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
                     huygens_dist = str(
-                        constants.unit_converter(
-                            lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                        )
+                        constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
                     )
                     mesh_op = self._app.mesh.assign_length_mesh(
                         [obj_name],
@@ -521,13 +489,9 @@ class CommonAntenna(object):
             if len(terminal_references) > 1:
                 axis_dir = [[], []]
                 for edge in port_lump.edges:
-                    if terminal_references[1] in self._app.modeler.get_bodynames_from_position(
-                        edge.midpoint
-                    ):
+                    if terminal_references[1] in self._app.modeler.get_bodynames_from_position(edge.midpoint):
                         axis_dir[1] = edge.midpoint
-                    elif terminal_references[0] in self._app.modeler.get_bodynames_from_position(
-                        edge.midpoint
-                    ):
+                    elif terminal_references[0] in self._app.modeler.get_bodynames_from_position(edge.midpoint):
                         axis_dir[0] = edge.midpoint
                 terminal_references = terminal_references[1:]
 
@@ -586,9 +550,7 @@ class TransmissionLine(object):
         self.frequency_unit = frequency_unit
 
     @pyaedt_function_handler()
-    def microstrip_calculator(
-        self, substrate_height, permittivity, impedance=50.0, electrical_length=150.0
-    ):
+    def microstrip_calculator(self, substrate_height, permittivity, impedance=50.0, electrical_length=150.0):
         """Strip line calculator.
 
         Parameters
@@ -612,9 +574,7 @@ class TransmissionLine(object):
         e0 = permittivity
         h0 = substrate_height
 
-        A_us = z0 / 60.0 * math.sqrt((e0 + 1.0) / 2.0) + (e0 - 1.0) / (e0 + 1.0) * (
-            0.23 + 0.11 / e0
-        )
+        A_us = z0 / 60.0 * math.sqrt((e0 + 1.0) / 2.0) + (e0 - 1.0) / (e0 + 1.0) * (0.23 + 0.11 / e0)
         B_us = 377.0 * math.pi / (2.0 * z0 * math.sqrt(e0))
 
         w_over_subH_1 = 8.0 * math.exp(A_us) / (math.exp(2.0 * A_us) - 2.0)
@@ -636,9 +596,7 @@ class TransmissionLine(object):
         if w_over_subH_2 >= 2:
             ustrip_width = w_over_subH_2 * h0
 
-        er_eff = (e0 + 1.0) / 2.0 + (e0 - 1.0) / 2.0 * 1.0 / (
-            math.sqrt(1.0 + 12.0 * h0 / ustrip_width)
-        )
+        er_eff = (e0 + 1.0) / 2.0 + (e0 - 1.0) / 2.0 * 1.0 / (math.sqrt(1.0 + 12.0 * h0 / ustrip_width))
         f = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
 
         k0 = 2.0 * math.pi * f / 3.0e8
@@ -702,22 +660,15 @@ class TransmissionLine(object):
 
         Width_to_height_ratio = w1 / (H - substrate_height)
         sqrt_er_eff = math.pow(
-            1.0
-            + heigth_ratio
-            * (a - b * math.log(Width_to_height_ratio))
-            * (1.0 / math.sqrt(permittivity) - 1.0),
+            1.0 + heigth_ratio * (a - b * math.log(Width_to_height_ratio)) * (1.0 / math.sqrt(permittivity) - 1.0),
             -1.0,
         )
         effective_permittivity = math.pow(sqrt_er_eff, 2.0)
 
         if (permittivity >= 6.0) and (permittivity <= 10.0):
-            effective_permittivity = (
-                effective_permittivity * 1.15
-            )  # about 15% larger than calculated
+            effective_permittivity = effective_permittivity * 1.15  # about 15% larger than calculated
         if permittivity > 10:
-            effective_permittivity = (
-                effective_permittivity * 1.25
-            )  # about 25% lager then calculated
+            effective_permittivity = effective_permittivity * 1.25  # about 25% lager then calculated
 
         if effective_permittivity >= (permittivity + 1.0) / 2.0:
             effective_permittivity = (permittivity + 1.0) / 2.0
