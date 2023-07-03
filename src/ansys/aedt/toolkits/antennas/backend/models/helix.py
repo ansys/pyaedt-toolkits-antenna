@@ -1,10 +1,10 @@
 from collections import OrderedDict
 import math
-from ansys.aedt.toolkits.antennas.backend.common.logger_handler import logger
 
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
+from ansys.aedt.toolkits.antennas.backend.common.logger_handler import logger
 from ansys.aedt.toolkits.antennas.backend.models.common import CommonAntenna
 
 
@@ -14,6 +14,39 @@ class CommonHelix(CommonAntenna):
     def __init__(self, _default_input_parameters, *args, **kwargs):
         CommonAntenna.antenna_type = "Helix"
         CommonAntenna.__init__(self, _default_input_parameters, *args, **kwargs)
+
+    @property
+    def material(self):
+        """Horn material.
+
+        Returns
+        -------
+        str
+        """
+        return self._input_parameters.material
+
+    @material.setter
+    def material(self, value):
+        if self._app:
+            if (
+                value
+                and value not in self._app.materials.mat_names_aedt
+                and value not in self._app.materials.mat_names_aedt_lower
+            ):
+                logger.debug("Material not defined")
+            else:
+                if value != self.material and self.object_list:
+                    for antenna_obj in self.object_list:
+                        if (
+                            self.object_list[antenna_obj].material_name == self.material.lower()
+                            and "coax" not in antenna_obj
+                        ):
+                            self.object_list[antenna_obj].material_name = value
+
+                    self._input_parameters.material = value
+                    parameters = self._synthesis()
+                    self.update_synthesis_parameters(parameters)
+                    self.set_variables_in_hfss()
 
     @property
     def gain_value(self):
@@ -126,7 +159,6 @@ class AxialMode(CommonHelix):
 
     _default_input_parameters = {
         "antenna_name": "",
-        "antenna_material": "pec",
         "origin": [0, 0, 0],
         "length_unit": "cm",
         "coordinate_system": "Global",
@@ -136,6 +168,7 @@ class AxialMode(CommonHelix):
         "direction": 0,
         "feeder_length": 10,
         "outer_boundary": "",
+        "material": "pec",
         "huygens_box": False,
     }
 
@@ -160,12 +193,8 @@ class AxialMode(CommonHelix):
         helix_diameter = constants.unit_converter(1.128 * (3.33 / freq_ghz), "Length", "in", "mm")
         helix_spacing = constants.unit_converter(0.786 * (3.33 / freq_ghz), "Length", "in", "mm")
         helix_wiredia = constants.unit_converter(0.2 * (3.33 / freq_ghz), "Length", "in", "mm")
-        helix_coax_inner_radius = constants.unit_converter(
-            0.082 * (3.33 / freq_ghz) / 2, "Length", "in", "mm"
-        )
-        helix_coax_outer_radius = constants.unit_converter(
-            0.275 * (3.33 / freq_ghz) / 2, "Length", "in", "mm"
-        )
+        helix_coax_inner_radius = constants.unit_converter(0.082 * (3.33 / freq_ghz) / 2, "Length", "in", "mm")
+        helix_coax_outer_radius = constants.unit_converter(0.275 * (3.33 / freq_ghz) / 2, "Length", "in", "mm")
         helix_feed_pinL = constants.unit_converter(0.05 * (3.33 / freq_ghz), "Length", "in", "mm")
         helix_feed_pinD = constants.unit_converter(0.082 * (3.33 / freq_ghz), "Length", "in", "mm")
 
@@ -205,7 +234,15 @@ class AxialMode(CommonHelix):
             logger.debug("This antenna is already defined")
             return False
 
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
+            return False
+
         self.set_variables_in_hfss()
+
         # Map parameters
         groundx = self.synthesis_parameters.groundx.hfss_variable
         groundy = self.synthesis_parameters.groundy.hfss_variable
@@ -351,9 +388,7 @@ class AxialMode(CommonHelix):
             light_speed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    light_speed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(light_speed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
@@ -392,9 +427,7 @@ class AxialMode(CommonHelix):
         gnd.group_name = antenna_name
         p1.group_name = antenna_name
 
-        self._app.modeler.move(
-            [udm, feed_coax, feed_pin, Coax, cap, gnd, p1], [pos_x, pos_y, pos_z]
-        )
+        self._app.modeler.move([udm, feed_coax, feed_pin, Coax, cap, gnd, p1], [pos_x, pos_y, pos_z])
         self.object_list[udm.name] = udm
         self.object_list[feed_coax.name] = feed_coax
         self.object_list[feed_pin.name] = feed_pin

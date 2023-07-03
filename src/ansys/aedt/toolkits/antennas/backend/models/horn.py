@@ -1,10 +1,9 @@
 from collections import OrderedDict
 
-from ansys.aedt.toolkits.antennas.backend.common.logger_handler import logger
-
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
+from ansys.aedt.toolkits.antennas.backend.common.logger_handler import logger
 from ansys.aedt.toolkits.antennas.backend.models.common import CommonAntenna
 from ansys.aedt.toolkits.antennas.backend.models.common import StandardWaveguide
 
@@ -28,25 +27,36 @@ class CommonHorn(CommonAntenna):
 
     @material.setter
     def material(self, value):
-        if (
-            value
-            and value not in self._app.materials.mat_names_aedt
-            and value not in self._app.materials.mat_names_aedt_lower
-        ):
-            logger.debug("Material not defined")
-        else:
-            if value != self.material and self.object_list:
-                for antenna_obj in self.object_list:
-                    if (
-                        self.object_list[antenna_obj].material_name == self.material.lower()
-                        and "port_cap" not in antenna_obj
-                    ):
-                        self.object_list[antenna_obj].material_name = value
+        if self._app:
+            if (
+                value
+                and value not in self._app.materials.mat_names_aedt
+                and value not in self._app.materials.mat_names_aedt_lower
+            ):
+                logger.debug("Material not defined")
+            else:
+                if value != self.material and self.object_list:
+                    for antenna_obj in self.object_list:
+                        if (
+                            self.object_list[antenna_obj].material_name == self.material.lower()
+                            and "coax" not in antenna_obj
+                        ):
+                            self.object_list[antenna_obj].material_name = value
 
-                self._input_parameters.material = value
-                parameters = self._synthesis()
-                self.update_synthesis_parameters(parameters)
-                self.set_variables_in_hfss()
+                    self._input_parameters.material = value
+                    parameters = self._synthesis()
+                    self.update_synthesis_parameters(parameters)
+                    self.set_variables_in_hfss()
+
+    @property
+    def material_properties(self):
+        """Substrate material properties.
+
+        Returns
+        -------
+        str
+        """
+        return self._input_parameters.material_properties
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -91,9 +101,10 @@ class Conical(CommonHorn):
     --------
     >>> from ansys.aedt.toolkits.antennas.backend.models.horn import Conical
     >>> import pyaedt
+    >>> oantenna1 = Conical()
+    >>> oantenna1.frequency = 12.0
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = Conical(app)
-    >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()
     >>> oantenna2 = Conical(app, origin=[200, 50, 0])
@@ -105,7 +116,6 @@ class Conical(CommonHorn):
 
     _default_input_parameters = {
         "antenna_name": "",
-        "antenna_material": "pec",
         "origin": [0, 0, 0],
         "length_unit": None,
         "coordinate_system": "Global",
@@ -129,12 +139,6 @@ class Conical(CommonHorn):
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
         wavelength = lightSpeed / freq_hz
         wavelength_in = constants.unit_converter(wavelength, "Length", "meter", "in")
-        if (
-            self.material not in self._app.materials.mat_names_aedt
-            or self.material not in self._app.materials.mat_names_aedt_lower
-        ):
-            logger.debug("Material not defined")
-            return parameters
 
         wg_radius_in = 0.5 * wavelength_in
         wg_length_in = 0.4 * wavelength_in
@@ -150,9 +154,7 @@ class Conical(CommonHorn):
         parameters["horn_radius"] = horn_radius
         horn_length = constants.unit_converter(horn_length_in, "Length", "in", self.length_unit)
         parameters["horn_length"] = horn_length
-        wall_thickness = constants.unit_converter(
-            wall_thickness_in, "Length", "in", self.length_unit
-        )
+        wall_thickness = constants.unit_converter(wall_thickness_in, "Length", "in", self.length_unit)
         parameters["wall_thickness"] = wall_thickness
 
         parameters["pos_x"] = self.origin[0]
@@ -172,6 +174,13 @@ class Conical(CommonHorn):
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             logger.debug("This antenna already exists")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
             return False
 
         self.set_variables_in_hfss()
@@ -210,9 +219,7 @@ class Conical(CommonHorn):
         wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(
-            tool_list=[neg_air.name], blank_list=[wall.name], keep_originals=False
-        )
+        new_wall = self._app.modeler.subtract(tool_list=[neg_air.name], blank_list=[wall.name], keep_originals=False)
 
         # Input
         wg_in = self._app.modeler.create_cylinder(
@@ -279,9 +286,7 @@ class Conical(CommonHorn):
         self._app.modeler.connect([base.name, horn_top.name])
 
         # Horn
-        self._app.modeler.subtract(
-            blank_list=[horn_sheet.name], tool_list=[base.name], keep_originals=False
-        )
+        self._app.modeler.subtract(blank_list=[horn_sheet.name], tool_list=[base.name], keep_originals=False)
         self._app.modeler.unite([horn_sheet.name, wall.name])
 
         air_base = self._app.modeler.create_circle(
@@ -323,9 +328,7 @@ class Conical(CommonHorn):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
@@ -436,15 +439,6 @@ class PyramidalRidged(CommonHorn):
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
-        if (
-            self.material not in self._app.materials.mat_names_aedt
-            or self.material not in self._app.materials.mat_names_aedt_lower
-        ):
-            self._app.logger.warning(
-                "Material is not found. Create the material before assigning it."
-            )
-            return parameters
-
         scale = lambda x: (1.0 / freq_ghz) * x
 
         def scale_value(value, round_val=3, doScale=True):
@@ -462,9 +456,7 @@ class PyramidalRidged(CommonHorn):
         ridge_width = scale_value(14.64)
         ridge_spacing = scale_value(2)
 
-        aperture_height = constants.unit_converter(
-            aperture_height, "Length", "mm", self.length_unit
-        )
+        aperture_height = constants.unit_converter(aperture_height, "Length", "mm", self.length_unit)
         parameters["aperture_height"] = aperture_height
         aperture_width = constants.unit_converter(aperture_width, "Length", "mm", self.length_unit)
         parameters["aperture_width"] = aperture_width
@@ -499,6 +491,13 @@ class PyramidalRidged(CommonHorn):
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
             return False
 
         self.set_variables_in_hfss()
@@ -551,9 +550,7 @@ class PyramidalRidged(CommonHorn):
         wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(
-            tool_list=[air.name], blank_list=[wall.name], keep_originals=False
-        )
+        new_wall = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
 
         # Top of the horn
         # Input
@@ -1036,48 +1033,18 @@ class PyramidalRidged(CommonHorn):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
-                    pos_x
-                    + "-"
-                    + aperture_width
-                    + "/2-"
-                    + huygens_dist
-                    + self.length_unit
-                    + "-2*"
-                    + wall_thickness,
-                    pos_y
-                    + "-"
-                    + aperture_height
-                    + "/2"
-                    + "-"
-                    + wall_thickness
-                    + "-"
-                    + huygens_dist
-                    + self.length_unit,
+                    pos_x + "-" + aperture_width + "/2-" + huygens_dist + self.length_unit + "-2*" + wall_thickness,
+                    pos_y + "-" + aperture_height + "/2" + "-" + wall_thickness + "-" + huygens_dist + self.length_unit,
                     pos_z + "-" + wg_length + "-" + wall_thickness,
                 ],
                 dimensions_list=[
-                    aperture_width
-                    + "+"
-                    + "2*"
-                    + huygens_dist
-                    + self.length_unit
-                    + "+2*"
-                    + wall_thickness,
+                    aperture_width + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
                     aperture_height + "+" + "2*" + huygens_dist + self.length_unit,
-                    huygens_dist
-                    + self.length_unit
-                    + "+"
-                    + wg_length
-                    + "+"
-                    + wall_thickness
-                    + "+"
-                    + flare_length,
+                    huygens_dist + self.length_unit + "+" + wg_length + "+" + wall_thickness + "+" + flare_length,
                 ],
                 name="huygens_" + antenna_name,
                 matname="air",
@@ -1155,7 +1122,6 @@ class Corrugated(CommonHorn):
 
     _default_input_parameters = {
         "antenna_name": "",
-        "antenna_material": "pec",
         "origin": [0, 0, 0],
         "length_unit": "meter",
         "coordinate_system": "Global",
@@ -1176,12 +1142,6 @@ class Corrugated(CommonHorn):
     def _synthesis(self):
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
-        if (
-            self.material not in self._app.materials.mat_names_aedt
-            or self.material not in self._app.materials.mat_names_aedt_lower
-        ):
-            logger.debug("Material not defined")
-            return parameters
 
         wg_radius_mm = round(11.7 * 10.4 / freq_ghz, 3)
         wg_length_mm = round(30.0 * 10.4 / freq_ghz, 3)
@@ -1196,9 +1156,7 @@ class Corrugated(CommonHorn):
         parameters["wg_radius"] = wg_radius
         wg_length = constants.unit_converter(wg_length_mm, "Length", "mm", self.length_unit)
         parameters["wg_length"] = wg_length
-        wall_thickness = constants.unit_converter(
-            wall_thickness_mm, "Length", "mm", self.length_unit
-        )
+        wall_thickness = constants.unit_converter(wall_thickness_mm, "Length", "mm", self.length_unit)
         parameters["wall_thickness"] = wall_thickness
         parameters["flare_angle"] = flare_angle
         parameters["notches"] = notches
@@ -1226,6 +1184,13 @@ class Corrugated(CommonHorn):
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             logger.debug("This antenna already exists")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
             return False
 
         self.set_variables_in_hfss()
@@ -1363,9 +1328,7 @@ class Corrugated(CommonHorn):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
@@ -1438,20 +1401,22 @@ class Elliptical(CommonHorn):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
-    >>> from ansys.aedt.toolkits.antennas.horn import EllipticalHorn
-    >>> hfss = Hfss()
-    >>> horn = hfss.add_from_toolkit(EllipticalHorn, draw=True, frequency=20.0,
-    ...                              frequency_unit="GHz",
-    ...                              outer_boundary=None, huygens_box=True, length_unit="cm",
-    ...                              coordinate_system="CS1", antenna_name="HornAntenna",
-    ...                              origin=[1, 100, 50])
+    >>> from ansys.aedt.toolkits.antennas.backend.models.horn import PyramidalRidged
+    >>> import pyaedt
+    >>> app = pyaedt.Hfss()
+    >>> oantenna1 = Elliptical(app)
+    >>> oantenna1.frequency = 12.0
+    >>> oantenna1.model_hfss()
+    >>> oantenna1.setup_hfss()
+    >>> oantenna2 = Elliptical(app, origin=[200, 50, 0])
+    >>> oantenna2.model_hfss()
+    >>> oantenna2.setup_hfss()
+    >>> app.release_desktop(False, False)
 
     """
 
     _default_input_parameters = {
         "antenna_name": None,
-        "antenna_material": "pec",
         "origin": [0, 0, 0],
         "length_unit": None,
         "coordinate_system": "Global",
@@ -1475,12 +1440,6 @@ class Elliptical(CommonHorn):
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
         wavelength = lightSpeed / freq_hz
         wavelength_in = constants.unit_converter(wavelength, "Length", "meter", "in")
-        if (
-            self.material not in self._app.materials.mat_names_aedt
-            or self.material not in self._app.materials.mat_names_aedt_lower
-        ):
-            logger.debug("Material not defined")
-            return parameters
 
         wg_radius_in = 0.5 * wavelength_in
         wg_length_in = wavelength_in
@@ -1497,9 +1456,7 @@ class Elliptical(CommonHorn):
         parameters["horn_radius"] = horn_radius
         horn_length = constants.unit_converter(horn_length_in, "Length", "in", self.length_unit)
         parameters["horn_length"] = horn_length
-        wall_thickness = constants.unit_converter(
-            wall_thickness_in, "Length", "in", self.length_unit
-        )
+        wall_thickness = constants.unit_converter(wall_thickness_in, "Length", "in", self.length_unit)
         parameters["wall_thickness"] = wall_thickness
         parameters["ellipse_ratio"] = ellipse_ratio
 
@@ -1519,6 +1476,13 @@ class Elliptical(CommonHorn):
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
             return False
 
         self.set_variables_in_hfss()
@@ -1558,9 +1522,7 @@ class Elliptical(CommonHorn):
         wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(
-            tool_list=[neg_air.name], blank_list=[wall.name], keep_originals=False
-        )
+        new_wall = self._app.modeler.subtract(tool_list=[neg_air.name], blank_list=[wall.name], keep_originals=False)
 
         # Input
         wg_in = self._app.modeler.create_cylinder(
@@ -1629,9 +1591,7 @@ class Elliptical(CommonHorn):
         self._app.modeler.connect([base.name, horn_top.name])
 
         # Horn
-        self._app.modeler.subtract(
-            blank_list=[horn_sheet.name], tool_list=[base.name], keep_originals=False
-        )
+        self._app.modeler.subtract(blank_list=[horn_sheet.name], tool_list=[base.name], keep_originals=False)
         self._app.modeler.unite([horn_sheet.name, wall.name])
 
         air_base = self._app.modeler.create_circle(
@@ -1672,9 +1632,7 @@ class Elliptical(CommonHorn):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
@@ -1748,13 +1706,17 @@ class EPlane(CommonHorn):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
-    >>> from ansys.aedt.toolkits.antennas.horn import EPlaneHorn
-    >>> hfss = Hfss()
-    >>> horn = hfss.add_from_toolkit(EPlaneHorn, draw=True, frequency=20.0,
-    ...                              outer_boundary=None, huygens_box=True, length_unit="cm",
-    ...                              coordinate_system="CS1", antenna_name="HornAntenna",
-    ...                              origin=[1, 100, 50])
+    >>> from ansys.aedt.toolkits.antennas.backend.models.horn import EPlane
+    >>> import pyaedt
+    >>> app = pyaedt.Hfss()
+    >>> oantenna1 = EPlane(app)
+    >>> oantenna1.frequency = 12.0
+    >>> oantenna1.model_hfss()
+    >>> oantenna1.setup_hfss()
+    >>> oantenna2 = EPlane(app, origin=[200, 50, 0])
+    >>> oantenna2.model_hfss()
+    >>> oantenna2.setup_hfss()
+    >>> app.release_desktop(False, False)
 
     """
 
@@ -1766,6 +1728,7 @@ class EPlane(CommonHorn):
         "frequency": 10.0,
         "frequency_unit": "GHz",
         "material": "pec",
+        "material_properties": {},
         "outer_boundary": None,
         "huygens_box": False,
     }
@@ -1781,13 +1744,18 @@ class EPlane(CommonHorn):
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
-        if (
-            self.material not in self._app.materials.mat_names_aedt
-            or self.material not in self._app.materials.mat_names_aedt_lower
+        if self._app and (
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
-            self._app.logger.warning(
-                "Material is not found. Create the material before assigning it."
-            )
+            mat_props = self._app.materials[self.material]
+            permittivity = mat_props.permittivity.value
+            self._input_parameters.material_properties["permittivity"] = permittivity
+
+        elif isinstance(self.material_properties, dict):
+            pass
+        else:
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
             return parameters
 
         scale = lambda x: (10.0 / freq_ghz) * x
@@ -1814,9 +1782,7 @@ class EPlane(CommonHorn):
             wg_b_in = scale_value(0.4)
             wg_b = constants.unit_converter(wg_b_in, "Length", "in", self.length_unit)
             wall_thickness_in = scale_value(0.02)
-            wall_thickness = constants.unit_converter(
-                wall_thickness_in, "Length", "in", self.length_unit
-            )
+            wall_thickness = constants.unit_converter(wall_thickness_in, "Length", "in", self.length_unit)
 
         wg_length = constants.unit_converter(wg_length_in, "Length", "in", self.length_unit)
         parameters["wg_length"] = wg_length
@@ -1844,6 +1810,13 @@ class EPlane(CommonHorn):
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
             return False
 
         self.set_variables_in_hfss()
@@ -1892,9 +1865,7 @@ class EPlane(CommonHorn):
         wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(
-            tool_list=[air.name], blank_list=[wall.name], keep_originals=False
-        )
+        new_wall = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
 
         # Top of the horn
         # Input
@@ -2001,9 +1972,7 @@ class EPlane(CommonHorn):
         self._app.modeler.connect([horn, base_wall])
         self._app.modeler.connect([base, horn_top])
 
-        new_wall = self._app.modeler.subtract(
-            tool_list=[base.name], blank_list=[horn.name], keep_originals=False
-        )
+        new_wall = self._app.modeler.subtract(tool_list=[base.name], blank_list=[horn.name], keep_originals=False)
 
         new_horn = self._app.modeler.unite([horn.name, wall.name])
 
@@ -2058,48 +2027,18 @@ class EPlane(CommonHorn):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
-                    pos_x
-                    + "-"
-                    + wg_width
-                    + "/2-"
-                    + huygens_dist
-                    + self.length_unit
-                    + "-"
-                    + wall_thickness,
-                    pos_y
-                    + "-"
-                    + flare
-                    + "/2"
-                    + "-"
-                    + wall_thickness
-                    + "-"
-                    + huygens_dist
-                    + self.length_unit,
+                    pos_x + "-" + wg_width + "/2-" + huygens_dist + self.length_unit + "-" + wall_thickness,
+                    pos_y + "-" + flare + "/2" + "-" + wall_thickness + "-" + huygens_dist + self.length_unit,
                     pos_z + "-" + wg_length + "-" + wall_thickness,
                 ],
                 dimensions_list=[
-                    wg_width
-                    + "+"
-                    + "2*"
-                    + huygens_dist
-                    + self.length_unit
-                    + "+2*"
-                    + wall_thickness,
+                    wg_width + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
                     flare + "+" + "2*" + huygens_dist + self.length_unit + "+" + wall_thickness,
-                    huygens_dist
-                    + self.length_unit
-                    + "+"
-                    + wg_length
-                    + "+"
-                    + wall_thickness
-                    + "+"
-                    + horn_length,
+                    huygens_dist + self.length_unit + "+" + wg_length + "+" + wall_thickness + "+" + horn_length,
                 ],
                 name="huygens_" + antenna_name,
                 matname="air",
@@ -2162,13 +2101,17 @@ class HPlane(CommonHorn):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
-    >>> from ansys.aedt.toolkits.antennas.horn import HPlaneHorn
-    >>> hfss = Hfss()
-    >>> horn = hfss.add_from_toolkit(HPlaneHorn, draw=True, frequency=20.0,
-    ...                              outer_boundary=None, huygens_box=True, length_unit="cm",
-    ...                              coordinate_system="CS1", antenna_name="HornAntenna",
-    ...                              origin=[1, 100, 50])
+    >>> from ansys.aedt.toolkits.antennas.backend.models.horn import HPlane
+    >>> import pyaedt
+    >>> app = pyaedt.Hfss()
+    >>> oantenna1 = HPlane(app)
+    >>> oantenna1.frequency = 12.0
+    >>> oantenna1.model_hfss()
+    >>> oantenna1.setup_hfss()
+    >>> oantenna2 = HPlane(app, origin=[200, 50, 0])
+    >>> oantenna2.model_hfss()
+    >>> oantenna2.setup_hfss()
+    >>> app.release_desktop(False, False)
 
     """
 
@@ -2195,15 +2138,6 @@ class HPlane(CommonHorn):
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
-        if (
-            self.material not in self._app.materials.mat_names_aedt
-            or self.material not in self._app.materials.mat_names_aedt_lower
-        ):
-            self._app.logger.warning(
-                "Material is not found. Create the material before assigning it."
-            )
-            return parameters
-
         scale = lambda x: (10.0 / freq_ghz) * x
 
         def scale_value(value, round_val=3, doScale=True):
@@ -2228,9 +2162,7 @@ class HPlane(CommonHorn):
             wg_b_in = scale_value(0.4)
             wg_b = constants.unit_converter(wg_b_in, "Length", "in", self.length_unit)
             wall_thickness_in = scale_value(0.02)
-            wall_thickness = constants.unit_converter(
-                wall_thickness_in, "Length", "in", self.length_unit
-            )
+            wall_thickness = constants.unit_converter(wall_thickness_in, "Length", "in", self.length_unit)
 
         wg_length = constants.unit_converter(wg_length_in, "Length", "in", self.length_unit)
         parameters["wg_length"] = wg_length
@@ -2260,6 +2192,13 @@ class HPlane(CommonHorn):
             self._app.logger.warning("This antenna already exists.")
             return False
 
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
+
+            return False
         self.set_variables_in_hfss()
 
         # Map parameters
@@ -2306,9 +2245,7 @@ class HPlane(CommonHorn):
         wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(
-            tool_list=[air.name], blank_list=[wall.name], keep_originals=False
-        )
+        new_wall = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
 
         # Top of the horn
         # Input
@@ -2415,9 +2352,7 @@ class HPlane(CommonHorn):
         self._app.modeler.connect([horn, base_wall])
         self._app.modeler.connect([base, horn_top])
 
-        new_wall = self._app.modeler.subtract(
-            tool_list=[base.name], blank_list=[horn.name], keep_originals=False
-        )
+        new_wall = self._app.modeler.subtract(tool_list=[base.name], blank_list=[horn.name], keep_originals=False)
 
         new_horn = self._app.modeler.unite([horn.name, wall.name])
 
@@ -2472,42 +2407,18 @@ class HPlane(CommonHorn):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
-                    pos_x
-                    + "-"
-                    + flare
-                    + "/2-"
-                    + huygens_dist
-                    + self.length_unit
-                    + "-"
-                    + wall_thickness,
-                    pos_y
-                    + "-"
-                    + wg_height
-                    + "/2"
-                    + "-"
-                    + wall_thickness
-                    + "-"
-                    + huygens_dist
-                    + self.length_unit,
+                    pos_x + "-" + flare + "/2-" + huygens_dist + self.length_unit + "-" + wall_thickness,
+                    pos_y + "-" + wg_height + "/2" + "-" + wall_thickness + "-" + huygens_dist + self.length_unit,
                     pos_z + "-" + wg_length + "-" + wall_thickness,
                 ],
                 dimensions_list=[
                     flare + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
                     wg_height + "+" + "2*" + huygens_dist + self.length_unit + "+" + wall_thickness,
-                    huygens_dist
-                    + self.length_unit
-                    + "+"
-                    + wg_length
-                    + "+"
-                    + wall_thickness
-                    + "+"
-                    + horn_length,
+                    huygens_dist + self.length_unit + "+" + wg_length + "+" + wall_thickness + "+" + horn_length,
                 ],
                 name="huygens_" + antenna_name,
                 matname="air",
@@ -2570,13 +2481,17 @@ class Pyramidal(CommonHorn):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
-    >>> from ansys.aedt.toolkits.antennas.horn import Pyramidal
-    >>> hfss = Hfss()
-    >>> horn = hfss.add_from_toolkit(Pyramidal, draw=True, frequency=20.0,
-    ...                              outer_boundary=None, huygens_box=True, length_unit="cm",
-    ...                              coordinate_system="CS1", antenna_name="HornAntenna",
-    ...                              origin=[1, 100, 50])
+    >>> from ansys.aedt.toolkits.antennas.backend.models.horn import Pyramidal
+    >>> import pyaedt
+    >>> app = pyaedt.Hfss()
+    >>> oantenna1 = Pyramidal(app)
+    >>> oantenna1.frequency = 12.0
+    >>> oantenna1.model_hfss()
+    >>> oantenna1.setup_hfss()
+    >>> oantenna2 = Pyramidal(app, origin=[200, 50, 0])
+    >>> oantenna2.model_hfss()
+    >>> oantenna2.setup_hfss()
+    >>> app.release_desktop(False, False)
 
     """
 
@@ -2603,15 +2518,6 @@ class Pyramidal(CommonHorn):
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
-        if (
-            self.material not in self._app.materials.mat_names_aedt
-            or self.material not in self._app.materials.mat_names_aedt_lower
-        ):
-            self._app.logger.warning(
-                "Material is not found. Create the material before assigning it."
-            )
-            return parameters
-
         scale = lambda x: (10.0 / freq_ghz) * x
 
         def scale_value(value, round_val=3, doScale=True):
@@ -2637,9 +2543,7 @@ class Pyramidal(CommonHorn):
             wg_b_in = scale_value(0.4)
             wg_b = constants.unit_converter(wg_b_in, "Length", "in", self.length_unit)
             wall_thickness_in = scale_value(0.02)
-            wall_thickness = constants.unit_converter(
-                wall_thickness_in, "Length", "in", self.length_unit
-            )
+            wall_thickness = constants.unit_converter(wall_thickness_in, "Length", "in", self.length_unit)
 
         wg_length = constants.unit_converter(wg_length_in, "Length", "in", self.length_unit)
         parameters["wg_length"] = wg_length
@@ -2669,6 +2573,13 @@ class Pyramidal(CommonHorn):
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
             return False
 
         self.set_variables_in_hfss()
@@ -2718,9 +2629,7 @@ class Pyramidal(CommonHorn):
         wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(
-            tool_list=[air.name], blank_list=[wall.name], keep_originals=False
-        )
+        new_wall = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
 
         # Top of the horn
         # Input
@@ -2827,9 +2736,7 @@ class Pyramidal(CommonHorn):
         self._app.modeler.connect([horn, base_wall])
         self._app.modeler.connect([base, horn_top])
 
-        new_wall = self._app.modeler.subtract(
-            tool_list=[base.name], blank_list=[horn.name], keep_originals=False
-        )
+        new_wall = self._app.modeler.subtract(tool_list=[base.name], blank_list=[horn.name], keep_originals=False)
 
         new_horn = self._app.modeler.unite([horn.name, wall.name])
 
@@ -2884,42 +2791,18 @@ class Pyramidal(CommonHorn):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
-                    pos_x
-                    + "-"
-                    + flare_a
-                    + "/2-"
-                    + huygens_dist
-                    + self.length_unit
-                    + "-"
-                    + wall_thickness,
-                    pos_y
-                    + "-"
-                    + flare_b
-                    + "/2"
-                    + "-"
-                    + wall_thickness
-                    + "-"
-                    + huygens_dist
-                    + self.length_unit,
+                    pos_x + "-" + flare_a + "/2-" + huygens_dist + self.length_unit + "-" + wall_thickness,
+                    pos_y + "-" + flare_b + "/2" + "-" + wall_thickness + "-" + huygens_dist + self.length_unit,
                     pos_z + "-" + wg_length + "-" + wall_thickness,
                 ],
                 dimensions_list=[
                     flare_a + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
                     flare_b + "+" + "2*" + huygens_dist + self.length_unit + "+" + wall_thickness,
-                    huygens_dist
-                    + self.length_unit
-                    + "+"
-                    + wg_length
-                    + "+"
-                    + wall_thickness
-                    + "+"
-                    + horn_length,
+                    huygens_dist + self.length_unit + "+" + wg_length + "+" + wall_thickness + "+" + horn_length,
                 ],
                 name="huygens_" + antenna_name,
                 matname="air",
@@ -2987,13 +2870,17 @@ class QuadRidged(CommonHorn):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
-    >>> from ansys.aedt.toolkits.antennas.horn import QuadRidged
-    >>> hfss = Hfss()
-    >>> horn = hfss.add_from_toolkit(QuadRidged, draw=True, frequency=20.0,
-    ...                              outer_boundary=None, huygens_box=True, length_unit="cm",
-    ...                              coordinate_system="CS1", antenna_name="HornAntenna",
-    ...                              origin=[1, 100, 50])
+    >>> from ansys.aedt.toolkits.antennas.backend.models.horn import QuadRidged
+    >>> import pyaedt
+    >>> app = pyaedt.Hfss()
+    >>> oantenna1 = QuadRidged(app)
+    >>> oantenna1.frequency = 12.0
+    >>> oantenna1.model_hfss()
+    >>> oantenna1.setup_hfss()
+    >>> oantenna2 = QuadRidged(app, origin=[200, 50, 0])
+    >>> oantenna2.model_hfss()
+    >>> oantenna2.setup_hfss()
+    >>> app.release_desktop(False, False)
 
     """
 
@@ -3019,15 +2906,6 @@ class QuadRidged(CommonHorn):
     def _synthesis(self):
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
-
-        if (
-            self.material not in self._app.materials.mat_names_aedt
-            or self.material not in self._app.materials.mat_names_aedt_lower
-        ):
-            self._app.logger.warning(
-                "Material is not found. Create the material before assigning it."
-            )
-            return parameters
 
         scale = lambda x: (5.0 / freq_ghz) * x
 
@@ -3085,9 +2963,7 @@ class QuadRidged(CommonHorn):
         parameters["ridge_height_8"] = ridge_height_8
         ridge_height_9 = constants.unit_converter(ridge_height_9, "Length", "mm", self.length_unit)
         parameters["ridge_height_9"] = ridge_height_9
-        ridge_height_10 = constants.unit_converter(
-            ridge_height_10, "Length", "mm", self.length_unit
-        )
+        ridge_height_10 = constants.unit_converter(ridge_height_10, "Length", "mm", self.length_unit)
         parameters["ridge_height_10"] = ridge_height_10
 
         parameters["pos_x"] = self.origin[0]
@@ -3106,6 +2982,13 @@ class QuadRidged(CommonHorn):
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
             return False
 
         self.set_variables_in_hfss()
@@ -3166,9 +3049,7 @@ class QuadRidged(CommonHorn):
         wall.history().props["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(
-            tool_list=[air.name], blank_list=[wall.name], keep_originals=False
-        )
+        new_wall = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
 
         # Top of the horn
         # Input
@@ -3505,54 +3386,18 @@ class QuadRidged(CommonHorn):
             lightSpeed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
             huygens_dist = str(
-                constants.unit_converter(
-                    lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit
-                )
+                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
             )
             huygens = self._app.modeler.create_box(
                 position=[
-                    pos_x
-                    + "-"
-                    + aperture_width
-                    + "/2-"
-                    + huygens_dist
-                    + self.length_unit
-                    + "-"
-                    + wall_thickness,
-                    pos_y
-                    + "-"
-                    + aperture_width
-                    + "/2"
-                    + "-"
-                    + wall_thickness
-                    + "-"
-                    + huygens_dist
-                    + self.length_unit,
+                    pos_x + "-" + aperture_width + "/2-" + huygens_dist + self.length_unit + "-" + wall_thickness,
+                    pos_y + "-" + aperture_width + "/2" + "-" + wall_thickness + "-" + huygens_dist + self.length_unit,
                     pos_z + "-" + wg_length + "-" + wall_thickness,
                 ],
                 dimensions_list=[
-                    aperture_width
-                    + "+"
-                    + "2*"
-                    + huygens_dist
-                    + self.length_unit
-                    + "+2*"
-                    + wall_thickness,
-                    aperture_width
-                    + "+"
-                    + "2*"
-                    + huygens_dist
-                    + self.length_unit
-                    + "+2*"
-                    + wall_thickness,
-                    huygens_dist
-                    + self.length_unit
-                    + "+"
-                    + wg_length
-                    + "+"
-                    + wall_thickness
-                    + "+"
-                    + flare_length,
+                    aperture_width + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
+                    aperture_width + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
+                    huygens_dist + self.length_unit + "+" + wg_length + "+" + wall_thickness + "+" + flare_length,
                 ],
                 name="huygens_" + antenna_name,
                 matname="air",

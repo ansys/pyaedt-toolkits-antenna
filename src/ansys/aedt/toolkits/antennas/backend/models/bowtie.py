@@ -146,6 +146,13 @@ class BowTie(CommonPatch):
             self._app.logger.warning("This antenna already exists.")
             return False
 
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
+            return False
+
         self.set_variables_in_hfss()
 
         # Map parameters
@@ -287,22 +294,29 @@ class BowTieRounded(CommonPatch):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
-    >>> from ansys.aedt.toolkits.antennas.models.bowtie import BowTie
-    >>> hfss = Hfss()
-    >>> patch = hfss.add_from_toolkit(BowTieRounded, draw=True, frequency=20.0,
-    ...                               frequency_unit="GHz")
+    >>> from ansys.aedt.toolkits.antennas.backend.models.bowtie import BowTieRounded
+    >>> import pyaedt
+    >>> app = pyaedt.Hfss()
+    >>> oantenna1 = BowTieRounded(app)
+    >>> oantenna1.frequency = 12.0
+    >>> oantenna1.model_hfss()
+    >>> oantenna1.setup_hfss()
+    >>> oantenna2 = BowTieRounded(app, origin=[200, 50, 0])
+    >>> oantenna2.model_hfss()
+    >>> oantenna2.setup_hfss()
+    >>> app.release_desktop(False, False)
 
     """
 
     _default_input_parameters = {
         "antenna_name": None,
         "origin": [0, 0, 0],
-        "length_unit": None,
+        "length_unit": "cm",
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",
         "material": "FR4_epoxy",
+        "material_properties": {"permittivity": 4.4},
         "outer_boundary": None,
         "huygens_box": False,
         "substrate_height": 0.1575,
@@ -321,16 +335,21 @@ class BowTieRounded(CommonPatch):
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
         wavelength = lightSpeed / freq_hz
 
-        if (
+        if self._app and (
             self.material in self._app.materials.mat_names_aedt
             or self.material in self._app.materials.mat_names_aedt_lower
         ):
             mat_props = self._app.materials[self.material]
+            permittivity = mat_props.permittivity.value
+            self._input_parameters.material_properties["permittivity"] = permittivity
+
+        elif self.material_properties:
+            permittivity = self.material_properties["permittivity"]
         else:
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(mat_props.permittivity.value)
+        subPermittivity = float(permittivity)
 
         sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
@@ -378,6 +397,13 @@ class BowTieRounded(CommonPatch):
         """
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return False
 
         self.set_variables_in_hfss()
@@ -530,22 +556,29 @@ class BowTieSlot(CommonPatch):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
-    >>> from ansys.aedt.toolkits.antennas.models.bowtie import BowTie
-    >>> hfss = Hfss()
-    >>> patch = hfss.add_from_toolkit(BowTieSlot, draw=True, frequency=20.0,
-    ...                               frequency_unit="GHz")
+    >>> from ansys.aedt.toolkits.antennas.backend.models.bowtie import BowTieSlot
+    >>> import pyaedt
+    >>> app = pyaedt.Hfss()
+    >>> oantenna1 = BowTieSlot(app)
+    >>> oantenna1.frequency = 12.0
+    >>> oantenna1.model_hfss()
+    >>> oantenna1.setup_hfss()
+    >>> oantenna2 = BowTieSlot(app, origin=[200, 50, 0])
+    >>> oantenna2.model_hfss()
+    >>> oantenna2.setup_hfss()
+    >>> app.release_desktop(False, False)
 
     """
 
     _default_input_parameters = {
         "antenna_name": None,
         "origin": [0, 0, 0],
-        "length_unit": None,
+        "length_unit": "cm",
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",
         "material": "FR4_epoxy",
+        "material_properties": {"permittivity": 4.4},
         "outer_boundary": None,
         "huygens_box": False,
         "substrate_height": 0.1575,
@@ -564,16 +597,21 @@ class BowTieSlot(CommonPatch):
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
         wavelength = lightSpeed / freq_hz
 
-        if (
+        if self._app and (
             self.material in self._app.materials.mat_names_aedt
             or self.material in self._app.materials.mat_names_aedt_lower
         ):
             mat_props = self._app.materials[self.material]
+            permittivity = mat_props.permittivity.value
+            self._input_parameters.material_properties["permittivity"] = permittivity
+
+        elif self.material_properties:
+            permittivity = self.material_properties["permittivity"]
         else:
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(mat_props.permittivity.value)
+        subPermittivity = float(permittivity)
 
         sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
@@ -621,6 +659,13 @@ class BowTieSlot(CommonPatch):
         """
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return False
 
         self.set_variables_in_hfss()

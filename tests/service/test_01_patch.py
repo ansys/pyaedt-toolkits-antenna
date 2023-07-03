@@ -22,7 +22,6 @@ class TestClass(BasisTest, object):
         opatch0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert opatch0.synthesis_parameters.coax_inner_rad.value
 
-        antenna_module = getattr(models, "RectangularPatchProbe")
         opatch1 = antenna_module(self.aedtapp, frequency=1.0, length_unit=self.aedtapp.modeler.model_units)
         opatch1.init_model()
         opatch1.model_hfss()

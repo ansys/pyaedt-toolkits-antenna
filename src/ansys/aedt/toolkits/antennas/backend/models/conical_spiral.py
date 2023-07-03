@@ -1,11 +1,10 @@
 from collections import OrderedDict
 import math
 
-from ansys.aedt.toolkits.antennas.backend.common.logger_handler import logger
-
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
+from ansys.aedt.toolkits.antennas.backend.common.logger_handler import logger
 from ansys.aedt.toolkits.antennas.backend.models.common import CommonAntenna
 
 
@@ -171,18 +170,8 @@ class Archimedean(CommonConicalSpiral):
     def _synthesis(self):
         parameters = {}
         lightSpeed = constants.SpeedOfLight
-        start_freq_hz = constants.unit_converter(
-            self.start_frequency, "Freq", self.frequency_unit, "Hz"
-        )
-        stop_freq_hz = constants.unit_converter(
-            self.stop_frequency, "Freq", self.frequency_unit, "Hz"
-        )
-        if (
-            self.material not in self._app.materials.mat_names_aedt
-            or self.material not in self._app.materials.mat_names_aedt_lower
-        ):
-            logger.debug("Material not defined")
-            return parameters
+        start_freq_hz = constants.unit_converter(self.start_frequency, "Freq", self.frequency_unit, "Hz")
+        stop_freq_hz = constants.unit_converter(self.stop_frequency, "Freq", self.frequency_unit, "Hz")
 
         expansion_coefficient = 1.0
         offset_angle = 90.0
@@ -192,12 +181,8 @@ class Archimedean(CommonConicalSpiral):
         port_extension = 0.1
 
         outer_rad_calc = lightSpeed / (2 * math.pi * start_freq_hz)
-        outer_rad_calc = constants.unit_converter(
-            outer_rad_calc, "Length", "meter", self.length_unit
-        )
-        outer_rad_calc_cm = constants.unit_converter(
-            outer_rad_calc, "Length", self.length_unit, "cm"
-        )
+        outer_rad_calc = constants.unit_converter(outer_rad_calc, "Length", "meter", self.length_unit)
+        outer_rad_calc_cm = constants.unit_converter(outer_rad_calc, "Length", self.length_unit, "cm")
         inner_rad_calc = lightSpeed / (2 * math.pi * stop_freq_hz)
         inner_rad = constants.unit_converter(inner_rad_calc, "Length", "meter", self.length_unit)
         inner_rad_cm = constants.unit_converter(inner_rad, "Length", self.length_unit, "cm")
@@ -206,12 +191,8 @@ class Archimedean(CommonConicalSpiral):
         parameters["offset_angle"] = offset_angle
         parameters["spiral_coefficient"] = spiral_coefficient
         parameters["inner_rad"] = round(inner_rad, 2)
-        parameters["turns_number"] = round(
-            (outer_rad_calc_cm - inner_rad_cm) / 2.0 / math.pi / 0.1, 2
-        )
-        parameters["cone_height"] = round(
-            (outer_rad_calc - inner_rad) * math.tan(math.radians(66.66)), 2
-        )
+        parameters["turns_number"] = round((outer_rad_calc_cm - inner_rad_cm) / 2.0 / math.pi / 0.1, 2)
+        parameters["cone_height"] = round((outer_rad_calc - inner_rad) * math.tan(math.radians(66.66)), 2)
         parameters["points"] = points
         parameters["arms_number"] = arms
         parameters["port_extension"] = port_extension
@@ -235,13 +216,18 @@ class Archimedean(CommonConicalSpiral):
             logger.debug("This antenna already exists")
             return False
 
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
+            return False
+
         self.set_variables_in_hfss()
 
         # Map parameters
         expansion_coefficient = self.synthesis_parameters.expansion_coefficient.hfss_variable
-        self._app[expansion_coefficient] = str(
-            self.synthesis_parameters.expansion_coefficient.value
-        )
+        self._app[expansion_coefficient] = str(self.synthesis_parameters.expansion_coefficient.value)
         offset_angle = self.synthesis_parameters.offset_angle.hfss_variable
         self._app[offset_angle] = str(self.synthesis_parameters.offset_angle.value) + "deg"
         spiral_coefficient = self.synthesis_parameters.spiral_coefficient.hfss_variable

@@ -1,7 +1,7 @@
+from conftest import BasisTest
 from pyaedt.modeler.cad.object3d import Object3d
 
-from ansys.aedt.toolkits.antennas.backend.models.helix import AxialMode
-from conftest import BasisTest
+from ansys.aedt.toolkits.antennas.backend import models
 
 test_project_name = "Helix_test"
 
@@ -16,12 +16,23 @@ class TestClass(BasisTest, object):
 
     def test_01_helix_axial(self):
         self.aedtapp.design_name = "myname"
-        oantenna = self.aedtapp.add_from_toolkit(AxialMode, draw=True, frequency=1.0)
+        self.aedtapp.solution_type = "Modal"
+        antenna_module = getattr(models, "AxialMode")
+        oantenna = antenna_module(None, frequency=1.0, length_unit="mm")
+        assert oantenna.synthesis_parameters
+
+        oantenna = antenna_module(self.aedtapp, frequency=1.0, length_unit=self.aedtapp.modeler.model_units)
+        oantenna.init_model()
+        oantenna.model_hfss()
+        oantenna.setup_hfss()
+
         assert oantenna
         assert oantenna.object_list
         for comp in oantenna.object_list.values():
             assert isinstance(comp, Object3d)
-        ohorn2 = self.aedtapp.add_from_toolkit(
-            AxialMode, draw=True, antenna_name=oantenna.antenna_name, outer_boundary="Radiation"
+
+        oantenna2 = antenna_module(
+            self.aedtapp, frequency=1.0, length_unit=self.aedtapp.modeler.model_units, outer_boundary="Radiation"
         )
-        assert oantenna.antenna_name != ohorn2.antenna_name
+
+        assert oantenna.antenna_name != oantenna2.antenna_name

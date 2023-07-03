@@ -1,7 +1,7 @@
+from conftest import BasisTest
 from pyaedt.modeler.cad.object3d import Object3d
 
-from ansys.aedt.toolkits.antennas.backend.models.conical_spiral import Archimedean
-from conftest import BasisTest
+from ansys.aedt.toolkits.antennas.backend import models
 
 test_project_name = "ConicalSpiral_test"
 
@@ -16,14 +16,24 @@ class TestClass(BasisTest, object):
 
     def test_01_archimidean(self):
         self.aedtapp.design_name = "Archimidean"
-        oantenna = self.aedtapp.add_from_toolkit(
-            Archimedean, draw=True, start_frequency=4.0, stop_frequency=10.0
+
+        antenna_module = getattr(models, "Archimedean")
+        oantenna = antenna_module(None, start_frequency=4.0, stop_frequency=10.0, length_unit="mm")
+        assert oantenna.synthesis_parameters
+
+        oantenna = antenna_module(
+            self.aedtapp, start_frequency=4.0, stop_frequency=10.0, length_unit=self.aedtapp.modeler.model_units
         )
+        oantenna.init_model()
+        oantenna.model_hfss()
+        oantenna.setup_hfss()
+
         assert oantenna
+
         assert oantenna.object_list
         for comp in oantenna.object_list.values():
             assert isinstance(comp, Object3d)
-        ohorn2 = self.aedtapp.add_from_toolkit(
-            Archimedean, draw=True, antenna_name=oantenna.antenna_name, outer_boundary="Radiation"
+        oantenna2 = antenna_module(
+            self.aedtapp, start_frequency=4.0, stop_frequency=10.0, length_unit=self.aedtapp.modeler.model_units
         )
-        assert oantenna.antenna_name != ohorn2.antenna_name
+        assert oantenna.antenna_name != oantenna2.antenna_name

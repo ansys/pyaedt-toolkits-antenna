@@ -272,6 +272,13 @@ class RectangularPatchProbe(CommonPatch):
             logger.debug("This antenna already exists")
             return False
 
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
+            return False
+
         self.set_variables_in_hfss()
 
         # Map parameters
@@ -632,6 +639,13 @@ class RectangularPatchInset(CommonPatch):
             self._app.logger.warning("This antenna already exists.")
             return False
 
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
+            return False
+
         self.set_variables_in_hfss()
 
         # Map parameters
@@ -978,6 +992,13 @@ class RectangularPatchEdge(CommonPatch):
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return False
 
         self.set_variables_in_hfss()
