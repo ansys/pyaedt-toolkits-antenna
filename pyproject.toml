@@ -26,9 +26,9 @@ classifiers = [
 dependencies = [
     "build==0.10.0",
     "twine==4.0.2",
-    "pyaedt[all]",
+    "pyaedt",
     "importlib-metadata >=4.0",
-    "pyside6==6.5.1.1",
+    "PySide6-Essentials==6.5.1.1",
     "pyqtgraph",
     "qdarkstyle",
     "flask",

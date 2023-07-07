@@ -214,7 +214,7 @@ class TestClass(BasisTest, object):
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
 
-        ohorn1 = antenna_module(
+        ohorn2 = antenna_module(
             self.aedtapp, frequency=10.0, length_unit=self.aedtapp.modeler.model_units, antenna_name=ohorn1.antenna_name
         )
         assert ohorn1.antenna_name != ohorn2.antenna_name

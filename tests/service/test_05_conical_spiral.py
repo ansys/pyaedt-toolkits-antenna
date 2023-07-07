@@ -18,7 +18,7 @@ class TestClass(BasisTest, object):
         self.aedtapp.design_name = "Archimidean"
 
         antenna_module = getattr(models, "Archimedean")
-        oantenna = antenna_module(None, start_frequency=4.0, stop_frequency=10.0, length_unit="mm")
+        oantenna = antenna_module(None, start_frequency=2.0, stop_frequency=10.0, length_unit="mm")
         assert oantenna.synthesis_parameters
 
         oantenna = antenna_module(
