@@ -47,6 +47,8 @@ class CommonHorn(CommonAntenna):
                     parameters = self._synthesis()
                     self.update_synthesis_parameters(parameters)
                     self.set_variables_in_hfss()
+        else:
+            self._input_parameters.material = value
 
     @property
     def material_properties(self):
@@ -131,6 +133,7 @@ class Conical(CommonHorn):
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "Conical"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -433,6 +436,7 @@ class PyramidalRidged(CommonHorn):
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "PyramidalRidged"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -1137,6 +1141,7 @@ class Corrugated(CommonHorn):
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "Corrugated"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -1432,6 +1437,7 @@ class Elliptical(CommonHorn):
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "Elliptical"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -1738,6 +1744,7 @@ class EPlane(CommonHorn):
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "EPlane"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -2132,6 +2139,7 @@ class HPlane(CommonHorn):
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "HPlane"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -2512,6 +2520,7 @@ class Pyramidal(CommonHorn):
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "Pyramidal"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -2901,6 +2910,7 @@ class QuadRidged(CommonHorn):
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "QuadRidged"
 
     @pyaedt_function_handler()
     def _synthesis(self):

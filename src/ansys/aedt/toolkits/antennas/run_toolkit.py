@@ -32,7 +32,7 @@ backend_command = [python_path, backend_file]
 
 
 # Define the command to start the PySide6 UI
-frontend_file = os.path.join(ui.__path__[0], "frontend.py")
+frontend_file = os.path.join(ui.__path__[0], "frontend_actions.py")
 frontend_command = [python_path, frontend_file]
 
 
@@ -50,6 +50,7 @@ def clean_python_processes():
 
 # Define a function to run the subprocess command
 def run_command(*command):
+    myenv = os.environ.copy()
     if is_linux:
         process = subprocess.Popen(
             command,
@@ -63,6 +64,7 @@ def run_command(*command):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             creationflags=CREATE_NO_WINDOW,
+            env=myenv,
         )
     stdout, stderr = process.communicate()
     print(stdout.decode())

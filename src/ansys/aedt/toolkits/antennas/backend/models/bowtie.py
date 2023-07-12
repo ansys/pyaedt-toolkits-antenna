@@ -78,6 +78,7 @@ class BowTie(CommonPatch):
         CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "BowTie"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -324,9 +325,9 @@ class BowTieRounded(CommonPatch):
 
     def __init__(self, *args, **kwargs):
         CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
-
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "BowTieRounded"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -586,9 +587,9 @@ class BowTieSlot(CommonPatch):
 
     def __init__(self, *args, **kwargs):
         CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
-
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "BowTieSlot"
 
     @pyaedt_function_handler()
     def _synthesis(self):

@@ -27,25 +27,28 @@ class CommonConicalSpiral(CommonAntenna):
 
     @material.setter
     def material(self, value):
-        if (
-            value
-            and value not in self._app.materials.mat_names_aedt
-            and value not in self._app.materials.mat_names_aedt_lower
-        ):
-            logger.debug("Material not defined")
-        else:
-            if value != self.material and self.object_list:
-                for antenna_obj in self.object_list:
-                    if (
-                        self.object_list[antenna_obj].material_name == self.material.lower()
-                        and "port_cap" not in antenna_obj
-                    ):
-                        self.object_list[antenna_obj].material_name = value
+        if self._app:
+            if (
+                value
+                and value not in self._app.materials.mat_names_aedt
+                and value not in self._app.materials.mat_names_aedt_lower
+            ):
+                logger.debug("Material not defined")
+            else:
+                if value != self.material and self.object_list:
+                    for antenna_obj in self.object_list:
+                        if (
+                            self.object_list[antenna_obj].material_name == self.material.lower()
+                            and "port_cap" not in antenna_obj
+                        ):
+                            self.object_list[antenna_obj].material_name = value
 
-                self._input_parameters.material = value
-                parameters = self._synthesis()
-                self.update_synthesis_parameters(parameters)
-                self.set_variables_in_hfss()
+                    self._input_parameters.material = value
+                    parameters = self._synthesis()
+                    self.update_synthesis_parameters(parameters)
+                    self.set_variables_in_hfss()
+        else:
+            self._input_parameters.material = value
 
     @property
     def frequency(self):
@@ -70,9 +73,9 @@ class CommonConicalSpiral(CommonAntenna):
     @start_frequency.setter
     def start_frequency(self, value):
         self._input_parameters.start_frequency = value
+        parameters = self._synthesis()
+        self.update_synthesis_parameters(parameters)
         if self.object_list:
-            parameters = self._synthesis()
-            self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
 
     @property
@@ -88,9 +91,9 @@ class CommonConicalSpiral(CommonAntenna):
     @stop_frequency.setter
     def stop_frequency(self, value):
         self._input_parameters.stop_frequency = value
+        parameters = self._synthesis()
+        self.update_synthesis_parameters(parameters)
         if self.object_list:
-            parameters = self._synthesis()
-            self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
 
     @pyaedt_function_handler()
@@ -165,6 +168,7 @@ class Archimedean(CommonConicalSpiral):
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "Archimedean"
 
     @pyaedt_function_handler()
     def _synthesis(self):

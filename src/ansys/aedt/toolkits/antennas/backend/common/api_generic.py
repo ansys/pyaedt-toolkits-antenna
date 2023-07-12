@@ -19,16 +19,16 @@ class ToolkitGeneric(object):
     --------
     >>> import time
     >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-    >>> service = Toolkit()
-    >>> properties = service.get_properties()
+    >>> toolkit = Toolkit()
+    >>> properties = toolkit.get_properties()
     >>> new_properties = {"aedt_version": "2022.2"}
-    >>> service.set_properties(new_properties)
-    >>> new_properties = service.get_properties()
-    >>> msg = service.launch_aedt()
-    >>> response = service.get_thread_status()
+    >>> toolkit.set_properties(new_properties)
+    >>> new_properties = toolkit.get_properties()
+    >>> msg = toolkit.launch_aedt()
+    >>> response = toolkit.get_thread_status()
     >>> while response[0] == 0:
     >>>     time.sleep(1)
-    >>>     response = service.get_thread_status()
+    >>>     response = toolkit.get_thread_status()
 
     """
 
@@ -68,8 +68,8 @@ class ToolkitGeneric(object):
         Examples
         --------
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.set_properties({"property1": value1, "property2": value2})
+        >>> toolkit = Toolkit()
+        >>> toolkit.set_properties({"property1": value1, "property2": value2})
 
         """
 
@@ -100,8 +100,8 @@ class ToolkitGeneric(object):
         Examples
         --------
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.get_properties()
+        >>> toolkit = Toolkit()
+        >>> toolkit.get_properties()
         {"property1": value1, "property2": value2}
         """
         return properties.export_to_dict()
@@ -118,8 +118,8 @@ class ToolkitGeneric(object):
         Examples
         --------
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.get_thread_status()
+        >>> toolkit = Toolkit()
+        >>> toolkit.get_thread_status()
         """
         thread_running = thread.is_thread_running()
         is_toolkit_busy = properties.is_toolkit_busy
@@ -147,16 +147,16 @@ class ToolkitGeneric(object):
         Examples
         --------
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> msg = service.launch_aedt()
-        >>> response = service.get_thread_status()
+        >>> toolkit = Toolkit()
+        >>> msg = toolkit.launch_aedt()
+        >>> response = toolkit.get_thread_status()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
-        >>>     response = service.get_thread_status()
-        >>> service.connect_aedt()
-        >>> service.aedt_connected()
+        >>>     response = toolkit.get_thread_status()
+        >>> toolkit.connect_aedt()
+        >>> toolkit.aedt_connected()
         (True, "Toolkit connected to process <process_id> on Grpc <grpc_port>")
-        >>> service.release_aedt()
+        >>> toolkit.release_aedt()
         """
         if self.desktop:
             if self.desktop.port != 0:
@@ -188,8 +188,8 @@ class ToolkitGeneric(object):
         Examples
         --------
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.installed_aedt_version()
+        >>> toolkit = Toolkit()
+        >>> toolkit.installed_aedt_version()
         ["2021.1", "2021.2", "2022.1"]
         """
 
@@ -214,8 +214,8 @@ class ToolkitGeneric(object):
         Examples
         --------
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.aedt_sessions()
+        >>> toolkit = Toolkit()
+        >>> toolkit.aedt_sessions()
         [[pid1, grpc_port1], [pid2, grpc_port2]]
         """
         if not properties.is_toolkit_busy:
@@ -275,12 +275,12 @@ class ToolkitGeneric(object):
         --------
         >>> import time
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.launch_aedt()
+        >>> toolkit = Toolkit()
+        >>> toolkit.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
-        >>>     response = service.get_thread_status()
-        >>> service.get_design_names()
+        >>>     response = toolkit.get_thread_status()
+        >>> toolkit.get_design_names()
         """
         if properties.selected_process == 0:
             logger.error("Process ID not defined")
@@ -313,12 +313,12 @@ class ToolkitGeneric(object):
         --------
         >>> import time
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.launch_aedt()
+        >>> toolkit = Toolkit()
+        >>> toolkit.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
-        >>>     response = service.get_thread_status()
-        >>> toolkit_free = service.get_thread_status()
+        >>>     response = toolkit.get_thread_status()
+        >>> toolkit_free = toolkit.get_thread_status()
         """
         # Check if the backend is already connected to an AEDT session
         connected, msg = self.aedt_connected()
@@ -378,6 +378,7 @@ class ToolkitGeneric(object):
 
             self.desktop.release_desktop(False, False)
             self.desktop = None
+
             logger.debug("Desktop released and project properties loaded")
 
         return True
@@ -394,13 +395,13 @@ class ToolkitGeneric(object):
         --------
         >>> import time
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.launch_aedt()
+        >>> toolkit = Toolkit()
+        >>> toolkit.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
-        >>>     response = service.get_thread_status()
-        >>> service.connect_aedt()
-        >>> service.release_aedt()
+        >>>     response = toolkit.get_thread_status()
+        >>> toolkit.connect_aedt()
+        >>> toolkit.release_aedt()
         """
         if properties.selected_process == 0:
             logger.error("Process ID not defined")
@@ -470,16 +471,16 @@ class ToolkitGeneric(object):
         --------
         >>> import time
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.launch_aedt()
+        >>> toolkit = Toolkit()
+        >>> toolkit.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
-        >>>     response = service.get_thread_status()
-        >>> service.connect_design()
+        >>>     response = toolkit.get_thread_status()
+        >>> toolkit.connect_design()
 
         """
 
-        project_name = os.path.splitext(os.path.basename(properties.active_project))[0]
+        project_name = properties.active_project
         design_name = "No design"
         if properties.active_design:
             design_name = list(properties.active_design.values())[0]
@@ -522,6 +523,7 @@ class ToolkitGeneric(object):
                 designname=design_name,
             )
             self.aedtapp.save_project()
+
             active_design = {"Hfss": design_name}
 
         if self.aedtapp:
@@ -558,12 +560,12 @@ class ToolkitGeneric(object):
         --------
         >>> import time
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.launch_aedt()
+        >>> toolkit = Toolkit()
+        >>> toolkit.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
-        >>>     response = service.get_thread_status()
-        >>> service.release_aedt(True, True)
+        >>>     response = toolkit.get_thread_status()
+        >>> toolkit.release_aedt(True, True)
 
         """
         released = False
@@ -605,13 +607,13 @@ class ToolkitGeneric(object):
         --------
         >>> import time
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.launch_aedt()
+        >>> toolkit = Toolkit()
+        >>> toolkit.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
-        >>>     response = service.get_thread_status()
-        >>> service.open_project("path/to/file")
-        >>> service.release_aedt()
+        >>>     response = toolkit.get_thread_status()
+        >>> toolkit.open_project("path/to/file")
+        >>> toolkit.release_aedt()
 
         """
         if self.desktop and project_name:
@@ -634,13 +636,13 @@ class ToolkitGeneric(object):
         --------
         >>> import time
         >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> service = Toolkit()
-        >>> service.launch_aedt()
+        >>> toolkit = Toolkit()
+        >>> toolkit.launch_aedt()
         >>> while response[0] == 0:
         >>>     time.sleep(1)
-        >>>     response = service.get_thread_status()
-        >>> service.connect_aedt()
-        >>> service.save_project()
+        >>>     response = toolkit.get_thread_status()
+        >>> toolkit.connect_aedt()
+        >>> toolkit.save_project()
         """
         if self.connect_design():
             if properties.active_project != project_path:
@@ -686,7 +688,7 @@ class ToolkitGeneric(object):
                     self.desktop.release_desktop(True, True)
                     return False
 
-            # Save active project ingo
+            # Save active project
             active_project_path = active_project.GetPath()
             new_properties["active_project"] = os.path.join(active_project_path, active_project_name + ".aedt")
             # Save projects info

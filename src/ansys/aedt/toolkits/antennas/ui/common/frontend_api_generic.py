@@ -23,6 +23,9 @@ class FrontendGeneric(object):
         # Set font style
         self.set_font(self)
 
+        # Toolkit specific
+        self.create_button = None
+
         # UI Logger
         XStream.stdout().messageWritten.connect(lambda value: self.write_log_line(value))
         XStream.stderr().messageWritten.connect(lambda value: self.write_log_line(value))
@@ -177,7 +180,10 @@ class FrontendGeneric(object):
             try:
                 # Modify selected version
                 properties = self.get_properties()
-                properties["active_project"] = self.project_aedt_combo.currentText()
+                project_selected = self.project_aedt_combo.currentText()
+                for project in properties["project_list"]:
+                    if project_selected == os.path.basename(project)[:-5]:
+                        properties["active_project"] = project
                 self.set_properties(properties)
 
                 response = requests.get(self.url + "/get_design_names")
@@ -228,6 +234,8 @@ class FrontendGeneric(object):
                     self.running = True
                     logger.debug("Launching AEDT")
                     self.start()
+                    if self.create_button:
+                        self.create_button.setEnabled(True)
                     self.toolkit_tab.removeTab(0)
                 else:
                     self.write_log_line(f"Failed backend call: {self.url}")

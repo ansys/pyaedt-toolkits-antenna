@@ -16,11 +16,13 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
-    QHBoxLayout, QLabel, QLayout, QLineEdit,
-    QMainWindow, QMenu, QMenuBar, QPlainTextEdit,
-    QProgressBar, QPushButton, QSizePolicy, QSpacerItem,
-    QStatusBar, QTabWidget, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
+    QGridLayout, QHBoxLayout, QHeaderView, QLabel,
+    QLayout, QLineEdit, QMainWindow, QMenu,
+    QMenuBar, QPlainTextEdit, QProgressBar, QPushButton,
+    QSizePolicy, QSlider, QSpacerItem, QStatusBar,
+    QTabWidget, QTableWidget, QTableWidgetItem, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -29,6 +31,16 @@ class Ui_MainWindow(object):
         MainWindow.resize(1107, 1178)
         self.action_save_project = QAction(MainWindow)
         self.action_save_project.setObjectName(u"action_save_project")
+        font = QFont()
+        font.setPointSize(12)
+        self.action_save_project.setFont(font)
+        self.actionBowtieNormal = QAction(MainWindow)
+        self.actionBowtieNormal.setObjectName(u"actionBowtieNormal")
+        self.actionBowtieNormal.setFont(font)
+        self.actionBowtieRounded = QAction(MainWindow)
+        self.actionBowtieRounded.setObjectName(u"actionBowtieRounded")
+        self.actionBowtieSlot = QAction(MainWindow)
+        self.actionBowtieSlot.setObjectName(u"actionBowtieSlot")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -47,11 +59,16 @@ class Ui_MainWindow(object):
         self.main_menu.setSizePolicy(sizePolicy1)
         self.gridLayout = QGridLayout(self.main_menu)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.gridLayout.setContentsMargins(-1, -1, 2, -1)
         self.release_button = QPushButton(self.main_menu)
         self.release_button.setObjectName(u"release_button")
         self.release_button.setMinimumSize(QSize(0, 40))
 
         self.gridLayout.addWidget(self.release_button, 3, 2, 1, 1)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer, 3, 1, 1, 1)
 
         self.release_and_exit_button = QPushButton(self.main_menu)
         self.release_and_exit_button.setObjectName(u"release_and_exit_button")
@@ -59,15 +76,13 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.release_and_exit_button, 3, 3, 1, 1)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.gridLayout.addItem(self.horizontalSpacer, 3, 1, 1, 1)
-
         self.toolkit_tab = QTabWidget(self.main_menu)
         self.toolkit_tab.setObjectName(u"toolkit_tab")
         sizePolicy1.setHeightForWidth(self.toolkit_tab.sizePolicy().hasHeightForWidth())
         self.toolkit_tab.setSizePolicy(sizePolicy1)
-        self.toolkit_tab.setTabShape(QTabWidget.Triangular)
+        self.toolkit_tab.setTabShape(QTabWidget.Rounded)
+        self.toolkit_tab.setIconSize(QSize(20, 20))
+        self.toolkit_tab.setMovable(True)
         self.settings = QWidget()
         self.settings.setObjectName(u"settings")
         self.horizontalLayout_25 = QHBoxLayout(self.settings)
@@ -76,20 +91,6 @@ class Ui_MainWindow(object):
         self.settings_layout.setObjectName(u"settings_layout")
         self.cores_layout = QHBoxLayout()
         self.cores_layout.setObjectName(u"cores_layout")
-        self.cores_label = QLabel(self.settings)
-        self.cores_label.setObjectName(u"cores_label")
-
-        self.cores_layout.addWidget(self.cores_label)
-
-        self.horizontalSpacer_30 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.cores_layout.addItem(self.horizontalSpacer_30)
-
-        self.numcores = QLineEdit(self.settings)
-        self.numcores.setObjectName(u"numcores")
-
-        self.cores_layout.addWidget(self.numcores)
-
 
         self.settings_layout.addLayout(self.cores_layout)
 
@@ -194,17 +195,14 @@ class Ui_MainWindow(object):
         self.toolkit_tab.addTab(self.settings, "")
         self.design = QWidget()
         self.design.setObjectName(u"design")
-        self.verticalLayout_2 = QVBoxLayout(self.design)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.design_layout_2 = QVBoxLayout(self.design)
+        self.design_layout_2.setObjectName(u"design_layout_2")
         self.design_layout = QHBoxLayout()
         self.design_layout.setObjectName(u"design_layout")
         self.design_settings = QFrame(self.design)
         self.design_settings.setObjectName(u"design_settings")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.design_settings.sizePolicy().hasHeightForWidth())
-        self.design_settings.setSizePolicy(sizePolicy2)
+        sizePolicy1.setHeightForWidth(self.design_settings.sizePolicy().hasHeightForWidth())
+        self.design_settings.setSizePolicy(sizePolicy1)
         self.design_settings.setFrameShape(QFrame.StyledPanel)
         self.design_settings.setFrameShadow(QFrame.Raised)
         self.design_settings.setLineWidth(12)
@@ -223,8 +221,6 @@ class Ui_MainWindow(object):
         self.project_aedt_layout.setContentsMargins(-1, 0, -1, -1)
         self.project_adt_label = QLabel(self.design_settings)
         self.project_adt_label.setObjectName(u"project_adt_label")
-        font = QFont()
-        font.setPointSize(12)
         self.project_adt_label.setFont(font)
         self.project_adt_label.setAlignment(Qt.AlignCenter)
 
@@ -264,80 +260,17 @@ class Ui_MainWindow(object):
 
         self.geometry_creation_layout.addItem(self.verticalSpacer)
 
-        self.dimension_multiplier_title = QLabel(self.design_settings)
-        self.dimension_multiplier_title.setObjectName(u"dimension_multiplier_title")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.dimension_multiplier_title.sizePolicy().hasHeightForWidth())
-        self.dimension_multiplier_title.setSizePolicy(sizePolicy3)
-        font1 = QFont()
-        font1.setPointSize(14)
-        self.dimension_multiplier_title.setFont(font1)
-        self.dimension_multiplier_title.setAlignment(Qt.AlignCenter)
+        self.antenna_settings = QFrame(self.design_settings)
+        self.antenna_settings.setObjectName(u"antenna_settings")
+        sizePolicy.setHeightForWidth(self.antenna_settings.sizePolicy().hasHeightForWidth())
+        self.antenna_settings.setSizePolicy(sizePolicy)
+        self.antenna_settings.setFrameShape(QFrame.StyledPanel)
+        self.antenna_settings.setFrameShadow(QFrame.Raised)
+        self.antenna_settings.setLineWidth(12)
+        self.antenna_settings_layout = QGridLayout(self.antenna_settings)
+        self.antenna_settings_layout.setObjectName(u"antenna_settings_layout")
 
-        self.geometry_creation_layout.addWidget(self.dimension_multiplier_title)
-
-        self.multiplier_layout = QHBoxLayout()
-        self.multiplier_layout.setObjectName(u"multiplier_layout")
-        self.value_title = QLabel(self.design_settings)
-        self.value_title.setObjectName(u"value_title")
-        self.value_title.setFont(font)
-
-        self.multiplier_layout.addWidget(self.value_title)
-
-        self.multiplier = QLineEdit(self.design_settings)
-        self.multiplier.setObjectName(u"multiplier")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.multiplier.sizePolicy().hasHeightForWidth())
-        self.multiplier.setSizePolicy(sizePolicy4)
-
-        self.multiplier_layout.addWidget(self.multiplier)
-
-
-        self.geometry_creation_layout.addLayout(self.multiplier_layout)
-
-        self.select_geometry_title = QLabel(self.design_settings)
-        self.select_geometry_title.setObjectName(u"select_geometry_title")
-        sizePolicy3.setHeightForWidth(self.select_geometry_title.sizePolicy().hasHeightForWidth())
-        self.select_geometry_title.setSizePolicy(sizePolicy3)
-        self.select_geometry_title.setFont(font1)
-        self.select_geometry_title.setAlignment(Qt.AlignHCenter|Qt.AlignTop)
-
-        self.geometry_creation_layout.addWidget(self.select_geometry_title)
-
-        self.geometry_select_layout = QHBoxLayout()
-        self.geometry_select_layout.setObjectName(u"geometry_select_layout")
-        self.geometry_select_layout.setContentsMargins(-1, -1, -1, 0)
-        self.geometry_title = QLabel(self.design_settings)
-        self.geometry_title.setObjectName(u"geometry_title")
-        self.geometry_title.setFont(font)
-
-        self.geometry_select_layout.addWidget(self.geometry_title)
-
-        self.geometry_combo = QComboBox(self.design_settings)
-        self.geometry_combo.addItem("")
-        self.geometry_combo.addItem("")
-        self.geometry_combo.setObjectName(u"geometry_combo")
-        self.geometry_combo.setFont(font)
-
-        self.geometry_select_layout.addWidget(self.geometry_combo)
-
-
-        self.geometry_creation_layout.addLayout(self.geometry_select_layout)
-
-        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.geometry_creation_layout.addItem(self.verticalSpacer_6)
-
-        self.create_geometry_buttom = QPushButton(self.design_settings)
-        self.create_geometry_buttom.setObjectName(u"create_geometry_buttom")
-        self.create_geometry_buttom.setMinimumSize(QSize(0, 50))
-        self.create_geometry_buttom.setFont(font)
-
-        self.geometry_creation_layout.addWidget(self.create_geometry_buttom)
+        self.geometry_creation_layout.addWidget(self.antenna_settings)
 
 
         self.geometry_creation.addLayout(self.geometry_creation_layout)
@@ -345,18 +278,75 @@ class Ui_MainWindow(object):
 
         self.layout_settings.addLayout(self.geometry_creation, 7, 1, 1, 1)
 
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Preferred, QSizePolicy.Minimum)
 
         self.layout_settings.addItem(self.horizontalSpacer_4, 7, 2, 1, 1)
 
         self.new_layout = QVBoxLayout()
         self.new_layout.setObjectName(u"new_layout")
-        self.frame = QFrame(self.design_settings)
-        self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_4 = QVBoxLayout()
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.component_3d = QCheckBox(self.design_settings)
+        self.component_3d.setObjectName(u"component_3d")
 
-        self.new_layout.addWidget(self.frame)
+        self.verticalLayout_4.addWidget(self.component_3d)
+
+        self.create_hfss_setup = QCheckBox(self.design_settings)
+        self.create_hfss_setup.setObjectName(u"create_hfss_setup")
+        self.create_hfss_setup.setEnabled(True)
+        self.create_hfss_setup.setChecked(True)
+
+        self.verticalLayout_4.addWidget(self.create_hfss_setup)
+
+        self.lattice_pair = QCheckBox(self.design_settings)
+        self.lattice_pair.setObjectName(u"lattice_pair")
+
+        self.verticalLayout_4.addWidget(self.lattice_pair)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.sweep_label = QLabel(self.design_settings)
+        self.sweep_label.setObjectName(u"sweep_label")
+
+        self.horizontalLayout.addWidget(self.sweep_label)
+
+        self.sweep_slider = QSlider(self.design_settings)
+        self.sweep_slider.setObjectName(u"sweep_slider")
+        self.sweep_slider.setMaximum(100)
+        self.sweep_slider.setSingleStep(5)
+        self.sweep_slider.setValue(20)
+        self.sweep_slider.setOrientation(Qt.Horizontal)
+        self.sweep_slider.setTickPosition(QSlider.TicksAbove)
+        self.sweep_slider.setTickInterval(5)
+
+        self.horizontalLayout.addWidget(self.sweep_slider)
+
+        self.slider_value = QLabel(self.design_settings)
+        self.slider_value.setObjectName(u"slider_value")
+
+        self.horizontalLayout.addWidget(self.slider_value)
+
+
+        self.verticalLayout_4.addLayout(self.horizontalLayout)
+
+
+        self.new_layout.addLayout(self.verticalLayout_4)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Fixed)
+
+        self.new_layout.addItem(self.verticalSpacer_2)
+
+        self.property_table = QTableWidget(self.design_settings)
+        if (self.property_table.columnCount() < 2):
+            self.property_table.setColumnCount(2)
+        __qtablewidgetitem = QTableWidgetItem()
+        self.property_table.setHorizontalHeaderItem(0, __qtablewidgetitem)
+        __qtablewidgetitem1 = QTableWidgetItem()
+        self.property_table.setHorizontalHeaderItem(1, __qtablewidgetitem1)
+        self.property_table.setObjectName(u"property_table")
+        self.property_table.setColumnCount(2)
+
+        self.new_layout.addWidget(self.property_table)
 
 
         self.layout_settings.addLayout(self.new_layout, 7, 3, 1, 1)
@@ -369,9 +359,139 @@ class Ui_MainWindow(object):
         self.design_layout.addItem(self.horizontalSpacer_5)
 
 
-        self.verticalLayout_2.addLayout(self.design_layout)
+        self.design_layout_2.addLayout(self.design_layout)
 
         self.toolkit_tab.addTab(self.design, "")
+        self.analysis = QWidget()
+        self.analysis.setObjectName(u"analysis")
+        self.verticalLayout_3 = QVBoxLayout(self.analysis)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.options = QHBoxLayout()
+        self.options.setObjectName(u"options")
+        self.options.setContentsMargins(-1, 0, -1, -1)
+        self.analyze = QPushButton(self.analysis)
+        self.analyze.setObjectName(u"analyze")
+
+        self.options.addWidget(self.analyze)
+
+        self.get_results = QPushButton(self.analysis)
+        self.get_results.setObjectName(u"get_results")
+        self.get_results.setEnabled(False)
+        self.get_results.setCheckable(False)
+        self.get_results.setChecked(False)
+        self.get_results.setAutoDefault(False)
+
+        self.options.addWidget(self.get_results)
+
+
+        self.verticalLayout_3.addLayout(self.options)
+
+        self.results = QVBoxLayout()
+        self.results.setObjectName(u"results")
+
+        self.verticalLayout_3.addLayout(self.results)
+
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_3.addItem(self.verticalSpacer_3)
+
+        self.toolkit_tab.addTab(self.analysis, "")
+        self.toolkit_settings = QWidget()
+        self.toolkit_settings.setObjectName(u"toolkit_settings")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.toolkit_settings.sizePolicy().hasHeightForWidth())
+        self.toolkit_settings.setSizePolicy(sizePolicy2)
+        self.toolkit_settings.setMaximumSize(QSize(320, 200))
+        self.toolkit_settings_layout = QVBoxLayout(self.toolkit_settings)
+        self.toolkit_settings_layout.setObjectName(u"toolkit_settings_layout")
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.freq_units_label = QLabel(self.toolkit_settings)
+        self.freq_units_label.setObjectName(u"freq_units_label")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.freq_units_label.sizePolicy().hasHeightForWidth())
+        self.freq_units_label.setSizePolicy(sizePolicy3)
+
+        self.horizontalLayout_2.addWidget(self.freq_units_label)
+
+        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_6)
+
+        self.frequnits = QComboBox(self.toolkit_settings)
+        self.frequnits.addItem("")
+        self.frequnits.addItem("")
+        self.frequnits.addItem("")
+        self.frequnits.addItem("")
+        self.frequnits.addItem("")
+        self.frequnits.setObjectName(u"frequnits")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.frequnits.sizePolicy().hasHeightForWidth())
+        self.frequnits.setSizePolicy(sizePolicy4)
+
+        self.horizontalLayout_2.addWidget(self.frequnits)
+
+
+        self.toolkit_settings_layout.addLayout(self.horizontalLayout_2)
+
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.length_label = QLabel(self.toolkit_settings)
+        self.length_label.setObjectName(u"length_label")
+
+        self.horizontalLayout_3.addWidget(self.length_label)
+
+        self.horizontalSpacer_31 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+
+        self.horizontalLayout_3.addItem(self.horizontalSpacer_31)
+
+        self.units = QComboBox(self.toolkit_settings)
+        self.units.addItem("")
+        self.units.addItem("")
+        self.units.addItem("")
+        self.units.addItem("")
+        self.units.addItem("")
+        self.units.addItem("")
+        self.units.setObjectName(u"units")
+        sizePolicy5 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.units.sizePolicy().hasHeightForWidth())
+        self.units.setSizePolicy(sizePolicy5)
+
+        self.horizontalLayout_3.addWidget(self.units)
+
+
+        self.toolkit_settings_layout.addLayout(self.horizontalLayout_3)
+
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.cores_label = QLabel(self.toolkit_settings)
+        self.cores_label.setObjectName(u"cores_label")
+
+        self.horizontalLayout_4.addWidget(self.cores_label)
+
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+
+        self.horizontalLayout_4.addItem(self.horizontalSpacer_7)
+
+        self.numcores = QLineEdit(self.toolkit_settings)
+        self.numcores.setObjectName(u"numcores")
+        sizePolicy5.setHeightForWidth(self.numcores.sizePolicy().hasHeightForWidth())
+        self.numcores.setSizePolicy(sizePolicy5)
+
+        self.horizontalLayout_4.addWidget(self.numcores)
+
+
+        self.toolkit_settings_layout.addLayout(self.horizontalLayout_4)
+
+        self.toolkit_tab.addTab(self.toolkit_settings, "")
 
         self.gridLayout.addWidget(self.toolkit_tab, 0, 0, 1, 5)
 
@@ -380,11 +500,11 @@ class Ui_MainWindow(object):
 
         self.log_text = QPlainTextEdit(self.centralwidget)
         self.log_text.setObjectName(u"log_text")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.log_text.sizePolicy().hasHeightForWidth())
-        self.log_text.setSizePolicy(sizePolicy5)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.log_text.sizePolicy().hasHeightForWidth())
+        self.log_text.setSizePolicy(sizePolicy6)
 
         self.verticalLayout.addWidget(self.log_text)
 
@@ -407,17 +527,31 @@ class Ui_MainWindow(object):
         self.top_menu = QMenu(self.top_menu_bar)
         self.top_menu.setObjectName(u"top_menu")
         self.top_menu.setFont(font)
+        self.menuAntennas = QMenu(self.top_menu_bar)
+        self.menuAntennas.setObjectName(u"menuAntennas")
+        self.menuAntennas.setFont(font)
+        self.menuBowtie = QMenu(self.menuAntennas)
+        self.menuBowtie.setObjectName(u"menuBowtie")
+        self.menuBowtie.setFont(font)
         MainWindow.setMenuBar(self.top_menu_bar)
         self.status_bar = QStatusBar(MainWindow)
         self.status_bar.setObjectName(u"status_bar")
         MainWindow.setStatusBar(self.status_bar)
 
         self.top_menu_bar.addAction(self.top_menu.menuAction())
+        self.top_menu_bar.addAction(self.menuAntennas.menuAction())
         self.top_menu.addAction(self.action_save_project)
+        self.menuAntennas.addAction(self.menuBowtie.menuAction())
+        self.menuBowtie.addAction(self.actionBowtieNormal)
+        self.menuBowtie.addAction(self.actionBowtieRounded)
+        self.menuBowtie.addAction(self.actionBowtieSlot)
 
         self.retranslateUi(MainWindow)
 
-        self.toolkit_tab.setCurrentIndex(0)
+        self.toolkit_tab.setCurrentIndex(3)
+        self.get_results.setDefault(False)
+        self.frequnits.setCurrentIndex(3)
+        self.units.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -426,10 +560,11 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.action_save_project.setText(QCoreApplication.translate("MainWindow", u"Save project", None))
+        self.actionBowtieNormal.setText(QCoreApplication.translate("MainWindow", u"Normal", None))
+        self.actionBowtieRounded.setText(QCoreApplication.translate("MainWindow", u"Rounded", None))
+        self.actionBowtieSlot.setText(QCoreApplication.translate("MainWindow", u"Slot", None))
         self.release_button.setText(QCoreApplication.translate("MainWindow", u" Close Toolkit ", None))
         self.release_and_exit_button.setText(QCoreApplication.translate("MainWindow", u" Close Desktop and Toolkit ", None))
-        self.cores_label.setText(QCoreApplication.translate("MainWindow", u"Number of Cores", None))
-        self.numcores.setText(QCoreApplication.translate("MainWindow", u"4", None))
         self.graphical_label.setText(QCoreApplication.translate("MainWindow", u"Non Graphical", None))
         self.non_graphical_combo.setItemText(0, QCoreApplication.translate("MainWindow", u"False", None))
         self.non_graphical_combo.setItemText(1, QCoreApplication.translate("MainWindow", u"True", None))
@@ -441,23 +576,46 @@ class Ui_MainWindow(object):
         self.project_path_label.setText(QCoreApplication.translate("MainWindow", u"Project Name", None))
         self.browse_project.setText(QCoreApplication.translate("MainWindow", u"Select aedt project", None))
         self.connect_aedtapp.setText(QCoreApplication.translate("MainWindow", u"  Launch AEDT  ", None))
-        self.toolkit_tab.setTabText(self.toolkit_tab.indexOf(self.settings), QCoreApplication.translate("MainWindow", u" Settings ", None))
+        self.toolkit_tab.setTabText(self.toolkit_tab.indexOf(self.settings), QCoreApplication.translate("MainWindow", u" AEDT Settings ", None))
         self.project_adt_label.setText(QCoreApplication.translate("MainWindow", u"Project  selected", None))
         self.project_aedt_combo.setItemText(0, QCoreApplication.translate("MainWindow", u"No project", None))
 
         self.design_aedt_label.setText(QCoreApplication.translate("MainWindow", u"Design selected", None))
         self.design_aedt_combo.setItemText(0, QCoreApplication.translate("MainWindow", u"No design", None))
 
-        self.dimension_multiplier_title.setText(QCoreApplication.translate("MainWindow", u"Dimension multiplier", None))
-        self.value_title.setText(QCoreApplication.translate("MainWindow", u"Value", None))
-        self.multiplier.setText(QCoreApplication.translate("MainWindow", u"1", None))
-        self.select_geometry_title.setText(QCoreApplication.translate("MainWindow", u"Select geometry", None))
-        self.geometry_title.setText(QCoreApplication.translate("MainWindow", u"Geometry", None))
-        self.geometry_combo.setItemText(0, QCoreApplication.translate("MainWindow", u"Box", None))
-        self.geometry_combo.setItemText(1, QCoreApplication.translate("MainWindow", u"Sphere", None))
-
-        self.create_geometry_buttom.setText(QCoreApplication.translate("MainWindow", u"Create geometry", None))
+        self.component_3d.setText(QCoreApplication.translate("MainWindow", u"3D Component", None))
+        self.create_hfss_setup.setText(QCoreApplication.translate("MainWindow", u"Create Hfss Setup", None))
+        self.lattice_pair.setText(QCoreApplication.translate("MainWindow", u"Lattice pair", None))
+        self.sweep_label.setText(QCoreApplication.translate("MainWindow", u"Sweep Bandwidth %", None))
+        self.slider_value.setText(QCoreApplication.translate("MainWindow", u"20", None))
+        ___qtablewidgetitem = self.property_table.horizontalHeaderItem(0)
+        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Property", None));
+        ___qtablewidgetitem1 = self.property_table.horizontalHeaderItem(1)
+        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Value", None));
         self.toolkit_tab.setTabText(self.toolkit_tab.indexOf(self.design), QCoreApplication.translate("MainWindow", u" Design ", None))
+        self.analyze.setText(QCoreApplication.translate("MainWindow", u"Analyze Project", None))
+        self.get_results.setText(QCoreApplication.translate("MainWindow", u"Get results", None))
+        self.toolkit_tab.setTabText(self.toolkit_tab.indexOf(self.analysis), QCoreApplication.translate("MainWindow", u" Analysis ", None))
+        self.freq_units_label.setText(QCoreApplication.translate("MainWindow", u"Frequency Units", None))
+        self.frequnits.setItemText(0, QCoreApplication.translate("MainWindow", u"Hz", None))
+        self.frequnits.setItemText(1, QCoreApplication.translate("MainWindow", u"KHz", None))
+        self.frequnits.setItemText(2, QCoreApplication.translate("MainWindow", u"MHz", None))
+        self.frequnits.setItemText(3, QCoreApplication.translate("MainWindow", u"GHz", None))
+        self.frequnits.setItemText(4, QCoreApplication.translate("MainWindow", u"THz", None))
+
+        self.length_label.setText(QCoreApplication.translate("MainWindow", u"Length Units", None))
+        self.units.setItemText(0, QCoreApplication.translate("MainWindow", u"um", None))
+        self.units.setItemText(1, QCoreApplication.translate("MainWindow", u"mm", None))
+        self.units.setItemText(2, QCoreApplication.translate("MainWindow", u"cm", None))
+        self.units.setItemText(3, QCoreApplication.translate("MainWindow", u"m", None))
+        self.units.setItemText(4, QCoreApplication.translate("MainWindow", u"mil", None))
+        self.units.setItemText(5, QCoreApplication.translate("MainWindow", u"in", None))
+
+        self.cores_label.setText(QCoreApplication.translate("MainWindow", u"Number of Cores", None))
+        self.numcores.setText(QCoreApplication.translate("MainWindow", u"4", None))
+        self.toolkit_tab.setTabText(self.toolkit_tab.indexOf(self.toolkit_settings), QCoreApplication.translate("MainWindow", u"Toolkit Settings", None))
         self.top_menu.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
+        self.menuAntennas.setTitle(QCoreApplication.translate("MainWindow", u"Antennas", None))
+        self.menuBowtie.setTitle(QCoreApplication.translate("MainWindow", u"BowTie", None))
     # retranslateUi
 

@@ -45,10 +45,12 @@ class CommonPatch(CommonAntenna):
                         ):
                             self.object_list[antenna_obj].material_name = value
 
-                    self._input_parameters.material = value
-                    parameters = self._synthesis()
-                    self.update_synthesis_parameters(parameters)
-                    self.set_variables_in_hfss()
+                self._input_parameters.material = value
+                parameters = self._synthesis()
+                self.update_synthesis_parameters(parameters)
+                self.set_variables_in_hfss()
+        else:
+            self._input_parameters.material = value
 
     @property
     def material_properties(self):
@@ -151,6 +153,7 @@ class RectangularPatchProbe(CommonPatch):
         CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "RectangularPatchProbe"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -523,6 +526,7 @@ class RectangularPatchInset(CommonPatch):
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "RectangularPatchInset"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -860,6 +864,7 @@ class RectangularPatchEdge(CommonPatch):
         CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "RectangularPatchEdge"
 
     @pyaedt_function_handler()
     def _synthesis(self):

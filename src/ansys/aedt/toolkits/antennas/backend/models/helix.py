@@ -17,7 +17,7 @@ class CommonHelix(CommonAntenna):
 
     @property
     def material(self):
-        """Horn material.
+        """Helix material.
 
         Returns
         -------
@@ -119,7 +119,7 @@ class AxialMode(CommonHelix):
     frequency_unit : str, optional
         Frequency units. The default is ``GHz``.
     material : str, optional
-        Horn material. If the material is not defined, a new material,
+        Helix material. If the material is not defined, a new material,
         ``parametrized``, is defined. The default is ``"pec"``.
     outer_boundary : str, optional
         Boundary type to use. Options are ``"Radiation"``,
@@ -177,6 +177,7 @@ class AxialMode(CommonHelix):
 
         self._parameters = self._synthesis()
         self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "AxialMode"
 
     @pyaedt_function_handler()
     def _synthesis(self):
@@ -226,7 +227,7 @@ class AxialMode(CommonHelix):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw a conical horn antenna.
+        """Draw an axial mode antenna.
 
         Once the antenna is created, this method is not used anymore.
         """

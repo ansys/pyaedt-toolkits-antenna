@@ -6,6 +6,7 @@ import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import generate_unique_name
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
+from ansys.aedt.toolkits.antennas.backend.common.properties import properties
 from ansys.aedt.toolkits.antennas.backend.models.parameters import InputParameters
 from ansys.aedt.toolkits.antennas.backend.models.parameters import Property
 from ansys.aedt.toolkits.antennas.backend.models.parameters import SynthesisParameters
@@ -74,9 +75,9 @@ class CommonAntenna(object):
     @frequency.setter
     def frequency(self, value):
         self._input_parameters.frequency = value
+        parameters = self._synthesis()
+        self.update_synthesis_parameters(parameters)
         if self.object_list:
-            parameters = self._synthesis()
-            self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
 
     @property
@@ -92,9 +93,9 @@ class CommonAntenna(object):
     @frequency_unit.setter
     def frequency_unit(self, value):
         self._input_parameters.frequency_unit = value
+        parameters = self._synthesis()
+        self.update_synthesis_parameters(parameters)
         if self.object_list:
-            parameters = self._synthesis()
-            self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
 
     @property
@@ -143,10 +144,10 @@ class CommonAntenna(object):
 
     @length_unit.setter
     def length_unit(self, value):
-        self._length_unit = value
+        self._input_parameters.length_unit = value
+        parameters = self._synthesis()
+        self.update_synthesis_parameters(parameters)
         if self.object_list:
-            parameters = self._synthesis()
-            self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
 
     @property
@@ -184,7 +185,7 @@ class CommonAntenna(object):
                 self.object_list[antenna_obj].group_name = value
             if len(list(self._app.modeler.oeditor.GetObjectsInGroup(self.antenna_name))) == 0:
                 self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", self.antenna_name])
-            self._input_parameters.antenna_name = value
+        self._input_parameters.antenna_name = value
 
     @property
     def origin(self):
@@ -425,6 +426,7 @@ class CommonAntenna(object):
         """Create HFSS design variables."""
         for p in self.synthesis_parameters.__dict__.values():
             if isinstance(p, Property):
+                properties.parameters_hfss[p._name] = p.hfss_variable
                 if "angle" in p.hfss_variable:
                     self._app[p.hfss_variable] = str(p.value) + "deg"
                 elif "ratio" in p.hfss_variable:
