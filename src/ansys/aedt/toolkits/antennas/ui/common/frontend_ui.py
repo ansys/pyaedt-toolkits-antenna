@@ -548,7 +548,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.toolkit_tab.setCurrentIndex(3)
+        self.toolkit_tab.setCurrentIndex(0)
         self.get_results.setDefault(False)
         self.frequnits.setCurrentIndex(3)
         self.units.setCurrentIndex(1)
