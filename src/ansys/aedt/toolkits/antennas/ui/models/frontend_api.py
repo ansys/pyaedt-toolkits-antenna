@@ -22,6 +22,12 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         self.parameters = {}
         self.default_materials = {"FR4_epoxy": 4.4, "Teflon (tm)": 2.1, "Rogers RT / duroid 6002(tm)": 2.94}
         self.touchstone_graph = None
+        self.antenna1widget = None
+        self.antenna2widget = None
+        self.val_theta = None
+        self.theta = None
+        self.val_phi = None
+        self.phi = None
 
     def get_antenna(self, synth_only=False):
         """Create a bowtie  antenna.
@@ -249,6 +255,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                     self.write_log_line("Project not loaded")
                     self.update_progress(0)
                     return
+                self.numcores.setEnabled(False)
                 self.write_log_line("Analysis launched")
                 response = requests.post(self.url + "/analyze")
 
@@ -277,15 +284,15 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             self.write_log_line("Please wait, toolkit running")
         else:
             self.update_progress(25)
-            response = requests.get(self.url + "/scattering_results")
+            sparam_response = requests.get(self.url + "/scattering_results")
             self.update_progress(50)
-
-            if not response.ok:
+            if not sparam_response.ok:
                 msg = f"Failed backend call: {self.url}"
                 logger.debug(msg)
                 self.write_log_line(msg)
             else:
-                msg = "Scattering data obatined."
+                sparam = sparam_response.json()
+                msg = "Scattering data obtained."
                 logger.debug(msg)
                 self.write_log_line(msg)
                 if not self.touchstone_graph:
@@ -293,8 +300,8 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                     self.results.addWidget(self.touchstone_graph)
 
                 name = "Simulation"
-                freq = response.json()[0]
-                val = response.json()[1]
+                freq = sparam[0]
+                val = sparam[1]
                 # plot data: x, y values
                 self.touchstone_graph.plot(
                     freq,
@@ -311,9 +318,91 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                     "left",
                     "Value in dB",
                 )
+            farfield_response = requests.get(self.url + "/farfield_results")
+            self.update_progress(75)
+            if not farfield_response.ok:
+                msg = f"Failed backend call: {self.url}"
+                logger.debug(msg)
+                self.write_log_line(msg)
+            else:
+                farfield = farfield_response.json()
+                msg = "Farfield data obtained."
+                logger.debug(msg)
+                self.write_log_line(msg)
+                if not self.antenna1widget:
+                    self.antenna1widget = pg.PlotWidget()
+                    line = self._add_line(
+                        "combo_phi",
+                        "combo_phi_box",
+                        "Phi",
+                        "combo",
+                        farfield[0],
+                    )
+                    self.checked_overlap_1 = QtWidgets.QCheckBox()
+                    self.checked_overlap_1.setObjectName("checked_overlap_1")
+                    self.checked_overlap_1.setChecked(True)
+                    self.checked_overlap_1.setText("Overlap Plot")
+                    line.addWidget(self.checked_overlap_1)
+                    self.results.addLayout(line)
+                    self.results.addWidget(self.antenna1widget)
 
-            properties = {"close_projects": False, "close_on_exit": False}
-            requests.post(self.url + "/close_aedt", json=properties)
+                self.theta = farfield[1]
+                self.val_theta = farfield[2]
+
+                self.antenna1widget.plot(
+                    self.theta,
+                    self.val_theta[0],
+                    pen=line_colors[self.color],
+                    name=name,
+                )
+                self.antenna1widget.setTitle("Realized gain at Phi {}".format(farfield[0][0]))
+                self.antenna1widget.setLabel(
+                    "left",
+                    "Realized Gain",
+                )
+                self.antenna1widget.setLabel(
+                    "bottom",
+                    "Theta",
+                )
+                if not self.antenna2widget:
+                    line2 = self._add_line(
+                        "combo_theta",
+                        "combo_theta_box",
+                        "Theta",
+                        "combo",
+                        farfield[3],
+                    )
+                    self.checked_overlap_2 = QtWidgets.QCheckBox()
+                    self.checked_overlap_2.setObjectName("checked_overlap_2")
+                    self.checked_overlap_2.setChecked(True)
+                    self.checked_overlap_2.setText("Overlap Plot")
+                    line2.addWidget(self.checked_overlap_2)
+                    self.results.addLayout(line2)
+
+                    self.antenna2widget = pg.PlotWidget()
+                    self.results.addWidget(self.antenna2widget)
+
+                self.phi = farfield[4]
+                self.val_phi = farfield[5]
+                # plot data: x, y values
+                self.antenna2widget.plot(
+                    self.phi,
+                    self.val_phi[0],
+                    pen=line_colors[self.color],
+                    name=name,
+                )
+                self.antenna2widget.setTitle("Realized gain at Theta {}".format(farfield[3][0]))
+                self.antenna2widget.setLabel(
+                    "left",
+                    "Realized Gain",
+                )
+                self.antenna2widget.setLabel(
+                    "bottom",
+                    "Phi",
+                )
+                self.combo_phi_box.currentTextChanged.connect(self.update_phi)
+                self.combo_theta_box.currentTextChanged.connect(self.update_theta)
+
             self.update_progress(100)
 
     def _add_header(self, image_name, antenna_name, frequency):
@@ -452,3 +541,25 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         self.antenna_settings_layout.addLayout(line_buttons, 15, 0, 1, 1)
         bottom_spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.antenna_settings_layout.addItem(bottom_spacer, 16, 0, 1, 1)
+
+    def update_phi(self):
+        """Update Gain Total Plot by changing the Phi value."""
+        try:
+            selected_phi = float(self.combo_phi_box.currentText())
+            index = self.phi.index(selected_phi)
+            if not self.checked_overlap_1.isChecked():
+                self.antenna1widget.clear()
+            self.antenna1widget.plot(self.theta, self.val_theta[index], pen=line_colors[self.color])
+        except:
+            pass
+
+    def update_theta(self):
+        """Update Gain Total Plot by changing the Theta value."""
+        try:
+            selected_theta = float(self.combo_theta_box.currentText())
+            index = self.theta.index(selected_theta)
+            if not self.checked_overlap_2.isChecked():
+                self.antenna2widget.clear()
+            self.antenna2widget.plot(self.phi, self.val_phi[index], pen=line_colors[self.color])
+        except:
+            pass

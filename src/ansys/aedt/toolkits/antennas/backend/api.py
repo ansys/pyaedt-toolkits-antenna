@@ -129,6 +129,10 @@ class Toolkit(ToolkitGeneric):
         elif synth_only:
             self._oantenna = None
 
+        # if self.aedtapp:
+        #     self.aedtapp.release_desktop(False, False)
+        #     self.aedtapp = None
+
         properties.parameters = antenna_parameters
         return antenna_parameters
 
@@ -246,19 +250,6 @@ class Toolkit(ToolkitGeneric):
         -------
         bool
             ``True`` when successful, ``False`` when failed.
-
-        Examples
-        --------
-        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
-        >>> import time
-        >>> toolkit = Toolkit()
-        >>> msg1 = toolkit.launch_aedt()
-        >>> response = toolkit.get_thread_status()
-        >>> while response[0] == 0:
-        >>>     time.sleep(1)
-        >>>     response = toolkit.get_thread_status()
-        >>> msg3 = toolkit.get_antenna("BowTie")
-        >>> msg3 = toolkit.update_parameters()
         """
         if not self.aedtapp:
             if properties.active_design and list(properties.active_design.keys())[0] != "Hfss":
@@ -278,3 +269,54 @@ class Toolkit(ToolkitGeneric):
         if not sol_data:
             return
         return sol_data.primary_sweep_values, sol_data.data_db20()
+
+    def farfield_results(self):
+        """Get antenna far field results.
+
+        Returns
+        -------
+        bool
+            ``True`` when successful, ``False`` when failed.
+        """
+        if not self.aedtapp:
+            if properties.active_design and list(properties.active_design.keys())[0] != "Hfss":
+                logger.debug("Selected design must be HFSS")
+                return False
+            # Connect to AEDT design
+            self.connect_design("Hfss")
+            if not self.aedtapp:
+                logger.debug("HFSS design not connected")
+                return False
+
+        field_solution = self.aedtapp.post.get_solution_data(
+            "GainTotal",
+            self.aedtapp.nominal_adaptive,
+            primary_sweep_variable="Theta",
+            context="3D",
+            report_category="Far Fields",
+        )
+
+        if not field_solution:
+            return
+
+        phi_cuts = field_solution.intrinsics["Phi"]
+        theta = field_solution.primary_sweep_values
+        val_theta = []
+        for t in phi_cuts:
+            field_solution.active_intrinsic["Phi"] = t
+            val_theta.append(field_solution.data_db20())
+        field_solution.active_intrinsic["Phi"] = phi_cuts[0]
+
+        field_solution.primary_sweep = "Phi"
+        theta_cuts = field_solution.intrinsics["Theta"]
+        phi = field_solution.primary_sweep_values
+        val_phi = []
+        for t in theta_cuts:
+            field_solution.active_intrinsic["Theta"] = t
+            val_phi.append(field_solution.data_db20())
+        field_solution.active_intrinsic["Theta"] = theta_cuts[0]
+
+        self.aedtapp.release_desktop(False, False)
+        self.aedtapp = None
+
+        return [phi_cuts, theta, val_theta, theta_cuts, phi, val_phi]

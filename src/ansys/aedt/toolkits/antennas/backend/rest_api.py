@@ -66,6 +66,17 @@ def scattering_results_call():
         return jsonify("Fail to get results"), 500
 
 
+@app.route("/farfield_results", methods=["GET"])
+def farfield_results_call():
+    logger.info("[POST] farfield_results (Get antenna far field results)")
+
+    response = toolkit.farfield_results()
+    if response:
+        return jsonify(response), 200
+    else:
+        return jsonify("Fail to get results"), 500
+
+
 if __name__ == "__main__":
     app.debug = True
     server = MultithreadingServer()
