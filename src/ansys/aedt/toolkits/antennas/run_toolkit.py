@@ -117,9 +117,16 @@ while response.json() != "Backend free":
     response = requests.get(url_call + "/get_status")
 
 # User can pass the desktop ID and version to connect to a specific AEDT session
+desktop_pid = None
+desktop_version = None
 if len(sys.argv) == 3:
     desktop_pid = sys.argv[1]
     desktop_version = sys.argv[2]
+elif "PYAEDT_SCRIPT_VERSION" in list(os.environ.keys()) and "PYAEDT_SCRIPT_PROCESS_ID" in list(os.environ.keys()):
+    desktop_pid = os.environ["PYAEDT_SCRIPT_PROCESS_ID"]
+    desktop_version = os.environ["PYAEDT_SCRIPT_VERSION"]
+
+if desktop_pid and desktop_version:
     properties = {
         "selected_process": int(desktop_pid),
         "aedt_version": desktop_version,

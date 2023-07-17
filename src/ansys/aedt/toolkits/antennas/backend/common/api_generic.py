@@ -375,6 +375,8 @@ class ToolkitGeneric(object):
             self.set_properties(new_properties)
 
             self._save_project_info()
+            if self.desktop.project_list():
+                self.desktop.save_project()
 
             self.desktop.release_desktop(False, False)
             self.desktop = None
@@ -484,12 +486,11 @@ class ToolkitGeneric(object):
         design_name = "No design"
         if properties.active_design:
             design_name = list(properties.active_design.values())[0]
-            if not app_name:
-                app_name = list(properties.active_design.keys())[0]
+            app_name = list(properties.active_design.keys())[0]
 
         pyaedt.settings.use_grpc_api = properties.use_grpc
         if design_name != "No design":
-            aedt_app_attr = getattr(pyaedt, app_name)
+            aedt_app_attr = getattr(pyaedt, self.aedt_apps[app_name])
             self.aedtapp = aedt_app_attr(
                 specified_version=properties.aedt_version,
                 aedt_process_id=properties.selected_process,
@@ -502,7 +503,7 @@ class ToolkitGeneric(object):
 
         elif app_name in list(self.aedt_apps.keys()):
             design_name = pyaedt.generate_unique_name(app_name)
-            aedt_app_attr = getattr(pyaedt, app_name)
+            aedt_app_attr = getattr(pyaedt, self.aedt_apps[app_name])
             self.aedtapp = aedt_app_attr(
                 specified_version=properties.aedt_version,
                 aedt_process_id=properties.selected_process,
@@ -524,7 +525,7 @@ class ToolkitGeneric(object):
             )
             self.aedtapp.save_project()
 
-            active_design = {"Hfss": design_name}
+            active_design = {"HFSS": design_name}
 
         if self.aedtapp:
             project_name = self.aedtapp.project_file
@@ -682,11 +683,16 @@ class ToolkitGeneric(object):
                 )
                 app_name = active_design.GetDesignType()
                 if app_name in list(self.aedt_apps.keys()):
-                    new_properties["active_design"] = {self.aedt_apps[app_name]: active_design_name}
+                    new_properties["active_design"] = {app_name: active_design_name}
                 else:
                     logger.error("Application {} not available".format(app_name))
                     self.desktop.release_desktop(True, True)
                     return False
+            elif active_project.GetChildNames():
+                active_design_name = active_project.GetChildNames()[0]
+                active_design = active_project.SetActiveDesign(active_design_name)
+                app_name = active_design.GetDesignType()
+                new_properties["active_design"] = {app_name: active_design_name}
 
             # Save active project
             active_project_path = active_project.GetPath()
@@ -709,7 +715,7 @@ class ToolkitGeneric(object):
                         odesign = oproject.SetActiveDesign(design_name)
                         app_name = odesign.GetDesignType()
                         if app_name in list(self.aedt_apps.keys()):
-                            new_properties["design_list"][project_name].append({self.aedt_apps[app_name]: design_name})
+                            new_properties["design_list"][project_name].append({app_name: design_name})
                         else:
                             logger.error("Application {} not available".format(app_name))
                             self.desktop.release_desktop(True, True)

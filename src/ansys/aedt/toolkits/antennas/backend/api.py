@@ -1,4 +1,5 @@
 import re
+import time
 
 from ansys.aedt.toolkits.antennas.backend import models
 from ansys.aedt.toolkits.antennas.backend.common.api_generic import ToolkitGeneric
@@ -64,12 +65,16 @@ class Toolkit(ToolkitGeneric):
             logger.debug("Antenna is already created")
             return False
 
+        if antenna not in models.__dir__():
+            logger.debug("Antenna is not implemented")
+            return False
+
         if not synth_only and not self.aedtapp:
-            if properties.active_design and list(properties.active_design.keys())[0] != "Hfss":
+            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
                 logger.debug("Selected design must be HFSS")
                 return False
             # Connect to AEDT design
-            self.connect_design("Hfss")
+            self.connect_design("HFSS")
             if not self.aedtapp:
                 logger.debug("HFSS design not connected")
                 return False
@@ -91,7 +96,13 @@ class Toolkit(ToolkitGeneric):
         oantenna_public_props = (name for name in self._oantenna.__dir__() if not name.startswith("_"))
         for antenna_prop in oantenna_public_props:
             if antenna_prop in properties.__dir__():
-                if antenna_prop == "material_properties":
+                if (
+                    antenna_prop == "frequency"
+                    and "start_frequency" in self._oantenna.__dir__()
+                    and "stop_frequency" in self._oantenna.__dir__()
+                ):
+                    pass
+                elif antenna_prop == "material_properties":
                     if properties.material_properties:
                         self._oantenna.material_properties["permittivity"] = properties.material_properties[
                             "permittivity"
@@ -109,11 +120,14 @@ class Toolkit(ToolkitGeneric):
         )
         for param in oantenna_public_parameters:
             antenna_parameters[param] = self._oantenna.synthesis_parameters.__getattribute__(param).value
-        if not synth_only:
+        if not synth_only and not properties.antenna_created:
             if not self._oantenna.object_list:
                 self._oantenna.init_model()
                 self._oantenna.model_hfss()
                 self._oantenna.setup_hfss()
+                properties.antenna_created = True
+            if properties.lattice_pair:
+                self._oantenna.create_lattice_pair()
             if properties.component_3d:
                 self._oantenna.create_3dcomponent(replace=True)
             if properties.create_setup:
@@ -129,7 +143,9 @@ class Toolkit(ToolkitGeneric):
         elif synth_only:
             self._oantenna = None
 
-        # if self.aedtapp:
+        if self.aedtapp:
+            self.aedtapp.save_project()
+            time.sleep(1)
         #     self.aedtapp.release_desktop(False, False)
         #     self.aedtapp = None
 
@@ -225,7 +241,7 @@ class Toolkit(ToolkitGeneric):
         # Check if the backend is already connected to an AEDT session
         connected, msg = self.aedt_connected()
         if not connected:
-            if properties.active_design and list(properties.active_design.keys())[0] != "Hfss":
+            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
                 logger.debug("Selected design must be HFSS")
                 return False
             # Connect to AEDT design
@@ -237,7 +253,7 @@ class Toolkit(ToolkitGeneric):
         num_cores = properties.core_number
 
         self.aedtapp.save_project()
-
+        time.sleep(1)
         self.aedtapp.solve_in_batch(run_in_thread=True, machine="localhost", num_cores=num_cores)
         self.aedtapp.release_desktop(False, False)
         self.aedtapp = None
@@ -252,7 +268,7 @@ class Toolkit(ToolkitGeneric):
             ``True`` when successful, ``False`` when failed.
         """
         if not self.aedtapp:
-            if properties.active_design and list(properties.active_design.keys())[0] != "Hfss":
+            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
                 logger.debug("Selected design must be HFSS")
                 return False
             # Connect to AEDT design
@@ -279,7 +295,7 @@ class Toolkit(ToolkitGeneric):
             ``True`` when successful, ``False`` when failed.
         """
         if not self.aedtapp:
-            if properties.active_design and list(properties.active_design.keys())[0] != "Hfss":
+            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
                 logger.debug("Selected design must be HFSS")
                 return False
             # Connect to AEDT design

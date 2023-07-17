@@ -798,7 +798,7 @@ class RectangularPatchInset(CommonPatch):
 
 
 class RectangularPatchEdge(CommonPatch):
-    """Manages a rectangular patch edge antenna inset fed.
+    """Manages a rectangular patch edge antenna.
 
     This class is accessible through the ``Hfss`` object [1]_.
 

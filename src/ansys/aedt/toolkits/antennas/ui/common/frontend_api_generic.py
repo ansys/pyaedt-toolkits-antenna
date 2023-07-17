@@ -209,27 +209,31 @@ class FrontendGeneric(object):
             response = requests.get(self.url + "/health")
             if response.ok and response.json() == "Toolkit not connected to AEDT":
                 properties = self.get_properties()
-                properties["aedt_version"] = self.aedt_version_combo.currentText()
-                properties["non_graphical"] = True
-                if self.non_graphical_combo.currentText() == "False":
-                    properties["non_graphical"] = False
-                if self.process_id_combo.currentText() == "Create New Session":
-                    if not properties["active_project"]:
-                        properties["selected_process"] = 0
-                else:
-                    text_splitted = self.process_id_combo.currentText().split(" ")
-                    if len(text_splitted) == 5:
-                        properties["use_grpc"] = True
-                        properties["selected_process"] = int(text_splitted[4])
+                if properties["selected_process"] == 0:
+                    properties["aedt_version"] = self.aedt_version_combo.currentText()
+                    properties["non_graphical"] = True
+                    if self.non_graphical_combo.currentText() == "False":
+                        properties["non_graphical"] = False
+                    if self.process_id_combo.currentText() == "Create New Session":
+                        if not properties["active_project"]:
+                            properties["selected_process"] = 0
                     else:
-                        properties["use_grpc"] = False
-                        properties["selected_process"] = int(text_splitted[1])
-                self.set_properties(properties)
+                        text_splitted = self.process_id_combo.currentText().split(" ")
+                        if len(text_splitted) == 5:
+                            properties["use_grpc"] = True
+                            properties["selected_process"] = int(text_splitted[4])
+                        else:
+                            properties["use_grpc"] = False
+                            properties["selected_process"] = int(text_splitted[1])
+                    self.set_properties(properties)
 
                 response = requests.post(self.url + "/launch_aedt")
 
                 if response.status_code == 200:
                     self.update_progress(50)
+                    msg = "AEDT launched"
+                    logger.debug(msg)
+                    self.write_log_line(msg)
                     # Start the thread
                     self.running = True
                     logger.debug("Launching AEDT")

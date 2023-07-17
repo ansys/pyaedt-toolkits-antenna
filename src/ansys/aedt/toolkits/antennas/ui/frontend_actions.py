@@ -100,8 +100,63 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow, ToolkitFrontend):
         self.sweep_slider.valueChanged.connect(self.sweep_changed)
 
         # Antenna actions
-        # self.create_geometry_buttom.clicked.connect(self.create_geometry_toolkit)
-        # self.rectangular_with_probe.triggered.connect(lambda checked: self.draw_rectangular_probe_ui())
+        # Bowtie
+        self.actionBowtieNormal.triggered.connect(lambda checked: getattr(models, "BowTie").draw_bowtie_normal_ui(self))
+        self.actionBowtieRounded.triggered.connect(
+            lambda checked: getattr(models, "BowTie").draw_bowtie_rounded_ui(self)
+        )
+        self.actionBowtieSlot.triggered.connect(lambda checked: getattr(models, "BowTie").draw_bowtie_slot_ui(self))
+
+        # Patch
+        self.actionElliptical_Edge_Fed.triggered.connect(
+            lambda checked: getattr(models, "Patch").draw_elliptical_edge_ui(self)
+        )
+        self.actionElliptical_Inset_Fed.triggered.connect(
+            lambda checked: getattr(models, "Patch").draw_elliptical_inset_ui(self)
+        )
+        self.actionElliptical_Probe_Fed.triggered.connect(
+            lambda checked: getattr(models, "Patch").draw_elliptical_probe_ui(self)
+        )
+        self.actionRectangular_Edge_Fed.triggered.connect(
+            lambda checked: getattr(models, "Patch").draw_rectangular_edge_ui(self)
+        )
+        self.actionRectangular_Inset_Fed.triggered.connect(
+            lambda checked: getattr(models, "Patch").draw_rectangular_inset_ui(self)
+        )
+        self.actionRectangular_Probe_Fed.triggered.connect(
+            lambda checked: getattr(models, "Patch").draw_rectangular_probe_ui(self)
+        )
+
+        # Conical Spiral
+        self.actionArchimedean.triggered.connect(
+            lambda checked: getattr(models, "ConicalSpiral").draw_archimidean_conical_ui(self)
+        )
+        self.actionLog.triggered.connect(lambda checked: getattr(models, "ConicalSpiral").draw_log_conical_ui(self))
+        self.actionSinuous.triggered.connect(
+            lambda checked: getattr(models, "ConicalSpiral").draw_sinuous_conical_ui(self)
+        )
+
+        # Dipole
+        self.actionDipolePlanar.triggered.connect(lambda checked: getattr(models, "Dipole").draw_planar_dipole_ui(self))
+        self.actionDipoleWire.triggered.connect(lambda checked: getattr(models, "Dipole").draw_wire_dipole_ui(self))
+
+        # Helix
+        self.actionAxial.triggered.connect(lambda checked: getattr(models, "Helix").draw_axial_mode_ui(self))
+        self.actionAxial_Mode_Continuous_Taper.triggered.connect(
+            lambda checked: getattr(models, "Helix").draw_axial_mode_continuous_ui(self)
+        )
+        self.actionNormal_Mode.triggered.connect(
+            lambda checked: getattr(models, "Helix").draw_axial_normal_mode_ui(self)
+        )
+        self.actionQuadrifilar_Open.triggered.connect(
+            lambda checked: getattr(models, "Helix").draw_quadrifilar_open_ui(self)
+        )
+        self.actionQuadrifilar_Short.triggered.connect(
+            lambda checked: getattr(models, "Helix").draw_quadrifilar_short_ui(self)
+        )
+
+        # Horn
+
         # self.actionConical.triggered.connect(lambda checked: self.draw_conical_horn_ui())
         # self.actionConical_Corrugated.triggered.connect(
         #     lambda checked: self.draw_conical_horn_corrugated_ui()
@@ -121,9 +176,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow, ToolkitFrontend):
         # self.actionRectangular_Inset.triggered.connect(
         #     lambda checked: self.draw_rectangular_probe_inset_ui()
         # )
-        self.actionBowtieSlot.triggered.connect(lambda checked: self.draw_bowtie_slot_ui())
-        self.actionBowtieNormal.triggered.connect(lambda checked: getattr(models, "BowTie").draw_bowtie_normal_ui(self))
-        self.actionBowtieRounded.triggered.connect(lambda checked: self.draw_bowtie_rounded_ui())
+
         # self.actionArchimedean.triggered.connect(lambda checked: self.draw_conical_archimedean_ui())
         # self.actionLog.triggered.connect(lambda checked: self.draw_conical_log_ui())
         # self.actionSinous.triggered.connect(lambda checked: self.draw_conical_sinuous_ui())

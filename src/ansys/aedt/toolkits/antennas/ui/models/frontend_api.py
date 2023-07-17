@@ -30,7 +30,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         self.phi = None
 
     def get_antenna(self, synth_only=False):
-        """Create a bowtie  antenna.
+        """Antenna synthesis and HFSS model creation.
 
         Parameters
         ----------
@@ -41,7 +41,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
 
         self.update_progress(0)
         self.property_table.itemChanged.connect(None)
-
+        self.property_table.clear()
         # Get properties from backend
         properties_request = requests.get(self.url + "/get_properties")
         properties = properties_request.json()
@@ -55,7 +55,10 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                     designs = properties["design_list"][project_selected]
                     for design in designs:
                         if design_selected in list(design.values())[0]:
-                            properties["active_design"] = design
+                            if list(design.keys())[0].lower() == "hfss":
+                                properties["active_design"] = design
+                            else:
+                                properties["active_design"] = {}
                             break
                 break
 
@@ -81,11 +84,19 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         properties["origin"] = [x_pos, y_pos, z_pos]
         coordinate_system = self.coordinate_system.text()
         properties["coordinate_system"] = coordinate_system
-        substrate_height = float(self.substrate_height.text())
-        properties["substrate_height"] = substrate_height
-        material = self.material.currentText()
-        properties["material"] = material
-        properties["material_properties"] = {"permittivity": self.default_materials[material]}
+        if "substrate_height" in self.__dir__():
+            substrate_height = float(self.substrate_height.text())
+            properties["substrate_height"] = substrate_height
+        if "material" in self.__dir__():
+            material = self.material.currentText()
+            properties["material"] = material
+            properties["material_properties"] = {"permittivity": self.default_materials[material]}
+        if "gain_value" in self.__dir__():
+            gain = self.gain_value.text()
+            properties["gain_value"] = float(gain)
+        if "feeder_length" in self.__dir__():
+            feed = self.feeder_length.text()
+            properties["feeder_length"] = float(feed)
 
         # Toolkit settings
         lenght_unit = self.units.currentText()
@@ -97,7 +108,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
 
         self.update_progress(33)
 
-        if "frequency" in self.__dir__():
+        if "frequency" in self.__dir__() and self.frequency.text() != "0":
             properties["frequency"] = float(self.frequency.text())
         elif "start_frequency" in self.__dir__() and "stop_frequency" in self.__dir__():
             properties["start_frequency"] = float(self.start_frequency.text())
@@ -113,11 +124,13 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         if synth_only:
             response = requests.post(self.url + "/create_antenna")
             if not response.ok:
-                msg = f"Failed backend call: {self.url}"
+                msg = f"Failed backend call: {self.url}" + "/create_antenna"
                 logger.debug(msg)
                 self.write_log_line(msg)
+                self.update_progress(100)
+                return
             else:
-                msg = "Synthesis completed."
+                msg = "Synthesis completed"
                 logger.debug(msg)
                 self.write_log_line(msg)
 
@@ -129,11 +142,13 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             else:
                 response = requests.post(self.url + "/create_antenna")
                 if not response.ok:
-                    msg = f"Failed backend call: {self.url}"
+                    msg = f"Failed backend call: {self.url}" + "/create_antenna"
                     logger.debug(msg)
                     self.write_log_line(msg)
+                    self.update_progress(100)
+                    return
                 else:
-                    msg = "HFSS geometry completed."
+                    msg = "HFSS model created"
                     logger.debug(msg)
                     self.write_log_line(msg)
 
@@ -201,7 +216,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         self.create_button.setText("Create Hfss Model")
         properties_request = requests.get(self.url + "/get_properties")
         properties = properties_request.json()
-        if properties["selected_process"] == 0:
+        if properties["selected_process"] == 0 or properties["antenna_created"]:
             self.create_button.setEnabled(False)
         self.synth_button.clicked.connect(lambda: method_create(True))
         self.create_button.clicked.connect(lambda: method_create(False))
@@ -227,7 +242,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             properties = {"key": key, "value": val}
             response = requests.put(self.url + "/update_parameters", json=properties)
             if not response.ok:
-                msg = f"Failed backend call: {self.url}"
+                msg = f"Failed backend call: {self.url}" + "/update_parameters"
                 logger.debug(msg)
                 self.write_log_line(msg)
             else:
@@ -256,6 +271,8 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                     self.update_progress(0)
                     return
                 self.numcores.setEnabled(False)
+                self.property_table.setEnabled(False)
+                logger.debug("Launching analysis in batch")
                 self.write_log_line("Analysis launched")
                 response = requests.post(self.url + "/analyze")
 
@@ -263,13 +280,12 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                     self.update_progress(50)
                     # Start the thread
                     self.running = True
-                    logger.debug("Launching analysis in batch")
                     self.start()
                     self.analyze.setEnabled(False)
                     self.get_results.setEnabled(True)
 
                 else:
-                    self.write_log_line(f"Failed backend call: {self.url}")
+                    self.write_log_line(f"Failed backend call: {self.url}") + "/analyze"
                     self.update_progress(100)
             else:
                 self.write_log_line(response.json())
@@ -287,7 +303,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             sparam_response = requests.get(self.url + "/scattering_results")
             self.update_progress(50)
             if not sparam_response.ok:
-                msg = f"Failed backend call: {self.url}"
+                msg = f"Failed backend call: {self.url}" + "/scattering_results"
                 logger.debug(msg)
                 self.write_log_line(msg)
             else:
@@ -321,7 +337,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             farfield_response = requests.get(self.url + "/farfield_results")
             self.update_progress(75)
             if not farfield_response.ok:
-                msg = f"Failed backend call: {self.url}"
+                msg = f"Failed backend call: {self.url}" + "/farfield_results"
                 logger.debug(msg)
                 self.write_log_line(msg)
             else:
@@ -403,23 +419,21 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                 self.combo_phi_box.currentTextChanged.connect(self.update_phi)
                 self.combo_theta_box.currentTextChanged.connect(self.update_theta)
 
+            self.get_results.setEnabled(False)
             self.update_progress(100)
 
-    def _add_header(self, image_name, antenna_name, frequency):
+    def _add_header(self, antenna_name, frequency):
         if self.toolkit_tab.count() == 3:
             self.toolkit_tab.setCurrentIndex(0)
         else:
             self.toolkit_tab.setCurrentIndex(1)
+
         self._clear_antenna_settings(self.antenna_settings_layout)
+        self._clear_antenna_settings(self.image_layout)
 
         # Antenna settings
-        top_spacer = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        top_spacer = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self.antenna_settings_layout.addItem(top_spacer, 2, 0, 1, 1)
-
-        # Add imagen
-
-        image = self._add_image(os.path.join(self.images_path, image_name))
-        self.antenna_settings_layout.addLayout(image, 0, 0, 1, 1)
 
         line1 = self._add_line("line_1", "antenna_name", "Antenna Name", "edit", antenna_name)
         self.antenna_settings_layout.addLayout(line1, 3, 0, 1, 1)
@@ -430,8 +444,8 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         elif len(frequency) == 2:
             line2 = self._add_line("line_2", "start_frequency", "Start frequency", "edit", str(frequency[0]))
             self.antenna_settings_layout.addLayout(line2, 4, 0, 1, 1)
-            line3 = self._add_line("line_2", "stop_frequency", "Stop frequency", "edit", str(frequency[1]))
-            self.layout_settings.addLayout(line3, 5, 0, 1, 1)
+            line2 = self._add_line("line_2", "stop_frequency", "Stop frequency", "edit", str(frequency[1]))
+            self.antenna_settings_layout.addLayout(line2, 5, 0, 1, 1)
 
     def _clear_antenna_settings(self, layout):
         """Clear all antenna settings."""
@@ -461,7 +475,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
 
         antenna_image = QtWidgets.QLabel()
         antenna_image.setObjectName("antenna_image")
-        antenna_image.setMaximumHeight(self.centralwidget.height() / 3)
+        antenna_image.setMaximumHeight(self.centralwidget.height() / 2)
         antenna_image.setScaledContents(True)
         antenna_image.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         _pixmap = QtGui.QPixmap(image_path)
@@ -490,7 +504,9 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         line.addWidget(label)
         label.setText(label_value)
         label.setFont(self._font)
-        spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
+        spacer = QtWidgets.QSpacerItem(
+            40 - len(title), 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        )
         line.addItem(spacer)
         if line_type == "edit":
             name = "{}".format(variable_value)
@@ -528,19 +544,19 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                 "None",
             ],
         )
-        self.antenna_settings_layout.addLayout(line5, 10, 0, 1, 1)
+        self.antenna_settings_layout.addLayout(line5, 7, 0, 1, 1)
         line6 = self._add_line("line_6", "x_position", "Origin X Position", "edit", "0.0")
-        self.antenna_settings_layout.addLayout(line6, 11, 0, 1, 1)
+        self.antenna_settings_layout.addLayout(line6, 8, 0, 1, 1)
         line7 = self._add_line("line_7", "y_position", "Origin Y Position", "edit", "0.0")
-        self.antenna_settings_layout.addLayout(line7, 12, 0, 1, 1)
+        self.antenna_settings_layout.addLayout(line7, 9, 0, 1, 1)
         line8 = self._add_line("line_8", "z_position", "Origin Z Position", "edit", "0.0")
-        self.antenna_settings_layout.addLayout(line8, 13, 0, 1, 1)
+        self.antenna_settings_layout.addLayout(line8, 10, 0, 1, 1)
         line9 = self._add_line("line_9", "coordinate_system", "Coordinate System", "edit", "Global")
-        self.antenna_settings_layout.addLayout(line9, 14, 0, 1, 1)
-        line_buttons = self.add_antenna_buttons(method_name)
-        self.antenna_settings_layout.addLayout(line_buttons, 15, 0, 1, 1)
+        self.antenna_settings_layout.addLayout(line9, 11, 0, 1, 1)
         bottom_spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.antenna_settings_layout.addItem(bottom_spacer, 16, 0, 1, 1)
+        self.antenna_settings_layout.addItem(bottom_spacer, 12, 0, 1, 1)
+        line_buttons = self.add_antenna_buttons(method_name)
+        self.antenna_settings_layout.addLayout(line_buttons, 13, 0, 1, 1)
 
     def update_phi(self):
         """Update Gain Total Plot by changing the Phi value."""
