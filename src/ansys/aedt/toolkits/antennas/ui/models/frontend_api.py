@@ -41,7 +41,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
 
         self.update_progress(0)
         self.property_table.itemChanged.connect(None)
-        self.property_table.clear()
+
         # Get properties from backend
         properties_request = requests.get(self.url + "/get_properties")
         properties = properties_request.json()

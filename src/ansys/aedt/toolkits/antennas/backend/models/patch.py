@@ -96,7 +96,7 @@ class RectangularPatchProbe(CommonPatch):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Substrate material.
         If the material is not defined, a new material, ``parametrized``, is created.
@@ -469,7 +469,7 @@ class RectangularPatchInset(CommonPatch):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Substrate material. If the material is not defined, a new
         material, ``parametrized``, is created. The default is ``"FR4_epoxy"``.
@@ -807,7 +807,7 @@ class RectangularPatchEdge(CommonPatch):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Substrate material. If the material is not defined,
         a new material, ``parametrized``, is created.

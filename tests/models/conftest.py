@@ -109,12 +109,8 @@ class BasisTest(object):
             self.desktop = Desktop(desktop_version, settings.non_graphical, True)
             self.desktop.disable_autosave()
         if project_name:
-            example_project = os.path.join(
-                local_path, "example_models", subfolder, project_name + ".aedt"
-            )
-            example_folder = os.path.join(
-                local_path, "example_models", subfolder, project_name + ".aedb"
-            )
+            example_project = os.path.join(local_path, "example_models", subfolder, project_name + ".aedt")
+            example_folder = os.path.join(local_path, "example_models", subfolder, project_name + ".aedb")
             if os.path.exists(example_project):
                 self.test_project = self.local_scratch.copyfile(example_project)
             elif os.path.exists(example_project + "z"):

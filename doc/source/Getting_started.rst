@@ -47,14 +47,14 @@ The toolkit can be installed inside AEDT using
 
     .. code:: python
 
-      desktop.add_custom_toolkit("TemplateToolkit")
+      desktop.add_custom_toolkit("AntennaWizard")
       exit()
 
 #. Close the console and open the toolkit, if you do not restart AEDT, you need to *Update Menu*:
 
     .. image:: ./_static/toolkit_in_AEDT.png
       :width: 800
-      :alt: Template toolkit in AEDT
+      :alt: Antenna toolkit in AEDT
 
 #. The toolkit UI is connected directly to the AEDT session:
 
@@ -93,13 +93,13 @@ If you have installed the toolkit in the virtual environment you can skip step 2
 
     .. code:: bash
 
-      python -m pip install git+https://github.com/pyansys/pyaedt-toolkit-template.git
+      python -m pip install git+https://github.com/pyansys/pyaedt-antenna-toolkit.git
 
 #. Launch the toolkit UI:
 
     .. code:: bash
 
-      python .venv\Lib\site-packages\ansys\aedt\toolkits\template\run_toolkit.py
+      python .venv\Lib\site-packages\ansys\aedt\toolkits\antennas\run_toolkit.py
 
 #. Settings tab to create a new AEDT session or connect to an existing one:
 
@@ -130,7 +130,7 @@ This section shows how to install the toolkit in an specific python environment 
       import time
 
       # Import backend services
-      from ansys.aedt.toolkits.template.backend.api import Toolkit
+      from ansys.aedt.toolkits.antennas.backend.api import Toolkit
 
       # Backend object
       service = Toolkit()

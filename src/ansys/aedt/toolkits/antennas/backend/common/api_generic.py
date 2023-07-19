@@ -491,38 +491,69 @@ class ToolkitGeneric(object):
         pyaedt.settings.use_grpc_api = properties.use_grpc
         if design_name != "No design":
             aedt_app_attr = getattr(pyaedt, self.aedt_apps[app_name])
-            self.aedtapp = aedt_app_attr(
-                specified_version=properties.aedt_version,
-                aedt_process_id=properties.selected_process,
-                non_graphical=properties.non_graphical,
-                new_desktop_session=False,
-                projectname=project_name,
-                designname=design_name,
-            )
+            if properties.use_grpc:
+                self.aedtapp = aedt_app_attr(
+                    specified_version=properties.aedt_version,
+                    port=properties.selected_process,
+                    non_graphical=properties.non_graphical,
+                    new_desktop_session=False,
+                    projectname=project_name,
+                    designname=design_name,
+                )
+            else:
+                self.aedtapp = aedt_app_attr(
+                    specified_version=properties.aedt_version,
+                    aedt_process_id=properties.selected_process,
+                    non_graphical=properties.non_graphical,
+                    new_desktop_session=False,
+                    projectname=project_name,
+                    designname=design_name,
+                )
             active_design = {app_name: design_name}
 
         elif app_name in list(self.aedt_apps.keys()):
             design_name = pyaedt.generate_unique_name(app_name)
             aedt_app_attr = getattr(pyaedt, self.aedt_apps[app_name])
-            self.aedtapp = aedt_app_attr(
-                specified_version=properties.aedt_version,
-                aedt_process_id=properties.selected_process,
-                non_graphical=properties.non_graphical,
-                new_desktop_session=False,
-                projectname=project_name,
-                designname=design_name,
-            )
+            if properties.use_grpc:
+                self.aedtapp = aedt_app_attr(
+                    specified_version=properties.aedt_version,
+                    port=properties.selected_process,
+                    non_graphical=properties.non_graphical,
+                    new_desktop_session=False,
+                    projectname=project_name,
+                    designname=design_name,
+                )
+            else:
+                self.aedtapp = aedt_app_attr(
+                    specified_version=properties.aedt_version,
+                    aedt_process_id=properties.selected_process,
+                    non_graphical=properties.non_graphical,
+                    new_desktop_session=False,
+                    projectname=project_name,
+                    designname=design_name,
+                )
+
             active_design = {app_name: design_name}
         else:
             design_name = pyaedt.generate_unique_name("Hfss")
-            self.aedtapp = pyaedt.Hfss(
-                specified_version=properties.aedt_version,
-                aedt_process_id=properties.selected_process,
-                non_graphical=properties.non_graphical,
-                new_desktop_session=False,
-                projectname=project_name,
-                designname=design_name,
-            )
+            if properties.use_grpc:
+                self.aedtapp = pyaedt.Hfss(
+                    specified_version=properties.aedt_version,
+                    port=properties.selected_process,
+                    non_graphical=properties.non_graphical,
+                    new_desktop_session=False,
+                    projectname=project_name,
+                    designname=design_name,
+                )
+            else:
+                self.aedtapp = pyaedt.Hfss(
+                    specified_version=properties.aedt_version,
+                    aedt_process_id=properties.selected_process,
+                    non_graphical=properties.non_graphical,
+                    new_desktop_session=False,
+                    projectname=project_name,
+                    designname=design_name,
+                )
             self.aedtapp.save_project()
 
             active_design = {"HFSS": design_name}

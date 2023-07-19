@@ -111,7 +111,7 @@ class Archimedean(CommonConicalSpiral):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Horn material. If material is not defined a new material parametrized will be defined.
         The default is ``"pec"``.

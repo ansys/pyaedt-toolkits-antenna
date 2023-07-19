@@ -75,7 +75,7 @@ class Conical(CommonHorn):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Horn material. If material is not defined a new material parametrized will be defined.
         The default is ``"pec"``.
@@ -379,7 +379,7 @@ class PyramidalRidged(CommonHorn):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Horn material. If material is not defined a new material parametrized will be defined.
         The default is ``"pec"``.
@@ -1087,7 +1087,7 @@ class Corrugated(CommonHorn):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Horn material. If material is not defined a new material parametrized will be defined.
         The default is ``"pec"``.
@@ -1380,7 +1380,7 @@ class Elliptical(CommonHorn):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Horn material. If material is not defined a new material parametrized will be defined.
         The default is ``"pec"``.
@@ -1686,7 +1686,7 @@ class EPlane(CommonHorn):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Horn material. If material is not defined a new material parametrized will be defined.
         The default is ``"pec"``.
@@ -2082,7 +2082,7 @@ class HPlane(CommonHorn):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Horn material. If material is not defined a new material parametrized will be defined.
         The default is ``"pec"``.
@@ -2463,7 +2463,7 @@ class Pyramidal(CommonHorn):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Horn material. If material is not defined a new material parametrized will be defined.
         The default is ``"pec"``.
@@ -2848,7 +2848,7 @@ class QuadRidged(CommonHorn):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Horn material. If material is not defined a new material parametrized will be defined.
         The default is ``"pec"``.

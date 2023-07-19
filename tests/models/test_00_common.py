@@ -1,6 +1,7 @@
+from conftest import BasisTest
+
 from ansys.aedt.toolkits.antennas.backend.models.common import StandardWaveguide
 from ansys.aedt.toolkits.antennas.backend.models.common import TransmissionLine
-from conftest import BasisTest
 
 test_project_name = "Patch_test"
 
@@ -25,9 +26,7 @@ class TestClass(BasisTest, object):
     def test_02_stripline_calculator(self):
         w1 = self.tl_calc.stripline_calculator(substrate_height=10, permittivity=2.2)
         assert w1 - 8.298368 < 1e-6
-        w2 = self.tl_calc.stripline_calculator(
-            substrate_height=0.15, permittivity=4.4, impedance=100
-        )
+        w2 = self.tl_calc.stripline_calculator(substrate_height=0.15, permittivity=4.4, impedance=100)
         assert w2 - 0.012117786 < 1e-6
 
     def test_03_find_waveguide(self):

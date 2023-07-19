@@ -533,7 +533,7 @@ class TransmissionLine(object):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
 
     Returns
     -------
@@ -542,7 +542,7 @@ class TransmissionLine(object):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antennas.common import TransmissionLine
+    >>> from ansys.aedt.toolkits.antennas.backend.models.common import TransmissionLine
     >>> tl_calc = TransmissionLine(frequency=2)
     >>> tl_calc.stripline_calculator(substrate_height=10, permittivity=2.2, impedance=60)
     """
@@ -686,7 +686,7 @@ class StandardWaveguide(object):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
 
     Returns
     -------
@@ -741,6 +741,7 @@ class StandardWaveguide(object):
 
     @property
     def waveguide_list(self):
+        """Standard waveguide list."""
         return self.wg.keys()
 
     @pyaedt_function_handler()
@@ -777,7 +778,7 @@ class StandardWaveguide(object):
         freq : float
             Operational frequency.
         units : str
-           Input frequency units. The default is ``GHz``.
+           Input frequency units. The default is ``"GHz"``.
 
         Returns
         -------

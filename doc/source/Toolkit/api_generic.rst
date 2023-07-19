@@ -1,25 +1,26 @@
-Toolkit service
-===============
-This section list the available toolkit methods in the backend:
+Generic API
+===========
+This section list the available generic methods in the backend, these methods are the same for all toolkits:
 
-.. currentmodule:: ansys.aedt.toolkits.template.backend.api
+.. currentmodule:: ansys.aedt.toolkits.antennas.backend.common.api_generic
 
 .. autosummary::
    :toctree: _autosummary
 
-   Toolkit
+   ToolkitGeneric
 
-The API can be used as in the following example:
+**ToolkitGeneric** class is accessible directly from :doc:`api` because it is inherited, then
+you can create an object as in the following example to use both classes:
 
 .. code:: python
 
     # Import required modules for the example
     import time
 
-    # Import backend
+    # Import backend services
     from ansys.aedt.toolkits.template.backend.api import Toolkit
 
-    # Initialize generic service
+    # Backend object
     service = Toolkit()
 
     # Get the default properties loaded from json file
@@ -30,6 +31,9 @@ The API can be used as in the following example:
     service.set_properties(new_properties)
     properties = service.get_properties()
 
+    # Get AEDT sessions
+    sessions = service.aedt_sessions()
+
     # Launch AEDT
     msg = service.launch_aedt()
 
@@ -39,14 +43,7 @@ The API can be used as in the following example:
         time.sleep(1)
         response = service.get_thread_status()
 
-    # Create geometry
-    msg = service.create_geometry()
-
-    # Wait until thread is finished
-    response = service.get_thread_status()
-    while response[0] == 0:
-        time.sleep(1)
-        response = service.get_thread_status()
-
     # Desktop is released here
     service.release_aedt()
+
+

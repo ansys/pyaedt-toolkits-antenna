@@ -18,7 +18,7 @@ class BowTie(CommonPatch):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Substrate material. If the material is not defined, a new
         material ``parametrized`` is defined. The default is ``"FR4_epoxy"``.
@@ -266,7 +266,7 @@ class BowTieRounded(CommonPatch):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Substrate material. If material is not defined, a new
         material, ``parametrized``is defined.
@@ -528,7 +528,7 @@ class BowTieSlot(CommonPatch):
     frequency : float, optional
         Center frequency. The default is ``10.0``.
     frequency_unit : str, optional
-        Frequency units. The default is ``GHz``.
+        Frequency units. The default is ``"GHz"``.
     material : str, optional
         Substrate material. If material is not defined, a new
         material, ``parametrized``is defined.

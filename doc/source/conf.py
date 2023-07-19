@@ -32,7 +32,7 @@ html_short_title = html_title = "ansys-aedt-toolkits-antennas"
 
 # specify the location of your GitHub repo
 html_context = {
-    "github_user": "pyansys",
+    "github_user": "ansys",
     "github_repo": "pyaedt-toolkit-antennas",
     "github_version": "main",
     "doc_path": "doc/source",
@@ -54,7 +54,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "Support",
-            "url": "https://github.com/pyansys/pyaedt-antenna-toolkit/discussions",
+            "url": "https://github.com/ansys/pyaedt-antenna-toolkit/issues",
             "icon": "fa fa-comment fa-fw",
         },
     ],

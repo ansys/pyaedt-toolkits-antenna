@@ -28,7 +28,7 @@ Toolkit features are accessible from the user interface, **Antenna Wizard** or t
 Requirements
 ~~~~~~~~~~~~
 In addition to the runtime dependencies listed in the installation information, this toolkit
-requires Ansys Electronics Desktop (AEDT) 2022 R1 or later. The AEDT Student Version is also supported.
+requires Ansys Electronics Desktop (AEDT) 2023 R1 or later. The AEDT Student Version is also supported.
 
 Documentation and issues
 ~~~~~~~~~~~~~~~~~~~~~~~~

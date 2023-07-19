@@ -8,4 +8,5 @@ This section describes all classes available in the toolkit:
    :maxdepth: 2
 
    api
+   models/index
    api_generic
