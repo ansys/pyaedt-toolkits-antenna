@@ -8,9 +8,7 @@ class FrozenClass(object):
         if self.__isfrozen:
             if key not in dir(self):
                 raise AttributeError(
-                    "{} is a frozen class. This key does not exist: {}".format(
-                        type(self).__name__, key
-                    )
+                    "{} is a frozen class. This key does not exist: {}".format(type(self).__name__, key)
                 )
         object.__setattr__(self, key, value)
 
@@ -63,9 +61,7 @@ class SynthesisParameters:
         if not self._antenna_name:
             self._antenna_name = name
         else:
-            raise AttributeError(
-                "Parameter antenna_name can be set only once in the synthesis parameters."
-            )
+            raise AttributeError("Parameter antenna_name can be set only once in the synthesis parameters.")
 
 
 class InputParameters(FrozenClass):
