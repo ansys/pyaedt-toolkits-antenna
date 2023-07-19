@@ -72,14 +72,10 @@ class BasisTest(object):
 
     def my_teardown(self):
         try:
-            oDesktop = self._main.oDesktop
-            proj_list = oDesktop.GetProjectList()
+            properties = {"close_projects": False, "close_on_exit": False}
+            requests.post(url_call + "/close_aedt", json=properties)
         except Exception as e:
-            oDesktop = None
-            proj_list = []
-
-        for proj in proj_list:
-            oDesktop.CloseProject(proj)
+            pass
 
     def teardown_method(self):
         """

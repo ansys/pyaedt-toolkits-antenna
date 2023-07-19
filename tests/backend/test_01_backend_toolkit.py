@@ -22,9 +22,18 @@ class TestClass(BasisTest, object):
         response = requests.post(self.url + "/create_antenna")
         assert not response.ok
 
-        new_properties = {"antenna_type": "BowTie", "synth_only": False}
+        new_properties = {
+            "antenna_type": "BowTie",
+            "synth_only": False,
+            "active_design": {},
+            "substrate_height": 2,
+            "material": "FR4_epoxy",
+        }
 
         response = requests.put(self.url + "/set_properties", json=new_properties)
+        assert response.ok
+
+        response = requests.post(self.url + "/connect_design", json={"aedtapp": "HFSS"})
         assert response.ok
 
         response = requests.post(self.url + "/create_antenna")

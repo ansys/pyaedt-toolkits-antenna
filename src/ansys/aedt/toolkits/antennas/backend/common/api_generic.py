@@ -451,18 +451,19 @@ class ToolkitGeneric(object):
         app_name : str
             Aedt application name. The default is connecting to active design. Application available are:
 
-            * Circuit
-            * Hfss
+            * Circuit Design
+            * HFSS
             * Edb
-            * Emit
-            * Hfss3dLayout
+            * EMIT
+            * HFSS 3D Layout Design
             * Icepak
-            * Maxwell2d
-            * Maxwell3d
-            * Q2d
-            * Q3d
+            * Maxwell 2D
+            * Maxwell 3D
+            * 2D Extractor
+            * Q3D Extractor
             * Rmxprt
-            * Simplorer
+            * Twin Builder
+            * Mechanical
 
         Returns
         -------
