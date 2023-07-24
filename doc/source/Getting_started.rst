@@ -116,7 +116,7 @@ This section shows how to install the toolkit in an specific Python environment 
 
 #. Follow the step 1 and 2 described in :ref:`install_toolkit_console_ui`.
 
-#. Open a python console in the corresponding virtual environment:
+#. Open a Python console in the corresponding virtual environment:
 
     .. code:: bash
 
