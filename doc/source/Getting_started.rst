@@ -112,7 +112,7 @@ If you have installed the toolkit in the virtual environment you can skip step 2
 How to install in the console and use the API
 ---------------------------------------------
 
-This section shows how to install the toolkit in an specific python environment and use the API.
+This section shows how to install the toolkit in an specific Python environment and use the API.
 
 #. Follow the step 1 and 2 described in :ref:`install_toolkit_console_ui`.
 
