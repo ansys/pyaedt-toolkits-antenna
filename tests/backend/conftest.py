@@ -11,7 +11,7 @@ import threading
 import time
 
 import psutil
-from pyaedt import pyaedt_logger
+from pyaedt.aedt_logger import pyaedt_logger
 from pyaedt import settings
 from pyaedt.generic.filesystem import Scratch
 import pytest
