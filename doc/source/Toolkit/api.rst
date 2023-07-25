@@ -26,7 +26,7 @@ The API can be used as in the following example:
     properties = service.get_properties()
 
     # Set properties
-    new_properties = {"aedt_version": "2022.2"}
+    new_properties = {"aedt_version": "2023.1"}
     service.set_properties(new_properties)
     properties = service.get_properties()
 
