@@ -1,6 +1,6 @@
 Common
 ======
-This section list the available common methods:
+This section lists the available common methods:
 
 .. currentmodule:: ansys.aedt.toolkits.antennas.backend.models.common
 
