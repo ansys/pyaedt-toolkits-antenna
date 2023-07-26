@@ -24,8 +24,8 @@ import shutil
 import sys
 import tempfile
 
-from pyaedt.aedt_logger import pyaedt_logger
 from pyaedt import settings
+from pyaedt.aedt_logger import pyaedt_logger
 
 settings.enable_error_handler = False
 settings.enable_desktop_logs = False
