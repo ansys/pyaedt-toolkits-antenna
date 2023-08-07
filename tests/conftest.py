@@ -154,7 +154,7 @@ def desktop_init():
             count += 1
 
     if current_process <= len(initial_pids):
-        raise "Backend not running"
+        raise Exception("Backend not running")
 
     if is_linux:
         flask_pids = [element for element in psutil.pids() if element not in initial_pids]
@@ -170,7 +170,7 @@ def desktop_init():
         count += 1
 
     if count > 10:
-        raise "Backend not running"
+        raise Exception("Backend not running")
 
     properties = {
         "aedt_version": desktop_version,
