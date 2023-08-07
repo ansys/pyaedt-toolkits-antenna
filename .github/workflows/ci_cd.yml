@@ -147,7 +147,7 @@ jobs:
           export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
           export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
-#          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/test_00_backend_generic.py
+          pytest tests/test_00_backend_generic.py
 
 #      - name: Models Testing
 #        timeout-minutes: 30
@@ -158,12 +158,12 @@ jobs:
 #          source .venv_linux/bin/activate
 #          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/models
 
-      - name: Upload Coverage Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-html
-          path: .cov/html
-          retention-days: 7
+#      - name: Upload Coverage Results
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: coverage-html
+#          path: .cov/html
+#          retention-days: 7
 
   #doc-build:
   #  name: "Build documentation"
