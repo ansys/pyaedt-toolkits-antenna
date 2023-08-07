@@ -163,10 +163,14 @@ def desktop_init():
 
     # Wait for the Flask application to start
     response = requests.get(url_call + "/get_status")
-
-    while response.json() != "Backend free":
+    count = 0
+    while response.json() != "Backend free" and count < 10:
         time.sleep(1)
         response = requests.get(url_call + "/get_status")
+        count += 1
+
+    if count > 10:
+        raise "Backend not running"
 
     properties = {
         "aedt_version": desktop_version,
