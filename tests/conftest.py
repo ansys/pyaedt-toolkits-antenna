@@ -11,8 +11,8 @@ import threading
 import time
 
 import psutil
+from pyaedt import aedt_logger
 from pyaedt import settings
-from pyaedt.aedt_logger import pyaedt_logger
 from pyaedt.generic.filesystem import Scratch
 import pytest
 import requests
@@ -60,7 +60,7 @@ if not os.path.exists(scratch_path):
     except:
         pass
 
-logger = pyaedt_logger
+logger = aedt_logger.pyaedt_logger
 
 
 class BasisTest(object):
@@ -72,10 +72,14 @@ class BasisTest(object):
 
     def my_teardown(self):
         try:
-            properties = {"close_projects": False, "close_on_exit": False}
-            requests.post(url_call + "/close_aedt", json=properties)
+            oDesktop = self._main.oDesktop
+            proj_list = oDesktop.GetProjectList()
         except Exception as e:
-            pass
+            oDesktop = None
+            proj_list = []
+
+        for proj in proj_list:
+            oDesktop.CloseProject(proj)
 
     def teardown_method(self):
         """
@@ -133,7 +137,7 @@ def desktop_init():
     flask_thread.start()
 
     time.sleep(1)
-
+    print("flask started")
     if is_linux:
         current_process = len(psutil.pids())
         count = 0
