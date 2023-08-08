@@ -137,8 +137,6 @@ jobs:
           pip install --upgrade build wheel
           pip install .[tests]
           pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pytest-azurepipelines
-        env:
-          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
       - name: Backend Testing
         timeout-minutes: 30
@@ -148,6 +146,8 @@ jobs:
           export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest tests/test_00_service_generic.py
+        env:
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
 #      - name: Models Testing
 #        timeout-minutes: 30
