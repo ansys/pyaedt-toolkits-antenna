@@ -1,0 +1,16 @@
+{
+  "aedt_version" : "2023.1",
+  "non_graphical" : false,
+  "core_number" : 4,
+  "active_project" : "",
+  "active_design": {},
+  "project_list" : [],
+  "design_list": {},
+  "selected_process" : 0,
+  "use_grpc" : true,
+  "is_toolkit_busy" : false,
+  "url" : "127.0.0.1",
+  "port" : 5001,
+  "debug" : true,
+  "log_file" : "backend.log"
+}

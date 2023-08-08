@@ -1,0 +1,1771 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1226</width>
+    <height>1178</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QWidget" name="main_menu" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="rightMargin">
+        <number>2</number>
+       </property>
+       <item row="3" column="2">
+        <widget class="QPushButton" name="release_button">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="text">
+          <string> Close Toolkit </string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="3">
+        <widget class="QPushButton" name="release_and_exit_button">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="text">
+          <string> Close Desktop and Toolkit </string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="5">
+        <widget class="QTabWidget" name="toolkit_tab">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="tabShape">
+          <enum>QTabWidget::Rounded</enum>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="movable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="settings">
+          <attribute name="title">
+           <string> AEDT Settings </string>
+          </attribute>
+          <layout class="QHBoxLayout" name="horizontalLayout_25">
+           <item>
+            <layout class="QVBoxLayout" name="settings_layout">
+             <item>
+              <layout class="QHBoxLayout" name="cores_layout"/>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="graphical_layout">
+               <item>
+                <widget class="QLabel" name="graphical_label">
+                 <property name="text">
+                  <string>Non Graphical</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="non_graphical_combo">
+                 <item>
+                  <property name="text">
+                   <string>False</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>True</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="aedt_version_layout">
+               <item>
+                <widget class="QLabel" name="version_label">
+                 <property name="text">
+                  <string>AEDT Version</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="aedt_version_combo"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="aedt_sessions_layout">
+               <item>
+                <widget class="QLabel" name="aedt_sessions_label">
+                 <property name="text">
+                  <string>Available AEDT Sessions</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="process_id_combo">
+                 <item>
+                  <property name="text">
+                   <string>Create New Session</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="project_path_layout">
+               <item>
+                <widget class="QLabel" name="project_path_label">
+                 <property name="text">
+                  <string>Project Name</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="project_name"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <item>
+                <spacer name="horizontalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="browse_project">
+                 <property name="text">
+                  <string>Select aedt project</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="verticalSpacer_8">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="connect_aedtapp">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>  Launch AEDT  </string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_29">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Preferred</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="design">
+          <attribute name="title">
+           <string> Design </string>
+          </attribute>
+          <layout class="QVBoxLayout" name="design_layout_2">
+           <item>
+            <layout class="QHBoxLayout" name="design_layout">
+             <item>
+              <widget class="QFrame" name="design_settings">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <property name="lineWidth">
+                <number>12</number>
+               </property>
+               <layout class="QGridLayout" name="layout_settings">
+                <item row="7" column="1">
+                 <layout class="QHBoxLayout" name="geometry_creation">
+                  <property name="sizeConstraint">
+                   <enum>QLayout::SetDefaultConstraint</enum>
+                  </property>
+                  <item>
+                   <layout class="QVBoxLayout" name="geometry_creation_layout">
+                    <item>
+                     <layout class="QHBoxLayout" name="aedt_design_layout">
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <layout class="QVBoxLayout" name="project_aedt_layout">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QLabel" name="project_adt_label">
+                          <property name="font">
+                           <font>
+                            <pointsize>12</pointsize>
+                           </font>
+                          </property>
+                          <property name="text">
+                           <string>Project selected</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="project_aedt_combo">
+                          <item>
+                           <property name="text">
+                            <string>No project</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="design_aedt_layout">
+                        <item>
+                         <widget class="QLabel" name="design_aedt_label">
+                          <property name="font">
+                           <font>
+                            <pointsize>12</pointsize>
+                           </font>
+                          </property>
+                          <property name="text">
+                           <string>Design selected</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="design_aedt_combo">
+                          <item>
+                           <property name="text">
+                            <string>No design</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QFrame" name="antenna_settings">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <property name="lineWidth">
+                       <number>12</number>
+                      </property>
+                      <layout class="QGridLayout" name="antenna_settings_layout"/>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+                <item row="7" column="2">
+                 <spacer name="horizontalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Preferred</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="7" column="3">
+                 <layout class="QVBoxLayout" name="new_layout" stretch="0,0,0">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_8">
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <spacer name="horizontalSpacer_10">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <layout class="QVBoxLayout" name="verticalLayout_2">
+                      <property name="spacing">
+                       <number>0</number>
+                      </property>
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QCheckBox" name="component_3d">
+                        <property name="font">
+                         <font>
+                          <pointsize>12</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>3D Component</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="create_hfss_setup">
+                        <property name="enabled">
+                         <bool>true</bool>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <pointsize>12</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Create Hfss Setup</string>
+                        </property>
+                        <property name="checked">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="lattice_pair">
+                        <property name="font">
+                         <font>
+                          <pointsize>12</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Lattice pair</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="horizontalLayout_9">
+                        <property name="spacing">
+                         <number>0</number>
+                        </property>
+                        <property name="leftMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QLabel" name="sweep_label">
+                          <property name="font">
+                           <font>
+                            <pointsize>12</pointsize>
+                           </font>
+                          </property>
+                          <property name="text">
+                           <string>Sweep Bandwidth %</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QSlider" name="sweep_slider">
+                          <property name="maximum">
+                           <number>100</number>
+                          </property>
+                          <property name="singleStep">
+                           <number>5</number>
+                          </property>
+                          <property name="value">
+                           <number>20</number>
+                          </property>
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="tickPosition">
+                           <enum>QSlider::TicksAbove</enum>
+                          </property>
+                          <property name="tickInterval">
+                           <number>5</number>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="slider_value">
+                          <property name="font">
+                           <font>
+                            <pointsize>12</pointsize>
+                           </font>
+                          </property>
+                          <property name="text">
+                           <string>20</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <spacer name="verticalSpacer_2">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_6">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <spacer name="horizontalSpacer_9">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QTableWidget" name="property_table">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                       </font>
+                      </property>
+                      <property name="columnCount">
+                       <number>2</number>
+                      </property>
+                      <column>
+                       <property name="text">
+                        <string>Property</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Value</string>
+                       </property>
+                      </column>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_8">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <layout class="QGridLayout" name="image_layout"/>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Preferred</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="analysis">
+          <attribute name="title">
+           <string> Analysis </string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <layout class="QHBoxLayout" name="options">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="analyze">
+               <property name="text">
+                <string>Analyze Project</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="get_results">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Get results</string>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+               <property name="autoDefault">
+                <bool>false</bool>
+               </property>
+               <property name="default">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="results"/>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="toolkit_settings">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>320</width>
+            <height>200</height>
+           </size>
+          </property>
+          <attribute name="title">
+           <string>Toolkit Settings</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="toolkit_settings_layout">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLabel" name="freq_units_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Frequency Units</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Minimum</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QComboBox" name="frequnits">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="currentIndex">
+                <number>3</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Hz</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>KHz</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>MHz</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>GHz</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>THz</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="length_label">
+               <property name="text">
+                <string>Length Units</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_31">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QComboBox" name="units">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="currentIndex">
+                <number>1</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>um</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>mm</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>cm</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>m</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>mil</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>in</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QLabel" name="cores_label">
+               <property name="text">
+                <string>Number of Cores</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="numcores">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>4</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPlainTextEdit" name="log_text">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QProgressBar" name="progress_bar">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+      <property name="textVisible">
+       <bool>true</bool>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="textDirection">
+       <enum>QProgressBar::TopToBottom</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="top_menu_bar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1226</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <widget class="QMenu" name="top_menu">
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="action_save_project"/>
+   </widget>
+   <widget class="QMenu" name="menuAntennas">
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Antennas</string>
+    </property>
+    <widget class="QMenu" name="menuBowtie">
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="title">
+      <string>BowTie</string>
+     </property>
+     <addaction name="actionBowtieNormal"/>
+     <addaction name="actionBowtieRounded"/>
+     <addaction name="actionBowtieSlot"/>
+    </widget>
+    <widget class="QMenu" name="menuConical_Spiral">
+     <property name="title">
+      <string>Conical Spiral</string>
+     </property>
+     <addaction name="actionArchimedean"/>
+     <addaction name="actionLog"/>
+     <addaction name="actionSinuous"/>
+    </widget>
+    <widget class="QMenu" name="menuDipole">
+     <property name="title">
+      <string>Dipole</string>
+     </property>
+     <addaction name="actionDipolePlanar"/>
+     <addaction name="actionDipoleWire"/>
+    </widget>
+    <widget class="QMenu" name="menuHelix">
+     <property name="title">
+      <string>Helix</string>
+     </property>
+     <addaction name="actionAxial"/>
+     <addaction name="actionAxial_Mode_Continuous_Taper"/>
+     <addaction name="actionNormal_Mode"/>
+     <addaction name="actionQuadrifilar_Open"/>
+     <addaction name="actionQuadrifilar_Short"/>
+    </widget>
+    <widget class="QMenu" name="menuHorn">
+     <property name="title">
+      <string>Horn</string>
+     </property>
+     <addaction name="actionConical_Corrugated"/>
+     <addaction name="actionConical"/>
+     <addaction name="actionE_Plane_Sectoral"/>
+     <addaction name="actionElliptical"/>
+     <addaction name="actionH_Plane_Sectoral"/>
+     <addaction name="actionPyramidal"/>
+     <addaction name="actionPyramidal_Ridged"/>
+     <addaction name="actionQuad_Ridged"/>
+    </widget>
+    <widget class="QMenu" name="menuLog_Periodic">
+     <property name="title">
+      <string>Log Periodic</string>
+     </property>
+     <addaction name="actionLDPA_Dipole_array"/>
+     <addaction name="actionToothed"/>
+     <addaction name="actionTrapezoidal"/>
+    </widget>
+    <widget class="QMenu" name="menuMisc">
+     <property name="title">
+      <string>Misc</string>
+     </property>
+     <addaction name="actionBicone"/>
+     <addaction name="actionDiscone"/>
+    </widget>
+    <widget class="QMenu" name="menuMonopole">
+     <property name="title">
+      <string>Monopole</string>
+     </property>
+     <addaction name="actionBlade_Antenna"/>
+     <addaction name="actionCircular_Disc"/>
+     <addaction name="actionElliptical_Base_Strip"/>
+     <addaction name="actionVertical_Trapezoidal"/>
+     <addaction name="actionWireMonopole"/>
+     <addaction name="actionWire_Infinite_ground"/>
+    </widget>
+    <widget class="QMenu" name="menuPIFA">
+     <property name="title">
+      <string>PIFA</string>
+     </property>
+     <addaction name="actionShorting_Pin"/>
+     <addaction name="actionShorting_Plate"/>
+     <addaction name="actionPlanar_Inverted_F"/>
+    </widget>
+    <widget class="QMenu" name="menuPatch">
+     <property name="title">
+      <string>Patch</string>
+     </property>
+     <addaction name="actionElliptical_Edge_Fed"/>
+     <addaction name="actionElliptical_Inset_Fed"/>
+     <addaction name="actionElliptical_Probe_Fed"/>
+     <addaction name="actionRectangular_Edge_Fed"/>
+     <addaction name="actionRectangular_Inset_Fed"/>
+     <addaction name="actionRectangular_Probe_Fed"/>
+    </widget>
+    <widget class="QMenu" name="menuPlanar_Spiral">
+     <property name="title">
+      <string>Planar Spiral</string>
+     </property>
+     <addaction name="actionPlanarArchimidean"/>
+     <addaction name="actionPlanar_Archimidean_Absorber"/>
+     <addaction name="actionPlanar_Log"/>
+     <addaction name="actionPlanar_Log_Absorber"/>
+     <addaction name="actionPlanar_Sinuous"/>
+     <addaction name="actionPlanar_Sinuous_Absorber"/>
+    </widget>
+    <widget class="QMenu" name="menuReflector">
+     <property name="title">
+      <string>Reflector</string>
+     </property>
+     <addaction name="actionCassegrain"/>
+     <addaction name="actionGregorian"/>
+     <addaction name="actionParabolic"/>
+     <addaction name="actionSplash_Plate"/>
+    </widget>
+    <widget class="QMenu" name="menuSlot">
+     <property name="title">
+      <string>Slot</string>
+     </property>
+     <addaction name="actionCavity_backed_array"/>
+     <addaction name="actionCavity_backed_T_bar_fed"/>
+     <addaction name="actionGap_Feed"/>
+     <addaction name="actionMicrostrip_Feed"/>
+    </widget>
+    <widget class="QMenu" name="menuVivaldi">
+     <property name="title">
+      <string>Vivaldi</string>
+     </property>
+     <addaction name="actionVivaldi"/>
+     <addaction name="actionVivaldi_Stepped"/>
+    </widget>
+    <widget class="QMenu" name="menuYagi_Uda">
+     <property name="title">
+      <string>Yagi-Uda</string>
+     </property>
+     <addaction name="actionQuasiYagi"/>
+     <addaction name="actionQuasiYagiWire"/>
+    </widget>
+    <addaction name="menuBowtie"/>
+    <addaction name="menuConical_Spiral"/>
+    <addaction name="menuDipole"/>
+    <addaction name="menuHelix"/>
+    <addaction name="menuHorn"/>
+    <addaction name="menuLog_Periodic"/>
+    <addaction name="menuMisc"/>
+    <addaction name="menuMonopole"/>
+    <addaction name="menuPIFA"/>
+    <addaction name="menuPatch"/>
+    <addaction name="menuPlanar_Spiral"/>
+    <addaction name="menuReflector"/>
+    <addaction name="menuSlot"/>
+    <addaction name="menuVivaldi"/>
+    <addaction name="menuYagi_Uda"/>
+   </widget>
+   <addaction name="top_menu"/>
+   <addaction name="menuAntennas"/>
+  </widget>
+  <widget class="QStatusBar" name="status_bar"/>
+  <action name="action_save_project">
+   <property name="text">
+    <string>Save project</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionBowtieNormal">
+   <property name="text">
+    <string>Normal</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionBowtieRounded">
+   <property name="text">
+    <string>Rounded</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionBowtieSlot">
+   <property name="text">
+    <string>Slot</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionDipolePlanar">
+   <property name="text">
+    <string>Planar</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionDipoleWire">
+   <property name="text">
+    <string>Wire</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionArchimedean">
+   <property name="text">
+    <string>Archimedean</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionLog">
+   <property name="text">
+    <string>Log</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionSinuous">
+   <property name="text">
+    <string>Sinuous</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionAxial">
+   <property name="text">
+    <string>Axial Mode</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionAxial_Mode_Continuous_Taper">
+   <property name="text">
+    <string>Axial Mode Continuous Taper</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionNormal_Mode">
+   <property name="text">
+    <string>Normal Mode</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionQuadrifilar_Open">
+   <property name="text">
+    <string>Quadrifilar Open</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionQuadrifilar_Short">
+   <property name="text">
+    <string>Quadrifilar Short</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionConical_Corrugated">
+   <property name="text">
+    <string>Conical Corrugated</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionConical">
+   <property name="text">
+    <string>Conical</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionE_Plane_Sectoral">
+   <property name="text">
+    <string>E-Plane Sectoral</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionElliptical">
+   <property name="text">
+    <string>Elliptical</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionH_Plane_Sectoral">
+   <property name="text">
+    <string>H-Plane Sectoral</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionPyramidal">
+   <property name="text">
+    <string>Pyramidal </string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionPyramidal_Ridged">
+   <property name="text">
+    <string>Pyramidal Ridged</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionQuad_Ridged">
+   <property name="text">
+    <string>Quad Ridged </string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionLDPA_Dipole_array">
+   <property name="text">
+    <string>LDPA Dipole array</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionToothed">
+   <property name="text">
+    <string>Toothed</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionTrapezoidal">
+   <property name="text">
+    <string>Trapezoidal</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionBicone">
+   <property name="text">
+    <string>Bicone</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionDiscone">
+   <property name="text">
+    <string>Discone</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionBlade_Antenna">
+   <property name="text">
+    <string>Blade Antenna</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionCircular_Disc">
+   <property name="text">
+    <string>Circular Disc </string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionElliptical_Base_Strip">
+   <property name="text">
+    <string>Elliptical-Base Strip</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionVertical_Trapezoidal">
+   <property name="text">
+    <string>Vertical Trapezoidal</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionWireMonopole">
+   <property name="text">
+    <string>Wire</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionWire_Infinite_ground">
+   <property name="text">
+    <string>Wire - Infinite ground</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionShorting_Pin">
+   <property name="text">
+    <string>Shorting Pin</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionShorting_Plate">
+   <property name="text">
+    <string>Shorting Plate</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionPlanar_Inverted_F">
+   <property name="text">
+    <string>Planar Inverted-F</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionElliptical_Edge_Fed">
+   <property name="text">
+    <string>Elliptical-Edge Fed</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionElliptical_Inset_Fed">
+   <property name="text">
+    <string>Elliptical-Inset Fed</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionElliptical_Probe_Fed">
+   <property name="text">
+    <string>Elliptical-Probe Fed</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionRectangular_Edge_Fed">
+   <property name="text">
+    <string>Rectangular-Edge Fed</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionRectangular_Inset_Fed">
+   <property name="text">
+    <string>Rectangular-Inset Fed</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionRectangular_Probe_Fed">
+   <property name="text">
+    <string>Rectangular-Probe Fed</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionPlanarArchimidean">
+   <property name="text">
+    <string>Planar Archimidean</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionPlanar_Archimidean_Absorber">
+   <property name="text">
+    <string>Planar Archimidean with Absorber</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionPlanar_Log">
+   <property name="text">
+    <string>Planar Log</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionPlanar_Log_Absorber">
+   <property name="text">
+    <string>Planar Log with Absorber</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionPlanar_Sinuous">
+   <property name="text">
+    <string>Planar Sinuous</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionPlanar_Sinuous_Absorber">
+   <property name="text">
+    <string>Planar Sinuous with Absorber</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionCassegrain">
+   <property name="text">
+    <string>Cassegrain</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionGregorian">
+   <property name="text">
+    <string>Gregorian</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionParabolic">
+   <property name="text">
+    <string>Parabolic</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionSplash_Plate">
+   <property name="text">
+    <string>Splash Plate</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionCavity_backed_array">
+   <property name="text">
+    <string>Cavity backed array</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionCavity_backed_T_bar_fed">
+   <property name="text">
+    <string>Cavity backed T-bar-fed</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionGap_Feed">
+   <property name="text">
+    <string>Gap Feed</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionMicrostrip_Feed">
+   <property name="text">
+    <string>Microstrip Feed</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionVivaldi">
+   <property name="text">
+    <string>Vivaldi</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionVivaldi_Stepped">
+   <property name="text">
+    <string>Vivaldi Stepped</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionQuasiYagi">
+   <property name="text">
+    <string>Quasi-Yagi</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="actionQuasiYagiWire">
+   <property name="text">
+    <string>Wire</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

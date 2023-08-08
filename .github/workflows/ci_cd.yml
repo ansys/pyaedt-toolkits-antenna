@@ -16,8 +16,7 @@ on:
 env:
   MAIN_PYTHON_VERSION: '3.10'
   DOCUMENTATION_CNAME: 'aedt.antenna.toolkit.docs.pyansys.com'
-  LIBRARY_NAME: 'ansys-aedt-toolkits-antennas'
-  LIBRARY_NAMESPACE: 'ansys.aedt.toolkits.antennas'
+  LIBRARY_NAME: 'ansys-aedt-antenna-toolkits'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -44,31 +43,33 @@ jobs:
 
   smoke-tests:
     name: "Build and Smoke tests"
-    runs-on: ubuntu-latest
-    # needs: [code-style]
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9']
+        os : [windows-latest, ubuntu-latest]
+        python-version: [ '3.7', '3.10' ]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: ansys/actions/build-wheelhouse@v4
         with:
           library-name: ${{ env.LIBRARY_NAME }}
-          library-namespace: ${{ env.LIBRARY_NAMESPACE }}
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
 
-  tests:
-    name: "Tests"
-    runs-on: [self-hosted, pyaedt-toolkits]
-    # needs: [smoke-tests]
+  tests_windows:
+    name: "Windows Tests"
+    strategy:
+      matrix:
+        python-version: [ '3.7', '3.10' ]
+      fail-fast: false
+    runs-on: [self-hosted, pyaedt, toolkits, Windows]
     steps:
       - uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: ${{ matrix.python-version }}
 
       - name: Create Python venv
         run: |
@@ -81,12 +82,81 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade build wheel
           pip install .[tests]
+        env:
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
-      - name: Testing
+      - name: Backend Testing
         timeout-minutes: 30
         run: |
           .\.venv\Scripts\Activate.ps1
-          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests
+          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/backend
+
+      - name: Models Testing
+        timeout-minutes: 30
+        run: |
+          .\.venv\Scripts\Activate.ps1
+          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/models
+
+      - name: Upload Coverage Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-html
+          path: .cov/html
+          retention-days: 7
+
+  tests_linux:
+    name: "Linux Tests"
+    strategy:
+      matrix:
+        python-version: [ '3.7', '3.10' ]
+      fail-fast: false
+    runs-on: [ self-hosted, pyaedt, toolkits, Linux ]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Create Python venv
+        run: |
+          python -m venv .venv_linux
+          export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
+          export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
+
+      - name: Install packages for testing
+        run: |
+          source .venv_linux/bin/activate
+          python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip -U
+          python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org wheel setuptools -U
+          python -c "import sys; print(sys.executable)"
+          python -m pip install --upgrade pip
+          pip install --upgrade build wheel
+          pip install .[tests]
+          pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pytest-azurepipelines
+
+      - name: Backend Testing
+        timeout-minutes: 30
+        run: |
+          export ANS_NODEPCHECK=1
+          export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
+          export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
+          source .venv_linux/bin/activate
+          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/backend
+        env:
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+
+      - name: Models Testing
+        timeout-minutes: 30
+        run: |
+          export ANS_NODEPCHECK=1
+          export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
+          export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
+          source .venv_linux/bin/activate
+          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/models
+        env:
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
       - name: Upload Coverage Results
         uses: actions/upload-artifact@v3
@@ -108,6 +178,7 @@ jobs:
         uses: ansys/actions/doc-build@v4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          check-links: false
 
   doc-deploy-dev:
     name: "Deploy development documentation"
@@ -134,7 +205,7 @@ jobs:
   build-library:
     name: "Build library basic example"
     runs-on: ubuntu-latest
-    needs: [tests, doc-deploy-stable]
+    needs: [doc-deploy-stable]
     steps:
       - uses: ansys/actions/build-library@v4
         with:

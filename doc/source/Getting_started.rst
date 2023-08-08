@@ -4,82 +4,74 @@ Getting started
 
 To run this toolkit, you must have a licensed copy of Ansys Electronics Desktop (AEDT) installed.
 
-The toolkit could be used inside AEDT or launched from a python console. Toolkit features are accessible from the
-user interface **Antenna Wizard** or the directly from the API.
+The toolkit could be launched from:
 
-Install the toolkit inside AEDT and run the UI
-----------------------------------------------
+- AEDT, see :ref:`install-toolkit-AEDT`.
 
-The toolkit could be installed inside AEDT using
+- From a python console, see :ref:`install_toolkit_console_ui` or :ref:`install_toolkit_console_api`
+
+The toolkit features can be accessed from:
+
+- The user interface (UI), see :doc:`Toolkit/ui`.
+
+- The API, see :doc:`Toolkit/index`.
+
+.. _install-toolkit-AEDT:
+
+How to install inside AEDT and run the UI
+-----------------------------------------
+
+This section shows how to install the toolkit inside the Ansys Electronics Desktop (AEDT) using the base
+interpreter from AEDT installation.
+
+The toolkit can be installed inside AEDT using
 `PyAEDT <https://aedt.docs.pyansys.com/version/stable//>`_.
 
-If you have an existing virtual environment, you can skip step 1, and
-if you have PyAEDT installed, you can skip step 2:
+#. Download and run the install script from the `PyAEDT documentation <https://aedt.docs.pyansys.com/version/stable//Getting_started/Installation.html>`_.
+   Note that **AEDT must be restarted**
+   to update the **Tools** menu if this is the first time a Toolkit has been installed in AEDT.
 
-#. Create a fresh-clean Python environment and activate it:
 
-   .. code:: bash
+#. Open the console:
 
-      # Create a virtual environment
-      python -m venv .venv
+    .. image:: ./_static/toolkits.png
+      :width: 800
+      :alt: PyAEDT toolkits in AEDT
 
-      # Activate it in a POSIX system
-      source .venv/bin/activate
+    .. image:: ./_static/console.png
+      :width: 800
+      :alt: PyAEDT console in AEDT
 
-      # Activate it in a Windows CMD environment
-      .venv\Scripts\activate.bat
 
-      # Activate it in Windows PowerShell
-      .venv\Scripts\Activate.ps1
-
-#. Install PyAEDT by run this command:
-
-    .. code:: bash
-
-      python -m pip install pyaedt
-
-#. Open python console:
-
-    .. code:: bash
-
-      python
-
-#. Open AEDT by run this command:
+#. Run the PyAEDT command: `add custom toolkit method <https://aedt.docs.pyansys.com/version/stable/API/_autosummary/pyaedt.desktop.Desktop.add_custom_toolkit.html#pyaedt.desktop.Desktop.add_custom_toolkit>`_:
 
     .. code:: python
 
-        # Launch AEDT
-        from pyaedt import Desktop
+      desktop.add_custom_toolkit("AntennaWizard")
+      exit()
 
-        aedtapp = Desktop(
-            specified_version="2023.1",
-            non_graphical=False,
-            new_desktop_session=True,
-            close_on_exit=True,
-            student_version=False,
-        )
-        # Install toolkit inside AEDT
-        aedtapp.add_custom_toolkit("AntennaWizard")
-        # Desktop is released here
-        aedtapp.release_desktop()
+#. Close the console and open the toolkit, if you do not restart AEDT, you need to *Update Menu*:
 
-#. If you are using Python 3.7 base interpreter from AEDT 2023R1 in Windows, uninstall pywin32 module by run this command:
+    .. image:: ./_static/toolkit_in_AEDT.png
+      :width: 800
+      :alt: Antenna toolkit in AEDT
 
-    .. code:: bash
+#. The toolkit UI is connected directly to the AEDT session:
 
-        python -m pip uninstall pywin32
+    .. image:: ./_static/design_connected.png
+      :width: 800
+      :alt: UI opened from AEDT, design tab
 
-#. Open AEDT manually, create an HFSS design and run the toolkit:
+.. _install_toolkit_console_ui:
 
-.. image:: ./Resources/toolkit_in_AEDT.png
-  :width: 800
-  :alt: PyAEDT toolkit installed
+How to install in the console and run the UI
+--------------------------------------------
 
-Install the toolkit in the console and run the UI
--------------------------------------------------
+This section shows how to install the toolkit in an specific python environment.
 
-If you have an existing virtual environment you can skip step 1,
-if you have installed the toolkit in the virtual environment you can skip step 2:
+If you have an existing virtual environment you can skip step 1.
+
+If you have installed the toolkit in the virtual environment you can skip step 2.
 
 #. Create a fresh-clean Python environment and activate it:
 
@@ -107,67 +99,70 @@ if you have installed the toolkit in the virtual environment you can skip step 2
 
     .. code:: bash
 
-      python .venv\Lib\site-packages\ansys\aedt\toolkits\antennas\antenna_toolkit.py
+      python .venv\Lib\site-packages\ansys\aedt\toolkits\antennas\run_toolkit.py
 
-.. image:: ./Resources/antenna_toolkit.png
-  :width: 800
-  :alt: Antenna Toolkit UI, Design Tab
+#. Settings tab to create a new AEDT session or connect to an existing one:
 
-Install the toolkit in the console and use the API
---------------------------------------------------
+    .. image:: ./_static/settings.png
+      :width: 800
+      :alt: UI opened from console, settings tab
 
-If you have an existing virtual environment you can skip step 1,
-if you have installed the toolkit in the virtual environment you can skip step 2:
+.. _install_toolkit_console_api:
 
-#. Create a fresh-clean Python environment and activate it:
+How to install in the console and use the API
+---------------------------------------------
 
-   .. code:: bash
+This section shows how to install the toolkit in an specific Python environment and use the API.
 
-      # Create a virtual environment
-      python -m venv .venv
+#. Follow the step 1 and 2 described in :ref:`install_toolkit_console_ui`.
 
-      # Activate it in a POSIX system
-      source .venv/bin/activate
-
-      # Activate it in a Windows CMD environment
-      .venv\Scripts\activate.bat
-
-      # Activate it in Windows PowerShell
-      .venv\Scripts\Activate.ps1
-
-#. Install the toolkit from git:
-
-    .. code:: bash
-
-      python -m pip install git+https://github.com/pyansys/pyaedt-antenna-toolkit.git
-
-#. Open a python console:
+#. Open a Python console in the corresponding virtual environment:
 
     .. code:: bash
 
       python
 
-#. Open AEDT and create a conical horn antenna by run this command:
+#. Open AEDT and draw a sphere in a random position by run these commands:
 
     .. code:: python
 
-        # Launch AEDT
-        from pyaedt import Hfss
+      # Import required modules for the example
+      import time
 
-        aedtapp = Hfss(
-            specified_version="2023.1",
-            non_graphical=False,
-            new_desktop_session=True,
-            close_on_exit=True,
-        )
-        # Import conical horn antenna
-        from ansys.aedt.toolkits.antennas.models.horn import Conical
+      # Import backend services
+      from ansys.aedt.toolkits.antennas.backend.api import Toolkit
 
-        # Create antenna
-        ohorn = aedtapp.add_from_toolkit(Conical, draw=True, frequency=1.0, huygens_box=True)
-        # Desktop is released here
-        aedtapp.release_desktop()
+      # Backend object
+      service = Toolkit()
 
-.. image:: ./Resources/horn_hfss.png
-  :width: 800
-  :alt: Conical horn in HFSS
+      # Get service properties
+      properties = service.get_properties()
+
+      # Change geometry type
+      new_properties = {"geometry": "Sphere"}
+      service.set_properties(new_properties)
+
+      # Launch AEDT in a thread
+      service.launch_aedt()
+
+      # Wait until thread is finished
+      response = service.get_thread_status()
+
+      while response[0] == 0:
+          time.sleep(1)
+          response = service.get_thread_status()
+
+      # Create a sphere in a random position in a thread
+      b = service.create_geometry()
+
+      # Wait until thread is finished
+      response = service.get_thread_status()
+      while response[0] == 0:
+          time.sleep(1)
+          response = service.get_thread_status()
+
+      # Get number of solids added
+      len(service.comps)
+
+      # Desktop is released here
+      service.release_aedt()
