@@ -48,7 +48,7 @@ doc = [
     "enum-tools[sphinx]==0.10.0",
     "sphinx-autoapi==2.1.1",
     "sphinx-autobuild==2021.3.14",
-    "sphinx-autodoc-typehints==1.23.3",
+    "sphinx-autodoc-typehints==1.24.0",
     "sphinx-gallery==0.13.0",
     "sphinx-notfound-page==0.8.3",
     "nbsphinx==0.9.2",
