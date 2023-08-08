@@ -186,8 +186,10 @@ def desktop_init():
     gc.collect()
 
     if is_linux:
+        pids = psutil.pids()
         for process in flask_pids:
-            os.kill(process, signal.SIGKILL)
+            if process in pids:
+                os.kill(process, signal.SIGKILL)
     else:
         for process in flask_pids:
             if process.name() == "python.exe" or process.name() == "python":
