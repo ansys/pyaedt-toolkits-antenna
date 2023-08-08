@@ -16,8 +16,7 @@ on:
 env:
   MAIN_PYTHON_VERSION: '3.10'
   DOCUMENTATION_CNAME: 'aedt.antenna.toolkit.docs.pyansys.com'
-  LIBRARY_NAME: 'ansys-aedt-toolkits-antennas'
-  LIBRARY_NAMESPACE: 'ansys.aedt.toolkits.antennas'
+  LIBRARY_NAME: 'ansys-aedt-antenna-toolkits'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -54,7 +53,6 @@ jobs:
       - uses: ansys/actions/build-wheelhouse@v4
         with:
           library-name: ${{ env.LIBRARY_NAME }}
-          library-namespace: ${{ env.LIBRARY_NAMESPACE }}
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
 
