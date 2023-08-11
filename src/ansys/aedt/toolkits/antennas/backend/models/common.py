@@ -417,7 +417,7 @@ class CommonAntenna(object):
         for k, v in new_params.items():
             if hasattr(self.synthesis_parameters, k):
                 param = getattr(self.synthesis_parameters, k)
-                param.value = float(round(v, 3))
+                param.value = float(round(v, 6))
             else:
                 self.synthesis_parameters.add_parameter(k, v)
 

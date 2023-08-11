@@ -12,7 +12,7 @@ The toolkit could be launched from:
 
 The toolkit features can be accessed from:
 
-- The user interface (UI), see :doc:`Toolkit/ui`.
+- The user interface (Antenna Wizard), see :doc:`Toolkit/ui`.
 
 - The API, see :doc:`Toolkit/index`.
 
@@ -28,7 +28,7 @@ The toolkit can be installed inside AEDT using
 `PyAEDT <https://aedt.docs.pyansys.com/version/stable//>`_.
 
 #. Download and run the install script from the `PyAEDT documentation <https://aedt.docs.pyansys.com/version/stable//Getting_started/Installation.html>`_.
-   Note that **AEDT must be restarted**
+   Note **AEDT must be restarted**
    to update the **Tools** menu if this is the first time a Toolkit has been installed in AEDT.
 
 
@@ -50,13 +50,13 @@ The toolkit can be installed inside AEDT using
       desktop.add_custom_toolkit("AntennaWizard")
       exit()
 
-#. Close the console and open the toolkit, if you do not restart AEDT, you need to *Update Menu*:
+#. Close the console and open the toolkit. If the toolkit does not appear, please restart AEDT:
 
     .. image:: ./_static/toolkit_in_AEDT.png
       :width: 800
       :alt: Antenna toolkit in AEDT
 
-#. The toolkit UI is connected directly to the AEDT session:
+#. Click on Antenna Wizard, the toolkit is directly linked to the AEDT session:
 
     .. image:: ./_static/design_connected.png
       :width: 800
@@ -101,7 +101,7 @@ If you have installed the toolkit in the virtual environment you can skip step 2
 
       python .venv\Lib\site-packages\ansys\aedt\toolkits\antennas\run_toolkit.py
 
-#. Settings tab to create a new AEDT session or connect to an existing one:
+#. AEDT Settings tab to create a new AEDT session or connect to an existing one:
 
     .. image:: ./_static/settings.png
       :width: 800
@@ -112,7 +112,8 @@ If you have installed the toolkit in the virtual environment you can skip step 2
 How to install in the console and use the API
 ---------------------------------------------
 
-This section shows how to install the toolkit in an specific Python environment and use the API.
+This section shows how to install the toolkit in an specific Python environment and use the API, it is
+shown how to use the API at model level and toolkit level.
 
 #. Follow the step 1 and 2 described in :ref:`install_toolkit_console_ui`.
 
@@ -122,47 +123,70 @@ This section shows how to install the toolkit in an specific Python environment 
 
       python
 
-#. Open AEDT and draw a sphere in a random position by run these commands:
+#. The API can be used at model level. The following commands: Open AEDT, synthesize a Bowtie antenna and model it in HFSS:
+
+    .. code:: python
+
+      # Import required modules for the example
+      from pyaedt import Hfss
+      from ansys.aedt.toolkits.antennas.backend.models.bowtie import BowTie
+
+      # Open AEDT and create an HFSS design
+      aedtapp = Hfss()
+
+      # Create antenna object
+      oantenna1 = BowTie(aedtapp)
+
+      # Parameters
+      parameter_list = list(oantenna1.synthesis_parameters.__dict__.keys())
+
+      # Change frequency
+      oantenna1.frequency = 12.0
+
+      # Create antenna in HFSS
+      oantenna1.model_hfss()
+
+      # Create setup in HFSS
+      oantenna1.setup_hfss()
+
+      # Desktop is released here
+      aedtapp.release_desktop()
+
+#.  The API can be used at toolkit level. The following commands: Open AEDT, synthesize a Bowtie antenna and model it in HFSS:
 
     .. code:: python
 
       # Import required modules for the example
       import time
-
-      # Import backend services
       from ansys.aedt.toolkits.antennas.backend.api import Toolkit
 
       # Backend object
-      service = Toolkit()
+      toolkit = Toolkit()
 
-      # Get service properties
-      properties = service.get_properties()
+      # Get available antennas
+      toolkit.available_antennas
 
-      # Change geometry type
-      new_properties = {"geometry": "Sphere"}
-      service.set_properties(new_properties)
+      # Get properties
+      properties = toolkit.get_properties()
+
+      # Set properties
+      properties = toolkit.set_properties({"length_unit": "cm"})
 
       # Launch AEDT in a thread
-      service.launch_aedt()
+      toolkit.launch_aedt()
 
       # Wait until thread is finished
-      response = service.get_thread_status()
+      response = toolkit.get_thread_status()
 
       while response[0] == 0:
           time.sleep(1)
-          response = service.get_thread_status()
+          response = toolkit.get_thread_status()
 
-      # Create a sphere in a random position in a thread
-      b = service.create_geometry()
+      # Update antenna properties
+      response = toolkit.set_properties({"substrate_height": 0.1575, "length_unit": "cm"})
 
-      # Wait until thread is finished
-      response = service.get_thread_status()
-      while response[0] == 0:
-          time.sleep(1)
-          response = service.get_thread_status()
-
-      # Get number of solids added
-      len(service.comps)
+      # Create a Bowtie antenna
+      toolkit.get_antenna("BowTie")
 
       # Desktop is released here
-      service.release_aedt()
+      toolkit.release_aedt()

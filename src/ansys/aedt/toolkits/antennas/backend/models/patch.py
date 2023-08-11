@@ -15,6 +15,10 @@ class CommonPatch(CommonAntenna):
     def __init__(self, _default_input_parameters, *args, **kwargs):
         CommonAntenna.antenna_type = "Patch"
         CommonAntenna.__init__(self, _default_input_parameters, *args, **kwargs)
+        if "substrate_height" not in kwargs:
+            self.substrate_height = constants.unit_converter(
+                self.substrate_height, "Length", _default_input_parameters["length_unit"], self.length_unit
+            )
         self._transmission_line_calculator = TransmissionLine(self.frequency, self.frequency_unit)
 
     @property

@@ -23,7 +23,7 @@ PyAEDT Antenna toolkit
 The ``pyaedt-antenna-toolkit`` package provides a Python wrapper for modeling
 antennas using Ansys Electronics Desktop (AEDT).
 The toolkit could be used inside AEDT or launched from a python console.
-Toolkit features are accessible from the user interface, **Antenna Wizard** or the directly from the API.
+Toolkit features are accessible from the user interface, **Antenna Wizard** or directly from the API.
 
 Requirements
 ~~~~~~~~~~~~
@@ -34,7 +34,7 @@ Documentation and issues
 ~~~~~~~~~~~~~~~~~~~~~~~~
 In addition to installation and usage information, the toolkit
 documentation provides
-`API reference <https://aedt.antenna.toolkit.docs.pyansys.com/version/dev/Antennas/antennas.html>`_,
+`API reference <https://aedt.antenna.toolkit.docs.pyansys.com/version/dev/Toolkit/index.html>`_,
 and `Contribute
 <https://aedt.antenna.toolkit.docs.pyansys.com/version/dev/Contributing.html>`_ sections.
 
