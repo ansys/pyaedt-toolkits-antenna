@@ -12,7 +12,7 @@ The toolkit could be launched from:
 
 The toolkit features can be accessed from:
 
-- The user interface (UI), see :doc:`Toolkit/ui`.
+- The user interface (Antenna Wizard), see :doc:`Toolkit/ui`.
 
 - The API, see :doc:`Toolkit/index`.
 
@@ -56,7 +56,7 @@ The toolkit can be installed inside AEDT using
       :width: 800
       :alt: Antenna toolkit in AEDT
 
-#. The toolkit UI is connected directly to the AEDT session:
+#. The Antenna Wizard is connected directly to the AEDT session:
 
     .. image:: ./_static/design_connected.png
       :width: 800
@@ -112,7 +112,8 @@ If you have installed the toolkit in the virtual environment you can skip step 2
 How to install in the console and use the API
 ---------------------------------------------
 
-This section shows how to install the toolkit in an specific Python environment and use the API.
+This section shows how to install the toolkit in an specific Python environment and use the API, it is
+shown how to use the API at model level and toolkit level.
 
 #. Follow the step 1 and 2 described in :ref:`install_toolkit_console_ui`.
 
@@ -122,47 +123,64 @@ This section shows how to install the toolkit in an specific Python environment 
 
       python
 
-#. Open AEDT and draw a sphere in a random position by run these commands:
+#. The API can be used at model level. Open AEDT, Bowtie antenna synthesis and model it in HFSS by run these commands:
+
+    .. code:: python
+
+      # Import required modules for the example
+      from pyaedt import Hfss
+      from ansys.aedt.toolkits.antennas.backend.models.bowtie import BowTie
+
+      # Open AEDT and create an HFSS design
+      aedtapp = Hfss()
+
+      # Create antenna object
+      oantenna1 = BowTie(aedtapp)
+
+      # Parameters
+      parameter_list = list(oantenna1.synthesis_parameters.__dict__.keys())
+
+      # Change frequency
+      oantenna1.frequency = 12.0
+
+      # Create antenna in HFSS
+      oantenna1.model_hfss()
+
+      # Create setup in HFSS
+      oantenna1.setup_hfss()
+
+      # Desktop is released here
+      aedtapp.release_desktop()
+
+#.  The API can be used at toolkit level. Open AEDT, Bowtie antenna synthesis and model it in HFSS by run these commands:
 
     .. code:: python
 
       # Import required modules for the example
       import time
-
-      # Import backend services
       from ansys.aedt.toolkits.antennas.backend.api import Toolkit
 
       # Backend object
-      service = Toolkit()
+      toolkit = Toolkit()
 
-      # Get service properties
-      properties = service.get_properties()
+      # Get properties
+      properties = toolkit.get_properties()
 
-      # Change geometry type
-      new_properties = {"geometry": "Sphere"}
-      service.set_properties(new_properties)
+      # Set properties
+      properties = toolkit.set_properties({"length_unit": "cm"})
 
       # Launch AEDT in a thread
-      service.launch_aedt()
+      toolkit.launch_aedt()
 
       # Wait until thread is finished
-      response = service.get_thread_status()
+      response = toolkit.get_thread_status()
 
       while response[0] == 0:
           time.sleep(1)
-          response = service.get_thread_status()
+          response = toolkit.get_thread_status()
 
-      # Create a sphere in a random position in a thread
-      b = service.create_geometry()
-
-      # Wait until thread is finished
-      response = service.get_thread_status()
-      while response[0] == 0:
-          time.sleep(1)
-          response = service.get_thread_status()
-
-      # Get number of solids added
-      len(service.comps)
+      # Create a Bowtie antenna
+      toolkit.get_antenna("BowTie")
 
       # Desktop is released here
-      service.release_aedt()
+      toolkit.release_aedt()
