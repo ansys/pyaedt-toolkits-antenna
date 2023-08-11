@@ -16,10 +16,9 @@ class CommonPatch(CommonAntenna):
         CommonAntenna.antenna_type = "Patch"
         CommonAntenna.__init__(self, _default_input_parameters, *args, **kwargs)
         if "substrate_height" not in kwargs:
-            self.substrate_height = constants.unit_converter(self.substrate_height,
-                                                             "Length",
-                                                             _default_input_parameters["length_unit"],
-                                                             self.length_unit)
+            self.substrate_height = constants.unit_converter(
+                self.substrate_height, "Length", _default_input_parameters["length_unit"], self.length_unit
+            )
         self._transmission_line_calculator = TransmissionLine(self.frequency, self.frequency_unit)
 
     @property
@@ -36,17 +35,17 @@ class CommonPatch(CommonAntenna):
     def material(self, value):
         if self._app:
             if (
-                    value
-                    and value not in self._app.materials.mat_names_aedt
-                    and value not in self._app.materials.mat_names_aedt_lower
+                value
+                and value not in self._app.materials.mat_names_aedt
+                and value not in self._app.materials.mat_names_aedt_lower
             ):
                 logger.debug("Material not defined")
             else:
                 if value != self.material and self.object_list:
                     for antenna_obj in self.object_list:
                         if (
-                                self.object_list[antenna_obj].material_name == self.material.lower()
-                                and "coax" not in antenna_obj
+                            self.object_list[antenna_obj].material_name == self.material.lower()
+                            and "coax" not in antenna_obj
                         ):
                             self.object_list[antenna_obj].material_name = value
 
@@ -169,8 +168,8 @@ class RectangularPatchProbe(CommonPatch):
         wavelength = lightSpeed / freq_hz
 
         if self._app and (
-                self.material in self._app.materials.mat_names_aedt
-                or self.material in self._app.materials.mat_names_aedt_lower
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
             mat_props = self._app.materials[self.material]
             permittivity = mat_props.permittivity.value
@@ -281,8 +280,8 @@ class RectangularPatchProbe(CommonPatch):
             return False
 
         if (
-                self.material not in self._app.materials.mat_names_aedt
-                and self.material not in self._app.materials.mat_names_aedt_lower
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
         ):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return False
@@ -542,8 +541,8 @@ class RectangularPatchInset(CommonPatch):
         wavelength = lightSpeed / freq_hz
 
         if self._app and (
-                self.material in self._app.materials.mat_names_aedt
-                or self.material in self._app.materials.mat_names_aedt_lower
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
             mat_props = self._app.materials[self.material]
             permittivity = mat_props.permittivity.value
@@ -649,8 +648,8 @@ class RectangularPatchInset(CommonPatch):
             return False
 
         if (
-                self.material not in self._app.materials.mat_names_aedt
-                and self.material not in self._app.materials.mat_names_aedt_lower
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
         ):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return False
@@ -880,8 +879,8 @@ class RectangularPatchEdge(CommonPatch):
         wavelength = lightSpeed / freq_hz
 
         if self._app and (
-                self.material in self._app.materials.mat_names_aedt
-                or self.material in self._app.materials.mat_names_aedt_lower
+            self.material in self._app.materials.mat_names_aedt
+            or self.material in self._app.materials.mat_names_aedt_lower
         ):
             mat_props = self._app.materials[self.material]
             permittivity = mat_props.permittivity.value
@@ -1005,8 +1004,8 @@ class RectangularPatchEdge(CommonPatch):
             return False
 
         if (
-                self.material not in self._app.materials.mat_names_aedt
-                and self.material not in self._app.materials.mat_names_aedt_lower
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
         ):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return False
