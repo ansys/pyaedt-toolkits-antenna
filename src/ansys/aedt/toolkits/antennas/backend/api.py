@@ -34,6 +34,11 @@ class Toolkit(ToolkitGeneric):
         ToolkitGeneric.__init__(self)
         self._oantenna = None
         self.antenna_type = None
+        self.available_antennas = []
+        for name, var in vars(models).items():
+            # If the variable is a module, print the module's name
+            if isinstance(var, type):
+                self.available_antennas.append(name)
 
     def get_antenna(self, antenna, synth_only=False):
         """Synthesize and create the antenna in HFSS.
@@ -126,7 +131,7 @@ class Toolkit(ToolkitGeneric):
             if not self._oantenna.object_list:
                 if not self._oantenna.antenna_name:
                     self._oantenna.antenna_name = pyaedt.generate_unique_name(self.antenna_type)
-                    self.set_properties({"antenna_name":self._oantenna.antenna_name})
+                    self.set_properties({"antenna_name": self._oantenna.antenna_name})
                 self._oantenna.init_model()
                 self._oantenna.model_hfss()
                 self._oantenna.setup_hfss()

@@ -163,6 +163,9 @@ shown how to use the API at model level and toolkit level.
       # Backend object
       toolkit = Toolkit()
 
+      # Get available antennas
+      toolkit.available_antennas
+
       # Get properties
       properties = toolkit.get_properties()
 
