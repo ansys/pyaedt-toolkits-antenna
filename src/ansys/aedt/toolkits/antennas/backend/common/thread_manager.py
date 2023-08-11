@@ -56,6 +56,7 @@ class ThreadManager(object):
                 #     cls.process_exe(process, *args)
                 #     return True
                 logger.debug("Starting thread: {}".format(thread_name))
+                properties.is_toolkit_busy = True
                 running_thread = threading.Thread(
                     target=cls.process_exe,
                     name=thread_name,

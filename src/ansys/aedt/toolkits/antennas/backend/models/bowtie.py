@@ -61,7 +61,7 @@ class BowTie(CommonPatch):
     """
 
     _default_input_parameters = {
-        "antenna_name": "",
+        "antenna_name": None,
         "origin": [0, 0, 0],
         "length_unit": "cm",
         "coordinate_system": "Global",

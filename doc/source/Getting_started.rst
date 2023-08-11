@@ -28,7 +28,7 @@ The toolkit can be installed inside AEDT using
 `PyAEDT <https://aedt.docs.pyansys.com/version/stable//>`_.
 
 #. Download and run the install script from the `PyAEDT documentation <https://aedt.docs.pyansys.com/version/stable//Getting_started/Installation.html>`_.
-   Note that **AEDT must be restarted**
+   Note **AEDT must be restarted**
    to update the **Tools** menu if this is the first time a Toolkit has been installed in AEDT.
 
 
@@ -50,13 +50,13 @@ The toolkit can be installed inside AEDT using
       desktop.add_custom_toolkit("AntennaWizard")
       exit()
 
-#. Close the console and open the toolkit, if you do not restart AEDT, you need to *Update Menu*:
+#. Close the console and open the toolkit. If the toolkit does not appear, please restart AEDT:
 
     .. image:: ./_static/toolkit_in_AEDT.png
       :width: 800
       :alt: Antenna toolkit in AEDT
 
-#. The Antenna Wizard is connected directly to the AEDT session:
+#. Click on Antenna Wizard, the toolkit is directly linked to the AEDT session:
 
     .. image:: ./_static/design_connected.png
       :width: 800
@@ -101,7 +101,7 @@ If you have installed the toolkit in the virtual environment you can skip step 2
 
       python .venv\Lib\site-packages\ansys\aedt\toolkits\antennas\run_toolkit.py
 
-#. Settings tab to create a new AEDT session or connect to an existing one:
+#. AEDT Settings tab to create a new AEDT session or connect to an existing one:
 
     .. image:: ./_static/settings.png
       :width: 800
@@ -123,7 +123,7 @@ shown how to use the API at model level and toolkit level.
 
       python
 
-#. The API can be used at model level. Open AEDT, Bowtie antenna synthesis and model it in HFSS by run these commands:
+#. The API can be used at model level. The following commands: Open AEDT, synthesize a Bowtie antenna and model it in HFSS:
 
     .. code:: python
 
@@ -152,7 +152,7 @@ shown how to use the API at model level and toolkit level.
       # Desktop is released here
       aedtapp.release_desktop()
 
-#.  The API can be used at toolkit level. Open AEDT, Bowtie antenna synthesis and model it in HFSS by run these commands:
+#.  The API can be used at toolkit level. The following commands: Open AEDT, synthesize a Bowtie antenna and model it in HFSS:
 
     .. code:: python
 
@@ -178,6 +178,9 @@ shown how to use the API at model level and toolkit level.
       while response[0] == 0:
           time.sleep(1)
           response = toolkit.get_thread_status()
+
+      # Update antenna properties
+      response = toolkit.set_properties({"substrate_height": 0.1575, "length_unit": "cm"})
 
       # Create a Bowtie antenna
       toolkit.get_antenna("BowTie")
