@@ -8,6 +8,12 @@ from ansys_sphinx_theme import ansys_favicon
 from ansys_sphinx_theme import get_version_match
 from ansys_sphinx_theme import pyansys_logo_black
 
+sys.path.append(pathlib.Path(__file__).parent.parent.parent)
+
+path = os.path.join(pathlib.Path(__file__).parent.parent.parent, "src")
+print(path)
+sys.path.append(path)
+
 from ansys.aedt.toolkits.antennas import __version__
 
 print(__version__)
