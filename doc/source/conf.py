@@ -42,7 +42,6 @@ html_theme_options = {
     "show_prev_next": False,
     "show_breadcrumbs": True,
     "collapse_navigation": True,
-    "use_edit_page_button": True,
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],
