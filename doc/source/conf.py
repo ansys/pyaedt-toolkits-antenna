@@ -8,11 +8,6 @@ from ansys_sphinx_theme import ansys_favicon
 from ansys_sphinx_theme import get_version_match
 from ansys_sphinx_theme import pyansys_logo_black
 
-sys.path.append(pathlib.Path(__file__).parent.parent.parent)
-
-path = os.path.join(pathlib.Path(__file__).parent.parent.parent, "src")
-print(path)
-sys.path.append(path)
 from ansys.aedt.toolkits.antennas import __version__
 
 print(__version__)
@@ -33,7 +28,7 @@ html_short_title = html_title = "ansys-aedt-toolkits-antennas"
 # specify the location of your GitHub repo
 html_context = {
     "github_user": "ansys",
-    "github_repo": "pyaedt-toolkit-antennas",
+    "github_repo": "pyaedt-antenna-toolkit",
     "github_version": "main",
     "doc_path": "doc/source",
 }
