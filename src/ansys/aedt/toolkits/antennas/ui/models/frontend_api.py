@@ -1,3 +1,4 @@
+import base64
 import os
 import re
 
@@ -5,6 +6,8 @@ from PySide6 import QtCore
 from PySide6 import QtGui
 from PySide6 import QtWidgets
 import pyqtgraph as pg
+import pyvista as pv
+from pyvistaqt import BackgroundPlotter
 import requests
 
 from ansys.aedt.toolkits.antennas.ui.common.frontend_api_generic import FrontendGeneric
@@ -28,6 +31,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         self.theta = None
         self.val_phi = None
         self.phi = None
+        self.antenna_hfss_model = None
 
     def get_antenna(self, synth_only=False):
         """Antenna synthesis and HFSS model creation.
@@ -140,6 +144,10 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             if response.ok and response.json() == "Backend running":
                 self.write_log_line("Please wait, toolkit running")
             else:
+                msg = "Creating HFSS model"
+                logger.debug(msg)
+                self.write_log_line(msg)
+
                 response = requests.post(self.url + "/create_antenna")
                 if not response.ok:
                     msg = f"Failed backend call: {self.url}" + "/create_antenna"
@@ -158,6 +166,9 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                 self.units.setEnabled(False)
                 self.project_aedt_combo.setEnabled(False)
                 self.design_aedt_combo.setEnabled(False)
+
+                self.get_hfss_model()
+
                 properties = {"close_projects": False, "close_on_exit": False}
                 requests.post(self.url + "/close_aedt", json=properties)
 
@@ -183,9 +194,6 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             i += 1
 
         self.property_table.setSortingEnabled(__sortingEnabled)
-        # else:
-        #     self.add_status_bar_message("Project created correctly.")
-        #     self.property_table.itemChanged.connect(self.update_project)
         self.update_progress(100)
 
     def add_antenna_buttons(self, method_create):
@@ -249,6 +257,9 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                 msg = "HFSS geometry completed."
                 logger.debug(msg)
                 self.write_log_line(msg)
+                properties = self.get_properties()
+                if properties["antenna_created"]:
+                    self.get_hfss_model()
 
             properties = {"close_projects": False, "close_on_exit": False}
             requests.post(self.url + "/close_aedt", json=properties)
@@ -421,6 +432,59 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
 
             self.get_results.setEnabled(False)
             self.update_progress(100)
+
+    def get_hfss_model(self):
+        response = requests.get(self.url + "/get_hfss_model")
+        if not response.ok:
+            msg = f"Failed backend call: {self.url}" + "/get_hfss_model"
+            logger.debug(msg)
+            self.write_log_line(msg)
+            self.update_progress(100)
+            return
+        else:
+            msg = "Creating HFSS model"
+            logger.debug(msg)
+            self.write_log_line(msg)
+
+            # Decode response
+            hfss_model = response.json()
+            encoded_data = hfss_model[0]
+            encoded_data_bytes = bytes(encoded_data, "utf-8")
+            decoded_data = base64.b64decode(encoded_data_bytes)
+            # Create obj file locally
+            file_path = os.path.join(self.temp_folder, hfss_model[3] + ".obj")
+            with open(file_path, "wb") as f:
+                f.write(decoded_data)
+
+            # Create PyVista object
+            if not os.path.exists(file_path):
+                return
+
+            cad_mesh = pv.read(file_path)
+
+            if "MaterialIds" in cad_mesh.array_names:
+                color_display_type = cad_mesh["MaterialIds"]
+            else:
+                color_display_type = None
+
+            self.plotter = BackgroundPlotter(show=False)
+
+            cad_actor = self.plotter.add_mesh(cad_mesh, scalars=color_display_type, show_scalar_bar=False, opacity=0.8)
+
+            self.plotter.clear_button_widgets()
+
+            bg_image_path = os.path.join(self.images_path, "anechoic-chamber.jpg")
+            self.plotter.add_background_image(bg_image_path, as_global=False)
+
+            self.antenna_hfss_model = QtWidgets.QVBoxLayout()
+
+            self.antenna_hfss_model.addWidget(self.plotter.app_window)
+            self.image_layout.addLayout(self.antenna_hfss_model, 0, 0, 1, 1)
+            self.plotter.show()
+
+            msg = "HFSS model plotted"
+            logger.debug(msg)
+            self.write_log_line(msg)
 
     def _add_header(self, antenna_name, frequency):
         if self.toolkit_tab.count() == 3:

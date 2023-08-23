@@ -1,3 +1,4 @@
+import base64
 import os
 
 import psutil
@@ -755,3 +756,10 @@ class ToolkitGeneric(object):
 
         if new_properties:
             self.set_properties(new_properties)
+
+    @staticmethod
+    def _serialize_obj_base64(file_path):
+        with open(file_path, "rb") as f:
+            data = f.read()
+        encoded_data = base64.b64encode(data)
+        return encoded_data

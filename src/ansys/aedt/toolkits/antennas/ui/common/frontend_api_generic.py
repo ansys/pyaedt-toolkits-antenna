@@ -1,5 +1,7 @@
 import os
+import shutil
 import sys
+import tempfile
 import time
 
 from PySide6 import QtCore
@@ -29,6 +31,9 @@ class FrontendGeneric(object):
         # UI Logger
         XStream.stdout().messageWritten.connect(lambda value: self.write_log_line(value))
         XStream.stderr().messageWritten.connect(lambda value: self.write_log_line(value))
+
+        # Temporary file
+        self.temp_folder = tempfile.mkdtemp()
 
     def set_title(self, toolkit_title):
         # Toolkit name
@@ -298,6 +303,11 @@ class FrontendGeneric(object):
             properties = {"close_projects": False, "close_on_exit": False}
             if self.close():
                 requests.post(self.url + "/close_aedt", json=properties)
+                if self.plotter:
+                    self.plotter.app_window.close()
+                    self.plotter.close()
+                    self.plotter = None
+                shutil.rmtree(self.temp_folder)
 
     def release_and_close(self):
         """Release and close desktop."""
@@ -309,9 +319,19 @@ class FrontendGeneric(object):
             properties = {"close_projects": True, "close_on_exit": True}
             if self.close():
                 requests.post(self.url + "/close_aedt", json=properties)
+                if self.plotter:
+                    self.plotter.app_window.close()
+                    self.plotter.close()
+                    self.plotter = None
+                shutil.rmtree(self.temp_folder)
 
     def on_cancel_clicked(self):
         self.close()
+        if self.plotter:
+            self.plotter.app_window.close()
+            self.plotter.close()
+            self.plotter = None
+        shutil.rmtree(self.temp_folder)
 
     @staticmethod
     def set_font(ui_obj):

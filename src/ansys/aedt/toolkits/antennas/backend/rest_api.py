@@ -24,6 +24,23 @@ def create_antenna_call():
         return jsonify("Antenna not created"), 500
 
 
+@app.route("/get_hfss_model", methods=["GET"])
+def get_hfss_model_call():
+    logger.info("[GET] /get_hfss_model (Get antenna model in HFSS)")
+
+    response = toolkit.export_hfss_model()
+    if response:
+        properties = toolkit.get_properties()
+
+        encoded_obj = toolkit._serialize_obj_base64(response[0])
+
+        model_info = [encoded_obj.decode("utf-8"), response[1], response[2], properties["antenna_name"]]
+
+        return jsonify(model_info), 200
+    else:
+        return jsonify("Antenna not created"), 500
+
+
 @app.route("/update_parameters", methods=["PUT"])
 def update_parameters_call():
     logger.info("[POST] /update_parameters (Update parameters in HFSS)")
