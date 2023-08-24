@@ -1,6 +1,7 @@
 import base64
 import os
 import re
+import tempfile
 
 from PySide6 import QtCore
 from PySide6 import QtGui
@@ -21,6 +22,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
     def __init__(self):
         FrontendThread.__init__(self)
         FrontendGeneric.__init__(self)
+        self.temp_folder = tempfile.mkdtemp()
         self.synth_button = None
         self.parameters = {}
         self.default_materials = {"FR4_epoxy": 4.4, "Teflon (tm)": 2.1, "Rogers RT / duroid 6002(tm)": 2.94}
@@ -144,10 +146,6 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             if response.ok and response.json() == "Backend running":
                 self.write_log_line("Please wait, toolkit running")
             else:
-                msg = "Creating HFSS model"
-                logger.debug(msg)
-                self.write_log_line(msg)
-
                 response = requests.post(self.url + "/create_antenna")
                 if not response.ok:
                     msg = f"Failed backend call: {self.url}" + "/create_antenna"
@@ -168,6 +166,10 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                 self.design_aedt_combo.setEnabled(False)
 
                 self.get_hfss_model()
+
+                msg = "HFSS model completed"
+                logger.debug(msg)
+                self.write_log_line(msg)
 
                 properties = {"close_projects": False, "close_on_exit": False}
                 requests.post(self.url + "/close_aedt", json=properties)
@@ -435,6 +437,9 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
 
     def get_hfss_model(self):
         response = requests.get(self.url + "/get_hfss_model")
+        msg = "Getting HFSS model"
+        logger.debug(msg)
+        self.write_log_line(msg)
         if not response.ok:
             msg = f"Failed backend call: {self.url}" + "/get_hfss_model"
             logger.debug(msg)
@@ -442,39 +447,62 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             self.update_progress(100)
             return
         else:
-            msg = "Creating HFSS model"
-            logger.debug(msg)
-            self.write_log_line(msg)
-
-            # Decode response
-            hfss_model = response.json()
-            encoded_data = hfss_model[0]
-            encoded_data_bytes = bytes(encoded_data, "utf-8")
-            decoded_data = base64.b64decode(encoded_data_bytes)
-            # Create obj file locally
-            file_path = os.path.join(self.temp_folder, hfss_model[3] + ".obj")
-            with open(file_path, "wb") as f:
-                f.write(decoded_data)
-
-            # Create PyVista object
-            if not os.path.exists(file_path):
-                return
-
-            cad_mesh = pv.read(file_path)
-
-            if "MaterialIds" in cad_mesh.array_names:
-                color_display_type = cad_mesh["MaterialIds"]
-            else:
-                color_display_type = None
-
+            model_info = response.json()
             self.plotter = BackgroundPlotter(show=False)
+            for element in model_info:
+                # Decode response
+                encoded_data = model_info[element][0]
+                encoded_data_bytes = bytes(encoded_data, "utf-8")
+                decoded_data = base64.b64decode(encoded_data_bytes)
+                # Create obj file locally
+                file_path = os.path.join(self.temp_folder, element + ".obj")
+                with open(file_path, "wb") as f:
+                    f.write(decoded_data)
+                # Create PyVista object
+                if not os.path.exists(file_path):
+                    return
 
-            cad_actor = self.plotter.add_mesh(cad_mesh, scalars=color_display_type, show_scalar_bar=False, opacity=0.8)
+                cad_mesh = pv.read(file_path)
+                #
+                # if "MaterialIds" in cad_mesh.array_names:
+                #     color_display_type = cad_mesh["MaterialIds"]
+                # else:
+                #     color_display_type = None
+
+                cad_actor = self.plotter.add_mesh(
+                    cad_mesh, color=model_info[element][1], show_scalar_bar=False, opacity=model_info[element][2]
+                )
+
+            # # Decode response
+            # hfss_model = response.json()
+            # encoded_data = hfss_model[0]
+            # encoded_data_bytes = bytes(encoded_data, "utf-8")
+            # decoded_data = base64.b64decode(encoded_data_bytes)
+            # # Create obj file locally
+            # file_path = os.path.join(self.temp_folder, hfss_model[3] + ".obj")
+            # with open(file_path, "wb") as f:
+            #     f.write(decoded_data)
+            #
+            # # Create PyVista object
+            # if not os.path.exists(file_path):
+            #     return
+            #
+            # cad_mesh = pv.read(file_path)
+            #
+            # if "MaterialIds" in cad_mesh.array_names:
+            #     color_display_type = cad_mesh["MaterialIds"]
+            # else:
+            #     color_display_type = None
+            #
+            # self.plotter = BackgroundPlotter(show=False)
+            #
+            # cad_actor = self.plotter.add_mesh(cad_mesh, scalars=color_display_type,
+            # show_scalar_bar=False, opacity=0.8)
 
             self.plotter.clear_button_widgets()
 
             bg_image_path = os.path.join(self.images_path, "anechoic-chamber.jpg")
-            self.plotter.add_background_image(bg_image_path, as_global=False)
+            self.plotter.add_background_image(bg_image_path, as_global=True, scale=1.5)
 
             self.antenna_hfss_model = QtWidgets.QVBoxLayout()
 

@@ -30,11 +30,21 @@ def get_hfss_model_call():
 
     response = toolkit.export_hfss_model()
     if response:
-        properties = toolkit.get_properties()
+        # 1 object exported
+        # properties = toolkit.get_properties()
+        #
+        # encoded_obj = toolkit._serialize_obj_base64(response[0])
+        #
+        # model_info = [encoded_obj.decode("utf-8"), response[1], response[2], properties["antenna_name"]]
+        # return jsonify(model_info), 200
+        import os
 
-        encoded_obj = toolkit._serialize_obj_base64(response[0])
-
-        model_info = [encoded_obj.decode("utf-8"), response[1], response[2], properties["antenna_name"]]
+        model_info = {}
+        for element in response:
+            element_path = element[0]
+            encoded_obj = toolkit._serialize_obj_base64(element_path)
+            name = os.path.splitext(os.path.basename(element_path))[0]
+            model_info[name] = [encoded_obj.decode("utf-8"), element[1], element[2]]
 
         return jsonify(model_info), 200
     else:

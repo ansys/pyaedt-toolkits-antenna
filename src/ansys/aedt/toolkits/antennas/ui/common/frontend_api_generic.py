@@ -1,7 +1,6 @@
 import os
 import shutil
 import sys
-import tempfile
 import time
 
 from PySide6 import QtCore
@@ -31,9 +30,6 @@ class FrontendGeneric(object):
         # UI Logger
         XStream.stdout().messageWritten.connect(lambda value: self.write_log_line(value))
         XStream.stderr().messageWritten.connect(lambda value: self.write_log_line(value))
-
-        # Temporary file
-        self.temp_folder = tempfile.mkdtemp()
 
     def set_title(self, toolkit_title):
         # Toolkit name
