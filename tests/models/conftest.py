@@ -36,6 +36,7 @@ local_path = os.path.dirname(os.path.realpath(__file__))
 
 from pyaedt import Desktop
 from pyaedt import Hfss
+from pyaedt.generic.filesystem import Scratch
 
 test_project_name = "test_antenna"
 
@@ -62,19 +63,15 @@ settings.use_grpc_api = config.get("use_grpc", True)
 settings.non_graphical = config["non_graphical"]
 
 test_folder = "unit_test" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-scratch_path = os.path.join(tempfile.gettempdir(), test_folder)
-if not os.path.exists(scratch_path):
-    try:
-        os.makedirs(scratch_path)
-    except:
-        pass
+
 
 logger = pyaedt_logger
 
 
 class BasisTest(object):
     def my_setup(self):
-        self.local_scratch = scratch_path
+        scratch_path = tempfile.gettempdir()
+        self.local_scratch = Scratch(scratch_path)
         self.aedtapps = []
         self._main = sys.modules["__main__"]
 
@@ -93,7 +90,7 @@ class BasisTest(object):
             del self.aedtapps
 
         logger.remove_all_project_file_logger()
-        shutil.rmtree(self.local_scratch, ignore_errors=True)
+        shutil.rmtree(self.local_scratch.path, ignore_errors=True)
 
     def add_app(
         self,
@@ -115,9 +112,9 @@ class BasisTest(object):
                 example_project = example_project + "z"
                 self.test_project = self.local_scratch.copyfile(example_project)
             else:
-                self.test_project = os.path.join(self.local_scratch, project_name + ".aedt")
+                self.test_project = os.path.join(self.local_scratch.path, project_name + ".aedt")
             if os.path.exists(example_folder):
-                target_folder = os.path.join(self.local_scratch, project_name + ".aedb")
+                target_folder = os.path.join(self.local_scratch.path, project_name + ".aedb")
                 self.local_scratch.copyfolder(example_folder, target_folder)
         else:
             self.test_project = None
