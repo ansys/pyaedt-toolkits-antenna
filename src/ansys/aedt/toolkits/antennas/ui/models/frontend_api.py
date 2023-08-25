@@ -463,41 +463,10 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                     return
 
                 cad_mesh = pv.read(file_path)
-                #
-                # if "MaterialIds" in cad_mesh.array_names:
-                #     color_display_type = cad_mesh["MaterialIds"]
-                # else:
-                #     color_display_type = None
 
                 cad_actor = self.plotter.add_mesh(
                     cad_mesh, color=model_info[element][1], show_scalar_bar=False, opacity=model_info[element][2]
                 )
-
-            # # Decode response
-            # hfss_model = response.json()
-            # encoded_data = hfss_model[0]
-            # encoded_data_bytes = bytes(encoded_data, "utf-8")
-            # decoded_data = base64.b64decode(encoded_data_bytes)
-            # # Create obj file locally
-            # file_path = os.path.join(self.temp_folder, hfss_model[3] + ".obj")
-            # with open(file_path, "wb") as f:
-            #     f.write(decoded_data)
-            #
-            # # Create PyVista object
-            # if not os.path.exists(file_path):
-            #     return
-            #
-            # cad_mesh = pv.read(file_path)
-            #
-            # if "MaterialIds" in cad_mesh.array_names:
-            #     color_display_type = cad_mesh["MaterialIds"]
-            # else:
-            #     color_display_type = None
-            #
-            # self.plotter = BackgroundPlotter(show=False)
-            #
-            # cad_actor = self.plotter.add_mesh(cad_mesh, scalars=color_display_type,
-            # show_scalar_bar=False, opacity=0.8)
 
             self.plotter.clear_button_widgets()
 

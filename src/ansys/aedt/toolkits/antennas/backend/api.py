@@ -199,10 +199,6 @@ class Toolkit(ToolkitGeneric):
         # for file in files:
         #     model.add_object(file[0], file[1],file[2])
 
-        # Export 1 solid
-        # files = self.aedtapp.post.export_model_obj(export_as_single_objects=False)
-        # return files[0]
-
         # Export different solid
         files = self.aedtapp.post.export_model_obj(export_as_single_objects=True)
 

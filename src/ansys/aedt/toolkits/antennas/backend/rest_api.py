@@ -1,3 +1,5 @@
+import os
+
 from flask import request
 
 from ansys.aedt.toolkits.antennas.backend.common.multithreading_server import MultithreadingServer
@@ -30,15 +32,6 @@ def get_hfss_model_call():
 
     response = toolkit.export_hfss_model()
     if response:
-        # 1 object exported
-        # properties = toolkit.get_properties()
-        #
-        # encoded_obj = toolkit._serialize_obj_base64(response[0])
-        #
-        # model_info = [encoded_obj.decode("utf-8"), response[1], response[2], properties["antenna_name"]]
-        # return jsonify(model_info), 200
-        import os
-
         model_info = {}
         for element in response:
             element_path = element[0]
