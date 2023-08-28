@@ -43,3 +43,7 @@ class TestClass(BasisTest, object):
         while response.json() != "Backend free":
             time.sleep(1)
             response = requests.get(self.url + "/get_status")
+
+    def test_02_get_hfss_model(self):
+        response = requests.get(self.url + "/get_hfss_model")
+        assert response.ok

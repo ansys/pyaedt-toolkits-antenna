@@ -25,7 +25,6 @@ if debug:
 
         log_file = temp_dir
         file_handler = logging.FileHandler(log_file)
-        file_handler = logging.FileHandler(log_file)
 
         # Set the log format
         formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")

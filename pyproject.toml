@@ -30,6 +30,7 @@ dependencies = [
     "importlib-metadata >=4.0",
     "PySide6-Essentials==6.5.2",
     "pyqtgraph",
+    "pyvistaqt",
     "qdarkstyle",
     "flask",
 ]
