@@ -197,5 +197,5 @@ def desktop_init():
                 os.kill(process, signal.SIGKILL)
     else:
         for process in flask_pids:
-            if process.name() == "python.exe" or process.name() == "python":
+            if (process.name() == "python.exe" or process.name() == "python") and process.pid in psutil.pids():
                 process.terminate()

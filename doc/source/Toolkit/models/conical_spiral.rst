@@ -14,6 +14,7 @@ The API must be used using PyAEDT as in the following example:
 .. code:: python
 
     from pyaedt import Hfss
+
     from ansys.aedt.toolkits.antennas.backend.models.conical_spiral import Archimedean
 
     aedtapp = Hfss()

@@ -50,7 +50,7 @@ The toolkit can be installed inside AEDT using
       desktop.add_custom_toolkit("AntennaWizard")
       exit()
 
-#. Close the console and open the toolkit. If the toolkit does not appear, please restart AEDT:
+#. Open the toolkit. If the toolkit does not appear, please restart AEDT:
 
     .. image:: ./_static/toolkit_in_AEDT.png
       :width: 800
@@ -123,7 +123,7 @@ shown how to use the API at model level and toolkit level.
 
       python
 
-#. The API can be used at model level. The following commands: Open AEDT, synthesize a Bowtie antenna and model it in HFSS:
+#. The API can be used at model level. For example, the following commands: Open AEDT, synthesize a Bowtie antenna and model it in HFSS:
 
     .. code:: python
 
@@ -152,7 +152,7 @@ shown how to use the API at model level and toolkit level.
       # Desktop is released here
       aedtapp.release_desktop()
 
-#.  The API can be used at toolkit level. The following commands: Open AEDT, synthesize a Bowtie antenna and model it in HFSS:
+#.  The API can be used at toolkit level. For example, the following commands: Open AEDT, synthesize a Bowtie antenna and model it in HFSS:
 
     .. code:: python
 

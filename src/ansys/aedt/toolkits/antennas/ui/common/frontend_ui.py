@@ -952,7 +952,7 @@ class Ui_MainWindow(object):
         self.design_aedt_combo.setItemText(0, QCoreApplication.translate("MainWindow", u"No design", None))
 
         self.component_3d.setText(QCoreApplication.translate("MainWindow", u"3D Component", None))
-        self.create_hfss_setup.setText(QCoreApplication.translate("MainWindow", u"Create Hfss Setup", None))
+        self.create_hfss_setup.setText(QCoreApplication.translate("MainWindow", u"Create HFSS Setup", None))
         self.lattice_pair.setText(QCoreApplication.translate("MainWindow", u"Lattice pair", None))
         self.sweep_label.setText(QCoreApplication.translate("MainWindow", u"Sweep Bandwidth %", None))
         self.slider_value.setText(QCoreApplication.translate("MainWindow", u"20", None))
