@@ -223,7 +223,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         line_buttons.addWidget(self.create_button)
 
         self.synth_button.setText("Synthesis")
-        self.create_button.setText("Create Hfss Model")
+        self.create_button.setText("Create HFSS Model")
         properties_request = requests.get(self.url + "/get_properties")
         properties = properties_request.json()
         if properties["selected_process"] == 0 or properties["antenna_created"]:

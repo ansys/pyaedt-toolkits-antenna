@@ -1,6 +1,8 @@
 Toolkit API
 ===========
-This section list the available toolkit methods in the backend:
+This section list the available toolkit methods in the backend at toolkit level.
+
+Toolkit API are the calls used by the frontend. It wraps some of the methods of the **Antenna API**.
 
 .. currentmodule:: ansys.aedt.toolkits.antennas.backend.api
 

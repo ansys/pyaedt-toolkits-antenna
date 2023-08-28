@@ -41,10 +41,11 @@ def clean_python_processes():
     # Terminate backend processes
     if is_linux:
         for process in flask_pids:
-            os.kill(process, signal.SIGKILL)
+            if process in psutil.pids():
+                os.kill(process, signal.SIGKILL)
     else:
         for process in flask_pids:
-            if process.name() == "python.exe" or process.name() == "python":
+            if (process.name() == "python.exe" or process.name() == "python") and process.pid in psutil.pids():
                 process.terminate()
 
 

@@ -20,6 +20,8 @@ The API must be used using PyAEDT as in the following example:
 
 .. code:: python
 
+    import pyaedt.Hfss
+
     from ansys.aedt.toolkits.antennas.backend.models.horn import Conical
 
     aedtapp = Hfss()
