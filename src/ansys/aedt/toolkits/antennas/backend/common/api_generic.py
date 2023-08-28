@@ -1,3 +1,4 @@
+import base64
 import os
 
 import psutil
@@ -687,7 +688,8 @@ class ToolkitGeneric(object):
                 properties.project_list.append(project_path)
                 new_project_name = os.path.splitext(os.path.basename(properties.active_project))[0]
                 properties.design_list[new_project_name] = properties.design_list[old_project_name]
-                del properties.design_list[old_project_name]
+                if old_project_name != new_project_name:
+                    del properties.design_list[old_project_name]
             self.aedtapp.release_desktop(False, False)
             logger.debug("Project saved: {}".format(project_path))
             return True
@@ -755,3 +757,10 @@ class ToolkitGeneric(object):
 
         if new_properties:
             self.set_properties(new_properties)
+
+    @staticmethod
+    def _serialize_obj_base64(file_path):
+        with open(file_path, "rb") as f:
+            data = f.read()
+        encoded_data = base64.b64encode(data)
+        return encoded_data

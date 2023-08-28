@@ -478,7 +478,7 @@
                          </font>
                         </property>
                         <property name="text">
-                         <string>Create Hfss Setup</string>
+                         <string>Create HFSS Setup</string>
                         </property>
                         <property name="checked">
                          <bool>true</bool>

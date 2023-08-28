@@ -180,6 +180,7 @@ class BowTie(CommonPatch):
             matname=self.material,
         )
         sub.color = (0, 128, 0)
+        sub.transparency = 0.8
         sub.history().props["Coordinate System"] = coordinate_system
         array_points = [["{}/2".format(inner_width), "{}/2".format(port_gap), 0]]
         array_points.append(["-{}/2".format(inner_width), "{}/2".format(port_gap), 0])
@@ -196,7 +197,7 @@ class BowTie(CommonPatch):
             2,
         )[0]
         ant2 = self._app.modeler[ant2_name]
-
+        ant2.transparency = 0.1
         p1 = self._app.modeler.create_rectangle(
             csPlane=self._app.PLANE.XY,
             position=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
@@ -434,6 +435,7 @@ class BowTieRounded(CommonPatch):
             matname=self.material,
         )
         sub.color = (0, 128, 0)
+        sub.transparency = 0.8
         sub.history().props["Coordinate System"] = coordinate_system
         array_points = [["{}/2".format(inner_width), "{}/2".format(port_gap), 0]]
         array_points.append(["-{}/2".format(inner_width), "{}/2".format(port_gap), 0])
@@ -458,7 +460,7 @@ class BowTieRounded(CommonPatch):
             2,
         )[0]
         ant2 = self._app.modeler[ant2_name]
-
+        ant2.transparency = 0.1
         p1 = self._app.modeler.create_rectangle(
             csPlane=self._app.PLANE.XY,
             position=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
@@ -696,6 +698,7 @@ class BowTieSlot(CommonPatch):
             matname=self.material,
         )
         sub.color = (0, 128, 0)
+        sub.transparency = 0.8
         sub.history().props["Coordinate System"] = coordinate_system
 
         # Slot

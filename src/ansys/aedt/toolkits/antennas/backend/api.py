@@ -162,6 +162,48 @@ class Toolkit(ToolkitGeneric):
         properties.parameters = antenna_parameters
         return antenna_parameters
 
+    def export_hfss_model(self):
+        """Export model in .obj format.
+
+        Parameters
+        ----------
+        antenna : :class:
+            Type of antenna to create.
+        synth_only : bool, optional
+            Whether to only synthesize the anttena. The default is ``False``.
+
+        Returns
+        -------
+        bool
+            ``True`` when successful, ``False`` when failed.
+
+        Examples
+        --------
+        >>> from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+        >>> import time
+        >>> toolkit = Toolkit()
+        >>> msg1 = toolkit.launch_aedt()
+        >>> response = toolkit.get_thread_status()
+        >>> while response[0] == 0:
+        >>>     time.sleep(1)
+        >>>     response = toolkit.get_thread_status()
+        >>> msg3 = toolkit.get_antenna("BowTie")
+        """
+
+        if not self._oantenna:
+            logger.debug("Not antenna available")
+            return False
+
+        # PyVista check
+        # model = ModelPlotter()
+        # for file in files:
+        #     model.add_object(file[0], file[1],file[2])
+
+        # Export different solid
+        files = self.aedtapp.post.export_model_obj(export_as_single_objects=True)
+
+        return files
+
     def update_parameters(self, key, val):
         """Update parameters in HFSS.
 

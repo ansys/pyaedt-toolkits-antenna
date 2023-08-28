@@ -95,6 +95,10 @@ desktop_version = config["aedt_version"]
 non_graphical = config["non_graphical"]
 local_scratch = Scratch(scratch_path)
 
+example_project = shutil.copy(
+    os.path.join(local_path, "example_models", "Test.aedt"), os.path.join(local_scratch.path, "Test.aedt")
+)
+
 
 # Define a function to run the subprocess command
 def run_command(*command):
@@ -168,6 +172,7 @@ def desktop_init():
         "aedt_version": desktop_version,
         "non_graphical": non_graphical,
         "use_grpc": True,
+        "active_project": example_project,
     }
     requests.put(url_call + "/set_properties", json=properties)
     requests.post(url_call + "/launch_aedt", json=properties)
@@ -192,5 +197,5 @@ def desktop_init():
                 os.kill(process, signal.SIGKILL)
     else:
         for process in flask_pids:
-            if process.name() == "python.exe" or process.name() == "python":
+            if (process.name() == "python.exe" or process.name() == "python") and process.pid in psutil.pids():
                 process.terminate()

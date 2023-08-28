@@ -317,6 +317,7 @@ class RectangularPatchProbe(CommonPatch):
             matname=self.material,
         )
         sub.color = (0, 128, 0)
+        sub.transparency = 0.8
         sub.history().props["Coordinate System"] = coordinate_system
 
         # Ground
@@ -327,6 +328,7 @@ class RectangularPatchProbe(CommonPatch):
             name="gnd_" + antenna_name,
         )
         gnd.color = (255, 128, 65)
+        gnd.transparency = 0.1
         gnd.history().props["Coordinate System"] = coordinate_system
 
         # Antenna
@@ -682,6 +684,7 @@ class RectangularPatchInset(CommonPatch):
             matname=self.material,
         )
         sub.color = (0, 128, 0)
+        sub.transparency = 0.8
         sub.history().props["Coordinate System"] = coordinate_system
 
         # Ground
@@ -1038,6 +1041,7 @@ class RectangularPatchEdge(CommonPatch):
             matname=self.material,
         )
         sub.color = (0, 128, 0)
+        sub.transparency = 0.8
         sub.history().props["Coordinate System"] = coordinate_system
 
         # Ground
