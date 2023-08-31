@@ -1,7 +1,7 @@
 from conftest import BasisTest
 from pyaedt.modeler.cad.object3d import Object3d
 
-from ansys.aedt.toolkits.antennas.backend import models
+from ansys.aedt.toolkits.antenna.backend import models
 
 test_project_name = "Helix_test"
 

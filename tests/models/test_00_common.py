@@ -1,7 +1,7 @@
 from conftest import BasisTest
 
-from ansys.aedt.toolkits.antennas.backend.models.common import StandardWaveguide
-from ansys.aedt.toolkits.antennas.backend.models.common import TransmissionLine
+from ansys.aedt.toolkits.antenna.backend.models.common import StandardWaveguide
+from ansys.aedt.toolkits.antenna.backend.models.common import TransmissionLine
 
 test_project_name = "Patch_test"
 

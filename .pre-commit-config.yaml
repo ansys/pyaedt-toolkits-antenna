@@ -1,6 +1,6 @@
 exclude: |
     (?x)(
-        src/ansys/aedt/toolkits/antennas/ui/common/frontend_ui.py
+        src/ansys/aedt/toolkits/antenna/ui/common/frontend_ui.py
     )
 
 repos:
