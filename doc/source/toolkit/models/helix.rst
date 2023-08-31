@@ -2,7 +2,7 @@ Helix
 =====
 This section list the available helix antennas:
 
-.. currentmodule:: ansys.aedt.toolkits.antennas.backend.models.helix
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.models.helix
 
 .. autosummary::
    :toctree: _autosummary
@@ -15,7 +15,7 @@ The API must be used using PyAEDT as in the following example:
 
     from pyaedt import Hfss
 
-    from ansys.aedt.toolkits.antennas.backend.models.helix import AxialMode
+    from ansys.aedt.toolkits.antenna.backend.models.helix import AxialMode
 
     aedtapp = Hfss()
 

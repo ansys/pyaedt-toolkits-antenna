@@ -21,7 +21,7 @@ Antenna synthesis:
 .. code:: python
 
     # Import backend
-    from ansys.aedt.toolkits.antennas.backend.models.horn import Conical
+    from ansys.aedt.toolkits.antenna.backend.models.horn import Conical
 
     # Antenna synthesis
     oantenna1 = Conical()
@@ -35,7 +35,7 @@ Antenna model generation in HFSS:
     from pyaedt import Hfss
 
     # Import backend
-    from ansys.aedt.toolkits.antennas.backend.models.horn import Conical
+    from ansys.aedt.toolkits.antenna.backend.models.horn import Conical
 
     # Antenna synthesis
     aedtapp = Hfss()

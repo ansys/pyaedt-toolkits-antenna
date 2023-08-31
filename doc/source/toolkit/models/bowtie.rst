@@ -2,7 +2,7 @@ Bowtie
 ======
 This section list the available Bowtie antennas:
 
-.. currentmodule:: ansys.aedt.toolkits.antennas.backend.models.bowtie
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.models.bowtie
 
 .. autosummary::
    :toctree: _autosummary
@@ -17,7 +17,7 @@ The API must be used using PyAEDT as in the following example:
 
     from pyaedt import Hfss
 
-    from ansys.aedt.toolkits.antennas.backend.models.bowtie import BowTie
+    from ansys.aedt.toolkits.antenna.backend.models.bowtie import BowTie
 
     aedtapp = Hfss()
 
