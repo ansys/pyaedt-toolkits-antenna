@@ -16,7 +16,7 @@ on:
 env:
   MAIN_PYTHON_VERSION: '3.10'
   DOCUMENTATION_CNAME: 'aedt.antenna.toolkit.docs.pyansys.com'
-  LIBRARY_NAME: 'ansys-aedt-antenna-toolkits'
+  LIBRARY_NAME: 'ansys-aedt-toolkits-antenna_toolkit'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
