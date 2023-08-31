@@ -20,7 +20,7 @@ AEDT Antenna toolkit
   :target: https://github.com/psf/black
   :alt: black
 
-The ``antenna_toolkit`` package provides a Python wrapper for modeling
+The ``ansys-aedt-toolkits-antenna`` package provides a Python wrapper for modeling
 antennas using Ansys Electronics Desktop (AEDT).
 The toolkit could be used inside AEDT or launched from a python console.
 Toolkit features are accessible from the user interface, **Antenna Wizard** or directly from the API.

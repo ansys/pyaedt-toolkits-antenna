@@ -99,7 +99,7 @@ If you have installed the toolkit in the virtual environment you can skip step 2
 
 .. code:: bash
 
-    python .venv\Lib\site-packages\ansys\aedt\toolkits\antennas\run_toolkit.py
+    python .venv\Lib\site-packages\ansys\aedt\toolkits\antenna\run_toolkit.py
 
 #. AEDT Settings tab to create a new AEDT session or connect to an existing one:
 
@@ -129,7 +129,7 @@ shown how to use the API at model level and toolkit level.
 
     # Import required modules for the example
     from pyaedt import Hfss
-    from ansys.aedt.toolkits.antennas.backend.models.bowtie import BowTie
+    from ansys.aedt.toolkits.antenna.backend.models.bowtie import BowTie
 
     # Open AEDT and create an HFSS design
     aedtapp = Hfss()
@@ -158,7 +158,7 @@ shown how to use the API at model level and toolkit level.
 
     # Import required modules for the example
     import time
-    from ansys.aedt.toolkits.antennas.backend.api import Toolkit
+    from ansys.aedt.toolkits.antenna.backend.api import Toolkit
 
     # Backend object
     toolkit = Toolkit()
