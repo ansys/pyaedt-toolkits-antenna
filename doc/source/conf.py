@@ -49,7 +49,7 @@ html_theme_options = {
     "show_breadcrumbs": True,
     "collapse_navigation": True,
     "additional_breadcrumbs": [
-        ("PyAnsys", "https://docs.pyansys.com/"),
+        ("PyAEDT", "https://aedt.docs.pyansys.com/version/stable"),
     ],
     "icon_links": [
         {
