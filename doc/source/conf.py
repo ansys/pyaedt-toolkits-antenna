@@ -14,11 +14,11 @@ path = os.path.join(pathlib.Path(__file__).parent.parent.parent, "src")
 print(path)
 sys.path.append(path)
 
-from ansys.aedt.toolkits.antennas import __version__
+from ansys.aedt.toolkits.antenna import __version__
 
 print(__version__)
 # Project information
-project = "ansys-aedt-toolkits-antennas"
+project = "ansys-aedt-toolkits-antenna"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS, Inc."
 release = version = __version__
@@ -29,7 +29,7 @@ print(copyright)
 # Select desired logo, theme, and declare the html title
 html_logo = pyansys_logo_black
 html_theme = "ansys_sphinx_theme"
-html_short_title = html_title = "ansys-aedt-toolkits-antennas"
+html_short_title = html_title = "ansys-aedt-toolkits-antenna"
 
 # specify the location of your GitHub repo
 html_context = {
@@ -49,7 +49,7 @@ html_theme_options = {
     "show_breadcrumbs": True,
     "collapse_navigation": True,
     "additional_breadcrumbs": [
-        ("PyAnsys", "https://docs.pyansys.com/"),
+        ("PyAEDT", "https://aedt.docs.pyansys.com/version/stable"),
     ],
     "icon_links": [
         {
