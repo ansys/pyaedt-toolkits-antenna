@@ -12,9 +12,9 @@ The toolkit could be launched from:
 
 The toolkit features can be accessed from:
 
-- The user interface (Antenna Wizard), see :doc:`Toolkit/ui`.
+- The user interface (Antenna Wizard), see :doc:`toolkit/ui`.
 
-- The API, see :doc:`Toolkit/index`.
+- The API, see :doc:`toolkit/index`.
 
 .. _install-toolkit-AEDT:
 
