@@ -47,7 +47,7 @@ jobs:
       fail-fast: false
       matrix:
         os : [windows-latest, ubuntu-latest]
-        python-version: [ '3.7', '3.10' ]
+        python-version: [ '3.8', '3.10' ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: ansys/actions/build-wheelhouse@v4
@@ -60,7 +60,7 @@ jobs:
     name: "Windows Tests"
     strategy:
       matrix:
-        python-version: [ '3.7', '3.10' ]
+        python-version: [ '3.8', '3.10' ]
       fail-fast: false
     runs-on: [self-hosted, pyaedt, toolkits, Windows]
     steps:
@@ -108,7 +108,7 @@ jobs:
     name: "Linux Tests"
     strategy:
       matrix:
-        python-version: [ '3.7', '3.10' ]
+        python-version: [ '3.8', '3.10' ]
       fail-fast: false
     runs-on: [ self-hosted, pyaedt, toolkits, Linux ]
     steps:
