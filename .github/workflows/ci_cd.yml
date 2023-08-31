@@ -41,6 +41,16 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  doc-build:
+    name: "Build documentation"
+    runs-on: ubuntu-latest
+    needs: doc-style
+    steps:
+      - uses: ansys/actions/doc-build@v4
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          check-links: false
+
   smoke-tests:
     name: "Build and Smoke tests"
     strategy:
@@ -49,6 +59,7 @@ jobs:
         os : [windows-latest, ubuntu-latest]
         python-version: [ '3.8', '3.10' ]
     runs-on: ${{ matrix.os }}
+    needs: [code-style]
     steps:
       - uses: ansys/actions/build-wheelhouse@v4
         with:
@@ -63,6 +74,7 @@ jobs:
         python-version: [ '3.8', '3.10' ]
       fail-fast: false
     runs-on: [self-hosted, pyaedt, toolkits, Windows]
+    needs: [smoke-tests]
     steps:
       - uses: actions/checkout@v3
 
@@ -111,6 +123,7 @@ jobs:
         python-version: [ '3.8', '3.10' ]
       fail-fast: false
     runs-on: [ self-hosted, pyaedt, toolkits, Linux ]
+    needs: [smoke-tests]
     steps:
       - uses: actions/checkout@v3
 
@@ -165,20 +178,10 @@ jobs:
           path: .cov/html
           retention-days: 7
 
-  doc-build:
-    name: "Build documentation"
-    runs-on: ubuntu-latest
-    needs: doc-style
-    steps:
-      - uses: ansys/actions/doc-build@v4
-        with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          check-links: false
-
   build-library:
     name: "Build library artifacts"
     runs-on: ubuntu-latest
-    needs: [tests_windows, tests_linux]
+    needs: [doc-build, tests_windows, tests_linux]
     steps:
       - uses: ansys/actions/build-library@v4
         with:
