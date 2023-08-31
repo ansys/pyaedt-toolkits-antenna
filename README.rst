@@ -1,5 +1,5 @@
-PyAEDT Antenna toolkit
-======================
+AEDT Antenna toolkit
+====================
 
 |pyansys| |PythonVersion| |GH-CI| |MIT| |black|
 
@@ -20,7 +20,7 @@ PyAEDT Antenna toolkit
   :target: https://github.com/psf/black
   :alt: black
 
-The ``pyaedt-antenna-toolkit`` package provides a Python wrapper for modeling
+The ``antenna_toolkit`` package provides a Python wrapper for modeling
 antennas using Ansys Electronics Desktop (AEDT).
 The toolkit could be used inside AEDT or launched from a python console.
 Toolkit features are accessible from the user interface, **Antenna Wizard** or directly from the API.
@@ -38,15 +38,15 @@ documentation provides
 and `Contribute
 <https://aedt.antenna.toolkit.docs.pyansys.com/version/dev/Contributing.html>`_ sections.
 
-On the `PyAEDT Antenna toolkit Issues <https://github.com/ansys/pyaedt-antenna-toolkit/issues>`_ page, you can
+On the `AEDT Antenna toolkit Issues <https://github.com/ansys/pyaedt-antenna-toolkit/issues>`_ page, you can
 create issues to submit questions, report bugs, and request new features.
 
 License
 ~~~~~~~
-PyAEDT Antenna toolkit is licensed under the MIT license.
+AEDT Antenna toolkit is licensed under the MIT license.
 
 This module makes no commercial claim over Ansys whatsoever.
-The use of the interactive control of PyAEDT Antenna toolkit requires a legally licensed
+The use of the interactive control of AEDT Antenna toolkit requires a legally licensed
 local copy of AEDT. For more information about AEDT, 
 visit the `AEDT page <https://www.ansys.com/products/electronics>`_ 
 on the Ansys website.
