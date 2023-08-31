@@ -22,7 +22,7 @@ settings.enable_desktop_logs = False
 local_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(local_path)
 
-from ansys.aedt.toolkits.antennas import backend
+from ansys.aedt.toolkits.antenna import backend
 
 is_linux = os.name == "posix"
 
