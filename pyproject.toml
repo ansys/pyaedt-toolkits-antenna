@@ -48,7 +48,7 @@ doc = [
     "ansys-sphinx-theme==0.10.5",
     "numpydoc==1.5.0",
     "recommonmark==0.7.1",
-    "sphinx==7.2.3",
+    "sphinx==7.2.5",
     "sphinx-copybutton==0.5.2",
     "enum-tools[sphinx]==0.10.0",
     "sphinx-autoapi==2.1.1",
@@ -80,7 +80,7 @@ default_section = "THIRDPARTY"
 src_paths = ["doc", "src", "tests"]
 
 [tool.coverage.run]
-source = ["ansys.pyaedt_toolkits"]
+source = ["ansys.aedt"]
 
 [tool.coverage.report]
 show_missing = true
