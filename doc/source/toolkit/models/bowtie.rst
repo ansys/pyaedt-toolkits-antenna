@@ -1,6 +1,6 @@
 Bowtie
 ======
-This section list the available bowtie antennas:
+This section list the available Bowtie antennas:
 
 .. currentmodule:: ansys.aedt.toolkits.antennas.backend.models.bowtie
 
