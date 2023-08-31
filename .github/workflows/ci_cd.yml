@@ -101,19 +101,32 @@ jobs:
         timeout-minutes: 30
         run: |
           .\.venv\Scripts\Activate.ps1
-          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/backend
+          pytest -v --cov=ansys.aedt --cov-report=xml:.cov/backend.xml --junitxml=junit/test-results-backend.xml --cov-report=.cov/backend-html tests/backend
 
       - name: Models Testing
         timeout-minutes: 30
         run: |
           .\.venv\Scripts\Activate.ps1
-          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/models
+          pytest -v --cov=ansys.aedt --cov-report=xml:.cov/models.xml --junitxml=junit/test-results-models.xml --cov-report=.cov/models-html tests/models
 
-      - name: Upload Coverage Results
+      - name: "DEBUGGING"
+        run: |
+          ls -R .cov/
+
+      - name: Upload backend coverage results
         uses: actions/upload-artifact@v3
+        if: matrix.python-version == env.MAIN_PYTHON_VERSION
         with:
-          name: coverage-html
-          path: .cov/html
+          name: coverage-backend-html
+          path: .cov/backend-html
+          retention-days: 7
+
+      - name: Upload models coverage results
+        uses: actions/upload-artifact@v3
+        if: matrix.python-version == env.MAIN_PYTHON_VERSION
+        with:
+          name: coverage-models-html
+          path: .cov/models-html
           retention-days: 7
 
   tests_linux:
@@ -170,13 +183,6 @@ jobs:
           pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/models
         env:
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
-
-      - name: Upload Coverage Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-html
-          path: .cov/html
-          retention-days: 7
 
   build-library:
     name: "Build library artifacts"
