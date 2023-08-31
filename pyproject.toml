@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
-name = "ansys-aedt-toolkits-antenna_toolkit"
+name = "ansys-aedt-toolkits-antenna"
 dynamic = ["version"]
 description = "Toolkit to design antennas with Ansys AEDT."
 readme = "README.rst"
@@ -60,7 +60,7 @@ doc = [
 ]
 
 [tool.flit.module]
-name = "ansys.aedt.toolkits.antennas"
+name = "ansys.aedt.toolkits.antenna"
 
 [project.urls]
 Source = "https://github.com/ansys/pyaedt-antenna-toolkit"
