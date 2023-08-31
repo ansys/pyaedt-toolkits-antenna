@@ -8,13 +8,13 @@ name = "ansys-aedt-antenna-toolkits"
 dynamic = ["version"]
 description = "Toolkit to design antennas with Ansys AEDT."
 readme = "README.rst"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 license = {file = "LICENSE"}
 authors = [
-    {name = "ANSYS, Inc.", email = "pyansys.support@ansys.com"},
+    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
 ]
 maintainers = [
-    {name = "PyAnsys developers", email = "pyansys.maintainers@ansys.com"},
+    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
 ]
 
 classifiers = [
@@ -22,6 +22,10 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
     "build==0.10.0",
@@ -59,10 +63,11 @@ doc = [
 name = "ansys.aedt.toolkits.antennas"
 
 [project.urls]
-Source = "https://github.com/pyansys/pyaedt-antenna-toolkit.git"
-Tracker = "https://github.com/pyansys/pyaedt-antenna-toolkit.git/issues"
-Homepage = "https://github.com/pyansys/pyaedt-antenna-toolkit.git"
-
+Source = "https://github.com/ansys/pyaedt-antenna-toolkit"
+Issues = "https://github.com/ansys/pyaedt-antenna-toolkit/issues"
+Discussions = "https://github.com/ansys/pyaedt-antenna-toolkit/discussions"
+Documentation = "https://aedt.antenna.toolkit.docs.pyansys.com"
+Releases = "https://github.com/ansys/pyaedt-antenna-toolkit/releases"
 
 [tool.black]
 line-length = 120
