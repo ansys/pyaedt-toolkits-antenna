@@ -101,20 +101,30 @@ jobs:
         timeout-minutes: 30
         run: |
           .\.venv\Scripts\Activate.ps1
-          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/backend
+          pytest -v --cov=ansys.aedt --cov-report=xml:.cov/backend.xml --junitxml=junit/test-results-backend.xml --cov-report=html:.cov/backend-html tests/backend
 
       - name: Models Testing
         timeout-minutes: 30
         run: |
           .\.venv\Scripts\Activate.ps1
-          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/models
+          pytest -v --cov=ansys.aedt --cov-report=xml:.cov/models.xml --junitxml=junit/test-results-models.xml --cov-report=html:.cov/models-html tests/models
 
-      - name: Upload Coverage Results
+      - name: "Install coverage dependencies"
+        run: |
+          python -m pip install .[tests]
+
+      - name: "Combine coverage files"
+        run: |
+          python -m coverage combine backend models
+          python -m coverage html -d .cov/total-html
+
+      - name: "Upload coverage results"
+        if: ${{ matrix.python == env.MINIMUM_PYTHON_VERSION }}
         uses: actions/upload-artifact@v3
         with:
-          name: coverage-html
-          path: .cov/html
-          retention-days: 7
+          path: .cov/total-html
+          name: html-coverage
+
 
   tests_linux:
     name: "Linux Tests"
@@ -156,7 +166,7 @@ jobs:
           export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
           export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
-          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/backend
+          pytest -v --cov=ansys.aedt --cov-report=xml:.cov/backend.xml --junitxml=junit/test-results-backend.xml --cov-report=html:.cov/backend-html tests/backend
         env:
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
@@ -167,16 +177,9 @@ jobs:
           export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
           export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
-          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/models
+          pytest -v --cov=ansys.aedt --cov-report=xml:.cov/models.xml --junitxml=junit/test-results-models.xml --cov-report=html:.cov/models-html tests/models
         env:
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
-
-      - name: Upload Coverage Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-html
-          path: .cov/html
-          retention-days: 7
 
   build-library:
     name: "Build library artifacts"
