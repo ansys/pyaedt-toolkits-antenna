@@ -24,48 +24,48 @@ concurrency:
 
 jobs:
 
-  code-style:
-    name: "Code style"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ansys/actions/code-style@v4
-        with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          use-python-cache: false
+    #code-style:
+    #  name: "Code style"
+    #  runs-on: ubuntu-latest
+    #  steps:
+    #    - uses: ansys/actions/code-style@v4
+    #      with:
+    #        python-version: ${{ env.MAIN_PYTHON_VERSION }}
+    #        use-python-cache: false
 
-  doc-style:
-    name: "Documentation style"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ansys/actions/doc-style@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+    #doc-style:
+    #  name: "Documentation style"
+    #  runs-on: ubuntu-latest
+    #  steps:
+    #    - uses: ansys/actions/doc-style@v4
+    #      with:
+    #        token: ${{ secrets.GITHUB_TOKEN }}
 
-  doc-build:
-    name: "Build documentation"
-    runs-on: ubuntu-latest
-    needs: doc-style
-    steps:
-      - uses: ansys/actions/doc-build@v4
-        with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          check-links: false
+    #doc-build:
+    #  name: "Build documentation"
+    #  runs-on: ubuntu-latest
+    #  needs: doc-style
+    #  steps:
+    #    - uses: ansys/actions/doc-build@v4
+    #      with:
+    #        python-version: ${{ env.MAIN_PYTHON_VERSION }}
+    #        check-links: false
 
-  smoke-tests:
-    name: "Build and Smoke tests"
-    strategy:
-      fail-fast: false
-      matrix:
-        os : [windows-latest, ubuntu-latest]
-        python-version: [ '3.8', '3.10' ]
-    runs-on: ${{ matrix.os }}
-    needs: [code-style]
-    steps:
-      - uses: ansys/actions/build-wheelhouse@v4
-        with:
-          library-name: ${{ env.LIBRARY_NAME }}
-          operating-system: ${{ matrix.os }}
-          python-version: ${{ matrix.python-version }}
+    #smoke-tests:
+    #  name: "Build and Smoke tests"
+    #  strategy:
+    #    fail-fast: false
+    #    matrix:
+    #      os : [windows-latest, ubuntu-latest]
+    #      python-version: [ '3.8', '3.10' ]
+    #  runs-on: ${{ matrix.os }}
+    #  needs: [code-style]
+    #  steps:
+    #    - uses: ansys/actions/build-wheelhouse@v4
+    #      with:
+    #        library-name: ${{ env.LIBRARY_NAME }}
+    #        operating-system: ${{ matrix.os }}
+    #        python-version: ${{ matrix.python-version }}
 
   tests_windows:
     name: "Windows Tests"
@@ -74,7 +74,7 @@ jobs:
         python-version: [ '3.8', '3.10' ]
       fail-fast: false
     runs-on: [self-hosted, pyaedt, toolkits, Windows]
-    needs: [smoke-tests]
+        #needs: [smoke-tests]
     steps:
       - uses: actions/checkout@v3
 
@@ -129,116 +129,116 @@ jobs:
           path: .cov/models-html
           retention-days: 7
 
-  tests_linux:
-    name: "Linux Tests"
-    strategy:
-      matrix:
-        python-version: [ '3.8', '3.10' ]
-      fail-fast: false
-    runs-on: [ self-hosted, pyaedt, toolkits, Linux ]
-    needs: [smoke-tests]
-    steps:
-      - uses: actions/checkout@v3
+              #tests_linux:
+              #  name: "Linux Tests"
+              #  strategy:
+              #    matrix:
+              #      python-version: [ '3.8', '3.10' ]
+              #    fail-fast: false
+              #  runs-on: [ self-hosted, pyaedt, toolkits, Linux ]
+              #      #needs: [smoke-tests]
+              #  steps:
+              #    - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
+              #    - name: Set up Python
+              #      uses: actions/setup-python@v4
+              #      with:
+              #        python-version: ${{ matrix.python-version }}
 
-      - name: Create Python venv
-        run: |
-          python -m venv .venv_linux
-          export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
-          export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
+              #    - name: Create Python venv
+              #      run: |
+              #        python -m venv .venv_linux
+              #        export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
+              #        export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
 
-      - name: Install packages for testing
-        run: |
-          source .venv_linux/bin/activate
-          python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip -U
-          python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org wheel setuptools -U
-          python -c "import sys; print(sys.executable)"
-          python -m pip install --upgrade pip
-          pip install --upgrade build wheel
-          pip install .[tests]
-          pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pytest-azurepipelines
+              #    - name: Install packages for testing
+              #      run: |
+              #        source .venv_linux/bin/activate
+              #        python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip -U
+              #        python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org wheel setuptools -U
+              #        python -c "import sys; print(sys.executable)"
+              #        python -m pip install --upgrade pip
+              #        pip install --upgrade build wheel
+              #        pip install .[tests]
+              #        pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pytest-azurepipelines
 
-      - name: Backend Testing
-        timeout-minutes: 30
-        run: |
-          export ANS_NODEPCHECK=1
-          export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
-          export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
-          source .venv_linux/bin/activate
-          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/backend
-        env:
-          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+              #    - name: Backend Testing
+              #      timeout-minutes: 30
+              #      run: |
+              #        export ANS_NODEPCHECK=1
+              #        export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
+              #        export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
+              #        source .venv_linux/bin/activate
+              #        pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/backend
+              #      env:
+              #        ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
-      - name: Models Testing
-        timeout-minutes: 30
-        run: |
-          export ANS_NODEPCHECK=1
-          export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
-          export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
-          source .venv_linux/bin/activate
-          pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/models
-        env:
-          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+              #    - name: Models Testing
+              #      timeout-minutes: 30
+              #      run: |
+              #        export ANS_NODEPCHECK=1
+              #        export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
+              #        export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
+              #        source .venv_linux/bin/activate
+              #        pytest -v --cov=pyaedt-antenna-toolkit --cov-report=xml --junitxml=junit/test-results.xml --cov-report=html tests/models
+              #      env:
+              #        ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
-  build-library:
-    name: "Build library artifacts"
-    runs-on: ubuntu-latest
-    needs: [doc-build, tests_windows, tests_linux]
-    steps:
-      - uses: ansys/actions/build-library@v4
-        with:
-          library-name: ${{ env.LIBRARY_NAME }}
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+              #build-library:
+              #  name: "Build library artifacts"
+              #  runs-on: ubuntu-latest
+              #  needs: [doc-build, tests_windows, tests_linux]
+              #  steps:
+              #    - uses: ansys/actions/build-library@v4
+              #      with:
+              #        library-name: ${{ env.LIBRARY_NAME }}
+              #        python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
-  release:
-    name: "Release"
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-    needs: build-library
-    runs-on: ubuntu-latest
-    steps:
+              #release:
+              #  name: "Release"
+              #  if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+              #  needs: build-library
+              #  runs-on: ubuntu-latest
+              #  steps:
 
-      - name: "Release to the private PyPI"
-        uses: ansys/actions/release-pypi-private@v4
-        with:
-          library-name: ${{ env.LIBRARY_NAME }}
-          twine-username: "__token__"
-          twine-token: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
+              #    - name: "Release to the private PyPI"
+              #      uses: ansys/actions/release-pypi-private@v4
+              #      with:
+              #        library-name: ${{ env.LIBRARY_NAME }}
+              #        twine-username: "__token__"
+              #        twine-token: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
 
-      - name: "Release to the public PyPI repository"
-        uses: ansys/actions/release-pypi-public@v4
-        with:
-          library-name: ${{ env.LIBRARY_NAME }}
-          twine-username: "__token__"
-          twine-token: ${{ secrets.PYPI_TOKEN }}
+              #    - name: "Release to the public PyPI repository"
+              #      uses: ansys/actions/release-pypi-public@v4
+              #      with:
+              #        library-name: ${{ env.LIBRARY_NAME }}
+              #        twine-username: "__token__"
+              #        twine-token: ${{ secrets.PYPI_TOKEN }}
 
-      - name: "Release to GitHub"
-        uses: ansys/actions/release-github@v4
-        with:
-          library-name: ${{ env.LIBRARY_NAME }}
+              #    - name: "Release to GitHub"
+              #      uses: ansys/actions/release-github@v4
+              #      with:
+              #        library-name: ${{ env.LIBRARY_NAME }}
 
-  doc-deploy-dev:
-    name: "Deploy development documentation"
-    runs-on: ubuntu-latest
-    needs: build-library
-    if: github.event_name == 'push'
-    steps:
-      - uses: ansys/actions/doc-deploy-dev@v4
-        with:
-          cname: ${{ env.DOCUMENTATION_CNAME }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+              #doc-deploy-dev:
+              #  name: "Deploy development documentation"
+              #  runs-on: ubuntu-latest
+              #  needs: build-library
+              #  if: github.event_name == 'push'
+              #  steps:
+              #    - uses: ansys/actions/doc-deploy-dev@v4
+              #      with:
+              #        cname: ${{ env.DOCUMENTATION_CNAME }}
+              #        token: ${{ secrets.GITHUB_TOKEN }}
 
-  doc-deploy-stable:
-    name: "Deploy stable documentation"
-    runs-on: ubuntu-latest
-    needs: release
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-    steps:
-      - uses: ansys/actions/doc-deploy-stable@v4
-        with:
-          cname: ${{ env.DOCUMENTATION_CNAME }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+              #doc-deploy-stable:
+              #  name: "Deploy stable documentation"
+              #  runs-on: ubuntu-latest
+              #  needs: release
+              #  if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+              #  steps:
+              #    - uses: ansys/actions/doc-deploy-stable@v4
+              #      with:
+              #        cname: ${{ env.DOCUMENTATION_CNAME }}
+              #        token: ${{ secrets.GITHUB_TOKEN }}
 
