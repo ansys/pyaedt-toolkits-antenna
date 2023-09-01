@@ -101,13 +101,13 @@ jobs:
         timeout-minutes: 30
         run: |
           .\.venv\Scripts\Activate.ps1
-          pytest -v --cov=ansys.aedt --cov-report=xml:.cov/backend.xml --junitxml=junit/test-results-backend.xml --cov-report=.cov/backend-html tests/backend
+          pytest -v --cov=ansys.aedt --cov-report=xml:.cov/backend.xml --junitxml=junit/test-results-backend.xml --cov-report=html:.cov/backend-html tests/backend
 
       - name: Models Testing
         timeout-minutes: 30
         run: |
           .\.venv\Scripts\Activate.ps1
-          pytest -v --cov=ansys.aedt --cov-report=xml:.cov/models.xml --junitxml=junit/test-results-models.xml --cov-report=.cov/models-html tests/models
+          pytest -v --cov=ansys.aedt --cov-report=xml:.cov/models.xml --junitxml=junit/test-results-models.xml --cov-report=html:.cov/models-html tests/models
 
       - name: "DEBUGGING"
         run: |
