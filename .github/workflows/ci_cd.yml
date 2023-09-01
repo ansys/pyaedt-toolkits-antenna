@@ -113,21 +113,19 @@ jobs:
         run: |
           ls -R .cov/
 
-      - name: Upload backend coverage results
-        uses: actions/upload-artifact@v3
-        if: matrix.python-version == env.MAIN_PYTHON_VERSION
-        with:
-          name: coverage-backend-html
-          path: .cov/backend-html
-          retention-days: 7
+      - name: "Combine coverage files"
+        run: |
+          python -m pip install 
+          coverage combine backend models
+          coverage html -d .cov/total-html
 
-      - name: Upload models coverage results
+      - name: "Upload coverage results"
+        if: ${{ matrix.python == env.MINIMUM_PYTHON_VERSION }}
         uses: actions/upload-artifact@v3
-        if: matrix.python-version == env.MAIN_PYTHON_VERSION
         with:
-          name: coverage-models-html
-          path: .cov/models-html
-          retention-days: 7
+          path: .cov/total-html
+          name: html-coverage
+
 
               #tests_linux:
               #  name: "Linux Tests"
