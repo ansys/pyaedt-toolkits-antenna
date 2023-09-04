@@ -470,9 +470,6 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
 
             self.plotter.clear_button_widgets()
 
-            bg_image_path = os.path.join(self.images_path, "anechoic-chamber.jpg")
-            self.plotter.add_background_image(bg_image_path, as_global=True, scale=1.5)
-
             self.antenna_hfss_model = QtWidgets.QVBoxLayout()
 
             self.antenna_hfss_model.addWidget(self.plotter.app_window)
