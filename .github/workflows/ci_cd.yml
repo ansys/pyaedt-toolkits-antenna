@@ -116,9 +116,9 @@ jobs:
 
       - name: "Combine coverage files"
         run: |
-          #python -m coverage combine .cov\backend.xml .cov\models.xml
           python -m coverage combine
           python -m coverage html -d .cov\total-html
+          python -m coverage xml -o .cov\total.xml
 
       - name: "Upload coverage results"
         if: ${{ matrix.python == env.MINIMUM_PYTHON_VERSION }}
@@ -131,7 +131,7 @@ jobs:
         if: ${{ matrix.python-version == env.MAIN_PYTHON_VERSION }}
         uses: codecov/codecov-action@v3
         with:
-          file: .cov/total-xml.xml
+          file: .cov/total.xml
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
