@@ -16,6 +16,9 @@ AEDT Antenna toolkit
 .. |MIT| image:: https://img.shields.io/badge/License-MIT-yellow.svg
    :target: https://opensource.org/licenses/MIT
 
+.. |coverage| image:: https://codecov.io/gh/ansys/pyaedt-antenna-toolkit/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/ansys/pyaedt-antenna-toolkit
+
 .. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg?style=flat
   :target: https://github.com/psf/black
   :alt: black
