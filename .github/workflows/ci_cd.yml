@@ -116,7 +116,8 @@ jobs:
 
       - name: "Combine coverage files"
         run: |
-          python -m coverage combine .cov\backend.xml .cov\models.xml
+          #python -m coverage combine .cov\backend.xml .cov\models.xml
+          python -m coverage combine
           python -m coverage html -d .cov\total-html
 
       - name: "Upload coverage results"
