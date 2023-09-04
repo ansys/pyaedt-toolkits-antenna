@@ -76,7 +76,7 @@ jobs:
     runs-on: [self-hosted, pyaedt, toolkits, Windows]
     needs: [smoke-tests]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -143,7 +143,7 @@ jobs:
     runs-on: [ self-hosted, pyaedt, toolkits, Linux ]
     needs: [smoke-tests]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
