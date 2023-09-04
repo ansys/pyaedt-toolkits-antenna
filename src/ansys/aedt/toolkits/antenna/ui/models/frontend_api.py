@@ -112,7 +112,9 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         num_cores = int(self.numcores.text())
         properties["core_number"] = num_cores
 
-        self.update_progress(33)
+        msg = "User interface inputs loaded"
+        logger.debug(msg)
+        self.write_log_line(msg)
 
         if "frequency" in self.__dir__() and self.frequency.text() != "0":
             properties["frequency"] = float(self.frequency.text())
@@ -141,11 +143,14 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                 self.write_log_line(msg)
 
         else:
-            self.update_progress(66)
+            self.update_progress(50)
             response = requests.get(self.url + "/get_status")
             if response.ok and response.json() == "Backend running":
                 self.write_log_line("Please wait, toolkit running")
             else:
+                msg = "Creating HFSS model"
+                logger.debug(msg)
+                self.write_log_line(msg)
                 response = requests.post(self.url + "/create_antenna")
                 if not response.ok:
                     msg = f"Failed backend call: {self.url}" + "/create_antenna"
