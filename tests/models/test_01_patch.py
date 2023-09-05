@@ -2,7 +2,7 @@ from conftest import BasisTest
 from pyaedt.modeler.cad.object3d import Object3d
 from pyaedt.modeler.geometry_operators import GeometryOperators
 
-from ansys.aedt.toolkits.antennas.backend import models
+from ansys.aedt.toolkits.antenna.backend import models
 
 test_project_name = "Patch_test"
 

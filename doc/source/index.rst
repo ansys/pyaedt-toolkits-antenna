@@ -9,10 +9,10 @@ Antenna toolkit documentation  |version|
 .. toctree::
    :hidden:
 
-   Getting_started
-   Toolkit/ui
-   Toolkit/index
-   Contributing
+   getting-started
+   toolkit/ui
+   toolkit/index
+   contributing
 
 
 Indices and tables
