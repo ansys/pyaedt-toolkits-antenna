@@ -438,10 +438,10 @@ class AxialMode(CommonHelix):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDiscovery. To be implemenented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up model in PyDiscovery. To be implemenented."""
+        """Set up model in PyDiscovery. To be implemented."""
         pass
