@@ -15,14 +15,14 @@ development mode, run:
 
 .. code::
 
-    git clone https://github.com/ansys/pyaedt-antenna-toolkit.git
-    cd pyaedt-antenna-toolkit
+    git clone https://github.com/ansys/pyaedt-toolkits-antenna.git
+    cd pyaedt-toolkits-antenna
     python -m pip install --upgrade pip
     pip install -e .
 
 Post issues
 -----------
-Use the `PyAEDT antenna toolkit issues <https://github.com/ansys/pyaedt-antenna-toolkit/issues>`_ page
+Use the `PyAEDT antenna toolkit issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_ page
 to submit questions, report bugs, and request new features.
 
 View toolkit documentation

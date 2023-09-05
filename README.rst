@@ -10,14 +10,14 @@ AEDT Antenna toolkit
 .. |PythonVersion| image:: https://img.shields.io/badge/python-3.7+-blue.svg
    :target: https://www.python.org/downloads/
 
-.. |GH-CI| image:: https://github.com/ansys/pyaedt-antenna-toolkit/actions/workflows/ci_cd.yml/badge.svg
-   :target: https://github.com/ansys/pyaedt-antenna-toolkit/actions/workflows/ci_cd.yml
+.. |GH-CI| image:: https://github.com/ansys/pyaedt-toolkits-antenna/actions/workflows/ci_cd.yml/badge.svg
+   :target: https://github.com/ansys/pyaedt-toolkits-antenna/actions/workflows/ci_cd.yml
 
 .. |MIT| image:: https://img.shields.io/badge/License-MIT-yellow.svg
    :target: https://opensource.org/licenses/MIT
 
-.. |coverage| image:: https://codecov.io/gh/ansys/pyaedt-antenna-toolkit/branch/main/graph/badge.svg
-   :target: https://codecov.io/gh/ansys/pyaedt-antenna-toolkit
+.. |coverage| image:: https://codecov.io/gh/ansys/pyaedt-toolkits-antenna/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/ansys/pyaedt-toolkits-antenna
 
 .. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg?style=flat
   :target: https://github.com/psf/black
@@ -41,7 +41,7 @@ documentation provides
 and `Contribute
 <https://aedt.antenna.toolkit.docs.pyansys.com/version/dev/Contributing.html>`_ sections.
 
-On the `AEDT Antenna toolkit Issues <https://github.com/ansys/pyaedt-antenna-toolkit/issues>`_ page, you can
+On the `AEDT Antenna toolkit Issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_ page, you can
 create issues to submit questions, report bugs, and request new features.
 
 License

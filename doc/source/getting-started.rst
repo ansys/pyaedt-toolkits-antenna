@@ -93,7 +93,7 @@ If you have installed the toolkit in the virtual environment you can skip step 2
 
 .. code:: bash
 
-    python -m pip install git+https://github.com/pyansys/pyaedt-antenna-toolkit.git
+    python -m pip install git+https://github.com/pyansys/pyaedt-toolkits-antenna.git
 
 #. Launch the toolkit UI:
 

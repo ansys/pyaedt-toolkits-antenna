@@ -63,11 +63,11 @@ doc = [
 name = "ansys.aedt.toolkits.antenna"
 
 [project.urls]
-Source = "https://github.com/ansys/pyaedt-antenna-toolkit"
-Issues = "https://github.com/ansys/pyaedt-antenna-toolkit/issues"
-Discussions = "https://github.com/ansys/pyaedt-antenna-toolkit/discussions"
+Source = "https://github.com/ansys/pyaedt-toolkits-antenna"
+Issues = "https://github.com/ansys/pyaedt-toolkits-antenna/issues"
+Discussions = "https://github.com/ansys/pyaedt-toolkits-antenna/discussions"
 Documentation = "https://aedt.antenna.toolkit.docs.pyansys.com"
-Releases = "https://github.com/ansys/pyaedt-antenna-toolkit/releases"
+Releases = "https://github.com/ansys/pyaedt-toolkits-antenna/releases"
 
 [tool.black]
 line-length = 120
