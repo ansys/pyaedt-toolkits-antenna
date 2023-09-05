@@ -360,12 +360,12 @@ class Conical(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemenented."""
+        """Model in PyDisco. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemenented."""
+        """Setup in PyDisco. To be implemented."""
         pass
 
 
@@ -1068,12 +1068,12 @@ class PyramidalRidged(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDiscovery. To be implemenented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up model in PyDiscovery. To be implemenented."""
+        """Set up model in PyDiscovery. To be implemented."""
         pass
 
 
@@ -1198,7 +1198,12 @@ class Corrugated(CommonHorn):
             self._app.logger.warning("Material not found. Create the material before assigning it.")
             return False
 
-        self.set_variables_in_hfss()
+        # Not used parameters in HFSS
+        notches = self.synthesis_parameters.notches.hfss_variable
+        notches_value = self.synthesis_parameters.notches.value
+        del self.synthesis_parameters.notches
+
+        self.set_variables_in_hfss([notches])
 
         # Map parameters
         wall_thickness = self.synthesis_parameters.wall_thickness.hfss_variable
@@ -1208,8 +1213,7 @@ class Corrugated(CommonHorn):
             str(self.synthesis_parameters.flare_angle.value) + "deg"
         )
         flare_angle = self.synthesis_parameters.flare_angle.hfss_variable
-        notches = self.synthesis_parameters.notches.hfss_variable
-        self._app[notches] = str(self.synthesis_parameters.notches.value)
+
         notch_width = self.synthesis_parameters.notch_width.hfss_variable
         notch_depth = self.synthesis_parameters.notch_depth.hfss_variable
         tooth_width = self.synthesis_parameters.tooth_width.hfss_variable
@@ -1221,7 +1225,7 @@ class Corrugated(CommonHorn):
         coordinate_system = self.coordinate_system
 
         l = self._app.variable_manager[wg_length].numeric_value
-        n = self._app.variable_manager[notches].numeric_value
+        n = notches_value
         Ka = "tan(" + flare_angle + ")"
 
         # Based on inputs calculate minimum feed length for geometry to work,
@@ -1294,7 +1298,7 @@ class Corrugated(CommonHorn):
 
         horn = self._app.modeler.create_polyline(
             position_list=pts,
-            cover_surface=False,
+            cover_surface=True,
             name="horn" + antenna_name,
             matname=self.material,
         )
@@ -1361,12 +1365,12 @@ class Corrugated(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemenented."""
+        """Model in PyDisco. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemenented."""
+        """Setup in PyDisco. To be implemented."""
         pass
 
 
@@ -1667,12 +1671,12 @@ class Elliptical(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemenented."""
+        """Model in PyDisco. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemenented."""
+        """Setup in PyDisco. To be implemented."""
         pass
 
 
@@ -2063,12 +2067,12 @@ class EPlane(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDiscovery. To be implemenented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up model in PyDiscovery. To be implemenented."""
+        """Set up model in PyDiscovery. To be implemented."""
         pass
 
 
@@ -2444,12 +2448,12 @@ class HPlane(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDiscovery. To be implemenented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up model in PyDiscovery. To be implemenented."""
+        """Set up model in PyDiscovery. To be implemented."""
         pass
 
 
@@ -2829,12 +2833,12 @@ class Pyramidal(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDiscovery. To be implemenented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up model in PyDiscovery. To be implemenented."""
+        """Set up model in PyDiscovery. To be implemented."""
         pass
 
 
@@ -3427,10 +3431,10 @@ class QuadRidged(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDiscovery. To be implemenented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up model in PyDiscovery. To be implemenented."""
+        """Set up model in PyDiscovery. To be implemented."""
         pass

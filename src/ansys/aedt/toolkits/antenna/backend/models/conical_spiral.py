@@ -143,7 +143,7 @@ class Archimedean(CommonConicalSpiral):
     >>> antenna = Archimedean(hfss, start_frequency=20.0,
     ...                              stop_frequency=50.0, frequency_unit="GHz",
     ...                              outer_boundary='Radiation', length_unit="cm",
-    ...                              antenna_name="HornAntenna", origin=[1, 100, 50])
+    ...                              antenna_name="Archimedean", origin=[1, 100, 50])
     >>> antenna.model_hfss()
     >>> antenna.setup_hfss()
     >>> hfss.release_desktop(False, False)
@@ -190,6 +190,7 @@ class Archimedean(CommonConicalSpiral):
         inner_rad_calc = lightSpeed / (2 * math.pi * stop_freq_hz)
         inner_rad = constants.unit_converter(inner_rad_calc, "Length", "meter", self.length_unit)
         inner_rad_cm = constants.unit_converter(inner_rad, "Length", self.length_unit, "cm")
+        port_extension = constants.unit_converter(port_extension, "Length", "cm", self.length_unit)
 
         parameters["expansion_coefficient"] = expansion_coefficient
         parameters["offset_angle"] = offset_angle
@@ -213,7 +214,7 @@ class Archimedean(CommonConicalSpiral):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw a conical archimidean spiral antenna.
+        """Draw a conical archimidean spiral antenna. This method uses the User Defined Model from AEDT installation.
 
         Once the antenna is created, this method is not used anymore."""
         if self.object_list:
@@ -245,7 +246,6 @@ class Archimedean(CommonConicalSpiral):
         points = self.synthesis_parameters.points.hfss_variable
         self._app[points] = str(self.synthesis_parameters.points.value)
         port_extension = self.synthesis_parameters.port_extension.hfss_variable
-        self._app[port_extension] = str(self.synthesis_parameters.port_extension.value)
 
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
@@ -294,10 +294,422 @@ class Archimedean(CommonConicalSpiral):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemenented."""
+        """Model in PyDisco. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemenented."""
+        """Setup in PyDisco. To be implemented."""
+        pass
+
+
+class Log(CommonConicalSpiral):
+    """Manages conical log spiral antenna.
+
+    This class is accessible through the app hfss object [1]_.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Horn material. If material is not defined a new material parametrized will be defined.
+        The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+    huygens_box : bool, optional
+        Create a Huygens box. The default is ``False``.
+    length_unit : str, optional
+        Length units. The default is ``"cm"``.
+    parametrized : bool, optional
+        Create a parametrized antenna. The default is ``True``.
+
+    Returns
+    -------
+    :class:`aedt.toolkits.antenna.Log`
+        Conical archimedean spiral object.
+
+    Notes
+    -----
+    .. [1] R. Johnson, "Frequency Independent Antennas," Antenna Engineering Handbook,
+        3rd ed. New York, McGraw-Hill, 1993.
+
+    Examples
+    --------
+    >>> from pyaedt import Hfss
+    >>> from ansys.aedt.toolkits.antenna.backend.models.conical_spiral import Log
+    >>> hfss = Hfss()
+    >>> antenna = Log(hfss, start_frequency=20.0,
+    ...                              stop_frequency=50.0, frequency_unit="GHz",
+    ...                              outer_boundary='Radiation', length_unit="cm",
+    ...                              antenna_name="Log", origin=[1, 100, 50])
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> hfss.release_desktop(False, False)
+
+    """
+
+    _default_input_parameters = {
+        "antenna_name": "",
+        "origin": [0, 0, 0],
+        "length_unit": "meter",
+        "coordinate_system": "Global",
+        "start_frequency": 4.0,
+        "stop_frequency": 10.0,
+        "frequency_unit": "GHz",
+        "material": "pec",
+        "outer_boundary": "",
+        "huygens_box": False,
+    }
+
+    def __init__(self, *args, **kwargs):
+        CommonConicalSpiral.__init__(self, self._default_input_parameters, *args, **kwargs)
+
+        self._parameters = self._synthesis()
+        self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "Log"
+
+    @pyaedt_function_handler()
+    def _synthesis(self):
+        parameters = {}
+        start_freq_hz = constants.unit_converter(self.start_frequency, "Freq", self.frequency_unit, "Hz")
+        stop_freq_hz = constants.unit_converter(self.stop_frequency, "Freq", self.frequency_unit, "Hz")
+        scale_factor = 1.1
+        turns_number = 2
+        offset_angle = 90.0
+        spiral_coefficient = 1.0
+        points = 200
+        arms = 2
+
+        outer_rad_calc = scale_factor * 3e10 / (2 * math.pi * start_freq_hz)
+        outer_rad_calc = constants.unit_converter(outer_rad_calc, "Length", "cm", self.length_unit)
+        inner_rad_calc = scale_factor * 3e10 / (2 * math.pi * stop_freq_hz)
+        inner_rad = constants.unit_converter(inner_rad_calc, "Length", "cm", self.length_unit)
+        expansion_coefficient = round(math.pow(outer_rad_calc / inner_rad, 1.0 / turns_number), 2)
+
+        parameters["expansion_coefficient"] = expansion_coefficient
+        parameters["offset_angle"] = offset_angle
+        parameters["spiral_coefficient"] = spiral_coefficient
+        parameters["inner_rad"] = inner_rad
+        parameters["turns_number"] = turns_number
+        parameters["cone_height"] = (outer_rad_calc - inner_rad) * math.tan(math.radians(66.66))
+        parameters["points"] = points
+        parameters["arms_number"] = arms
+
+        parameters["pos_x"] = self.origin[0]
+        parameters["pos_y"] = self.origin[1]
+        parameters["pos_z"] = self.origin[2]
+
+        myKeys = list(parameters.keys())
+        myKeys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+
+        return parameters_out
+
+    @pyaedt_function_handler()
+    def model_hfss(self):
+        """Draw a conical log spiral antenna. This method uses the User Defined Model from AEDT installation.
+
+        Once the antenna is created, this method is not used anymore."""
+
+        if self.object_list:
+            logger.debug("This antenna already exists")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
+            return False
+
+        self.set_variables_in_hfss()
+
+        # Map parameters
+        expansion_coefficient = self.synthesis_parameters.expansion_coefficient.hfss_variable
+        self._app[expansion_coefficient] = str(self.synthesis_parameters.expansion_coefficient.value)
+        offset_angle = self.synthesis_parameters.offset_angle.hfss_variable
+        self._app[offset_angle] = str(self.synthesis_parameters.offset_angle.value) + "deg"
+        spiral_coefficient = self.synthesis_parameters.spiral_coefficient.hfss_variable
+        self._app[spiral_coefficient] = str(self.synthesis_parameters.spiral_coefficient.value)
+        inner_rad = self.synthesis_parameters.inner_rad.hfss_variable
+        turns = self.synthesis_parameters.turns_number.hfss_variable
+        self._app[turns] = str(self.synthesis_parameters.turns_number.value)
+        cone_height = self.synthesis_parameters.cone_height.hfss_variable
+        arms = self.synthesis_parameters.arms_number.hfss_variable
+        self._app[arms] = str(self.synthesis_parameters.arms_number.value)
+        points = self.synthesis_parameters.points.hfss_variable
+        self._app[points] = str(self.synthesis_parameters.points.value)
+
+        pos_x = self.synthesis_parameters.pos_x.hfss_variable
+        pos_y = self.synthesis_parameters.pos_y.hfss_variable
+        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        antenna_name = self.antenna_name
+        coordinate_system = self.coordinate_system
+
+        my_udmPairs = []
+        mypair = ["NumberOfPoints", points]
+        my_udmPairs.append(mypair)
+        mypair = ["NumberOfArms", arms]
+        my_udmPairs.append(mypair)
+        mypair = ["InnerRadius", inner_rad]
+        my_udmPairs.append(mypair)
+        mypair = ["NumberOfTurns", turns]
+        my_udmPairs.append(mypair)
+        mypair = ["Offset", offset_angle]
+        my_udmPairs.append(mypair)
+        mypair = ["ConeHeight", cone_height]
+        my_udmPairs.append(mypair)
+        mypair = ["ExpansionCoefficient", expansion_coefficient]
+        my_udmPairs.append(mypair)
+        obj_udm = self._app.modeler.create_udm(
+            udmfullname="HFSS/Antenna Toolkit/Spiral/Log.py",
+            udm_params_list=my_udmPairs,
+            udm_library="syslib",
+            name="log",
+        )
+        for part in obj_udm.parts:
+            comp = obj_udm.parts[part]
+            comp.history().props["Coordinate System"] = coordinate_system
+            if "AntennaArm" in comp.name:
+                comp.name = "ant_" + comp.name + antenna_name
+            else:
+                comp.name = "port_lump_" + antenna_name
+
+            self.object_list[comp.name] = comp
+
+        obj_udm.move([pos_x, pos_y, pos_z])
+
+        obj_udm.group_name = antenna_name
+
+    @pyaedt_function_handler()
+    def model_disco(self):
+        """Model in PyDisco. To be implemented."""
+        pass
+
+    @pyaedt_function_handler()
+    def setup_disco(self):
+        """Setup in PyDisco. To be implemented."""
+        pass
+
+
+class Sinuous(CommonConicalSpiral):
+    """Manages conical sinuous spiral antenna.
+
+    This class is accessible through the app hfss object [1]_.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Horn material. If material is not defined a new material parametrized will be defined.
+        The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. Options are ``"Radiation"``,
+        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+    huygens_box : bool, optional
+        Create a Huygens box. The default is ``False``.
+    length_unit : str, optional
+        Length units. The default is ``"cm"``.
+    parametrized : bool, optional
+        Create a parametrized antenna. The default is ``True``.
+
+    Returns
+    -------
+    :class:`aedt.toolkits.antenna.Sinuous`
+        Conical Sinuous spiral object.
+
+    Notes
+    -----
+    .. [1] R. Johnson, "Frequency Independent Antennas," Antenna Engineering Handbook,
+        3rd ed. New York, McGraw-Hill, 1993.
+
+    Examples
+    --------
+    >>> from pyaedt import Hfss
+    >>> from ansys.aedt.toolkits.antenna.backend.models.conical_spiral import Sinuous
+    >>> hfss = Hfss()
+    >>> antenna = Archimedean(hfss, start_frequency=20.0,
+    ...                              stop_frequency=50.0, frequency_unit="GHz",
+    ...                              outer_boundary='Radiation', length_unit="cm",
+    ...                              antenna_name="Sinuous", origin=[1, 100, 50])
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> hfss.release_desktop(False, False)
+
+    """
+
+    _default_input_parameters = {
+        "antenna_name": "",
+        "origin": [0, 0, 0],
+        "length_unit": "meter",
+        "coordinate_system": "Global",
+        "start_frequency": 4.0,
+        "stop_frequency": 10.0,
+        "frequency_unit": "GHz",
+        "material": "pec",
+        "outer_boundary": "",
+        "huygens_box": False,
+    }
+
+    def __init__(self, *args, **kwargs):
+        CommonConicalSpiral.__init__(self, self._default_input_parameters, *args, **kwargs)
+
+        self._parameters = self._synthesis()
+        self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "Log"
+
+    @pyaedt_function_handler()
+    def _synthesis(self):
+        parameters = {}
+        lightSpeed = constants.SpeedOfLight
+        start_freq_hz = constants.unit_converter(self.start_frequency, "Freq", self.frequency_unit, "Hz")
+        stop_freq_hz = constants.unit_converter(self.stop_frequency, "Freq", self.frequency_unit, "Hz")
+
+        scale_factor = 1.25
+        cell_number = 8
+        alpha_angle = 45.0
+        delta_angle = 22.5
+        port_extension = 0.1
+        points = 200
+        arms = 4
+
+        outer_rad_calc = (
+            scale_factor * lightSpeed / start_freq_hz / 4.0 / (math.radians(alpha_angle) + math.radians(delta_angle))
+        )
+        outer_rad = constants.unit_converter(outer_rad_calc, "Length", "meter", self.length_unit)
+        inner_rad_calc = (
+            scale_factor
+            * lightSpeed
+            / stop_freq_hz
+            / 4.0
+            / 2.0
+            / (math.radians(alpha_angle) + math.radians(delta_angle))
+        )
+        inner_rad = constants.unit_converter(inner_rad_calc, "Length", "meter", self.length_unit)
+        port_extension = constants.unit_converter(port_extension, "Length", "cm", self.length_unit)
+
+        parameters["alpha_angle"] = alpha_angle
+        parameters["delta_angle"] = delta_angle
+        parameters["port_extension"] = port_extension
+        parameters["outer_rad"] = outer_rad
+        parameters["cell_number"] = cell_number
+        parameters["cone_height"] = (outer_rad - inner_rad) * math.tan(math.radians(66.66))
+        parameters["points"] = points
+        parameters["arms_number"] = arms
+        parameters["growth_rate"] = round(math.pow(inner_rad / outer_rad, 1.0 / (cell_number - 1)), 2)
+
+        parameters["pos_x"] = self.origin[0]
+        parameters["pos_y"] = self.origin[1]
+        parameters["pos_z"] = self.origin[2]
+
+        myKeys = list(parameters.keys())
+        myKeys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+
+        return parameters_out
+
+    @pyaedt_function_handler()
+    def model_hfss(self):
+        """Draw a sinuous log spiral antenna. This method uses the User Defined Model from AEDT installation.
+
+        Once the antenna is created, this method is not used anymore."""
+
+        if self.object_list:
+            logger.debug("This antenna already exists")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
+            return False
+
+        self.set_variables_in_hfss()
+
+        # Map parameters
+        alpha_angle = self.synthesis_parameters.alpha_angle.hfss_variable
+        self._app[alpha_angle] = str(self.synthesis_parameters.alpha_angle.value) + "deg"
+        delta_angle = self.synthesis_parameters.delta_angle.hfss_variable
+        self._app[delta_angle] = str(self.synthesis_parameters.delta_angle.value) + "deg"
+        growth_rate = self.synthesis_parameters.growth_rate.hfss_variable
+        self._app[growth_rate] = str(self.synthesis_parameters.growth_rate.value)
+
+        cone_height = self.synthesis_parameters.cone_height.hfss_variable
+        outer_rad = self.synthesis_parameters.outer_rad.hfss_variable
+
+        arms = self.synthesis_parameters.arms_number.hfss_variable
+        self._app[arms] = str(self.synthesis_parameters.arms_number.value)
+        points = self.synthesis_parameters.points.hfss_variable
+        self._app[points] = str(self.synthesis_parameters.points.value)
+        cell_number = self.synthesis_parameters.cell_number.hfss_variable
+        self._app[cell_number] = str(self.synthesis_parameters.cell_number.value)
+        port_extension = self.synthesis_parameters.port_extension.hfss_variable
+
+        pos_x = self.synthesis_parameters.pos_x.hfss_variable
+        pos_y = self.synthesis_parameters.pos_y.hfss_variable
+        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        antenna_name = self.antenna_name
+        coordinate_system = self.coordinate_system
+
+        my_udmPairs = []
+        mypair = ["NumberOfPoints", points]
+        my_udmPairs.append(mypair)
+        mypair = ["NumberOfCells", cell_number]
+        my_udmPairs.append(mypair)
+        mypair = ["Alpha", alpha_angle]
+        my_udmPairs.append(mypair)
+        mypair = ["GrowRate", growth_rate]
+        my_udmPairs.append(mypair)
+        mypair = ["OuterRadius", outer_rad]
+        my_udmPairs.append(mypair)
+        mypair = ["Delta", delta_angle]
+        my_udmPairs.append(mypair)
+        mypair = ["NumberOfArms", arms]
+        my_udmPairs.append(mypair)
+        mypair = ["ConeHeight", cone_height]
+        my_udmPairs.append(mypair)
+        mypair = ["Port_Extension", port_extension]
+        my_udmPairs.append(mypair)
+        obj_udm = self._app.modeler.create_udm(
+            udmfullname="HFSS/Antenna Toolkit/Spiral/Sinuous.py",
+            udm_params_list=my_udmPairs,
+            udm_library="syslib",
+            name="log",
+        )
+        port_cont = 1
+        gnd_cont = 1
+        for part in obj_udm.parts:
+            comp = obj_udm.parts[part]
+            comp.history().props["Coordinate System"] = coordinate_system
+            if "AntennaArm" in comp.name:
+                comp.name = "ant_" + comp.name + antenna_name
+            elif "Port" in comp.name:
+                comp.name = "port_lump_" + antenna_name + "_" + str(port_cont)
+                port_cont += 1
+            else:
+                comp.name = "gnd_" + str(gnd_cont) + "_" + antenna_name
+                gnd_cont += 1
+
+            self.object_list[comp.name] = comp
+
+        obj_udm.move([pos_x, pos_y, pos_z])
+
+        obj_udm.group_name = antenna_name
+
+    @pyaedt_function_handler()
+    def model_disco(self):
+        """Model in PyDisco. To be implemented."""
+        pass
+
+    @pyaedt_function_handler()
+    def setup_disco(self):
+        """Setup in PyDisco. To be implemented."""
         pass

@@ -3,6 +3,8 @@ from ansys.aedt.toolkits.antenna.backend.models.bowtie import BowTie
 from ansys.aedt.toolkits.antenna.backend.models.bowtie import BowTieRounded
 from ansys.aedt.toolkits.antenna.backend.models.bowtie import BowTieSlot
 from ansys.aedt.toolkits.antenna.backend.models.conical_spiral import Archimedean
+from ansys.aedt.toolkits.antenna.backend.models.conical_spiral import Log
+from ansys.aedt.toolkits.antenna.backend.models.conical_spiral import Sinuous
 from ansys.aedt.toolkits.antenna.backend.models.helix import AxialMode
 from ansys.aedt.toolkits.antenna.backend.models.horn import Conical
 from ansys.aedt.toolkits.antenna.backend.models.horn import Corrugated

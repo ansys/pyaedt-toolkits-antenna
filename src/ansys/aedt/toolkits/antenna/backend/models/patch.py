@@ -456,12 +456,12 @@ class RectangularPatchProbe(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDiscovery. To be implemenented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up the model in PyDiscovery. To be implemenented."""
+        """Set up the model in PyDiscovery. To be implemented."""
         pass
 
 
@@ -795,12 +795,12 @@ class RectangularPatchInset(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDiscovery. To be implemenented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up the model in PyDiscovery. To be implemenented."""
+        """Set up the model in PyDiscovery. To be implemented."""
         pass
 
 
@@ -1151,10 +1151,10 @@ class RectangularPatchEdge(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemenented."""
+        """Model in PyDisco. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up the model in PyDisco. To be implemenented."""
+        """Set up the model in PyDisco. To be implemented."""
         pass
