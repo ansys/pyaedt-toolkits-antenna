@@ -248,12 +248,12 @@ class BowTie(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model the bowtie antenna in PyDiscovery. To be implemenented."""
+        """Model the bowtie antenna in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up the model in PyDiscovery. To be implemenented."""
+        """Set up the model in PyDiscovery. To be implemented."""
         pass
 
 
@@ -511,12 +511,12 @@ class BowTieRounded(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDiscovery. To be implemenented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up the model in PyDiscovery. To be implemenented."""
+        """Set up the model in PyDiscovery. To be implemented."""
         pass
 
 
@@ -829,10 +829,10 @@ class BowTieSlot(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDiscovery. To be implemenented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up the model in PyDiscovery. To be implemenented."""
+        """Set up the model in PyDiscovery. To be implemented."""
         pass
