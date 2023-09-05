@@ -422,10 +422,12 @@ class CommonAntenna(object):
                 self.synthesis_parameters.add_parameter(k, v)
 
     @pyaedt_function_handler()
-    def set_variables_in_hfss(self):
+    def set_variables_in_hfss(self, not_used=None):
         """Create HFSS design variables."""
+        if not not_used:
+            not_used = []
         for p in self.synthesis_parameters.__dict__.values():
-            if isinstance(p, Property):
+            if isinstance(p, Property) and p.hfss_variable not in not_used:
                 properties.parameters_hfss[p._name] = p.hfss_variable
                 if "angle" in p.hfss_variable:
                     self._app[p.hfss_variable] = str(p.value) + "deg"
@@ -475,52 +477,58 @@ class CommonAntenna(object):
                     )
                     self.mesh_operations[mesh_op.name] = mesh_op
 
-        terminal_references = []
-        port_lump = port = port_cap = None
-        if "port_lump_{}".format(self.antenna_name) in self.object_list:
-            port_lump = self.object_list["port_lump_{}".format(self.antenna_name)]
-            terminal_references = [
-                i
-                for i in port_lump.touching_objects
-                if self._app.modeler[i]
-                and (
-                    self._app.modeler[i].object_type == "Sheet"
-                    or self._app.materials[self._app.modeler[i].material_name].is_conductor()
+        port_count = 1
+        for item in list(self.object_list.keys()):
+            terminal_references = []
+            port_lump = port = port_cap = None
+            if "port_lump_{}".format(self.antenna_name) in item:
+                port_lump = self.object_list[item]
+                terminal_references = [
+                    i
+                    for i in port_lump.touching_objects
+                    if self._app.modeler[i]
+                    and (
+                        self._app.modeler[i].object_type == "Sheet"
+                        or self._app.materials[self._app.modeler[i].material_name].is_conductor()
+                    )
+                ]
+                if len(terminal_references) > 1:
+                    axis_dir = [[], []]
+                    for edge in port_lump.edges:
+                        if terminal_references[1] in self._app.modeler.get_bodynames_from_position(edge.midpoint):
+                            axis_dir[1] = edge.midpoint
+                        elif terminal_references[0] in self._app.modeler.get_bodynames_from_position(edge.midpoint):
+                            axis_dir[0] = edge.midpoint
+                    terminal_references = terminal_references[1:]
+
+            elif "port_{}".format(self.antenna_name) in item:
+                port = self.object_list[item]
+                for item_cap in list(self.object_list.keys()):
+                    if "port_cap_{}".format(self.antenna_name) in item_cap:
+                        port_cap = self.object_list[item_cap]
+
+            if port_lump:
+                port1 = self._app.lumped_port(
+                    signal=item,
+                    reference=terminal_references,
+                    impedance=50,
+                    name="port_" + self.antenna_name + "_" + str(port_count),
+                    renormalize=True,
+                    deembed=False,
                 )
-            ]
-            if len(terminal_references) > 1:
-                axis_dir = [[], []]
-                for edge in port_lump.edges:
-                    if terminal_references[1] in self._app.modeler.get_bodynames_from_position(edge.midpoint):
-                        axis_dir[1] = edge.midpoint
-                    elif terminal_references[0] in self._app.modeler.get_bodynames_from_position(edge.midpoint):
-                        axis_dir[0] = edge.midpoint
-                terminal_references = terminal_references[1:]
 
-        elif "port_{}".format(self.antenna_name) in self.object_list:
-            port = self.object_list["port_{}".format(self.antenna_name)]
-            if "port_cap_{}".format(self.antenna_name) in self.object_list:
-                port_cap = self.object_list["port_cap_{}".format(self.antenna_name)]
-        if port_lump:
-            port1 = self._app.lumped_port(
-                signal="port_lump_{}".format(self.antenna_name),
-                reference=terminal_references,
-                impedance=50,
-                name="port_" + self.antenna_name,
-                renormalize=True,
-                deembed=False,
-            )
-
-            self.excitations[port1.name] = port1
-        elif port:
-            if self._app.solution_type == "Terminal" and port_cap:
-                terminal_references = port_cap.name
-            port1 = self._app.wave_port(
-                signal=port,
-                reference=terminal_references,
-                name="port_" + self.antenna_name,
-            )
-            self.excitations[port1.name] = port1
+                self.excitations[port1.name] = port1
+                port_count += 1
+            elif port:
+                if self._app.solution_type == "Terminal" and port_cap:
+                    terminal_references = port_cap.name
+                port1 = self._app.wave_port(
+                    signal=port,
+                    reference=terminal_references,
+                    name="port_" + self.antenna_name + "_" + str(port_count),
+                )
+                self.excitations[port1.name] = port1
+                port_count += 1
 
         return True
 

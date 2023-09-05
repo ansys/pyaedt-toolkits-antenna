@@ -43,7 +43,6 @@ class FrontendGeneric(object):
         self.log_text.setTextCursor(tc)
 
     def update_progress(self, value):
-        self.progress_bar.setValue(value)
         if 0 < value < 100:
             self.progress_bar.setStyleSheet(
                 """
@@ -68,6 +67,8 @@ class FrontendGeneric(object):
                 }
                 """
             )
+
+        self.progress_bar.setValue(value)
 
         if self.progress_bar.isHidden():
             self.progress_bar.setVisible(True)
