@@ -449,7 +449,7 @@ class ToolkitGeneric(object):
 
         Parameters
         ----------
-        app_name : str
+        app_name : str, optional
             Aedt application name. The default is connecting to active design. Application available are:
 
             * Circuit Design
@@ -661,6 +661,12 @@ class ToolkitGeneric(object):
     def save_project(self, project_path=None):
         """Save project. It uses the properties to get the project path. This method is launched in a thread.
 
+        Parameters
+        ----------
+        project_path : str, optional
+            Path of the AEDT file to save.
+            The default value is ``None`` in which case the current file is overwritten.
+
         Returns
         -------
         bool
@@ -679,7 +685,7 @@ class ToolkitGeneric(object):
         >>> toolkit.save_project()
         """
         if self.connect_design():
-            if properties.active_project != project_path:
+            if project_path and properties.active_project != project_path:
                 old_project_name = os.path.splitext(os.path.basename(properties.active_project))[0]
                 self.aedtapp.save_project(project_file=os.path.abspath(project_path))
                 index = properties.project_list.index(properties.active_project)
