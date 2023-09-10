@@ -37,9 +37,9 @@ Documentation and issues
 ~~~~~~~~~~~~~~~~~~~~~~~~
 In addition to installation and usage information, the toolkit
 documentation provides
-`API reference <https://aedt.antenna.toolkit.docs.pyansys.com/version/dev/Toolkit/index.html>`_,
+`API reference <https://aedt.antenna.toolkit.docs.pyansys.com/version/stable/toolkit/index.html>`_,
 and `Contribute
-<https://aedt.antenna.toolkit.docs.pyansys.com/version/dev/Contributing.html>`_ sections.
+<https://github.com/ansys/pyaedt-toolkits-antenna/graphs/contributors>`_ sections.
 
 On the `AEDT Antenna toolkit Issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_ page, you can
 create issues to submit questions, report bugs, and request new features.
