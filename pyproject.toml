@@ -28,7 +28,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
-    "build==1.0.0",
+    "build==1.0.3",
     "twine==4.0.2",
     "pyaedt",
     "importlib-metadata >=4.0",
