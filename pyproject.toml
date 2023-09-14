@@ -48,7 +48,7 @@ doc = [
     "ansys-sphinx-theme==0.11.1",
     "numpydoc==1.5.0",
     "recommonmark==0.7.1",
-    "sphinx==7.2.5",
+    "sphinx==7.2.6",
     "sphinx-copybutton==0.5.2",
     "enum-tools[sphinx]==0.11.0",
     "sphinx-autoapi==2.1.1",
