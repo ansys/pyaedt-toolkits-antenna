@@ -28,7 +28,7 @@ jobs:
     name: "Code style"
     runs-on: ubuntu-latest
     steps:
-      - uses: ansys/actions/code-style@v3
+      - uses: ansys/actions/code-style@v4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
@@ -128,7 +128,7 @@ jobs:
 
       - name: "Upload coverage report to codecov"
         if: ${{ matrix.python-version == env.MAIN_PYTHON_VERSION }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v3
         with:
           file: .cov/total.xml
         env:
