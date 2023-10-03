@@ -104,21 +104,8 @@ class FrontendGeneric(QtWidgets.QMainWindow, Ui_MainWindow, FrontendThread):
         response = requests.get(self.url + "/get_status")
         if response.ok and response.json() == "Backend running":
             return True
-        try:
-            response = requests.get(self.url + "/get_properties")
-            if response.ok:
-                data = response.json()
-                logger.debug("Updating the properties from backend.")
-                if data:
-                    for key in data:
-                        setattr(be_properties, key, data[key])
-                    logger.debug("Properties from backend updated successfully.")
-                    return False
-                else:
-                    logger.debug("body is empty!")
-                    return False
-        except requests.exceptions.RequestException:
-            self.write_log_line("Get properties failed")
+        else:
+            return False
 
     def installed_versions(self):
         try:
