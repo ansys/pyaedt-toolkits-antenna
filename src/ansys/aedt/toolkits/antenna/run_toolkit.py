@@ -1,5 +1,4 @@
 import atexit
-import json
 import os
 import signal
 import sys
@@ -11,13 +10,11 @@ import requests
 
 from ansys.aedt.toolkits.antenna import backend
 from ansys.aedt.toolkits.antenna import ui
+from ansys.aedt.toolkits.antenna.ui.common.properties import general_settings
 
-with open(os.path.join(os.path.dirname(__file__), "ui", "common", "general_properties.json")) as fh:
-    general_settings = json.load(fh)
-
-url = general_settings["backend_url"]
-port = general_settings["backend_port"]
-url_call = "http://" + url + ":" + str(port)
+url = general_settings.backend_url
+port = general_settings.backend_port
+url_call = f"http://{url}:{port}"
 
 is_linux = os.name == "posix"
 
