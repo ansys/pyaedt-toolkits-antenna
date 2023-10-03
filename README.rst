@@ -7,7 +7,7 @@ AEDT Antenna toolkit
    :target: https://docs.pyansys.com/
    :alt: PyAnsys
 
-.. |PythonVersion| image:: https://img.shields.io/badge/python-3.7+-blue.svg
+.. |PythonVersion| image:: https://img.shields.io/badge/python-3.10+-blue.svg
    :target: https://www.python.org/downloads/
 
 .. |GH-CI| image:: https://github.com/ansys/pyaedt-toolkits-antenna/actions/workflows/ci_cd.yml/badge.svg
