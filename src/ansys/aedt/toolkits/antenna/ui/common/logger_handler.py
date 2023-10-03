@@ -1,13 +1,11 @@
-import json
 import logging
 import os
 import tempfile
 
-with open(os.path.join(os.path.dirname(__file__), "general_properties.json")) as fh:
-    general_settings = json.load(fh)
+from ansys.aedt.toolkits.antenna.ui.common.properties import general_settings
 
-debug = general_settings["debug"]
-log_file = str(general_settings["log_file"])
+debug = general_settings.debug
+log_file = general_settings.log_file
 
 # Create a logger
 logger = logging.getLogger(__name__)

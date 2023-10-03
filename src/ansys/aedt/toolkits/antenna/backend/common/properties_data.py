@@ -25,19 +25,29 @@ class FrozenClass(object):
 
 
 class PropertiesData(FrozenClass):
-    """Properties data model."""
+    """Properties data model.
+    __default_properties contains the default properties loaded during the class initialization.
+    If the default_properties dictionary passed at the initialization is empty, then the class is unfrozen
+    and it can be dynamically changed."""
 
     def __init__(self, default_properties):
-        self.__default_properties = copy.deepcopy(default_properties)
-        for key, value in self.__default_properties.items():
-            setattr(self, key, copy.deepcopy(value))
-        self._freeze()  # no new attributes after this point.
+        self.__default_properties = {}
+        if default_properties:
+            self.__default_properties = copy.deepcopy(default_properties)
+            for key, value in self.__default_properties.items():
+                setattr(self, key, copy.deepcopy(value))
+            self._freeze()  # no new attributes after this point.
 
     def write_to_file(self, file_name):
         with open(file_name, "w") as write_file:
             temp_dict = {}
-            for key in self.__default_properties:
-                temp_dict[key] = self.__dict__[key]
+            if self.__default_properties:
+                for key in self.__default_properties:
+                    temp_dict[key] = self.__dict__[key]
+            else:
+                for key in self.__dict__:
+                    if not key.startswith("_"):
+                        temp_dict[key] = self.__dict__[key]
             json.dump(temp_dict, write_file, indent=4)
 
     def read_from_file(self, file_name):
@@ -52,8 +62,13 @@ class PropertiesData(FrozenClass):
 
     def export_to_dict(self):
         temp_dict = {}
-        for key in self.__default_properties:
-            temp_dict[key] = self.__dict__[key]
+        if self.__default_properties:
+            for key in self.__default_properties:
+                temp_dict[key] = self.__dict__[key]
+        else:
+            for key in self.__dict__:
+                if not key.startswith("_"):
+                    temp_dict[key] = self.__dict__[key]
         return temp_dict
 
     def __eq__(self, other):

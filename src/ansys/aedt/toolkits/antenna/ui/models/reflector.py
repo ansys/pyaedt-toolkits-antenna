@@ -1,28 +1,29 @@
 import os
 
-import requests
-
 from ansys.aedt.toolkits.antenna.ui.common.logger_handler import logger
+from ansys.aedt.toolkits.antenna.ui.common.properties import be_properties
+from ansys.aedt.toolkits.antenna.ui.models.frontend_api import ToolkitFrontend
 
 
-class Reflector(object):
+class Reflector(ToolkitFrontend):
     """Manages UI Reflector."""
 
     def __init__(self):
+        ToolkitFrontend.__init__(self)
         self.antenna_template = None
         pass
 
     def draw_cassegrain_ui(self):
         """Create a cassegrain reflector."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -48,15 +49,15 @@ class Reflector(object):
 
     def draw_gregorian_ui(self):
         """Create a Gregorian reflector."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -82,15 +83,15 @@ class Reflector(object):
 
     def draw_parabolic_ui(self):
         """Create a parabolic reflector."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -116,15 +117,15 @@ class Reflector(object):
 
     def draw_splash_plate_ui(self):
         """Create a splash reflector."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)

@@ -2,12 +2,14 @@ import os
 
 from flask import request
 
+from ansys.aedt.toolkits.antenna.backend.api import Toolkit
 from ansys.aedt.toolkits.antenna.backend.common.multithreading_server import MultithreadingServer
 from ansys.aedt.toolkits.antenna.backend.common.rest_api_generic import app
 from ansys.aedt.toolkits.antenna.backend.common.rest_api_generic import jsonify
 from ansys.aedt.toolkits.antenna.backend.common.rest_api_generic import logger
 from ansys.aedt.toolkits.antenna.backend.common.rest_api_generic import settings
-from ansys.aedt.toolkits.antenna.backend.common.rest_api_generic import toolkit
+
+toolkit = Toolkit()
 
 
 @app.route("/create_antenna", methods=["POST"])
