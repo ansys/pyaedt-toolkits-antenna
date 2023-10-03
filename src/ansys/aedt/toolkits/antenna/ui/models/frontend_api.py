@@ -13,14 +13,13 @@ import requests
 
 from ansys.aedt.toolkits.antenna.ui.common.frontend_api_generic import FrontendGeneric
 from ansys.aedt.toolkits.antenna.ui.common.logger_handler import logger
-from ansys.aedt.toolkits.antenna.ui.common.thread_manager import FrontendThread
+from ansys.aedt.toolkits.antenna.ui.common.properties import be_properties
 
 line_colors = ["g", "b", "r", "y", "w"]
 
 
-class ToolkitFrontend(FrontendThread, FrontendGeneric):
+class ToolkitFrontend(FrontendGeneric):
     def __init__(self):
-        FrontendThread.__init__(self)
         FrontendGeneric.__init__(self)
         self.temp_folder = tempfile.mkdtemp()
         self.synth_button = None
@@ -49,85 +48,84 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         self.property_table.itemChanged.connect(None)
 
         # Get properties from backend
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
+        self.get_properties()
 
         project_selected = self.project_aedt_combo.currentText()
-        for project in properties["project_list"]:
+        for project in be_properties.project_list:
             if os.path.splitext(os.path.basename(project))[0] == project_selected and project_selected != "No project":
-                properties["active_project"] = project
+                be_properties.active_project = project
                 design_selected = self.design_aedt_combo.currentText()
-                if project_selected in list(properties["design_list"].keys()):
-                    designs = properties["design_list"][project_selected]
+                if project_selected in list(be_properties.design_list.keys()):
+                    designs = be_properties.design_list[project_selected]
                     for design in designs:
                         if design_selected in list(design.values())[0]:
                             if list(design.keys())[0].lower() == "hfss":
-                                properties["active_design"] = design
+                                be_properties.active_design = design
                             else:
-                                properties["active_design"] = {}
+                                be_properties.active_design = {}
                             break
                 break
 
-        properties["antenna_type"] = self.antenna_template
+        be_properties.antenna_type = self.antenna_template
 
         # Options
         component3d = self.component_3d.isChecked()
-        properties["component_3d"] = component3d
+        be_properties.component_3d = component3d
         create_setup = self.create_hfss_setup.isChecked()
-        properties["create_setup"] = create_setup
+        be_properties.create_setup = create_setup
         lattice_pair = self.lattice_pair.isChecked()
-        properties["lattice_pair"] = lattice_pair
+        be_properties.lattice_pair = lattice_pair
         sweep = self.sweep_slider.value()
-        properties["sweep"] = sweep
-        properties["synth_only"] = synth_only
+        be_properties.sweep = sweep
+        be_properties.synth_only = synth_only
 
         # Antenna setting
         antenna_name = self.antenna_name.text()
-        properties["antenna_name"] = antenna_name
+        be_properties.antenna_name = antenna_name
         x_pos = float(self.x_position.text())
         y_pos = float(self.y_position.text())
         z_pos = float(self.z_position.text())
-        properties["origin"] = [x_pos, y_pos, z_pos]
+        be_properties.origin = [x_pos, y_pos, z_pos]
         coordinate_system = self.coordinate_system.text()
-        properties["coordinate_system"] = coordinate_system
+        be_properties.coordinate_system = coordinate_system
         if "substrate_height" in self.__dir__():
             substrate_height = float(self.substrate_height.text())
-            properties["substrate_height"] = substrate_height
+            be_properties.substrate_height = substrate_height
         if "material" in self.__dir__():
             material = self.material.currentText()
-            properties["material"] = material
-            properties["material_properties"] = {"permittivity": self.default_materials[material]}
+            be_properties.material = material
+            be_properties.material_properties = {"permittivity": self.default_materials[material]}
         if "gain_value" in self.__dir__():
             gain = self.gain_value.text()
-            properties["gain_value"] = float(gain)
+            be_properties.gain_value = float(gain)
         if "feeder_length" in self.__dir__():
             feed = self.feeder_length.text()
-            properties["feeder_length"] = float(feed)
+            be_properties.feeder_length = float(feed)
 
         # Toolkit settings
         lenght_unit = self.units.currentText()
-        properties["length_unit"] = lenght_unit
+        be_properties.length_unit = lenght_unit
         freq_unit = self.frequnits.currentText()
-        properties["frequency_unit"] = freq_unit
+        be_properties.frequency_unit = freq_unit
         num_cores = int(self.numcores.text())
-        properties["core_number"] = num_cores
+        be_properties.core_number = num_cores
 
         msg = "User interface inputs loaded"
         logger.debug(msg)
         self.write_log_line(msg)
 
         if "frequency" in self.__dir__() and self.frequency.text() != "0":
-            properties["frequency"] = float(self.frequency.text())
+            be_properties.frequency = float(self.frequency.text())
         elif "start_frequency" in self.__dir__() and "stop_frequency" in self.__dir__():
-            properties["start_frequency"] = float(self.start_frequency.text())
-            properties["stop_frequency"] = float(self.stop_frequency.text())
+            be_properties.start_frequency = float(self.start_frequency.text())
+            be_properties.stop_frequency = float(self.stop_frequency.text())
 
-        properties["outer_boundary"] = (
+        be_properties.outer_boundary = (
             None if self.parameters["boundary"].currentText() == "None" else self.parameters["boundary"].currentText()
         )
 
         # Update backend
-        self.set_properties(properties)
+        self.set_properties()
 
         if synth_only:
             response = requests.post(self.url + "/create_antenna")
@@ -176,18 +174,17 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                 logger.debug(msg)
                 self.write_log_line(msg)
 
-                properties = {"close_projects": False, "close_on_exit": False}
-                requests.post(self.url + "/close_aedt", json=properties)
+                arguments = {"close_projects": False, "close_on_exit": False}
+                requests.post(self.url + "/close_aedt", json=arguments)
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
+        self.get_properties()
 
-        self.property_table.setRowCount(len(properties["parameters"].items()))
+        self.property_table.setRowCount(len(be_properties.parameters.items()))
         i = 0
         __sortingEnabled = self.property_table.isSortingEnabled()
         self.property_table.setSortingEnabled(False)
-        self.property_table.setRowCount(len(properties["parameters"].values()))
-        for par, value in properties["parameters"].items():
+        self.property_table.setRowCount(len(be_properties.parameters.values()))
+        for par, value in be_properties.parameters.items():
             item = QtWidgets.QTableWidgetItem(par)
             self.property_table.setItem(i, 0, item)
             ratio_re = re.compile("|".join(["ratio", "coefficient", "points", "number"]))
@@ -196,7 +193,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             elif ratio_re.search(par):
                 item = QtWidgets.QTableWidgetItem(str(round(value, 3)))
             else:
-                item = QtWidgets.QTableWidgetItem(str(round(value, 3)) + properties["length_unit"])
+                item = QtWidgets.QTableWidgetItem(str(round(value, 3)) + be_properties.length_unit)
             self.property_table.setItem(i, 1, item)
             i += 1
 
@@ -210,7 +207,8 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
 
         self.synth_button = QtWidgets.QPushButton()
         self.synth_button.setObjectName("synth_button")
-        self.synth_button.setFont(self._font)
+        font = QtGui.QFont("Arial", 12)
+        self.synth_button.setFont(font)
         self.synth_button.setMinimumSize(QtCore.QSize(100, 40))
 
         line_buttons.addWidget(self.synth_button)
@@ -222,16 +220,15 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
 
         self.create_button = QtWidgets.QPushButton()
         self.create_button.setObjectName("create_button")
-        self.create_button.setFont(self._font)
+        self.create_button.setFont(font)
         self.create_button.setMinimumSize(QtCore.QSize(160, 40))
 
         line_buttons.addWidget(self.create_button)
 
         self.synth_button.setText("Synthesis")
         self.create_button.setText("Create HFSS Model")
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["selected_process"] == 0 or properties["antenna_created"]:
+        self.get_properties()
+        if be_properties.selected_process == 0 or be_properties.antenna_created:
             self.create_button.setEnabled(False)
         self.synth_button.clicked.connect(lambda: method_create(True))
         self.create_button.clicked.connect(lambda: method_create(False))
@@ -254,8 +251,8 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         if response.ok and response.json() == "Backend running":
             self.write_log_line("Please wait, toolkit running")
         else:
-            properties = {"key": key, "value": val}
-            response = requests.put(self.url + "/update_parameters", json=properties)
+            arguments = {"key": key, "value": val}
+            response = requests.put(self.url + "/update_parameters", json=arguments)
             if not response.ok:
                 msg = f"Failed backend call: {self.url}" + "/update_parameters"
                 logger.debug(msg)
@@ -264,12 +261,12 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
                 msg = "HFSS geometry completed."
                 logger.debug(msg)
                 self.write_log_line(msg)
-                properties = self.get_properties()
-                if properties["antenna_created"]:
+                self.get_properties()
+                if be_properties.antenna_created:
                     self.get_hfss_model()
 
-            properties = {"close_projects": False, "close_on_exit": False}
-            requests.post(self.url + "/close_aedt", json=properties)
+            arguments = {"close_projects": False, "close_on_exit": False}
+            requests.post(self.url + "/close_aedt", json=arguments)
 
     def analyze_antenna(self):
         """Solves current report and plots antenna results."""
@@ -281,10 +278,10 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             self.update_progress(25)
             response = requests.get(self.url + "/health")
             if response.ok and response.json() == "Toolkit not connected to AEDT":
-                properties = self.get_properties()
-                properties["core_number"] = self.numcores.text()
-                self.set_properties(properties)
-                if not properties["active_design"]:
+                self.get_properties()
+                be_properties.core_number = self.numcores.text()
+                self.set_properties()
+                if not be_properties.active_design:
                     self.write_log_line("Project not loaded")
                     self.update_progress(0)
                     return
@@ -566,7 +563,8 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
         label.setObjectName("{}_label".format(title))
         line.addWidget(label)
         label.setText(label_value)
-        label.setFont(self._font)
+        font = QtGui.QFont("Arial", 12)
+        label.setFont(font)
         spacer = QtWidgets.QSpacerItem(
             40 - len(title), 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
         )
@@ -576,7 +574,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             self.__dict__[name] = QtWidgets.QLineEdit()
             edit = self.__dict__[name]
             edit.setObjectName(name)
-            edit.setFont(self._font)
+            edit.setFont(font)
             edit.setText(value)
             edit.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight)
             line.addWidget(edit)
@@ -585,7 +583,7 @@ class ToolkitFrontend(FrontendThread, FrontendGeneric):
             self.__dict__[name] = QtWidgets.QComboBox()
             edit = self.__dict__[name]
             edit.setObjectName(name)
-            edit.setFont(self._font)
+            edit.setFont(font)
             for v in value:
                 edit.addItem(str(v))
 

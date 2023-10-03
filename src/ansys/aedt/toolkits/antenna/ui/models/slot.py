@@ -1,28 +1,29 @@
 import os
 
-import requests
-
 from ansys.aedt.toolkits.antenna.ui.common.logger_handler import logger
+from ansys.aedt.toolkits.antenna.ui.common.properties import be_properties
+from ansys.aedt.toolkits.antenna.ui.models.frontend_api import ToolkitFrontend
 
 
-class Slot(object):
+class Slot(ToolkitFrontend):
     """Manages UI Slot antenna."""
 
     def __init__(self):
+        ToolkitFrontend.__init__(self)
         self.antenna_template = None
         pass
 
     def draw_backed_array_ui(self):
         """Create a backed array antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -48,15 +49,15 @@ class Slot(object):
 
     def draw_backed_t_bar_ui(self):
         """Create a backed T-bar antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -82,15 +83,15 @@ class Slot(object):
 
     def draw_gap_fed_ui(self):
         """Create a gap fed antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -116,15 +117,15 @@ class Slot(object):
 
     def draw_microstrip_feed_ui(self):
         """Create a microstrip feed slot antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)

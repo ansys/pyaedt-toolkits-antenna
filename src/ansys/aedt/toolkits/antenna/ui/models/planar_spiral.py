@@ -1,28 +1,29 @@
 import os
 
-import requests
-
 from ansys.aedt.toolkits.antenna.ui.common.logger_handler import logger
+from ansys.aedt.toolkits.antenna.ui.common.properties import be_properties
+from ansys.aedt.toolkits.antenna.ui.models.frontend_api import ToolkitFrontend
 
 
-class PlanarSpiral(object):
+class PlanarSpiral(ToolkitFrontend):
     """Manages UI PlanarSpiral antenna."""
 
     def __init__(self):
+        ToolkitFrontend.__init__(self)
         self.antenna_template = None
         pass
 
     def draw_archimidean_ui(self):
         """Create an archimedean planar spiral antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -48,15 +49,15 @@ class PlanarSpiral(object):
 
     def draw_archimidean_absorber_ui(self):
         """Create an archimedean planar spiral with absorber antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -82,15 +83,15 @@ class PlanarSpiral(object):
 
     def draw_log_ui(self):
         """Create log planar spiral antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -116,15 +117,15 @@ class PlanarSpiral(object):
 
     def draw_log_absorber_ui(self):
         """Create log planar spiral with absorber antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -150,15 +151,15 @@ class PlanarSpiral(object):
 
     def draw_sinuous_ui(self):
         """Create sinuous planar spiral antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -184,15 +185,15 @@ class PlanarSpiral(object):
 
     def draw_sinuous_absorber_ui(self):
         """Create sinuous planar spiral with absorber antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
