@@ -117,18 +117,28 @@ while response.json() != "Backend free":
 # User can pass the desktop ID and version to connect to a specific AEDT session
 desktop_pid = None
 desktop_version = None
-if len(sys.argv) == 3:
+grpc = False
+
+if "PYAEDT_SCRIPT_VERSION" in list(os.environ.keys()) and (
+    "PYAEDT_SCRIPT_PROCESS_ID" in list(os.environ.keys()) or "PYAEDT_SCRIPT_PORT" in list(os.environ.keys())
+):
+    desktop_version = os.environ["PYAEDT_SCRIPT_VERSION"]
+    if desktop_version > "2023.2":
+        # GRPC Default
+        desktop_pid = os.environ["PYAEDT_SCRIPT_PORT"]
+        grpc = True
+    else:
+        # COM Default
+        desktop_pid = os.environ["PYAEDT_SCRIPT_PROCESS_ID"]
+elif len(sys.argv) == 3:
     desktop_pid = sys.argv[1]
     desktop_version = sys.argv[2]
-elif "PYAEDT_SCRIPT_VERSION" in list(os.environ.keys()) and "PYAEDT_SCRIPT_PROCESS_ID" in list(os.environ.keys()):
-    desktop_pid = os.environ["PYAEDT_SCRIPT_PROCESS_ID"]
-    desktop_version = os.environ["PYAEDT_SCRIPT_VERSION"]
 
 if desktop_pid and desktop_version:
     properties = {
         "selected_process": int(desktop_pid),
         "aedt_version": desktop_version,
-        "use_grpc": False,
+        "use_grpc": grpc,
     }
     requests.put(url_call + "/set_properties", json=properties)
     requests.post(url_call + "/launch_aedt")
