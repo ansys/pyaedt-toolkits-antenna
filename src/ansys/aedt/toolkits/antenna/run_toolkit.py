@@ -123,7 +123,7 @@ if "PYAEDT_SCRIPT_VERSION" in list(os.environ.keys()) and (
     "PYAEDT_SCRIPT_PROCESS_ID" in list(os.environ.keys()) or "PYAEDT_SCRIPT_PORT" in list(os.environ.keys())
 ):
     desktop_version = os.environ["PYAEDT_SCRIPT_VERSION"]
-    if desktop_version > "2023.2":
+    if desktop_version > "2023.2" or is_linux:
         # GRPC Default
         desktop_pid = os.environ["PYAEDT_SCRIPT_PORT"]
         grpc = True
