@@ -58,7 +58,7 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
-    "collapse_navigation": True,
+    "navigation_with_keys": False,
 }
 
 # Sphinx extensions
