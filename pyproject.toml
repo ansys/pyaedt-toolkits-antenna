@@ -30,7 +30,7 @@ dependencies = [
     "twine==4.0.2",
     "pyaedt",
     "importlib-metadata >=4.0",
-    "PySide6-Essentials==6.5.3",
+    "PySide6-Essentials==6.6.0",
     "pyqtgraph",
     "pyvistaqt",
     "qdarkstyle",
@@ -39,12 +39,12 @@ dependencies = [
 
 [project.optional-dependencies]
 tests = [
-    "pytest==7.4.2",
+    "pytest==7.4.3",
     "pytest-cov==4.1.0",
 ]
 doc = [
     "numpydoc==1.6.0",
-    "ansys-sphinx-theme==0.12.3",
+    "ansys-sphinx-theme==0.12.4",
     "recommonmark==0.7.1",
     "sphinx==7.2.6",
     "sphinx-copybutton==0.5.2",
