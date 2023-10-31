@@ -50,6 +50,7 @@ jobs:
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           check-links: false
+          skip-dependencies-cache: true
 
   smoke-tests:
     name: "Build and Smoke tests"
