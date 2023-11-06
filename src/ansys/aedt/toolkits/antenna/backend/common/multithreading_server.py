@@ -68,7 +68,7 @@ class MultithreadingServer:
         print("listening on {}:{}".format(host, port))
         server_thread = threading.Thread(target=httpd.serve_forever)
         # ensure thread dies on termination
-        # normally this would be dodgy but this tread doesn't hold anything other than sockets
+        # normally this would be dodgy but this thread doesn't hold anything other than sockets
         # the expectation is that the sockets will get released on process termination
         # - strange if they didn't
         server_thread.daemon = True
