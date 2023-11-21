@@ -52,7 +52,7 @@ doc = [
     "sphinx-autoapi==3.0.0",
     "sphinx-autobuild==2021.3.14",
     "sphinx-autodoc-typehints==1.24.1",
-    "sphinx-gallery==0.14.0",
+    "sphinx-gallery==0.15.0",
     "sphinx-notfound-page==1.0.0",
     "nbsphinx==0.9.3",
 ]
