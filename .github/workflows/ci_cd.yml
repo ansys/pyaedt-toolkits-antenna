@@ -153,8 +153,8 @@ jobs:
       - name: Create Python venv
         run: |
           python -m venv .venv_linux
-          export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
-          export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
+          export ANSYSEM_ROOT232=/ansys_inc/v232/Linux64
+          export LD_LIBRARY_PATH=$ANSYSEM_ROOT232/common/mono/Linux64/lib64:$ANSYSEM_ROOT232/Delcross:$LD_LIBRARY_PATH
 
       - name: Install packages for testing
         run: |
@@ -171,8 +171,8 @@ jobs:
         timeout-minutes: 30
         run: |
           export ANS_NODEPCHECK=1
-          export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
-          export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
+          export ANSYSEM_ROOT232=/ansys_inc/v232/Linux64
+          export LD_LIBRARY_PATH=$ANSYSEM_ROOT232/common/mono/Linux64/lib64:$ANSYSEM_ROOT232/Delcross:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v --cov=ansys.aedt --cov-report=xml:.cov/backend.xml --junitxml=junit/test-results-backend.xml --cov-report=html:.cov/backend-html tests/backend
         env:
@@ -182,8 +182,8 @@ jobs:
         timeout-minutes: 30
         run: |
           export ANS_NODEPCHECK=1
-          export ANSYSEM_ROOT231=/ansys_inc/v231/Linux64
-          export LD_LIBRARY_PATH=$ANSYSEM_ROOT231/common/mono/Linux64/lib64:$ANSYSEM_ROOT231/Delcross:$LD_LIBRARY_PATH
+          export ANSYSEM_ROOT232=/ansys_inc/v232/Linux64
+          export LD_LIBRARY_PATH=$ANSYSEM_ROOT232/common/mono/Linux64/lib64:$ANSYSEM_ROOT232/Delcross:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v --cov=ansys.aedt --cov-report=xml:.cov/models.xml --junitxml=junit/test-results-models.xml --cov-report=html:.cov/models-html tests/models
         env:
