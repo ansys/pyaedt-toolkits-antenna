@@ -171,7 +171,8 @@ class FrontendGeneric(QtWidgets.QMainWindow, Ui_MainWindow, FrontendThread):
         try:
             # Modify selected version
             self.get_properties()
-            be_properties.aedt_version = self.aedt_version_combo.currentText()
+            if self.aedt_version_combo.currentText():
+                be_properties.aedt_version = self.aedt_version_combo.currentText()
             self.set_properties()
 
             response = requests.get(self.url + "/aedt_sessions")
