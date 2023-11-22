@@ -1,28 +1,28 @@
 import os
 
-import requests
-
 from ansys.aedt.toolkits.antenna.ui.common.logger_handler import logger
+from ansys.aedt.toolkits.antenna.ui.common.properties import be_properties
+from ansys.aedt.toolkits.antenna.ui.models.frontend_api import ToolkitFrontend
 
 
-class BowTie(object):
+class BowTie(ToolkitFrontend):
     """Manages UI bowtie antenna."""
 
     def __init__(self):
+        ToolkitFrontend.__init__(self)
         self.antenna_template = None
-        pass
 
     def draw_bowtie_normal_ui(self):
         """Create a normal bowtie antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -58,15 +58,15 @@ class BowTie(object):
 
     def draw_bowtie_rounded_ui(self):
         """Create a rounded bowtie antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -102,15 +102,15 @@ class BowTie(object):
 
     def draw_bowtie_slot_ui(self):
         """Create a slot bowtie antenna."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)

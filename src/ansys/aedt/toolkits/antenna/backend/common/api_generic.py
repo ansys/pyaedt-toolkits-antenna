@@ -222,6 +222,8 @@ class ToolkitGeneric(object):
         if not properties.is_toolkit_busy:
             version = properties.aedt_version
             keys = ["ansysedt.exe"]
+            if not version:
+                return []
             if version and "." in version:
                 version = version[-4:].replace(".", "")
             if version < "222":  # pragma: no cover

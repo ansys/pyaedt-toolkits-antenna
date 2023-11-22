@@ -1,7 +1,7 @@
 import atexit
-import json
 import os
-import signal
+import socket
+import subprocess
 import sys
 import threading
 import time
@@ -11,142 +11,153 @@ import requests
 
 from ansys.aedt.toolkits.antenna import backend
 from ansys.aedt.toolkits.antenna import ui
+from ansys.aedt.toolkits.antenna.ui.common.properties import general_settings
 
-with open(os.path.join(os.path.dirname(__file__), "ui", "common", "general_properties.json")) as fh:
-    general_settings = json.load(fh)
-
-url = general_settings["backend_url"]
-port = general_settings["backend_port"]
-url_call = "http://" + url + ":" + str(port)
-
-is_linux = os.name == "posix"
-
-import subprocess
-
-# Path to Python interpreter with Flask and Pyside6 installed
-python_path = sys.executable
-
-# Define the command to start the Flask application
-backend_file = os.path.join(backend.__path__[0], "rest_api.py")
-backend_command = [python_path, backend_file]
+# Define global variables or constants
+BACKEND_FILE = os.path.join(backend.__path__[0], "rest_api.py")
+FRONTEND_FILE = os.path.join(ui.__path__[0], "frontend_actions.py")
+IS_LINUX = os.name == "posix"
+URL = general_settings.backend_url
+PORT = general_settings.backend_port
+PYTHON_PATH = sys.executable
+KILL_BACKEND = True
+BACKEND_COMMAND = [PYTHON_PATH, BACKEND_FILE]
+FRONTEND_COMMAND = [PYTHON_PATH, FRONTEND_FILE]
+URL_CALL = f"http://{URL}:{PORT}"
 
 
-# Define the command to start the PySide6 UI
-frontend_file = os.path.join(ui.__path__[0], "frontend_actions.py")
-frontend_command = [python_path, frontend_file]
+# Global functions
+def run_command(*command):
+    create_no_window = 0x08000000 if not IS_LINUX else 0
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        creationflags=create_no_window,
+    )
+    stdout, stderr = process.communicate()
+    print(stdout.decode())
 
 
-# Clean up python processes
+def server_actions(command, name):
+    thread = threading.Thread(target=run_command, args=command, name=name)
+    thread.daemon = True
+    thread.start()
+    return thread
+
+
+def wait_for_server(server="localhost", port=5001, timeout=10.0):
+    start_time = time.time()
+    first_time = True
+    result = None
+    while time.time() - start_time < timeout:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            result = sock.connect_ex((server, port))
+        except socket.error as e:
+            print(f"Socket error occurred: {e}")
+        finally:
+            sock.close()
+        if result == 0:
+            print("\nServer is ready.")
+            return True
+        if first_time:
+            print("Server not ready yet. Retrying...", end="")
+            first_time = False
+        else:
+            print(".", end="")
+        time.sleep(1)
+    print("\nTimed out waiting for server.")
+    return False
+
+
+def is_server_running(server="localhost", port=5001):
+    result = None
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        result = sock.connect_ex((server, port))
+    except socket.error as e:
+        print(f"Socket error occurred: {e}")
+    finally:
+        sock.close()
+    if result == 0:
+        return True
+    return False
+
+
 def clean_python_processes():
-    # Terminate backend processes
-    if is_linux:
-        for process in flask_pids:
-            if process in psutil.pids():
-                os.kill(process, signal.SIGKILL)
-    else:
-        for process in flask_pids:
-            if (process.name() == "python.exe" or process.name() == "python") and process.pid in psutil.pids():
+    if KILL_BACKEND:
+        for conn in psutil.net_connections():
+            (ip, port) = conn.laddr
+            pid = conn.pid
+            if ip == URL and port == PORT and pid and pid != 0:
+                process = psutil.Process(pid)
+                print(f"Killing process {process.pid} on {ip}:{port}")
                 process.terminate()
 
 
-# Define a function to run the subprocess command
-def run_command(*command):
-    myenv = os.environ.copy()
-    if is_linux:
-        process = subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-    else:
-        CREATE_NO_WINDOW = 0x08000000
-        process = subprocess.Popen(
-            " ".join(command),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            creationflags=CREATE_NO_WINDOW,
-            env=myenv,
-        )
-    stdout, stderr = process.communicate()
-    print(stdout.decode())
-    print(stderr.decode())
+def check_backend_communication():
+    response = requests.get(URL_CALL + "/health")
+    if response.ok:
+        return True
+    return False
 
 
-# Take initial running processes
-if is_linux:
-    initial_pids = psutil.pids()
-else:
-    initial_pids = psutil.Process().children(recursive=True)
+def process_desktop_properties():
+    desktop_pid = None
+    desktop_version = None
+    grpc = False
+    if "PYAEDT_SCRIPT_VERSION" in os.environ and (
+        "PYAEDT_SCRIPT_PROCESS_ID" in os.environ or "PYAEDT_SCRIPT_PORT" in os.environ
+    ):
+        desktop_version = os.environ["PYAEDT_SCRIPT_VERSION"]
+        desktop_pid = os.environ[
+            "PYAEDT_SCRIPT_PORT" if desktop_version > "2023.2" or IS_LINUX else "PYAEDT_SCRIPT_PROCESS_ID"
+        ]
+        grpc = desktop_version > "2023.2" or IS_LINUX
 
-# Create a thread to run the Flask application
-flask_process = None
-flask_thread = threading.Thread(target=run_command, args=backend_command, name="backend")
-flask_thread.daemon = True
-flask_thread.start()
-time.sleep(1)
+    elif len(sys.argv) == 3:
+        desktop_pid, desktop_version = sys.argv[1], sys.argv[2]
 
-# Wait until flask processes are running
-if is_linux:
-    current_process = len(psutil.pids())
-    count = 0
-    while current_process < len(initial_pids) and count < 10:
-        time.sleep(1)
-        current_process = len(psutil.pids())
-        count += 1
-else:
-    current_process = len(psutil.Process().children(recursive=True))
-    count = 0
-    while current_process < len(initial_pids) and count < 10:
-        time.sleep(1)
-        current_process = len(psutil.Process().children(recursive=True))
-        count += 1
-
-if current_process <= len(initial_pids):
-    raise "Backend not running"
-
-# Take backend running processes
-if is_linux:
-    flask_pids = [element for element in psutil.pids() if element not in initial_pids]
-else:
-    flask_pids = [element for element in psutil.Process().children(recursive=True) if element not in initial_pids]
+    if desktop_pid and desktop_version:
+        properties = {
+            "selected_process": int(desktop_pid),
+            "aedt_version": desktop_version,
+            "use_grpc": grpc,
+        }
+        requests.put(URL_CALL + "/set_properties", json=properties)
+        # requests.post(URL_CALL + "/launch_aedt")
 
 
-# Check if the backend is running
-response = requests.get(url_call + "/get_status")
-while response.json() != "Backend free":
-    time.sleep(1)
-    response = requests.get(url_call + "/get_status")
+# Main Execution
 
-# User can pass the desktop ID and version to connect to a specific AEDT session
-desktop_pid = None
-desktop_version = None
-if len(sys.argv) == 3:
-    desktop_pid = sys.argv[1]
-    desktop_version = sys.argv[2]
-elif "PYAEDT_SCRIPT_VERSION" in list(os.environ.keys()) and "PYAEDT_SCRIPT_PROCESS_ID" in list(os.environ.keys()):
-    desktop_pid = os.environ["PYAEDT_SCRIPT_PROCESS_ID"]
-    desktop_version = os.environ["PYAEDT_SCRIPT_VERSION"]
-
-if desktop_pid and desktop_version:
-    properties = {
-        "selected_process": int(desktop_pid),
-        "aedt_version": desktop_version,
-        "use_grpc": False,
-    }
-    requests.put(url_call + "/set_properties", json=properties)
-    requests.post(url_call + "/launch_aedt")
-
-    response = requests.get(url_call + "/get_status")
-    while response.json() != "Backend free":
-        time.sleep(1)
-        response = requests.get(url_call + "/get_status")
-
-# Create a thread to run the PySide6 UI
-ui_thread = threading.Thread(target=run_command, args=frontend_command, name="frontend")
-ui_thread.start()
-
-# Wait for the UI thread to complete
-ui_thread.join()
-
-# When the script closes, it terminates all flask processes
+# Clean python process when script ends
 atexit.register(clean_python_processes)
+
+# Check if backend is already running
+is_server_busy = is_server_running(server=URL, port=PORT)
+if is_server_busy:
+    KILL_BACKEND = False
+    raise Exception("There is a process running in: {}".format(URL_CALL))
+
+# Launch backend thread
+backend_thread = server_actions(BACKEND_COMMAND, "template_backend")
+
+# Connect to AEDT session if arguments or environment variables are passed
+process_desktop_properties()
+
+# Launch frontend thread
+frontend_thread = server_actions(FRONTEND_COMMAND, "template_frontend")
+
+# Check if backend is running. Try every 1 second with a timeout of 10 seconds
+is_server_running = wait_for_server(server=URL, port=PORT)
+if not is_server_running:
+    raise Exception("There is a process running in: {}".format(URL_CALL))
+
+# Make a first call to the backend to check the communication
+backend_communication_flag = check_backend_communication()
+if not backend_communication_flag:
+    raise Exception("Backend communication is not working.")
+
+# Keep frontend thread alive until it is closed
+frontend_thread.join()

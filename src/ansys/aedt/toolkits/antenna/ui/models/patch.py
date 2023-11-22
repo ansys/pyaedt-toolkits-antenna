@@ -1,28 +1,29 @@
 import os
 
-import requests
-
 from ansys.aedt.toolkits.antenna.ui.common.logger_handler import logger
+from ansys.aedt.toolkits.antenna.ui.common.properties import be_properties
+from ansys.aedt.toolkits.antenna.ui.models.frontend_api import ToolkitFrontend
 
 
-class Patch(object):
+class Patch(ToolkitFrontend):
     """Manages UI patch antenna."""
 
     def __init__(self):
+        ToolkitFrontend.__init__(self)
         self.antenna_template = None
         pass
 
     def draw_elliptical_edge_ui(self):
         """Create an elliptical patch antenna with edge probe."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -61,15 +62,15 @@ class Patch(object):
 
     def draw_elliptical_inset_ui(self):
         """Create a elliptical patch antenna with inset fed."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -108,7 +109,7 @@ class Patch(object):
 
     def draw_elliptical_probe_ui(self):
         """Create a elliptical patch antenna with probe."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -117,9 +118,9 @@ class Patch(object):
         self.property_table.clear()
         self.property_table.setRowCount(0)
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -155,15 +156,15 @@ class Patch(object):
 
     def draw_rectangular_edge_ui(self):
         """Create a rectangular patch antenna with edge probe."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -199,15 +200,15 @@ class Patch(object):
 
     def draw_rectangular_inset_ui(self):
         """Create a rectangular patch antenna with edge probe."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)
@@ -243,15 +244,15 @@ class Patch(object):
 
     def draw_rectangular_probe_ui(self):
         """Create a rectangular patch antenna with edge probe."""
-        if self.backend_busy():
+        if self.is_backend_busy():
             msg = "Toolkit running"
             logger.debug(msg)
             self.write_log_line(msg)
             return
 
-        properties_request = requests.get(self.url + "/get_properties")
-        properties = properties_request.json()
-        if properties["antenna_created"]:
+        self.get_properties()
+
+        if be_properties.antenna_created:
             msg = "Antenna is already created, please open the antenna wizard again to create a new antenna"
             logger.debug(msg)
             self.write_log_line(msg)

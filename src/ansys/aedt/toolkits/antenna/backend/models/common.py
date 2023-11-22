@@ -248,30 +248,30 @@ class CommonAntenna(object):
         ]
 
         if bottom_extend:
-            lattice_box = self._app.modeler.modeler.create_box(
+            lattice_box = self._app.modeler.create_box(
                 position=[
-                    str(bounding_box[0]) + self._app.modeler.modeler.model_units,
-                    str(bounding_box[1]) + self._app.modeler.modeler.model_units,
-                    str(bounding_box[2]) + self._app.modeler.modeler.model_units + "-" + hfss_parameter,
+                    str(bounding_box[0]) + self._app.modeler.model_units,
+                    str(bounding_box[1]) + self._app.modeler.model_units,
+                    str(bounding_box[2]) + self._app.modeler.model_units + "-" + hfss_parameter,
                 ],
                 dimensions_list=[
-                    str(bounding_dim[0]) + self._app.modeler.modeler.model_units,
-                    str(bounding_dim[1]) + self._app.modeler.modeler.model_units,
-                    str(bounding_dim[2]) + self._app.modeler.modeler.model_units + "+2*" + hfss_parameter,
+                    str(bounding_dim[0]) + self._app.modeler.model_units,
+                    str(bounding_dim[1]) + self._app.modeler.model_units,
+                    str(bounding_dim[2]) + self._app.modeler.model_units + "+2*" + hfss_parameter,
                 ],
                 matname="vacuum",
             )
         else:
-            lattice_box = self._app.modeler.modeler.create_box(
+            lattice_box = self._app.modeler.create_box(
                 position=[
-                    str(bounding_box[0]) + self._app.modeler.modeler.model_units,
-                    str(bounding_box[1]) + self._app.modeler.modeler.model_units,
-                    str(bounding_box[2]) + self._app.modeler.modeler.model_units,
+                    str(bounding_box[0]) + self._app.modeler.model_units,
+                    str(bounding_box[1]) + self._app.modeler.model_units,
+                    str(bounding_box[2]) + self._app.modeler.model_units,
                 ],
                 dimensions_list=[
-                    str(bounding_dim[0]) + self._app.modeler.modeler.model_units,
-                    str(bounding_dim[1]) + self._app.modeler.modeler.model_units,
-                    str(bounding_dim[2]) + self._app.modeler.modeler.model_units + "+" + hfss_parameter,
+                    str(bounding_dim[0]) + self._app.modeler.model_units,
+                    str(bounding_dim[1]) + self._app.modeler.model_units,
+                    str(bounding_dim[2]) + self._app.modeler.model_units + "+" + hfss_parameter,
                 ],
                 matname="vacuum",
             )
