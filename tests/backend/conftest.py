@@ -3,7 +3,7 @@ import gc
 import json
 import os
 import shutil
-import signal
+import socket
 import subprocess
 import sys
 import tempfile
@@ -26,9 +26,12 @@ from ansys.aedt.toolkits.antenna import backend
 
 is_linux = os.name == "posix"
 
+# Initialize default desktop configuration
+default_version = "2023.2"
+
 # Initialize default configuration
 config = {
-    "aedt_version": "2023.1",
+    "aedt_version": default_version,
     "non_graphical": True,
     "use_grpc": True,
     "url": "127.0.0.1",
@@ -100,73 +103,102 @@ example_project = shutil.copy(
 )
 
 
-# Define a function to run the subprocess command
+# Global functions
 def run_command(*command):
-    if is_linux:
-        process = subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-    else:
-        CREATE_NO_WINDOW = 0x08000000
-        process = subprocess.Popen(
-            " ".join(command),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            creationflags=CREATE_NO_WINDOW,
-        )
+    create_no_window = 0x08000000 if not is_linux else 0
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        creationflags=create_no_window,
+    )
     stdout, stderr = process.communicate()
     print(stdout.decode())
-    print(stderr.decode())
+
+
+def server_actions(command, name):
+    thread = threading.Thread(target=run_command, args=command, name=name)
+    thread.daemon = True
+    thread.start()
+    return thread
+
+
+def wait_for_server(server="localhost", port=5001, timeout=10.0):
+    start_time = time.time()
+    first_time = True
+    result = None
+    while time.time() - start_time < timeout:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            result = sock.connect_ex((server, port))
+        except socket.error as e:
+            print(f"Socket error occurred: {e}")
+        finally:
+            sock.close()
+        if result == 0:
+            print("\nServer is ready.")
+            return True
+        if first_time:
+            print("Server not ready yet. Retrying...", end="")
+            first_time = False
+        else:
+            print(".", end="")
+        time.sleep(1)
+    print("\nTimed out waiting for server.")
+    return False
+
+
+def is_server_running(server="localhost", port=5001):
+    result = None
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        result = sock.connect_ex((server, port))
+    except socket.error as e:
+        print(f"Socket error occurred: {e}")
+    finally:
+        sock.close()
+    if result == 0:
+        return True
+    return False
+
+
+def clean_python_processes():
+    for conn in psutil.net_connections():
+        (ip, port_process) = conn.laddr
+        pid = conn.pid
+        if ip == url and int(float(port)) == int(float(port_process)) and pid and pid != 0:
+            process = psutil.Process(pid)
+            print(f"Killing process {process.pid} on {ip}:{port}")
+            process.terminate()
+
+
+def check_backend_communication():
+    response = requests.get(url_call + "/health")
+    if response.ok:
+        return True
+    return False
 
 
 @pytest.fixture(scope="session", autouse=True)
 def desktop_init():
-    if is_linux:
-        initial_pids = psutil.pids()
-    else:
-        initial_pids = psutil.Process().children(recursive=True)
-
     # Define the command to start the Flask application
     backend_file = os.path.join(backend.__path__[0], "rest_api.py")
     backend_command = [python_path, backend_file]
+
+    # Check if backend is already running
+    is_server_busy = is_server_running(server=url, port=int(float(port)))
+    if is_server_busy:
+        raise Exception("There is a process running in: {}".format(url_call))
+
     # Create a thread to run the Flask application
     flask_thread = threading.Thread(target=run_command, args=backend_command)
     flask_thread.daemon = True
     flask_thread.start()
 
-    time.sleep(1)
-
-    if is_linux:
-        current_process = len(psutil.pids())
-        count = 0
-        while current_process < len(initial_pids) and count < 10:
-            time.sleep(1)
-            current_process = len(psutil.pids())
-            count += 1
-    else:
-        current_process = len(psutil.Process().children(recursive=True))
-        count = 0
-        while current_process < len(initial_pids) and count < 10:
-            time.sleep(1)
-            current_process = len(psutil.Process().children(recursive=True))
-            count += 1
-
-    if current_process <= len(initial_pids):
-        raise "Backend not running"
-
-    if is_linux:
-        flask_pids = [element for element in psutil.pids() if element not in initial_pids]
-    else:
-        flask_pids = [element for element in psutil.Process().children(recursive=True) if element not in initial_pids]
-
-    # Wait for the Flask application to start
-    response = requests.get(url_call + "/get_status")
-
-    while response.json() != "Backend free":
-        time.sleep(1)
-        response = requests.get(url_call + "/get_status")
+    # Check if backend is running. Try every 1 second with a timeout of 10 seconds
+    is_server_backend_running = wait_for_server(server=url, port=int(float(port)))
+    if not is_server_backend_running:
+        raise Exception("There is a process running in: {}".format(url_call))
 
     properties = {
         "aedt_version": desktop_version,
@@ -190,12 +222,4 @@ def desktop_init():
     # Register the cleanup function to be called on script exit
     gc.collect()
 
-    if is_linux:
-        pids = psutil.pids()
-        for process in flask_pids:
-            if process in pids:
-                os.kill(process, signal.SIGKILL)
-    else:
-        for process in flask_pids:
-            if (process.name() == "python.exe" or process.name() == "python") and process.pid in psutil.pids():
-                process.terminate()
+    clean_python_processes()

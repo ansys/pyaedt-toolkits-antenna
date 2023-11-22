@@ -43,16 +43,16 @@ tests = [
     "pytest-cov==4.1.0",
 ]
 doc = [
+    "ansys-sphinx-theme==0.12.5",
     "numpydoc==1.6.0",
-    "ansys-sphinx-theme==0.12.4",
     "recommonmark==0.7.1",
     "sphinx==7.2.6",
     "sphinx-copybutton==0.5.2",
     "enum-tools[sphinx]==0.11.0",
     "sphinx-autoapi==3.0.0",
     "sphinx-autobuild==2021.3.14",
-    "sphinx-autodoc-typehints==1.24.1",
-    "sphinx-gallery==0.14.0",
+    "sphinx-autodoc-typehints==1.25.2",
+    "sphinx-gallery==0.15.0",
     "sphinx-notfound-page==1.0.0",
     "nbsphinx==0.9.3",
 ]
