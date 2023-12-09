@@ -41,7 +41,7 @@ documentation provides
 and `Contribute
 <https://github.com/ansys/pyaedt-toolkits-antenna/graphs/contributors>`_ sections.
 
-Please share feedbck on the `AEDT Antenna toolkit Issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_ page. You can
+Please share feedback on the `AEDT Antenna toolkit Issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_ page. You can
 create issues with questions, report bugs, and request new features.
 
 Getting Started
