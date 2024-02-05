@@ -1,0 +1,7 @@
+{
+        "aedt_version": "2023.2",
+        "non_graphical": true,
+        "use_grpc": true,
+        "url": "127.0.0.1",
+        "port": "5001"
+}
