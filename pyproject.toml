@@ -43,18 +43,21 @@ tests = [
     "pytest-cov==4.1.0",
 ]
 doc = [
-    "ansys-sphinx-theme==0.13.2",
+    "ansys-sphinx-theme==0.13.1",
     "numpydoc==1.6.0",
     "recommonmark==0.7.1",
     "sphinx==7.2.6",
     "sphinx-copybutton==0.5.2",
     "enum-tools[sphinx]==0.11.0",
     "sphinx-autoapi==3.0.0",
-    "sphinx-autobuild==2024.2.4",
-    "sphinx-autodoc-typehints==1.25.3",
-    "sphinx-gallery==0.15.0",
+    "sphinx-autobuild==2021.3.14",
+    "sphinx-autodoc-typehints==1.25.2",
     "sphinx-notfound-page==1.0.0",
     "nbsphinx==0.9.3",
+    "sphinx_design",
+    "jupytext",
+    "ipython==8.16.1",
+    "jupyterlab==4.0.6",
 ]
 
 [tool.flit.module]
