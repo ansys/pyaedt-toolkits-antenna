@@ -119,7 +119,7 @@ class CommonAntenna(object):
 
     @property
     def huygens_box(self):
-        """Indicator for if a Huygens box is enabled.
+        """Flag indicating if a Huygens box is enabled.
 
         Returns
         -------
@@ -287,7 +287,7 @@ class CommonAntenna(object):
 
     @pyaedt_function_handler()
     def create_3dcomponent(self, component_file=None, component_name=None, replace=False):
-        """Create 3D Component of the antenna.
+        """Create a 3D component of the antenna.
 
         Parameters
         ----------
@@ -413,7 +413,7 @@ class CommonAntenna(object):
 
     @pyaedt_function_handler()
     def update_synthesis_parameters(self, new_params):
-        """Update synthesis parameter from the antenna list."""
+        """Update the synthesis parameter from the antenna list."""
         for k, v in new_params.items():
             if hasattr(self.synthesis_parameters, k):
                 param = getattr(self.synthesis_parameters, k)
@@ -561,7 +561,7 @@ class TransmissionLine(object):
 
     @pyaedt_function_handler()
     def microstrip_calculator(self, substrate_height, permittivity, impedance=50.0, electrical_length=150.0):
-        """Strip line calculator.
+        """Use the strip line calculator to calculate line width and length.
 
         Parameters
         ----------
@@ -617,7 +617,7 @@ class TransmissionLine(object):
 
     @pyaedt_function_handler()
     def stripline_calculator(self, substrate_height, permittivity, impedance=50.0):
-        """Strip line calculator.
+        """Use the strip line calculator to calculate line width.
 
         Parameters
         ----------
@@ -646,7 +646,7 @@ class TransmissionLine(object):
 
     @pyaedt_function_handler()
     def suspended_strip_calculator(self, wavelength, w1, substrate_height, permittivity):
-        """Suspended stripline calculator.
+        """Use the suspended stripline calculator to calculate effective permittivity.
 
         Parameters
         ----------
@@ -754,7 +754,7 @@ class StandardWaveguide(object):
 
     @pyaedt_function_handler()
     def get_waveguide_dimensions(self, name, units="mm"):
-        """Strip line calculator.
+        """Get waveguide dimensions.
 
         Parameters
         ----------

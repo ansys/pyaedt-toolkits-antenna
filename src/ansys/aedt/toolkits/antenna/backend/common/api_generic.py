@@ -96,7 +96,7 @@ class ToolkitGeneric(object):
         Returns
         -------
         dict
-            The dictionary containing the toolkit properties.
+            Dictionary containing the toolkit properties.
 
         Examples
         --------
@@ -179,7 +179,7 @@ class ToolkitGeneric(object):
     @staticmethod
     def installed_aedt_version():
         """
-        Return the installed AEDT versions.
+        Get a list of installed AEDT versions.
 
         Returns
         -------
@@ -210,7 +210,7 @@ class ToolkitGeneric(object):
         Returns
         -------
         list
-            List of AEDT PIDs.
+            List of AEDT process IDs (PIDs).
 
         Examples
         --------
@@ -267,7 +267,9 @@ class ToolkitGeneric(object):
 
     @staticmethod
     def get_design_names():
-        """Get design names for a specific project, the first one is the active.
+        """Get design names for the active project.
+
+        The first project is the active project.
 
         Returns
         -------
@@ -305,7 +307,7 @@ class ToolkitGeneric(object):
     def launch_aedt(self):
         """Launch AEDT.
 
-        This method is launched in a thread if grpc is enabled. AEDT is released once it is opened.
+        This method is launched in a thread if gRPC is enabled. AEDT is released once it is opened.
 
         Returns
         -------
@@ -446,13 +448,15 @@ class ToolkitGeneric(object):
 
     def connect_design(self, app_name=None):
         """Connect to an application design.
-        If a design exists, it takes the active project and design, if not,
-        it creates a new design of the specified type. If no application specified, the default is ``"Hfss"``.
+
+        If a design exists, this method takes the active project and design. If a design does
+        not exist, this method creates a design of the specified type.
 
         Parameters
         ----------
         app_name : str, optional
-            Aedt application name. The default is connecting to active design. Application available are:
+            AEDT app name.  If no application is specified, the default is ``"Hfss"``.
+            Options are::
 
             * Circuit Design
             * HFSS
@@ -632,7 +636,7 @@ class ToolkitGeneric(object):
         Parameters
         ----------
         project_name : str, optional
-            Project path to open.
+            Full path for the project.
 
         Returns
         -------
@@ -661,13 +665,15 @@ class ToolkitGeneric(object):
 
     @thread.launch_thread
     def save_project(self, project_path=None):
-        """Save project. It uses the properties to get the project path. This method is launched in a thread.
+        """Save the AEDT project.
+
+        This method, which is launched in a thread, uses the project's properties to get the project path.
 
         Parameters
         ----------
         project_path : str, optional
-            Path of the AEDT file to save.
-            The default value is ``None`` in which case the current file is overwritten.
+            Path for saving the project to.
+            The default value is ``None``, in which case the current project is overwritten.
 
         Returns
         -------

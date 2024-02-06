@@ -2,7 +2,18 @@
 Getting started
 ===============
 
-To run this toolkit, you must have a licensed copy of Ansys Electronics Desktop (AEDT) installed.
+To run the Antenna Toolkit, you must have a licensed copy of AEDT installed.
+You have multiple options for installing and launching this toolkit:
+
+- You can install the toolkit directly in AEDT via an installation script and then launch it
+  as a wizard. For more information, see :ref:`install-toolkit-AEDT`.
+- You can install the toolkit from the AEDT console and then launch it as a wizard. For more
+  information, see :ref:`install_toolkit_console_ui`.
+- You can install and launch the toolkit directly from a Python console and then use the toolkit's APIs.
+  For more information, see :ref:`install_toolkit_console_api`.
+
+.. _install-toolkit-AEDT:
+
 
 The toolkit could be launched from:
 
@@ -18,59 +29,57 @@ The toolkit features can be accessed from:
 
 .. _install-toolkit-AEDT:
 
-How to install inside AEDT and run the UI
------------------------------------------
+How to install directly in AEDT and launch as a wizard
+------------------------------------------------------
 
-This section shows how to install the toolkit inside the Ansys Electronics Desktop (AEDT) using the base
-interpreter from AEDT installation.
+You can install the Antenna Toolkit directly in AEDT using the base
+interpreter from the AEDT installation.
 
-The toolkit can be installed inside AEDT using
-`PyAEDT <https://aedt.docs.pyansys.com/version/stable//>`_.
+#. From `Install from a Python file <https://aedt.docs.pyansys.com/version/stable//Getting_started/Installation.html#install-from-a-python-file>`_
+   in the PyAEDT documentation, download the ``PyAEDTInstallerFromDesktop.py`` file and then run this Python script.
 
-# Download and run the install script from the `PyAEDT documentation <https://aedt.docs.pyansys.com/version/stable//Getting_started/Installation.html>`_.
-   Note **AEDT must be restarted**
-   to update the **Tools** menu if this is the first time a Toolkit has been installed in AEDT.
+#. If this is the first toolkit being installed in AEDT, restart AEDT to update its **Tools** menu.
 
+#. In AEDT, select **Tools > Toolkit > PyAEDT > Console** to load the PyAEDT console:
 
-#. Open the console:
+   .. image:: ./_static/console.png
+       :width: 800
+       :alt: PyAEDT console in AEDT
 
-    .. image:: ./_static/toolkits.png
-        :width: 800
-        :alt: PyAEDT toolkits in AEDT
+#. In the PyAEDT console, run these commands to add the Antenna Toolkit as a wizard (toolkit UI) in AEDT:
 
-    .. image:: ./_static/console.png
-        :width: 800
-        :alt: PyAEDT console in AEDT
+   .. code:: python
 
-#. Run the PyAEDT command: `add custom toolkit method <https://aedt.docs.pyansys.com/version/stable/API/_autosummary/pyaedt.desktop.Desktop.add_custom_toolkit.html#pyaedt.desktop.Desktop.add_custom_toolkit>`_:
+       desktop.add_custom_toolkit("AntennaWizard")
+       exit()
 
-    .. code:: python
+#. Close the PyAEDT console.
 
-        desktop.add_custom_toolkit("AntennaWizard")
-        exit()
+#. In the AEDT toolbar, click the **AntennaWizard** button to open the Antenna Toolkit Wizard in AEDT:
 
-#. Open the toolkit. If the toolkit does not appear, please restart AEDT:
+   .. image:: ./_static/toolkit_in_AEDT.png
+       :width: 800
+       :alt: Antenna Toolkit in AEDT
 
-    .. image:: ./_static/toolkit_in_AEDT.png
-        :width: 800
-        :alt: Antenna toolkit in AEDT
-
-#. Click on Antenna Wizard, the toolkit is directly linked to the AEDT session:
+    If the toolkit does not open, restart AEDT.
 
     .. image:: ./_static/design_connected.png
         :width: 800
         :alt: UI opened from AEDT, design tab
 
-    .. _install_toolkit_console_ui:
 
-How to install in the console and run the UI
---------------------------------------------
+The wizard is connected directly to the AEDT session. For wizard usage information,
+see :doc:`Toolkit/ui`.
 
-This section shows how to install the toolkit in a specific python environment from the command line.
+.. _install_toolkit_console_ui:
 
-If you have an existing virtual environment you can skip step 1.
+How to install from the AEDT console and launch as a wizard
+-----------------------------------------------------------
 
-If you have installed the toolkit in the virtual environment you can skip step 2.
+You can install the Antenna Toolkit in a specific Python environment from the AEDT console.
+
+- If you have an existing virtual environment, skip step 1.
+- If you have already installed the toolkit in your virtual environment, skip step 2.
 
 #. Create a fresh-clean Python environment and activate it:
 
@@ -88,13 +97,13 @@ If you have installed the toolkit in the virtual environment you can skip step 2
         # Activate it in Windows PowerShell
         .venv\Scripts\Activate.ps1
 
-#. Install the toolkit from git:
+#. Install the toolkit from the GitHub repository:
 
     .. code:: bash
 
         python -m pip install git+https://github.com/pyansys/pyaedt-toolkits-antenna.git
 
-#. Launch the toolkit UI:
+#. Launch the Antenna Toolkit Wizard:
 
     .. code:: bash
 
@@ -106,56 +115,69 @@ If you have installed the toolkit in the virtual environment you can skip step 2
         :width: 800
         :alt: UI opened from console, settings tab
 
-    .. _install_toolkit_console_api:
+For wizard usage information, see :doc:`Toolkit/ui`.
 
-How to install in the console and use the API
----------------------------------------------
+.. _install_toolkit_console_api:
+
+How to install from a Python console and use the toolkit's APIs
+---------------------------------------------------------------
 
 This section describes how to install the toolkit in an specific Python environment and use the API, it is
 shown how to use the API at model level and toolkit level.
 
-#. Follow the steps 1 and 2 described in :ref:`install_toolkit_console_ui`.
+.. note::
+  The following procedure assumes that you have already performed steps 1 and 2 in
+  :ref:`install_toolkit_console_ui`. These steps create and activate a virtual environment
+  and install the toolkit from the GitHub repository.
 
-#. Open a Python console in the corresponding virtual environment:
+#. Open a Python console in your virtual environment:
 
-    .. code:: bash
+   .. code:: bash
 
-        python
+       python
 
-#. The toolkit can be used from the command line to create an antenna. For example, the following commands demonstrate how to launch AEDT, synthesize a bowtie antenna and run a simulation in HFSS:
+#. From the command line, use the toolkit to create an antenna.
+
+   For example, this code shows how to launch AEDT, create and synthesize a bowtie
+   antenna, and run a simulation in HFSS:
+
+   .. code:: python
+
+       # Import required modules
+       from pyaedt import Hfss
+       from ansys.aedt.toolkits.antenna.backend.models.bowtie import BowTie
+
+       # Open AEDT and create an HFSS design
+       aedtapp = Hfss()
+
+       # Create antenna object
+       oantenna1 = BowTie(aedtapp)
+
+       # Define parameters
+       parameter_list = list(oantenna1.synthesis_parameters.__dict__.keys())
+
+       # Change frequency
+       oantenna1.frequency = 12.0
+
+       # Create antenna in HFSS
+       oantenna1.model_hfss()
+
+       # Create setup in HFSS
+       oantenna1.setup_hfss()
+
+       # Release AEDT
+       aedtapp.release_desktop()
+
+#. To create an antenna from the toolkit level, use the :class:`Toolkit <ansys.aedt.toolkits.antenna.backend.api.Toolkit>`
+   class.
+   
+   For example, this code shows how to use the :class:`Toolkit <ansys.aedt.toolkits.antenna.backend.api.Toolkit>`
+   class to get available antennas and their properties, open AEDT, update antenna properties,
+   and create a Bowtie antenna:
 
     .. code:: python
 
-        # Import required modules for the example
-        from pyaedt import Hfss
-        from ansys.aedt.toolkits.antenna.backend.models.bowtie import BowTie
-
-        # Open AEDT and create an HFSS design
-        aedtapp = Hfss()
-
-        # Create antenna object
-        oantenna1 = BowTie(aedtapp)
-
-        # Parameters
-        parameter_list = list(oantenna1.synthesis_parameters.__dict__.keys())
-
-        # Change frequency
-        oantenna1.frequency = 12.0
-
-        # Create antenna in HFSS
-        oantenna1.model_hfss()
-
-        # Create setup in HFSS
-        oantenna1.setup_hfss()
-
-        # Desktop is released here
-        aedtapp.release_desktop()
-
-#.  The API can be used at toolkit level. For example, the following commands: Open AEDT, synthesize a Bowtie antenna and model it in HFSS:
-
-    .. code:: python
-
-        # Import required modules for the example
+        # Import required modules
         import time
         from ansys.aedt.toolkits.antenna.backend.api import Toolkit
 
@@ -187,5 +209,5 @@ shown how to use the API at model level and toolkit level.
         # Create a Bowtie antenna
         toolkit.get_antenna("BowTie")
 
-        # Desktop is released here
+        # Release AEDT
         toolkit.release_aedt()

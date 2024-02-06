@@ -20,11 +20,11 @@ class BowTie(CommonPatch):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Substrate material. If the material is not defined, a new
-        material ``parametrized`` is defined. The default is ``"FR4_epoxy"``.
+        Substrate material. If a material is not defined, a new
+        material, ``parametrized``, is defined. The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, ``"PML"`` and ``None``. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
         Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
@@ -37,12 +37,12 @@ class BowTie(CommonPatch):
     Returns
     -------
     :class:`aedt.toolkits.antenna.BowTie`
-        Bow Tie antenna object.
+        Bow tie antenna object.
 
     Notes
     -----
     .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
-        Modern Antenna Handbook, New York, 2008.
+        *Modern Antenna Handbook*, New York, 2008.
 
     Examples
     --------
@@ -269,12 +269,12 @@ class BowTieRounded(CommonPatch):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Substrate material. If material is not defined, a new
-        material, ``parametrized``is defined.
+        Substrate material. If a material is not defined, a new
+        material, ``parametrized``, is defined.
         The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, ``"PML"``, and ``None``. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
         Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
@@ -292,7 +292,7 @@ class BowTieRounded(CommonPatch):
     Notes
     -----
     .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
-        Modern Antenna Handbook, New York, 2008.
+        *Modern Antenna Handbook*, New York, 2008.
 
     Examples
     --------
@@ -532,12 +532,12 @@ class BowTieSlot(CommonPatch):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Substrate material. If material is not defined, a new
-        material, ``parametrized``is defined.
+        Substrate material. If a material is not defined, a new
+        material, ``parametrized``, is defined.
         The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, ``"PML"``, and ``None``. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
         Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
@@ -550,12 +550,12 @@ class BowTieSlot(CommonPatch):
     Returns
     -------
     :class:`aedt.toolkits.antenna.BowTieSlot`
-        Bow Tie antenna object.
+        Bow tie antenna object.
 
     Notes
     -----
     .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
-        Modern Antenna Handbook, New York, 2008.
+        *Modern Antenna Handbook*, New York, 2008.
 
     Examples
     --------

@@ -13,9 +13,10 @@ thread = ThreadManager()
 
 
 class Toolkit(ToolkitGeneric):
-    """API to control the toolkit workflow.
+    """Provides methods for controlling the toolkit workflow.
 
-    This class provides methods to synthesize and create antenna.
+    This class provides methods for creating an AEDT session, connecting to an existing
+    AEDT session, and synthesizing and creating an antenna in HFSS.
 
     Examples
     --------
@@ -41,7 +42,7 @@ class Toolkit(ToolkitGeneric):
                 self.available_antennas.append(name)
 
     def get_antenna(self, antenna, synth_only=False):
-        """Synthesize and create the antenna in HFSS.
+        """Synthesize and create an antenna in HFSS.
 
         Parameters
         ----------
@@ -69,21 +70,21 @@ class Toolkit(ToolkitGeneric):
         """
 
         if self._oantenna:
-            logger.debug("Antenna is already created")
+            logger.debug("Antenna is already created.")
             return False
 
         if antenna not in models.__dir__():
-            logger.debug("Antenna is not implemented")
+            logger.debug("Antenna is not implemented.")
             return False
 
         if not synth_only and not self.aedtapp:
             if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS")
+                logger.debug("Selected design must be HFSS.")
                 return False
             # Connect to AEDT design
             self.connect_design("HFSS")
             if not self.aedtapp:
-                logger.debug("HFSS design not connected")
+                logger.debug("HFSS design is not connected.")
                 return False
 
         # Get antenna properties
@@ -163,7 +164,7 @@ class Toolkit(ToolkitGeneric):
         return antenna_parameters
 
     def export_hfss_model(self):
-        """Export model in .obj format.
+        """Export model in OBJ format.
 
         Parameters
         ----------
@@ -191,7 +192,7 @@ class Toolkit(ToolkitGeneric):
         """
 
         if not self._oantenna:
-            logger.debug("Not antenna available")
+            logger.debug("No antenna is available.")
             return False
 
         # PyVista check
@@ -210,7 +211,9 @@ class Toolkit(ToolkitGeneric):
         Parameters
         ----------
         key : str
+            Key.
         val : float
+            Value.
 
         Returns
         -------
@@ -232,14 +235,14 @@ class Toolkit(ToolkitGeneric):
         """
         properties = self.get_properties()
         if not properties["parameters_hfss"]:
-            logger.debug("Antenna not created in HFSS")
+            logger.debug("Antenna was not created in HFSS.")
             return True
 
         if not self.aedtapp:
             # Connect to AEDT design
             self.connect_design("Hfss")
             if not self.aedtapp:
-                logger.debug("HFSS design not connected")
+                logger.debug("HFSS design is not connected.")
                 return False
 
         if (
@@ -265,14 +268,14 @@ class Toolkit(ToolkitGeneric):
 
             return True
         else:
-            logger.debug("Parameter does not exist")
+            logger.debug("Parameter does not exist.")
             return False
 
     @thread.launch_thread
     def analyze(self):
-        """Analyze design.
+        """Analyze the design.
 
-        This method is launched in a thread if grpc is enabled. AEDT is released once it is opened.
+        This method is launched in a thread if gRPC is enabled. AEDT is released once it is opened.
 
         Returns
         -------
@@ -294,12 +297,12 @@ class Toolkit(ToolkitGeneric):
         connected, msg = self.aedt_connected()
         if not connected:
             if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS")
+                logger.debug("Selected design must be HFSS.")
                 return False
             # Connect to AEDT design
             self.connect_design("Hfss")
             if not self.aedtapp:
-                logger.debug("HFSS design not connected")
+                logger.debug("HFSS design is not connected.")
                 return False
 
         num_cores = properties.core_number
@@ -321,12 +324,12 @@ class Toolkit(ToolkitGeneric):
         """
         if not self.aedtapp:
             if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS")
+                logger.debug("Selected design must be HFSS.")
                 return False
             # Connect to AEDT design
             self.connect_design("Hfss")
             if not self.aedtapp:
-                logger.debug("HFSS design not connected")
+                logger.debug("HFSS design is not connected.")
                 return False
 
         sol_data = self.aedtapp.post.get_solution_data()
@@ -348,12 +351,12 @@ class Toolkit(ToolkitGeneric):
         """
         if not self.aedtapp:
             if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS")
+                logger.debug("Selected design must be HFSS.")
                 return False
             # Connect to AEDT design
             self.connect_design("Hfss")
             if not self.aedtapp:
-                logger.debug("HFSS design not connected")
+                logger.debug("HFSS design is not connected.")
                 return False
 
         field_solution = self.aedtapp.post.get_solution_data(

@@ -2,9 +2,8 @@
 Antenna API
 ===========
 
-This section describes all classes for antenna types available in the toolkit.
-
-User has all the control to create one or more antennas. It is object oriented, the antenna can be synthesized without AEDT.
+This section describes the classes for all antenna types available in the toolkit.
+You use the **Antenna API** at the model level from PyAEDT.
 
 .. toctree::
    :maxdepth: 1
@@ -16,28 +15,31 @@ User has all the control to create one or more antennas. It is object oriented, 
    horn
    patch
 
-Antenna synthesis:
+You can create one or more antennas. An antenna is object-oriented. You can synthesis an
+antenna without AEDT.
+
+This code shows how to synthesis an antenna:
 
 .. code:: python
 
     # Import backend
     from ansys.aedt.toolkits.antenna.backend.models.horn import Conical
 
-    # Antenna synthesis
+    # Synthesize antenna
     oantenna1 = Conical()
     oantenna1.frequency = 12.0
 
-Antenna model generation in HFSS:
+This code shows how to synthesize and create a model of an antenna in HFSS:
 
 .. code:: python
 
-    # Import pyaedt.Hfss
+    # Import HFSS
     from pyaedt import Hfss
 
     # Import backend
     from ansys.aedt.toolkits.antenna.backend.models.horn import Conical
 
-    # Antenna synthesis
+    # Synthesize antenna
     aedtapp = Hfss()
 
     # Create antenna

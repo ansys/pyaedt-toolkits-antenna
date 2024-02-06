@@ -113,17 +113,17 @@ class Archimedean(CommonConicalSpiral):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
+        Horn material. If a material is not defined, a new material, ``parametrized``, is defined.
         The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna.  The default is ``True``.
 
     Returns
     -------
@@ -214,9 +214,12 @@ class Archimedean(CommonConicalSpiral):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw a conical archimidean spiral antenna. This method uses the User Defined Model from AEDT installation.
+        """Draw a conical archimidean spiral antenna.
 
-        Once the antenna is created, this method is not used anymore."""
+        This method uses the user-defined model from the AEDT installation.
+
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             logger.debug("This antenna already exists")
             return False
@@ -294,12 +297,12 @@ class Archimedean(CommonConicalSpiral):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemented."""
+        """Set up in PyDiscovery. To be implemented."""
         pass
 
 
@@ -315,17 +318,17 @@ class Log(CommonConicalSpiral):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
+        Horn material. If a material is not defined, a new material, ``parametrized``, is defined.
         The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna.  The default is ``True``.
 
     Returns
     -------
@@ -487,12 +490,12 @@ class Log(CommonConicalSpiral):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemented."""
+        """Set up in PyDiscovery. To be implemented."""
         pass
 
 
@@ -508,17 +511,17 @@ class Sinuous(CommonConicalSpiral):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
-        The default is ``"pec"``.
+        Horn material. The default is ``"pec"``. If a material is not defined, a new material,
+        ``parametrized``, is defined. The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna.  The default is ``True``.
 
     Returns
     -------
@@ -706,10 +709,10 @@ class Sinuous(CommonConicalSpiral):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemented."""
+        """Set up in PyDiscovery. To be implemented."""
         pass

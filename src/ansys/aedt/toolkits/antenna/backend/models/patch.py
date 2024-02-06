@@ -1151,7 +1151,7 @@ class RectangularPatchEdge(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
