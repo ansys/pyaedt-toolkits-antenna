@@ -14,8 +14,8 @@ launching information, see these topics:
    connecting to an existing AEDT session.
 
    .. image:: ../_static/settings.png
-     :width: 800
-     :alt: Settings tab
+      :width: 800
+      :alt: Settings tab
 
    If the Antenna Toolkit is launched from AEDT, the **AEDT Settings** tab does not appear
    because the toolkit is directly connected to the specific AEDT session.
@@ -27,15 +27,15 @@ launching information, see these topics:
    to load the antenna template.
 
    .. image:: ../_static/design_connected.png
-     :width: 800
-     :alt: Antenna Toolkit Wizard, Design tab
+      :width: 800
+      :alt: Antenna Toolkit Wizard, Design tab
 
    For example, if you select **Antennas  Horn > Conical Corrugated**, the **Synthesis** button
    and antenna template appear.
 
    .. image:: ../_static/corrugated_1.png
-     :width: 800
-     :alt: Antenna Toolkit Wizard, corrugated synthesis 1
+      :width: 800
+      :alt: Antenna Toolkit Wizard, corrugated synthesis
 
     In addition to the **Synthesis** button, there is a **Create Hfss Model** button, which
     is unavailable if the Antenna Toolkit is not connected to AEDT.
@@ -45,8 +45,8 @@ launching information, see these topics:
       syntheses as you want and even change the antenna template.
 
       .. image:: ../_static/corrugated_synthesis.png
-        :width: 800
-        :alt: Antenna Toolkit Wizard, corrugated synthesis
+         :width: 800
+         :alt: Antenna Toolkit Wizard, corrugated synthesis
 
     - The **Create HFSS Model** button is for creating an HFSS model. It uses the **3D Component**,
       **Create Hfss Setup**, and **Lattice Pair** check boxes along with the **Sweep Bandwidth %** option
@@ -73,8 +73,8 @@ an image of the antenna template.
 If AEDT is launched in graphical mode, you can see the generated model.
 
 .. image:: ../_static/antenna.png
-  :width: 800
-  :alt: Antenna Toolkit Wizard, Antenna
+   :width: 800
+   :alt: Antenna Toolkit Wizard, antenna
 
 You can modify the parameters interactively, watching the HFSS model and the interactive 3D plot
 in the wizard change.
@@ -86,13 +86,13 @@ When you click **Analyze Project**, the project is submitted, and then it is clo
 the job status in the wizard's progress bar or by opening the AEDT Job Monitor.
 
 .. image:: ../_static/analysis.png
-  :width: 800
-  :alt: Analysis
+   :width: 800
+   :alt: Analysis
 
 Once the project is solved, you can click **Get results** on the **Analysis** tab to view results.
 
 .. image:: ../_static/results.png
-  :width: 800
-  :alt: Result
+   :width: 800
+   :alt: Result
 
 To save the project, select **File > Save project**.

@@ -14,21 +14,6 @@ You have multiple options for installing and launching this toolkit:
 
 .. _install-toolkit-AEDT:
 
-
-The toolkit could be launched from:
-
-- AEDT, see :ref:`install-toolkit-AEDT`.
-
-- From a python console, see :ref:`install_toolkit_console_ui` or :ref:`install_toolkit_console_api`
-
-The toolkit features can be accessed from:
-
-- The user interface (Antenna Wizard), see :doc:`toolkit/ui`.
-
-- The API, see :doc:`toolkit/index`.
-
-.. _install-toolkit-AEDT:
-
 How to install directly in AEDT and launch as a wizard
 ------------------------------------------------------
 
@@ -67,9 +52,8 @@ interpreter from the AEDT installation.
         :width: 800
         :alt: UI opened from AEDT, design tab
 
-
 The wizard is connected directly to the AEDT session. For wizard usage information,
-see :doc:`Toolkit/ui`.
+see :doc:`toolkit/ui`.
 
 .. _install_toolkit_console_ui:
 
@@ -115,7 +99,7 @@ You can install the Antenna Toolkit in a specific Python environment from the AE
         :width: 800
         :alt: UI opened from console, settings tab
 
-For wizard usage information, see :doc:`Toolkit/ui`.
+For wizard usage information, see :doc:`toolkit/ui`.
 
 .. _install_toolkit_console_api:
 
