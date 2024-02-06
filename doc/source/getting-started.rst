@@ -28,8 +28,8 @@ interpreter from the AEDT installation.
 #. In AEDT, select **Tools > Toolkit > PyAEDT > Console** to load the PyAEDT console:
 
    .. image:: ./_static/console.png
-       :width: 800
-       :alt: PyAEDT console in AEDT
+      :width: 800
+      :alt: PyAEDT console in AEDT
 
 #. In the PyAEDT console, run these commands to add the Antenna Toolkit as a wizard (toolkit UI) in AEDT:
 
@@ -43,14 +43,14 @@ interpreter from the AEDT installation.
 #. In the AEDT toolbar, click the **AntennaWizard** button to open the Antenna Toolkit Wizard in AEDT:
 
    .. image:: ./_static/toolkit_in_AEDT.png
-       :width: 800
-       :alt: Antenna Toolkit in AEDT
+      :width: 800
+      :alt: Antenna Toolkit in AEDT
 
-    If the toolkit does not open, restart AEDT.
+   If the toolkit does not open, restart AEDT.
 
-    .. image:: ./_static/design_connected.png
-        :width: 800
-        :alt: UI opened from AEDT, design tab
+   .. image:: ./_static/design_connected.png
+      :width: 800
+      :alt: UI opened from AEDT, design tab
 
 The wizard is connected directly to the AEDT session. For wizard usage information,
 see :doc:`toolkit/ui`.
@@ -67,35 +67,35 @@ You can install the Antenna Toolkit in a specific Python environment from the AE
 
 #. Create a fresh-clean Python environment and activate it:
 
-    .. code:: text
+   .. code:: text
 
-        # Create a virtual environment
-        python -m venv .venv
+       # Create a virtual environment
+       python -m venv .venv
 
-        # Activate it in a POSIX system
-        source .venv/bin/activate
+       # Activate it in a POSIX system
+       source .venv/bin/activate
 
-        # Activate it in a Windows CMD environment
-        .venv\Scripts\activate.bat
+       # Activate it in a Windows CMD environment
+       .venv\Scripts\activate.bat
 
-        # Activate it in Windows PowerShell
-        .venv\Scripts\Activate.ps1
+       # Activate it in Windows PowerShell
+       .venv\Scripts\Activate.ps1
 
 #. Install the toolkit from the GitHub repository:
 
-    .. code:: bash
+   .. code:: bash
 
-        python -m pip install git+https://github.com/pyansys/pyaedt-toolkits-antenna.git
+       python -m pip install git+https://github.com/pyansys/pyaedt-toolkits-antenna.git
 
 #. Launch the Antenna Toolkit Wizard:
 
-    .. code:: bash
+   .. code:: bash
 
-        python .venv\Lib\site-packages\ansys\aedt\toolkits\antenna\run_toolkit.py
+       python .venv\Lib\site-packages\ansys\aedt\toolkits\antenna\run_toolkit.py
 
-#. AEDT Settings tab to create a new AEDT session or connect to an existing one:
+#. On the **AEDT Settings** tab, create a new AEDT session or connect to an existing one:
 
-    .. image:: ./_static/settings.png
+   .. image:: ./_static/settings.png
         :width: 800
         :alt: UI opened from console, settings tab
 
@@ -110,9 +110,9 @@ This section describes how to install the toolkit in an specific Python environm
 shown how to use the API at model level and toolkit level.
 
 .. note::
-  The following procedure assumes that you have already performed steps 1 and 2 in
-  :ref:`install_toolkit_console_ui`. These steps create and activate a virtual environment
-  and install the toolkit from the GitHub repository.
+    The following procedure assumes that you have already performed steps 1 and 2 in
+    :ref:`install_toolkit_console_ui`. These steps create and activate a virtual environment
+    and install the toolkit from the GitHub repository.
 
 #. Open a Python console in your virtual environment:
 
@@ -159,39 +159,39 @@ shown how to use the API at model level and toolkit level.
    class to get available antennas and their properties, open AEDT, update antenna properties,
    and create a Bowtie antenna:
 
-    .. code:: python
+   .. code:: python
 
-        # Import required modules
-        import time
-        from ansys.aedt.toolkits.antenna.backend.api import Toolkit
+       # Import required modules
+       import time
+       from ansys.aedt.toolkits.antenna.backend.api import Toolkit
 
-        # Backend object
-        toolkit = Toolkit()
+       # Backend object
+       toolkit = Toolkit()
 
-        # Get available antennas
-        toolkit.available_antennas
+       # Get available antennas
+       toolkit.available_antennas
 
-        # Get properties
-        properties = toolkit.get_properties()
+       # Get properties
+       properties = toolkit.get_properties()
 
-        # Set properties
-        properties = toolkit.set_properties({"length_unit": "cm"})
+       # Set properties
+       properties = toolkit.set_properties({"length_unit": "cm"})
 
-        # Launch AEDT in a thread
-        toolkit.launch_aedt()
+       # Launch AEDT in a thread
+       toolkit.launch_aedt()
 
-        # Wait until thread is finished
-        response = toolkit.get_thread_status()
+       # Wait until thread is finished
+       response = toolkit.get_thread_status()
 
-        while response[0] == 0:
-            time.sleep(1)
-            response = toolkit.get_thread_status()
+       while response[0] == 0:
+           time.sleep(1)
+           response = toolkit.get_thread_status()
 
-        # Update antenna properties
-        response = toolkit.set_properties({"substrate_height": 0.1575, "length_unit": "cm"})
+       # Update antenna properties
+       response = toolkit.set_properties({"substrate_height": 0.1575, "length_unit": "cm"})
 
-        # Create a Bowtie antenna
-        toolkit.get_antenna("BowTie")
+       # Create a Bowtie antenna
+       toolkit.get_antenna("BowTie")
 
-        # Release AEDT
-        toolkit.release_aedt()
+       # Release AEDT
+       toolkit.release_aedt()

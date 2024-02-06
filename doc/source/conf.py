@@ -73,6 +73,8 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.coverage",
     "sphinx_copybutton",
+    "sphinx_design",
+    "sphinx_design_elements",
     "recommonmark",
     "numpydoc",
     "nbsphinx",
