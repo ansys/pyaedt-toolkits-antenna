@@ -50,7 +50,7 @@ launching information, see these topics:
         :alt: Antenna Toolkit Wizard, corrugated synthesis
 
    - The **Create HFSS Model** button is for creating an HFSS model. It uses the **3D Component**,
-     **Create Hfss Setup**, and **Lattice pair** check boxes along with the **Sweep Bandwidth %** option
+     **Create Hfss Setup**, and **Lattice pair** checkboxes along with the **Sweep Bandwidth %** option
      It also uses the **Toolkit Settings** tab:
 
      .. image:: ../_static/settings_toolkit.png
