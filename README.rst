@@ -23,7 +23,9 @@ Antenna Toolkit
   :target: https://github.com/psf/black
   :alt: black
 
-is a Python interface for accelerating antenna design 
+.. reuse_start
+
+The Antenna Toolkit is a Python interface for accelerating antenna design
 using `Ansys Electronics Desktop <https://www.ansys.com/products/electronics>`_
 (AEDT). You can launch this toolkit from the AEDT UI or launch it directly
 from a Python console.
