@@ -2,8 +2,7 @@
 Antenna API
 ===========
 
-This section describes the classes for all antenna types available in the toolkit.
-You use the **Antenna API** at the model level from PyAEDT.
+The Antenna API contains classes for all antenna types available in the toolkit:
 
 .. toctree::
    :maxdepth: 1
@@ -14,6 +13,8 @@ You use the **Antenna API** at the model level from PyAEDT.
    helix
    horn
    patch
+
+You use the Antenna API at the model level from PyAEDT.
 
 You can create one or more antennas. An antenna is object-oriented. You can synthesis an
 antenna without AEDT.

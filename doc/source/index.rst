@@ -1,4 +1,4 @@
-Antenna toolkit documentation |version|
+Antenna Toolkit documentation |version|
 =======================================
 
 The Antenna Toolkit is a Python interface for accelerating antenna design 

@@ -40,7 +40,7 @@ interpreter from the AEDT installation.
 
 #. Close the PyAEDT console.
 
-#. In the AEDT toolbar, click the **AntennaWizard** button to open the Antenna Toolkit Wizard in AEDT:
+#. In the AEDT toolbar, click the **AntennaWizard** button to open this wizard in AEDT:
 
    .. image:: ./_static/toolkit_in_AEDT.png
       :width: 800
@@ -52,7 +52,7 @@ interpreter from the AEDT installation.
       :width: 800
       :alt: UI opened from AEDT, design tab
 
-The wizard is connected directly to the AEDT session. For wizard usage information,
+The Antenna Toolkit Wizard is connected directly to the AEDT session. For wizard usage information,
 see :doc:`toolkit/ui`.
 
 .. _install_toolkit_console_ui:
@@ -106,8 +106,9 @@ For wizard usage information, see :doc:`toolkit/ui`.
 How to install from a Python console and use the toolkit's APIs
 ---------------------------------------------------------------
 
-This section describes how to install the toolkit in an specific Python environment and use the API, it is
-shown how to use the API at model level and toolkit level.
+You can install the toolkit in a specific Python environment and use the toolkit's APIs.
+The code example included in this topic shows how to use the APIs at the model level
+and toolkit level.
 
 .. note::
     The following procedure assumes that you have already performed steps 1 and 2 in
@@ -122,7 +123,7 @@ shown how to use the API at model level and toolkit level.
 
 #. From the command line, use the toolkit to create an antenna.
 
-   For example, this code shows how to launch AEDT, create and synthesize a bowtie
+   This code shows how to launch AEDT, create and synthesize a bowtie
    antenna, and run a simulation in HFSS:
 
    .. code:: python
@@ -155,9 +156,9 @@ shown how to use the API at model level and toolkit level.
 #. To create an antenna from the toolkit level, use the :class:`Toolkit <ansys.aedt.toolkits.antenna.backend.api.Toolkit>`
    class.
    
-   For example, this code shows how to use the :class:`Toolkit <ansys.aedt.toolkits.antenna.backend.api.Toolkit>`
+   This code shows how to use the :class:`Toolkit <ansys.aedt.toolkits.antenna.backend.api.Toolkit>`
    class to get available antennas and their properties, open AEDT, update antenna properties,
-   and create a Bowtie antenna:
+   and create a bowtie antenna:
 
    .. code:: python
 
@@ -190,7 +191,7 @@ shown how to use the API at model level and toolkit level.
        # Update antenna properties
        response = toolkit.set_properties({"substrate_height": 0.1575, "length_unit": "cm"})
 
-       # Create a Bowtie antenna
+       # Create a bowtie antenna
        toolkit.get_antenna("BowTie")
 
        # Release AEDT

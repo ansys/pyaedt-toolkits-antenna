@@ -296,12 +296,12 @@ class CommonAntenna(object):
         component_name : str, optional
             Name of the component. The default is the antenna name.
         replace : bool, optional
-            Whether to replace the antenna with a 3D Component. The default is ``False``.
+            Whether to eplace the antenna with a 3D component. The default is ``False``.
 
         Returns
         -------
-        str.
-            Path of the 3DComponent file or
+        str
+            Path of the 3D component file or
             :class:`pyaedt.modeler.components_3d.UserDefinedComponent`.
 
         Examples
@@ -534,7 +534,7 @@ class CommonAntenna(object):
 
 
 class TransmissionLine(object):
-    """Provides base methods common to transmission line calculation.
+    """Provides base methods common to transmission line calculations.
 
     Parameters
     ----------
@@ -561,7 +561,7 @@ class TransmissionLine(object):
 
     @pyaedt_function_handler()
     def microstrip_calculator(self, substrate_height, permittivity, impedance=50.0, electrical_length=150.0):
-        """Use the strip line calculator to calculate line width and length.
+        """Use the micro strip line calculator to calculate line width and length.
 
         Parameters
         ----------
@@ -646,7 +646,7 @@ class TransmissionLine(object):
 
     @pyaedt_function_handler()
     def suspended_strip_calculator(self, wavelength, w1, substrate_height, permittivity):
-        """Use the suspended stripline calculator to calculate effective permittivity.
+        """Use the suspended strip line calculator to calculate effective permittivity.
 
         Parameters
         ----------

@@ -59,12 +59,12 @@ class ToolkitGeneric(object):
         Parameters
         ----------
         data : dict
-            The dictionary containing the properties to be updated.
+            Dictionary containing the properties to be updated.
 
         Returns
         -------
         tuple[bool, str]
-            A tuple indicating the success status and a message.
+            Tuple indicating the success status and a message.
 
         Examples
         --------
@@ -447,7 +447,7 @@ class ToolkitGeneric(object):
         return True
 
     def connect_design(self, app_name=None):
-        """Connect to an application design.
+        """Connect to a design in an AEDT app.
 
         If a design exists, this method takes the active project and design. If a design does
         not exist, this method creates a design of the specified type.
@@ -455,8 +455,8 @@ class ToolkitGeneric(object):
         Parameters
         ----------
         app_name : str, optional
-            AEDT app name.  If no application is specified, the default is ``"Hfss"``.
-            Options are::
+            AEDT app name.  If no app is specified, the default is ``"Hfss"``.
+            Options are:
 
             * Circuit Design
             * HFSS

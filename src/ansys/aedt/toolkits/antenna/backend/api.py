@@ -164,7 +164,7 @@ class Toolkit(ToolkitGeneric):
         return antenna_parameters
 
     def export_hfss_model(self):
-        """Export model in OBJ format.
+        """Export model in the OBJ format.
 
         Parameters
         ----------

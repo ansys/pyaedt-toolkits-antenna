@@ -4,7 +4,7 @@ Toolkit API
 The Toolkit API contains the ``Toolkit`` class, which provides methods for
 controlling the toolkit workflow. In addition to methods for creating an AEDT
 session or connecting to an existing AEDT session, this API provides methods
-for synthesizing and creating an antenna. You use the **Toolkit API** at the
+for synthesizing and creating an antenna. You use the Toolkit API at the
 toolkit level.
 
 The frontend makes calls to the Toolkit API. This API wraps some of the methods
@@ -30,7 +30,7 @@ You can use the Toolkit API as shown in this example:
     # Initialize generic service
     service = Toolkit()
 
-    # Get the default properties loaded from JSON file
+    # Load default properties from a JSON file
     properties = service.get_properties()
 
     # Set properties
