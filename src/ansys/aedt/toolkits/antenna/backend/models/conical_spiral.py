@@ -328,7 +328,7 @@ class Log(CommonConicalSpiral):
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Whether to create a parametrized antenna.  The default is ``True``.
+        Whether to create a parametrized antenna. The default is ``True``.
 
     Returns
     -------

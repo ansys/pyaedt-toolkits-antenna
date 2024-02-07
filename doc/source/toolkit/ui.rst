@@ -57,7 +57,7 @@ launching information, see these topics:
         :width: 800
         :alt: Toolkit Settings tab
 
-     Descriptions follow for how the checkboxes on the **Design** tab work:
+     Descriptions follow for how to use the checkboxes on the **Design** tab:
 
      - If you select the **3D Component** checkbox, the toolkit creates the antenna and replaces it
        with a 3D component.
