@@ -40,7 +40,7 @@ launching information, see these topics:
    In addition to the **Synthesis** button, there is a **Create Hfss Model** button, which
    is unavailable if the Antenna Toolkit is not connected to AEDT.
 
-    - The **Synthesis** button is for performinging the synthesis of the antenna. It does not need AEDT.
+    - The **Synthesis** button is for performing the synthesis of the antenna. It does not need AEDT.
       You can see the parameters that control the antenna geometry. Additionally, you can do as many
       syntheses as you want and even change the antenna template.
 
@@ -49,7 +49,7 @@ launching information, see these topics:
          :alt: Antenna Toolkit Wizard, corrugated synthesis
 
     - The **Create HFSS Model** button is for creating an HFSS model. It uses the **3D Component**,
-      **Create Hfss Setup**, and **Lattice Pair** check boxes along with the **Sweep Bandwidth %** option
+      **Create Hfss Setup**, and **Lattice Pair** select boxes along with the **Sweep Bandwidth %** option
       It also uses the **Toolkit settings** tab.
 
       .. image:: ../_static/settings_toolkit.png
