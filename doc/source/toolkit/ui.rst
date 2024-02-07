@@ -37,8 +37,8 @@ launching information, see these topics:
       :width: 800
       :alt: Antenna Toolkit Wizard, corrugated synthesis
 
-    In addition to the **Synthesis** button, there is a **Create Hfss Model** button, which
-    is unavailable if the Antenna Toolkit is not connected to AEDT.
+   In addition to the **Synthesis** button, there is a **Create Hfss Model** button, which
+   is unavailable if the Antenna Toolkit is not connected to AEDT.
 
     - The **Synthesis** button is for performinging the synthesis of the antenna. It does not need AEDT.
       You can see the parameters that control the antenna geometry. Additionally, you can do as many
