@@ -24,7 +24,7 @@ launching information, see these topics:
    The wizard has a progress bar and a logger box, where you can see the status of every operation.
    A red progress bar means that the toolkit is busy. Every operation must wait until the toolkit is released.
 
-   Once the wizard is connected to AEDT, you want to use the **Antennas** list in AEDT to load an antenna
+   Once the wizard is connected to AEDT, you want to use the wizard's **Antennas** menu to load an antenna
    template into the wizard's **Design** tab.
 
    .. image:: ../_static/design_connected.png
@@ -98,4 +98,4 @@ Once the project is solved, you can click **Get results** on the **Analysis** ta
    :width: 800
    :alt: Result
 
-To save the project, select **File > Save project**.
+To save the project, from the wizard's **File** menu, select **Save project**.

@@ -458,19 +458,19 @@ class ToolkitGeneric(object):
             AEDT app name.  If no app is specified, the default is ``"Hfss"``.
             Options are:
 
-            * Circuit Design
-            * HFSS
-            * Edb
-            * EMIT
-            * HFSS 3D Layout Design
-            * Icepak
-            * Maxwell 2D
-            * Maxwell 3D
-            * 2D Extractor
-            * Q3D Extractor
-            * Rmxprt
-            * Twin Builder
-            * Mechanical
+            - ``"Circuit"``
+            - ``"Emit"``
+            - ``"Hfss"``
+            - ``"Hfss3dLayout"``
+            - ``"Icepak"``
+            - ``"Maxwell2d"``
+            - ``"Maxwell3d"``
+            - ``"MaxwellCircuit"``
+            - ``"Mechanical"``
+            - ``"Q2d"``
+            - ``"Q3d"``
+            - ``"Rmxprt"``
+            - ``"Simplorer"``
 
         Returns
         -------
