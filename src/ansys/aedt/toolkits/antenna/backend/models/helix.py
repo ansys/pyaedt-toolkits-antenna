@@ -122,8 +122,8 @@ class AxialMode(CommonHelix):
         Helix material. If the material is not defined, a new material,
         ``parametrized``, is defined. The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, ``"PML"``, and ``None``. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
         Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
@@ -139,7 +139,7 @@ class AxialMode(CommonHelix):
     Notes
     -----
     .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
-        Modern Antenna Handbook, New York, 2008.
+        *Modern Antenna Handbook*, New York, 2008.
 
     Examples
     --------

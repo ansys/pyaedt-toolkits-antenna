@@ -1,6 +1,6 @@
 Horn
 ====
-This section lists the available horns:
+This page lists the classes available for horns:
 
 .. currentmodule:: ansys.aedt.toolkits.antenna.backend.models.horn
 
@@ -16,7 +16,7 @@ This section lists the available horns:
    PyramidalRidged
    QuadRidged
 
-The API must be used using PyAEDT as in the following example:
+You must use these methods from PyAEDT as shown in this example:
 
 .. code:: python
 

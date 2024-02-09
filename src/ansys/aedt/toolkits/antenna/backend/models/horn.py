@@ -66,7 +66,7 @@ class CommonHorn(CommonAntenna):
 
 
 class Conical(CommonHorn):
-    """Manages conical horn antenna.
+    """Manages a conical horn antenna.
 
     This class is accessible through the app hfss object [1]_.
 
@@ -77,17 +77,17 @@ class Conical(CommonHorn):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
+        Horn material. If a material is not defined, a new material, ``parametrized``, is defined.
         The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna.  The default is ``True``.
 
     Returns
     -------
@@ -97,7 +97,7 @@ class Conical(CommonHorn):
     Notes
     -----
     .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
-        Modern Antenna Handbook, New York, 2008.
+        *Modern Antenna Handbook*, New York, 2008.
 
     Examples
     --------
@@ -360,17 +360,17 @@ class Conical(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemented."""
+        """Set up in PyDiscovery. To be implemented."""
         pass
 
 
 class PyramidalRidged(CommonHorn):
-    """Manages pyramidal ridged horn antenna.
+    """Manages a pyramidal ridged horn antenna.
 
     This class is accessible through the app hfss object [1]_.
 
@@ -381,17 +381,17 @@ class PyramidalRidged(CommonHorn):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
+        Horn material. If a material is not defined, a new material, ``parametrized``, is defined.
         The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna.  The default is ``True``.
 
     Returns
     -------
@@ -401,7 +401,7 @@ class PyramidalRidged(CommonHorn):
     Notes
     -----
     .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
-        Modern Antenna Handbook, New York, 2008.
+        *Modern Antenna Handbook*, New York, 2008.
 
     Examples
     --------
@@ -1078,7 +1078,7 @@ class PyramidalRidged(CommonHorn):
 
 
 class Corrugated(CommonHorn):
-    """Manages corrugated horn antenna.
+    """Manages a corrugated horn antenna.
 
     This class is accessible through the app hfss object [1]_.
 
@@ -1089,17 +1089,17 @@ class Corrugated(CommonHorn):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
+        Horn material. If a material is not defined, a new material, ``parametrized``, is defined.
         The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna.  The default is ``True``.
 
     Returns
     -------
@@ -1365,17 +1365,17 @@ class Corrugated(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemented."""
+        """Set up in PyDiscovery. To be implemented."""
         pass
 
 
 class Elliptical(CommonHorn):
-    """Manages elliptical horn antenna.
+    """Manages an elliptical horn antenna.
 
     This class is accessible through the app hfss object [1]_.
 
@@ -1386,17 +1386,17 @@ class Elliptical(CommonHorn):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
+        Horn material. If a material is not defined, a new material, ``parametrized``, is defined.
         The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna.  The default is ``True``.
 
     Returns
     -------
@@ -1406,7 +1406,7 @@ class Elliptical(CommonHorn):
     Notes
     -----
     .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
-        Modern Antenna Handbook, New York, 2008.
+        *Modern Antenna Handbook*, New York, 2008.
 
     Examples
     --------
@@ -1671,17 +1671,17 @@ class Elliptical(CommonHorn):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Setup in PyDisco. To be implemented."""
+        """Set up in PyDiscovery. To be implemented."""
         pass
 
 
 class EPlane(CommonHorn):
-    """Manages E plane horn antenna.
+    """Manages an E plane horn antenna.
 
     This class is accessible through the app hfss object [1]_.
 
@@ -1692,17 +1692,17 @@ class EPlane(CommonHorn):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
+        Horn material. If a material is not defined, a new material, ``parametrized``, is defined.
         The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna.  The default is ``True``.
 
     Returns
     -------
@@ -1712,7 +1712,7 @@ class EPlane(CommonHorn):
     Notes
     -----
     .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
-        Modern Antenna Handbook, New York, 2008.
+        *Modern Antenna Handbook*, New York, 2008.
 
     Examples
     --------
@@ -2077,7 +2077,7 @@ class EPlane(CommonHorn):
 
 
 class HPlane(CommonHorn):
-    """Manages H plane horn antenna.
+    """Manages an H plane horn antenna.
 
     This class is accessible through the app hfss object [1]_.
 
@@ -2088,17 +2088,17 @@ class HPlane(CommonHorn):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
+        Horn material. If a material is not defined, a new material, ``parametrized``, is defined.
         The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna.  The default is ``True``.
 
     Returns
     -------
@@ -2108,7 +2108,7 @@ class HPlane(CommonHorn):
     Notes
     -----
     .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
-        Modern Antenna Handbook, New York, 2008.
+        *Modern Antenna Handbook*, New York, 2008.
 
     Examples
     --------
@@ -2458,7 +2458,7 @@ class HPlane(CommonHorn):
 
 
 class Pyramidal(CommonHorn):
-    """Manages pyramidal horn antenna.
+    """Manages a pyramidal horn antenna.
 
     This class is accessible through the app hfss object [1]_.
 
@@ -2469,17 +2469,17 @@ class Pyramidal(CommonHorn):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
+        Horn material. If a material is not defined, a new material, ``parametrized``, is defined.
         The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna.  The default is ``True``.
 
     Returns
     -------
@@ -2489,7 +2489,7 @@ class Pyramidal(CommonHorn):
     Notes
     -----
     .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
-        Modern Antenna Handbook, New York, 2008.
+        *Modern Antenna Handbook*, New York, 2008.
 
     Examples
     --------
@@ -2843,7 +2843,7 @@ class Pyramidal(CommonHorn):
 
 
 class QuadRidged(CommonHorn):
-    """Manages quad-ridged horn antenna.
+    """Manages a quad-ridged horn antenna.
 
     This class is accessible through the app hfss object [1]_, [2]_, [3]_.
 
@@ -2854,17 +2854,17 @@ class QuadRidged(CommonHorn):
     frequency_unit : str, optional
         Frequency units. The default is ``"GHz"``.
     material : str, optional
-        Horn material. If material is not defined a new material parametrized will be defined.
+        Horn material. If a material is not defined, a new material, ``parametrized``, is defined.
         The default is ``"pec"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
-        Create a Huygens box. The default is ``False``.
+        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
-        Create a parametrized antenna. The default is ``True``.
+        Whether to create a parametrized antenna.  The default is ``True``.
 
     Returns
     -------

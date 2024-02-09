@@ -1,6 +1,7 @@
-Generic API
-===========
-This section list the available generic methods in the backend, these methods are the same for all toolkits:
+ToolkitGeneric API
+==================
+The ToolkitGeneric API contains the ```ToolkitGeneric`` class, which provides the generic methods
+available in the backend. These methods are the same for all toolkits.
 
 .. currentmodule:: ansys.aedt.toolkits.antenna.backend.common.api_generic
 
@@ -9,21 +10,21 @@ This section list the available generic methods in the backend, these methods ar
 
    ToolkitGeneric
 
-**ToolkitGeneric** class is accessible directly from :doc:`api` because it is inherited, then
-you can create an object as in the following example to use both classes:
+The ``ToolkitGeneric`` class is accessible directly from the :doc:`api` because it is inherited.
+The following code shows you can use both classes to create an object:
 
 .. code:: python
 
-    # Import required modules for the example
+    # Import required modules
     import time
 
     # Import backend services
     from ansys.aedt.toolkits.template.backend.api import Toolkit
 
-    # Backend object
+    # Get backend object
     service = Toolkit()
 
-    # Get the default properties loaded from json file
+    # Load default properties from a JSON file
     properties = service.get_properties()
 
     # Set properties
@@ -43,7 +44,7 @@ you can create an object as in the following example to use both classes:
         time.sleep(1)
         response = service.get_thread_status()
 
-    # Desktop is released here
+    # Release AEDT
     service.release_aedt()
 
 

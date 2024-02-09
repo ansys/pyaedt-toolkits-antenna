@@ -1,6 +1,6 @@
 Bowtie
 ======
-This section list the available Bowtie antennas:
+This page list the classes available for bowtie antennas:
 
 .. currentmodule:: ansys.aedt.toolkits.antenna.backend.models.bowtie
 
@@ -11,7 +11,7 @@ This section list the available Bowtie antennas:
    BowTieRounded
    BowTieSlot
 
-The API must be used using PyAEDT as in the following example:
+You must use these methods from PyAEDT as shown in this example:
 
 .. code:: python
 
