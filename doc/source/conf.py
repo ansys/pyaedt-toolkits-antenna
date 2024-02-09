@@ -6,8 +6,12 @@ import pathlib
 import sys
 
 from ansys_sphinx_theme import ansys_favicon
+from ansys_sphinx_theme import ansys_logo_white
+from ansys_sphinx_theme import ansys_logo_white_cropped
 from ansys_sphinx_theme import get_version_match
+from ansys_sphinx_theme import latex
 from ansys_sphinx_theme import pyansys_logo_black
+from ansys_sphinx_theme import watermark
 
 sys.path.append(pathlib.Path(__file__).parent.parent.parent)
 
@@ -49,8 +53,9 @@ html_theme_options = {
     "show_prev_next": False,
     "show_breadcrumbs": True,
     "collapse_navigation": True,
+    "use_edit_page_button": True,
     "additional_breadcrumbs": [
-        ("PyAEDT", "https://aedt.docs.pyansys.com/version/stable"),
+        ("PyAnsys", "https://docs.pyansys.com/"),
     ],
     "icon_links": [
         {
@@ -72,6 +77,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.coverage",
     "sphinx_copybutton",
+    "sphinx_design",
     "recommonmark",
     "numpydoc",
     "nbsphinx",
@@ -118,7 +124,58 @@ html_favicon = ansys_favicon
 templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
-source_suffix = ".rst"
+source_suffix = {".rst": "restructuredtext", ".md": "markdown"}
 
 # The master toctree document.
 master_doc = "index"
+
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = "sphinx"
+
+# Execute notebooks before conversion
+nbsphinx_execute = "always"
+
+# Allow errors to help debug.
+nbsphinx_allow_errors = True
+
+# Sphinx gallery customization
+
+nbsphinx_custom_formats = {
+    ".py": ["jupytext.reads", {"fmt": ""}],
+}
+
+exclude_patterns = ["_build", "sphinx_boogergreen_theme_1", "Thumbs.db", ".DS_Store", "*.txt", "conf.py"]
+
+# if os.name != "posix":
+#     extensions.append("sphinx_gallery.gen_gallery")
+
+#     sphinx_gallery_conf = {
+#         # # convert rst to md for ipynb
+#         "pypandoc": True,
+#         # path to your examples scripts
+#         "examples_dirs": ["../../examples/"],
+#         # path where to save gallery generated examples
+#         "gallery_dirs": ["examples"],
+#         # Pattern to search for examples files
+#         "filename_pattern": r"\.py",
+#         # Remove the "Download all examples" button from the top level gallery
+#         "download_all_examples": False,
+#         # Sort gallery examples by file name instead of number of lines (default)
+#         "within_subsection_order": FileNameSortKey,
+#         # directory where function granular galleries are stored
+#         "backreferences_dir": None,
+#         # Modules for which function level galleries are created.  In
+#         "doc_module": "ansys-legacy",
+#         "ignore_pattern": "flycheck*",
+#         "thumbnail_size": (350, 350),
+#     }
+
+
+# -- Options for LaTeX output ------------------------------------------------
+
+# additional logos for the latex coverpage
+latex_additional_files = [watermark, ansys_logo_white, ansys_logo_white_cropped]
+
+# change the preamble of latex with customized title page
+# variables are the title of pdf, watermark
+latex_elements = {"preamble": latex.generate_preamble(html_title)}

@@ -55,6 +55,10 @@ doc = [
     "sphinx-gallery==0.15.0",
     "sphinx-notfound-page==1.0.0",
     "nbsphinx==0.9.3",
+    "sphinx_design",
+    "jupytext",
+    "ipython==8.16.1",
+    "jupyterlab==4.0.6",
 ]
 
 [tool.flit.module]

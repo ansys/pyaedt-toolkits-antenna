@@ -1,6 +1,6 @@
 Conical spiral
 ==============
-This section list the available conical spiral antennas:
+This page lists the classes available for conical spiral antennas:
 
 .. currentmodule:: ansys.aedt.toolkits.antenna.backend.models.conical_spiral
 
@@ -9,7 +9,7 @@ This section list the available conical spiral antennas:
 
    Archimedean
 
-The API must be used using PyAEDT as in the following example:
+You must use these methods from PyAEDT as shown in this example:
 
 .. code:: python
 

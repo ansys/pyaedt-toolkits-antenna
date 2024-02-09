@@ -106,8 +106,8 @@ class RectangularPatchProbe(CommonPatch):
         If the material is not defined, a new material, ``parametrized``, is created.
         The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, and ``"PML"`` or None. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
         Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
@@ -124,7 +124,7 @@ class RectangularPatchProbe(CommonPatch):
 
     Notes
     -----
-    .. [1] C. Balanis, "Microstrip Antennas," Antenna Theory, 2nd Ed. New York: Wiley, 1997.
+    .. [1] C. Balanis, "Microstrip Antennas," *Antenna Theory*, 2nd Ed. New York: Wiley, 1997.
 
     Examples
     --------
@@ -480,8 +480,8 @@ class RectangularPatchInset(CommonPatch):
         Substrate material. If the material is not defined, a new
         material, ``parametrized``, is created. The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, ``"PML"``, and ``None``. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
         Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
@@ -498,7 +498,7 @@ class RectangularPatchInset(CommonPatch):
 
     Notes
     -----
-    .. [1] C. Balanis, "Microstrip Antennas," Antenna Theory, 2nd Ed. New York: Wiley, 1997.
+    .. [1] C. Balanis, "Microstrip Antennas," *Antenna Theory*, 2nd Ed. New York: Wiley, 1997.
 
     Examples
     --------
@@ -820,8 +820,8 @@ class RectangularPatchEdge(CommonPatch):
         a new material, ``parametrized``, is created.
         The default is ``"FR4_epoxy"``.
     outer_boundary : str, optional
-        Boundary type to use. Options are ``"Radiation"``,
-        ``"FEBI"``, ``"PML"``, and ``None``. The default is ``None``.
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
     huygens_box : bool, optional
         Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
@@ -838,7 +838,7 @@ class RectangularPatchEdge(CommonPatch):
 
     Notes
     -----
-    .. [1] C. Balanis, "Microstrip Antennas," Antenna Theory, 2nd Ed. New York: Wiley, 1997.
+    .. [1] C. Balanis, "Microstrip Antennas," *Antenna Theory*, 2nd Ed. New York: Wiley, 1997.
 
     Examples
     --------
@@ -1151,10 +1151,10 @@ class RectangularPatchEdge(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDisco. To be implemented."""
+        """Model in PyDiscovery. To be implemented."""
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up the model in PyDisco. To be implemented."""
+        """Set up the model in PyDiscovery. To be implemented."""
         pass
