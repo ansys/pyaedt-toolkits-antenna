@@ -27,7 +27,7 @@ classifiers = [
 ]
 dependencies = [
     "build==1.0.3",
-    "twine==4.0.2",
+    "twine==5.0.0",
     "pyaedt",
     "importlib-metadata >=4.0",
     "PySide6-Essentials==6.6.1",

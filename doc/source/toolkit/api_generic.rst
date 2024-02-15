@@ -1,6 +1,7 @@
 ToolkitGeneric API
 ==================
-The ToolkitGeneric API contains the ```ToolkitGeneric`` class, which provides the generic methods
+
+The ``ToolkitGeneric`` class provides the generic methods
 available in the backend. These methods are the same for all toolkits.
 
 .. currentmodule:: ansys.aedt.toolkits.antenna.backend.common.api_generic
