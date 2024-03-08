@@ -30,7 +30,7 @@ dependencies = [
     "twine==5.0.0",
     "pyaedt",
     "importlib-metadata >=4.0",
-    "PySide6-Essentials==6.6.1",
+    "PySide6-Essentials==6.6.2",
     "pyqtgraph",
     "pyvistaqt",
     "qdarkstyle",
@@ -39,7 +39,7 @@ dependencies = [
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.0.0",
+    "pytest==8.0.2",
     "pytest-cov==4.1.0",
 ]
 doc = [
@@ -57,8 +57,8 @@ doc = [
     "nbsphinx==0.9.3",
     "sphinx_design",
     "jupytext",
-    "jupyterlab==4.1.1",
-    "ipython==8.21.0",
+    "ipython==8.22.2",
+    "jupyterlab==4.1.4",
 ]
 
 [tool.flit.module]
