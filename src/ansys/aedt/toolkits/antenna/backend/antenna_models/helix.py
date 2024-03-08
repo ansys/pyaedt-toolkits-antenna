@@ -1,11 +1,33 @@
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 from collections import OrderedDict
 import math
 
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
-from ansys.aedt.toolkits.antenna.backend.common.logger_handler import logger
 
 
 class CommonHelix(CommonAntenna):
@@ -124,8 +146,6 @@ class AxialMode(CommonHelix):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
@@ -169,7 +189,6 @@ class AxialMode(CommonHelix):
         "feeder_length": 10,
         "outer_boundary": "",
         "material": "pec",
-        "huygens_box": False,
     }
 
     def __init__(self, *args, **kwargs):
@@ -384,42 +403,6 @@ class AxialMode(CommonHelix):
         )
         p1.color = (128, 0, 0)
         p1.history().props["Coordinate System"] = coordinate_system
-
-        if self.huygens_box:
-            light_speed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(light_speed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    pos_x + "-{}/2".format(groundx) + "-" + huygens_dist + self.length_unit,
-                    pos_y + "-{}/2".format(groundy) + "-" + huygens_dist + self.length_unit,
-                    pos_z + "-{}-{}/2-{}".format(feed_pinL, wire_diameter, feeder_length),
-                ],
-                dimensions_list=[
-                    groundx + "+" + "2*" + huygens_dist + self.length_unit,
-                    groundy + "+" + "2*" + huygens_dist + self.length_unit,
-                    number_of_turns
-                    + "*"
-                    + spacing
-                    + "+"
-                    + feeder_length
-                    + "+.5*"
-                    + feed_pinL
-                    + "+"
-                    + wire_diameter
-                    + "/2+"
-                    + huygens_dist
-                    + self.length_unit,
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
 
         udm.group_name = antenna_name
         feed_coax.group_name = antenna_name

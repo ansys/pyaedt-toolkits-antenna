@@ -1,4 +1,6 @@
 {
+  "toolkit_name": "antenna",
+  "log_file" : "backend.log",
   "antenna_type": "",
   "antenna_name": "",
   "antenna_created": false,
@@ -9,7 +11,6 @@
   "frequency" : 10.0,
   "frequency_unit" : "GHz",
   "gain_value" : 0.0,
-  "huygens_box": false,
   "lattice_pair" : false,
   "length_unit" : "meter",
   "material": "pec",

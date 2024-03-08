@@ -1,3 +1,25 @@
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 from collections import OrderedDict
 import math
 
@@ -25,8 +47,6 @@ class BowTie(CommonPatch):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     substrate_height : float, optional
@@ -70,7 +90,6 @@ class BowTie(CommonPatch):
         "material": "FR4_epoxy",
         "material_properties": {"permittivity": 4.4},
         "outer_boundary": "",
-        "huygens_box": False,
         "substrate_height": 0.1575,
     }
 
@@ -209,32 +228,6 @@ class BowTie(CommonPatch):
 
         self._app.modeler.move([p1.name, ant2_name, ant.name], [0, 0, sub_h])
 
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    "-{}/2-{}{}".format(sub_x, huygens_dist, self.length_unit),
-                    "-{}/2-{}{}".format(sub_y, huygens_dist, self.length_unit),
-                    "-{}{}".format(huygens_dist, self.length_unit),
-                ],
-                dimensions_list=[
-                    "{}+2*{}{}".format(sub_x, huygens_dist, self.length_unit),
-                    "{}+2*{}{}".format(sub_y, huygens_dist, self.length_unit),
-                    "{}+2*{}{}".format(sub_h, huygens_dist, self.length_unit),
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
-            self.object_list[huygens.name] = huygens
-
         sub.group_name = antenna_name
         ant.group_name = antenna_name
         ant2.group_name = antenna_name
@@ -275,8 +268,6 @@ class BowTieRounded(CommonPatch):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     substrate_height : float, optional
@@ -320,7 +311,6 @@ class BowTieRounded(CommonPatch):
         "material": "FR4_epoxy",
         "material_properties": {"permittivity": 4.4},
         "outer_boundary": None,
-        "huygens_box": False,
         "substrate_height": 0.1575,
     }
 
@@ -472,32 +462,6 @@ class BowTieRounded(CommonPatch):
 
         self._app.modeler.move([p1.name, ant2_name, ant.name], [0, 0, sub_h])
 
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    "-{}/2-{}{}".format(sub_x, huygens_dist, self.length_unit),
-                    "-{}/2-{}{}".format(sub_y, huygens_dist, self.length_unit),
-                    "-{}{}".format(huygens_dist, self.length_unit),
-                ],
-                dimensions_list=[
-                    "{}+2*{}{}".format(sub_x, huygens_dist, self.length_unit),
-                    "{}+2*{}{}".format(sub_y, huygens_dist, self.length_unit),
-                    "{}+2*{}{}".format(sub_h, huygens_dist, self.length_unit),
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
-            self.object_list[huygens.name] = huygens
-
         sub.group_name = antenna_name
         ant.group_name = antenna_name
         ant2.group_name = antenna_name
@@ -538,8 +502,6 @@ class BowTieSlot(CommonPatch):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     substrate_height : float, optional
@@ -583,7 +545,6 @@ class BowTieSlot(CommonPatch):
         "material": "FR4_epoxy",
         "material_properties": {"permittivity": 4.4},
         "outer_boundary": None,
-        "huygens_box": False,
         "substrate_height": 0.1575,
     }
 
@@ -789,32 +750,6 @@ class BowTieSlot(CommonPatch):
         slot.color = (255, 128, 65)
 
         self._app.modeler.move([p1.name, slot.name, ref.name], [0, 0, sub_h])
-
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    "-{}/2-{}{}".format(sub_x, huygens_dist, self.length_unit),
-                    "-{}/2-{}{}".format(sub_y, huygens_dist, self.length_unit),
-                    "-{}{}".format(huygens_dist, self.length_unit),
-                ],
-                dimensions_list=[
-                    "{}+2*{}{}".format(sub_x, huygens_dist, self.length_unit),
-                    "{}+2*{}{}".format(sub_y, huygens_dist, self.length_unit),
-                    "{}+2*{}{}".format(sub_h, huygens_dist, self.length_unit),
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
-            self.object_list[huygens.name] = huygens
 
         sub.group_name = antenna_name
         slot.group_name = antenna_name

@@ -1,3 +1,25 @@
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import copy
 import math
 import os
@@ -9,7 +31,7 @@ from pyaedt.generic.general_methods import pyaedt_function_handler
 from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import InputParameters
 from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import Property
 from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import SynthesisParameters
-from ansys.aedt.toolkits.antenna.backend.common.properties import properties
+from ansys.aedt.toolkits.antenna.backend.models import properties
 
 
 class CommonAntenna(object):
@@ -116,21 +138,6 @@ class CommonAntenna(object):
                 str(self.frequency) + self.frequency_unit,
                 value,
             )
-
-    @property
-    def huygens_box(self):
-        """Flag indicating if a Huygens box is enabled.
-
-        Returns
-        -------
-        bool
-        """
-        return self._input_parameters.huygens_box
-
-    @huygens_box.setter
-    def huygens_box(self, value):
-        # No effect for now
-        self._huygens_box = value
 
     @property
     def length_unit(self):
@@ -462,20 +469,6 @@ class CommonAntenna(object):
                 coax_bound.name = "PerfE_" + obj_name
                 self.boundaries[coax_bound.name] = coax_bound
                 break
-            elif obj_name.startswith("huygens_"):
-                if self.huygens_box:
-                    lightSpeed = constants.SpeedOfLight  # m/s
-                    freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-                    huygens_dist = str(
-                        constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-                    )
-                    mesh_op = self._app.mesh.assign_length_mesh(
-                        [obj_name],
-                        maxlength=huygens_dist + self.length_unit,
-                        maxel=None,
-                        meshop_name="HuygensBox_Seed_" + self.antenna_name,
-                    )
-                    self.mesh_operations[mesh_op.name] = mesh_op
 
         port_count = 1
         for item in list(self.object_list.keys()):

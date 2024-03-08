@@ -1,11 +1,33 @@
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 from collections import OrderedDict
 
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import StandardWaveguide
-from ansys.aedt.toolkits.antenna.backend.common.logger_handler import logger
 
 
 class CommonHorn(CommonAntenna):
@@ -82,8 +104,6 @@ class Conical(CommonHorn):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
@@ -125,7 +145,6 @@ class Conical(CommonHorn):
         "frequency_unit": "GHz",
         "material": "pec",
         "outer_boundary": "",
-        "huygens_box": False,
     }
 
     def __init__(self, *args, **kwargs):
@@ -327,32 +346,6 @@ class Conical(CommonHorn):
 
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
 
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    pos_x + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
-                    pos_y + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
-                    pos_z + "-" + wg_length,
-                ],
-                dimensions_list=[
-                    "2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
-                    "2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
-                    huygens_dist + self.length_unit + "+" + wg_length + "+" + horn_length,
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
-            self.object_list[huygens.name] = huygens
-
         wg_in.group_name = antenna_name
         horn_sheet.group_name = antenna_name
         cap.group_name = antenna_name
@@ -386,8 +379,6 @@ class PyramidalRidged(CommonHorn):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
@@ -428,7 +419,6 @@ class PyramidalRidged(CommonHorn):
         "frequency_unit": "GHz",
         "material": "pec",
         "outer_boundary": "",
-        "huygens_box": False,
     }
 
     def __init__(self, *args, **kwargs):
@@ -1032,33 +1022,6 @@ class PyramidalRidged(CommonHorn):
 
         self._app.modeler.move([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
 
-        # Create Huygens box
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    pos_x + "-" + aperture_width + "/2-" + huygens_dist + self.length_unit + "-2*" + wall_thickness,
-                    pos_y + "-" + aperture_height + "/2" + "-" + wall_thickness + "-" + huygens_dist + self.length_unit,
-                    pos_z + "-" + wg_length + "-" + wall_thickness,
-                ],
-                dimensions_list=[
-                    aperture_width + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
-                    aperture_height + "+" + "2*" + huygens_dist + self.length_unit,
-                    huygens_dist + self.length_unit + "+" + wg_length + "+" + wall_thickness + "+" + flare_length,
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
-            self.object_list[huygens.name] = huygens
-
         self._app.change_material_override(True)
 
         cap.group_name = antenna_name
@@ -1094,8 +1057,6 @@ class Corrugated(CommonHorn):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
@@ -1133,7 +1094,6 @@ class Corrugated(CommonHorn):
         "frequency_unit": "GHz",
         "material": "pec",
         "outer_boundary": "",
-        "huygens_box": False,
     }
 
     def __init__(self, *args, **kwargs):
@@ -1333,32 +1293,6 @@ class Corrugated(CommonHorn):
 
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
 
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    pos_x + "-(" + endx + ")-" + huygens_dist + self.length_unit,
-                    pos_y + "-(" + endx + ")-" + huygens_dist + self.length_unit,
-                    pos_z,
-                ],
-                dimensions_list=[
-                    "2*(" + endx + ")+" + "2*" + huygens_dist + self.length_unit,
-                    "2*(" + endx + ")+" + "2*" + huygens_dist + self.length_unit,
-                    huygens_dist + self.length_unit + "+" + c4z,
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
-            self.object_list[huygens.name] = huygens
-
         horn.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
@@ -1391,8 +1325,6 @@ class Elliptical(CommonHorn):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
@@ -1433,7 +1365,6 @@ class Elliptical(CommonHorn):
         "frequency_unit": "GHz",
         "material": "pec",
         "outer_boundary": None,
-        "huygens_box": False,
     }
 
     def __init__(self, *args, **kwargs):
@@ -1638,32 +1569,6 @@ class Elliptical(CommonHorn):
 
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
 
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    pos_x + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
-                    pos_y + "-" + horn_radius + "-" + huygens_dist + self.length_unit,
-                    pos_z + "-" + wg_length,
-                ],
-                dimensions_list=[
-                    "2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
-                    "2*" + horn_radius + "+" + "2*" + huygens_dist + self.length_unit,
-                    huygens_dist + self.length_unit + "+" + wg_length + "+" + horn_length,
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
-            self.object_list[huygens.name] = huygens
-
         wg_in.group_name = antenna_name
         horn_sheet.group_name = antenna_name
         cap.group_name = antenna_name
@@ -1697,8 +1602,6 @@ class EPlane(CommonHorn):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
@@ -1740,7 +1643,6 @@ class EPlane(CommonHorn):
         "material": "pec",
         "material_properties": {},
         "outer_boundary": None,
-        "huygens_box": False,
     }
 
     def __init__(self, *args, **kwargs):
@@ -2033,33 +1935,6 @@ class EPlane(CommonHorn):
 
         self._app.modeler.move([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
 
-        # Create Huygens box
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    pos_x + "-" + wg_width + "/2-" + huygens_dist + self.length_unit + "-" + wall_thickness,
-                    pos_y + "-" + flare + "/2" + "-" + wall_thickness + "-" + huygens_dist + self.length_unit,
-                    pos_z + "-" + wg_length + "-" + wall_thickness,
-                ],
-                dimensions_list=[
-                    wg_width + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
-                    flare + "+" + "2*" + huygens_dist + self.length_unit + "+" + wall_thickness,
-                    huygens_dist + self.length_unit + "+" + wg_length + "+" + wall_thickness + "+" + horn_length,
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
-            self.object_list[huygens.name] = huygens
-
         cap.group_name = antenna_name
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
@@ -2093,8 +1968,6 @@ class HPlane(CommonHorn):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
@@ -2135,7 +2008,6 @@ class HPlane(CommonHorn):
         "frequency_unit": "GHz",
         "material": "pec",
         "outer_boundary": None,
-        "huygens_box": False,
     }
 
     def __init__(self, *args, **kwargs):
@@ -2414,33 +2286,6 @@ class HPlane(CommonHorn):
 
         self._app.modeler.move([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
 
-        # Create Huygens box
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    pos_x + "-" + flare + "/2-" + huygens_dist + self.length_unit + "-" + wall_thickness,
-                    pos_y + "-" + wg_height + "/2" + "-" + wall_thickness + "-" + huygens_dist + self.length_unit,
-                    pos_z + "-" + wg_length + "-" + wall_thickness,
-                ],
-                dimensions_list=[
-                    flare + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
-                    wg_height + "+" + "2*" + huygens_dist + self.length_unit + "+" + wall_thickness,
-                    huygens_dist + self.length_unit + "+" + wg_length + "+" + wall_thickness + "+" + horn_length,
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
-            self.object_list[huygens.name] = huygens
-
         cap.group_name = antenna_name
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
@@ -2474,8 +2319,6 @@ class Pyramidal(CommonHorn):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
@@ -2516,7 +2359,6 @@ class Pyramidal(CommonHorn):
         "frequency_unit": "GHz",
         "material": "pec",
         "outer_boundary": None,
-        "huygens_box": False,
     }
 
     def __init__(self, *args, **kwargs):
@@ -2799,33 +2641,6 @@ class Pyramidal(CommonHorn):
 
         self._app.modeler.move([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
 
-        # Create Huygens box
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    pos_x + "-" + flare_a + "/2-" + huygens_dist + self.length_unit + "-" + wall_thickness,
-                    pos_y + "-" + flare_b + "/2" + "-" + wall_thickness + "-" + huygens_dist + self.length_unit,
-                    pos_z + "-" + wg_length + "-" + wall_thickness,
-                ],
-                dimensions_list=[
-                    flare_a + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
-                    flare_b + "+" + "2*" + huygens_dist + self.length_unit + "+" + wall_thickness,
-                    huygens_dist + self.length_unit + "+" + wg_length + "+" + wall_thickness + "+" + horn_length,
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
-            self.object_list[huygens.name] = huygens
-
         cap.group_name = antenna_name
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
@@ -2859,8 +2674,6 @@ class QuadRidged(CommonHorn):
     outer_boundary : str, optional
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
-    huygens_box : bool, optional
-        Whether to create a Huygens box. The default is ``False``.
     length_unit : str, optional
         Length units. The default is ``"cm"``.
     parametrized : bool, optional
@@ -2906,7 +2719,6 @@ class QuadRidged(CommonHorn):
         "frequency_unit": "GHz",
         "material": "pec",
         "outer_boundary": None,
-        "huygens_box": False,
     }
 
     def __init__(self, *args, **kwargs):
@@ -3394,33 +3206,6 @@ class QuadRidged(CommonHorn):
         self.object_list[p1.name] = p1
 
         self._app.modeler.move([cap, horn, wg_in, p1], [pos_x, pos_y, pos_z])
-
-        # Create Huygens box
-        if self.huygens_box:
-            lightSpeed = constants.SpeedOfLight  # m/s
-            freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            huygens_dist = str(
-                constants.unit_converter(lightSpeed / (10 * freq_hz), "Length", "meter", self.length_unit)
-            )
-            huygens = self._app.modeler.create_box(
-                position=[
-                    pos_x + "-" + aperture_width + "/2-" + huygens_dist + self.length_unit + "-" + wall_thickness,
-                    pos_y + "-" + aperture_width + "/2" + "-" + wall_thickness + "-" + huygens_dist + self.length_unit,
-                    pos_z + "-" + wg_length + "-" + wall_thickness,
-                ],
-                dimensions_list=[
-                    aperture_width + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
-                    aperture_width + "+" + "2*" + huygens_dist + self.length_unit + "+2*" + wall_thickness,
-                    huygens_dist + self.length_unit + "+" + wg_length + "+" + wall_thickness + "+" + flare_length,
-                ],
-                name="huygens_" + antenna_name,
-                matname="air",
-            )
-            huygens.display_wireframe = True
-            huygens.color = (0, 0, 255)
-            huygens.history().props["Coordinate System"] = coordinate_system
-            huygens.group_name = antenna_name
-            self.object_list[huygens.name] = huygens
 
         self._app.change_material_override(True)
 
