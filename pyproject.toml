@@ -26,39 +26,21 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
-    "build==1.0.3",
-    "twine==5.0.0",
-    "pyaedt",
-    "importlib-metadata >=4.0",
-    "PySide6-Essentials==6.6.1",
-    "pyqtgraph",
-    "pyvistaqt",
-    "qdarkstyle",
-    "flask",
+    'ansys-aedt-toolkits-common @ git+https://github.com/ansys-internal/pyaedt-toolkits-common'
 ]
 
 [project.optional-dependencies]
+all = [
+    'ansys-aedt-toolkits-common[all] @ git+https://github.com/ansys-internal/pyaedt-toolkits-common'
+]
 tests = [
-    "pytest==8.0.0",
-    "pytest-cov==4.1.0",
+    'ansys-aedt-toolkits-common[tests] @ git+https://github.com/ansys-internal/pyaedt-toolkits-common'
 ]
 doc = [
-    "ansys-sphinx-theme==0.13.4",
-    "numpydoc==1.6.0",
-    "recommonmark==0.7.1",
-    "sphinx==7.2.6",
-    "sphinx-copybutton==0.5.2",
-    "enum-tools[sphinx]==0.11.0",
-    "sphinx-autoapi==3.0.0",
-    "sphinx-autobuild==2024.2.4",
-    "sphinx-autodoc-typehints==2.0.0",
-    "sphinx-gallery==0.15.0",
-    "sphinx-notfound-page==1.0.0",
-    "nbsphinx==0.9.3",
-    "sphinx_design",
-    "jupytext",
-    "jupyterlab==4.1.4",
-    "ipython==8.21.0",
+    'ansys-aedt-toolkits-common[doc] @ git+https://github.com/ansys-internal/pyaedt-toolkits-common'
+]
+ci = [
+    'ansys-aedt-toolkits-common[ci] @ git+https://github.com/ansys-internal/pyaedt-toolkits-common'
 ]
 
 [tool.flit.module]
