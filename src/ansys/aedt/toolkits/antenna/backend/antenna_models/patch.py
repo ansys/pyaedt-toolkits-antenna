@@ -4,9 +4,9 @@ import math
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
+from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
+from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
 from ansys.aedt.toolkits.antenna.backend.common.logger_handler import logger
-from ansys.aedt.toolkits.antenna.backend.models.common import CommonAntenna
-from ansys.aedt.toolkits.antenna.backend.models.common import TransmissionLine
 
 
 class CommonPatch(CommonAntenna):
@@ -128,7 +128,7 @@ class RectangularPatchProbe(CommonPatch):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.patch import RectangularPatchProbe
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = RectangularPatchProbe(app)
@@ -502,7 +502,7 @@ class RectangularPatchInset(CommonPatch):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.patch import RectangularPatchInset
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = RectangularPatchInset(app)
@@ -842,7 +842,7 @@ class RectangularPatchEdge(CommonPatch):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.patch import RectangularPatchEdge
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = RectangularPatchEdge(app)

@@ -6,10 +6,10 @@ import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import generate_unique_name
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
+from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import InputParameters
+from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import Property
+from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import SynthesisParameters
 from ansys.aedt.toolkits.antenna.backend.common.properties import properties
-from ansys.aedt.toolkits.antenna.backend.models.parameters import InputParameters
-from ansys.aedt.toolkits.antenna.backend.models.parameters import Property
-from ansys.aedt.toolkits.antenna.backend.models.parameters import SynthesisParameters
 
 
 class CommonAntenna(object):
@@ -550,7 +550,7 @@ class TransmissionLine(object):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.common import TransmissionLine
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
     >>> tl_calc = TransmissionLine(frequency=2)
     >>> tl_calc.stripline_calculator(substrate_height=10, permittivity=2.2, impedance=60)
     """

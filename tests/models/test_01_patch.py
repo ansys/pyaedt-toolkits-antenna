@@ -2,7 +2,7 @@ from conftest import BasisTest
 from pyaedt.modeler.cad.object3d import Object3d
 from pyaedt.modeler.geometry_operators import GeometryOperators
 
-from ansys.aedt.toolkits.antenna.backend import models
+from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 test_project_name = "Patch_test"
 
@@ -18,7 +18,7 @@ class TestClass(BasisTest, object):
     def test_01a_rectangular_patch_probe_model_hfss(self):
         self.aedtapp.design_name = "rectangular_patch_probe"
 
-        antenna_module = getattr(models, "RectangularPatchProbe")
+        antenna_module = getattr(antenna_models, "RectangularPatchProbe")
         opatch0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert opatch0.synthesis_parameters.coax_inner_rad.value
 
@@ -39,14 +39,14 @@ class TestClass(BasisTest, object):
         face_center_new = list(opatch1.object_list.values())[0].faces[0].center
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
-        antenna_module = getattr(models, "RectangularPatchProbe")
+        antenna_module = getattr(antenna_models, "RectangularPatchProbe")
         opatch2 = antenna_module(self.aedtapp, antenna_name=opatch1.antenna_name)
 
         assert opatch1.antenna_name != opatch2.antenna_name
 
     def test_01b_rectangular_patch_probe_duplicate_along_line(self):
         self.aedtapp.design_name = "rectangular_patch_probe"
-        antenna_module = getattr(models, "RectangularPatchProbe")
+        antenna_module = getattr(antenna_models, "RectangularPatchProbe")
         opatch = antenna_module(self.aedtapp, frequency=1.0, origin=[500, 20, 50])
         opatch.init_model()
         opatch.model_hfss()
@@ -57,7 +57,7 @@ class TestClass(BasisTest, object):
 
     def test_01c_rectangular_patch_probe_create_3dcomponent(self):
         self.aedtapp.design_name = "rectangular_patch_probe"
-        antenna_module = getattr(models, "RectangularPatchProbe")
+        antenna_module = getattr(antenna_models, "RectangularPatchProbe")
         opatch = antenna_module(self.aedtapp, frequency=1.0, origin=[500, 500, 0])
         opatch.init_model()
         opatch.model_hfss()
@@ -68,7 +68,7 @@ class TestClass(BasisTest, object):
 
     def test_01d_rectangular_patch_probe_lattice_pair(self):
         self.aedtapp.design_name = "rectangular_patch_probe"
-        antenna_module = getattr(models, "RectangularPatchProbe")
+        antenna_module = getattr(antenna_models, "RectangularPatchProbe")
         opatch1 = antenna_module(
             self.aedtapp,
             frequency=1.0,
@@ -115,11 +115,11 @@ class TestClass(BasisTest, object):
     def test_02a_rectangular_patch_inset_model_hfss(self):
         self.aedtapp = self.add_app(design_name="rectangular_patch_inset")
 
-        antenna_module = getattr(models, "RectangularPatchInset")
+        antenna_module = getattr(antenna_models, "RectangularPatchInset")
         opatch0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert opatch0.synthesis_parameters.feed_width.value
 
-        antenna_module = getattr(models, "RectangularPatchInset")
+        antenna_module = getattr(antenna_models, "RectangularPatchInset")
         opatch1 = antenna_module(self.aedtapps[1], frequency=1.0, length_unit=self.aedtapps[1].modeler.model_units)
         opatch1.init_model()
         opatch1.model_hfss()
@@ -144,7 +144,7 @@ class TestClass(BasisTest, object):
         assert opatch1.antenna_name != opatch2.antenna_name
 
     def test_02b_rectangular_patch_inset_duplicate_along_line(self):
-        antenna_module = getattr(models, "RectangularPatchInset")
+        antenna_module = getattr(antenna_models, "RectangularPatchInset")
         opatch = antenna_module(self.aedtapps[1], frequency=1.0, origin=[500, 20, 50])
         opatch.init_model()
         opatch.model_hfss()
@@ -153,7 +153,7 @@ class TestClass(BasisTest, object):
         assert len(new) == 3
 
     def test_02c_rectangular_patch_inset_create_3dcomponent(self):
-        antenna_module = getattr(models, "RectangularPatchInset")
+        antenna_module = getattr(antenna_models, "RectangularPatchInset")
         opatch = antenna_module(self.aedtapps[1], frequency=1.0, origin=[500, 500, 0])
         opatch.init_model()
         opatch.model_hfss()
@@ -162,7 +162,7 @@ class TestClass(BasisTest, object):
         assert list(self.aedtapps[1].modeler.user_defined_components.keys())[0] == component.name
 
     def test_02d_rectangular_patch_inset_lattice_pair(self):
-        antenna_module = getattr(models, "RectangularPatchInset")
+        antenna_module = getattr(antenna_models, "RectangularPatchInset")
         opatch1 = antenna_module(
             self.aedtapps[1],
             frequency=1.0,
@@ -208,11 +208,11 @@ class TestClass(BasisTest, object):
     def test_03a_rectangular_patch_edge_model_hfss(self):
         self.aedtapp = self.add_app(design_name="rectangular_patch_edge")
 
-        antenna_module = getattr(models, "RectangularPatchEdge")
+        antenna_module = getattr(antenna_models, "RectangularPatchEdge")
         opatch0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert opatch0.synthesis_parameters.patch_x.value
 
-        antenna_module = getattr(models, "RectangularPatchEdge")
+        antenna_module = getattr(antenna_models, "RectangularPatchEdge")
         opatch1 = antenna_module(
             self.aedtapps[2],
             frequency=1.0,
@@ -239,7 +239,7 @@ class TestClass(BasisTest, object):
         assert opatch1.antenna_name != opatch2.antenna_name
 
     def test_03b_rectangular_patch_edge_duplicate_along_line(self):
-        antenna_module = getattr(models, "RectangularPatchEdge")
+        antenna_module = getattr(antenna_models, "RectangularPatchEdge")
         opatch = antenna_module(self.aedtapps[2], frequency=1.0)
         opatch.init_model()
         opatch.model_hfss()
@@ -248,7 +248,7 @@ class TestClass(BasisTest, object):
         assert len(new) == 3
 
     def test_03c_rectangular_patch_edge_create_3dcomponent(self):
-        antenna_module = getattr(models, "RectangularPatchInset")
+        antenna_module = getattr(antenna_models, "RectangularPatchInset")
         opatch = antenna_module(self.aedtapps[2], frequency=1.0, origin=[500, 500, 0])
         opatch.init_model()
         opatch.model_hfss()
@@ -257,7 +257,7 @@ class TestClass(BasisTest, object):
         assert list(self.aedtapps[2].modeler.user_defined_components.keys())[0] == component.name
 
     def test_03d_rectangular_patch_inset_lattice_pair(self):
-        antenna_module = getattr(models, "RectangularPatchEdge")
+        antenna_module = getattr(antenna_models, "RectangularPatchEdge")
         opatch1 = antenna_module(
             self.aedtapps[2],
             frequency=1.0,

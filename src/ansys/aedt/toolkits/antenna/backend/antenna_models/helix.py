@@ -4,8 +4,8 @@ import math
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
+from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.antenna.backend.common.logger_handler import logger
-from ansys.aedt.toolkits.antenna.backend.models.common import CommonAntenna
 
 
 class CommonHelix(CommonAntenna):
@@ -143,7 +143,7 @@ class AxialMode(CommonHelix):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.helix import AxialMode
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialMode
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = AxialMode(app)

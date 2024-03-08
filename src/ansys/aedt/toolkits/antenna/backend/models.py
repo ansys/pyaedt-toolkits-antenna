@@ -1,6 +1,3 @@
-# FOR TEST #
-sys.path.extend(["C:\\AnsysDev\\repos\\pyaedt-toolkits-common\\src"])
-
 # Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
@@ -22,7 +19,6 @@ sys.path.extend(["C:\\AnsysDev\\repos\\pyaedt-toolkits-common\\src"])
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 
 import json
 import os

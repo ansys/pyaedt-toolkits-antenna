@@ -1,7 +1,7 @@
 from conftest import BasisTest
 from pyaedt.modeler.cad.object3d import Object3d
 
-from ansys.aedt.toolkits.antenna.backend import models
+from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 test_project_name = "Helix_test"
 
@@ -17,7 +17,7 @@ class TestClass(BasisTest, object):
     def test_01_helix_axial(self):
         self.aedtapp.design_name = "myname"
         self.aedtapp.solution_type = "Modal"
-        antenna_module = getattr(models, "AxialMode")
+        antenna_module = getattr(antenna_models, "AxialMode")
         oantenna = antenna_module(None, frequency=1.0, length_unit="mm")
         assert oantenna.synthesis_parameters
 

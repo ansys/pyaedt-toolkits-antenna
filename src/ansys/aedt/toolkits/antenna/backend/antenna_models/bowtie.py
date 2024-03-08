@@ -4,8 +4,8 @@ import math
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
-from ansys.aedt.toolkits.antenna.backend.models.common import TransmissionLine
-from ansys.aedt.toolkits.antenna.backend.models.patch import CommonPatch
+from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import CommonPatch
 
 
 class BowTie(CommonPatch):
@@ -46,7 +46,7 @@ class BowTie(CommonPatch):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.bowtie import BowTie
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTie
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = BowTie(app)
@@ -296,7 +296,7 @@ class BowTieRounded(CommonPatch):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.bowtie import BowTieRounded
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = BowTieRounded(app)
@@ -559,7 +559,7 @@ class BowTieSlot(CommonPatch):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.bowtie import BowTieSlot
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieSlot
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = BowTieSlot(app)

@@ -3,9 +3,9 @@ from collections import OrderedDict
 import pyaedt.generic.constants as constants
 from pyaedt.generic.general_methods import pyaedt_function_handler
 
+from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
+from ansys.aedt.toolkits.antenna.backend.antenna_models.common import StandardWaveguide
 from ansys.aedt.toolkits.antenna.backend.common.logger_handler import logger
-from ansys.aedt.toolkits.antenna.backend.models.common import CommonAntenna
-from ansys.aedt.toolkits.antenna.backend.models.common import StandardWaveguide
 
 
 class CommonHorn(CommonAntenna):
@@ -101,7 +101,7 @@ class Conical(CommonHorn):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.horn import Conical
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
     >>> import pyaedt
     >>> oantenna1 = Conical()
     >>> oantenna1.frequency = 12.0
@@ -405,7 +405,7 @@ class PyramidalRidged(CommonHorn):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.horn import PyramidalRidged
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRidged
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = PyramidalRidged(app)
@@ -1113,7 +1113,7 @@ class Corrugated(CommonHorn):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.horn import Corrugated
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Corrugated
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = Corrugated(app)
@@ -1410,7 +1410,7 @@ class Elliptical(CommonHorn):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.horn import PyramidalRidged
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRidged
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = Elliptical(app)
@@ -1716,7 +1716,7 @@ class EPlane(CommonHorn):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.horn import EPlane
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import EPlane
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = EPlane(app)
@@ -2112,7 +2112,7 @@ class HPlane(CommonHorn):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.horn import HPlane
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import HPlane
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = HPlane(app)
@@ -2493,7 +2493,7 @@ class Pyramidal(CommonHorn):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.horn import Pyramidal
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Pyramidal
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = Pyramidal(app)
@@ -2883,7 +2883,7 @@ class QuadRidged(CommonHorn):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.models.horn import QuadRidged
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = QuadRidged(app)

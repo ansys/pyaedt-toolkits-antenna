@@ -3,7 +3,7 @@ import time
 
 import pyaedt
 
-from ansys.aedt.toolkits.antenna.backend import models
+from ansys.aedt.toolkits.antenna.backend import antenna_models
 from ansys.aedt.toolkits.antenna.backend.common.api_generic import ToolkitGeneric
 from ansys.aedt.toolkits.antenna.backend.common.logger_handler import logger
 from ansys.aedt.toolkits.antenna.backend.common.properties import properties
@@ -36,7 +36,7 @@ class Toolkit(ToolkitGeneric):
         self._oantenna = None
         self.antenna_type = None
         self.available_antennas = []
-        for name, var in vars(models).items():
+        for name, var in vars(antenna_models).items():
             # If the variable is a module, print the module's name
             if isinstance(var, type):
                 self.available_antennas.append(name)
@@ -73,7 +73,7 @@ class Toolkit(ToolkitGeneric):
             logger.debug("Antenna is already created.")
             return False
 
-        if antenna not in models.__dir__():
+        if antenna not in antenna_models.__dir__():
             logger.debug("Antenna is not implemented.")
             return False
 
@@ -89,7 +89,7 @@ class Toolkit(ToolkitGeneric):
 
         # Get antenna properties
         freq_units = properties.frequency_unit
-        antenna_module = getattr(models, antenna)
+        antenna_module = getattr(antenna_models, antenna)
         properties.antenna_type = antenna
         self.antenna_type = antenna
 

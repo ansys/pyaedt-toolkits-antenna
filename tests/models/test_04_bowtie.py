@@ -1,7 +1,7 @@
 from conftest import BasisTest
 from pyaedt.modeler.cad.object3d import Object3d
 
-from ansys.aedt.toolkits.antenna.backend import models
+from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 test_project_name = "Bowtie_test"
 
@@ -17,7 +17,7 @@ class TestClass(BasisTest, object):
     def test_01_bowtie(self):
         self.aedtapp.design_name = "Bowtie"
 
-        antenna_module = getattr(models, "BowTie")
+        antenna_module = getattr(antenna_models, "BowTie")
         oantenna0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert oantenna0.synthesis_parameters
 
@@ -38,7 +38,7 @@ class TestClass(BasisTest, object):
     def test_02_bowtie_rounded(self):
         self.aedtapp = self.add_app(design_name="BowTieRounded")
 
-        antenna_module = getattr(models, "BowTieRounded")
+        antenna_module = getattr(antenna_models, "BowTieRounded")
         oantenna0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert oantenna0.synthesis_parameters
 
@@ -58,7 +58,7 @@ class TestClass(BasisTest, object):
 
     def test_03_bowtie_slot(self):
         self.aedtapp = self.add_app(design_name="BowTieSlot")
-        antenna_module = getattr(models, "BowTieSlot")
+        antenna_module = getattr(antenna_models, "BowTieSlot")
         oantenna0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert oantenna0.synthesis_parameters
 

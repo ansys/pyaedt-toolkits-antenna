@@ -1,7 +1,7 @@
 from conftest import BasisTest
 from pyaedt.modeler.cad.object3d import Object3d
 
-from ansys.aedt.toolkits.antenna.backend import models
+from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 test_project_name = "ConicalSpiral_test"
 
@@ -17,7 +17,7 @@ class TestClass(BasisTest, object):
     def test_01_archimidean(self):
         self.aedtapp.design_name = "Archimidean"
 
-        antenna_module = getattr(models, "Archimedean")
+        antenna_module = getattr(antenna_models, "Archimedean")
         oantenna = antenna_module(None, start_frequency=2.0, stop_frequency=10.0, length_unit="mm")
         assert oantenna.synthesis_parameters
 
@@ -41,7 +41,7 @@ class TestClass(BasisTest, object):
     def test_02_log(self):
         self.aedtapp = self.add_app(design_name="Log")
 
-        antenna_module = getattr(models, "Log")
+        antenna_module = getattr(antenna_models, "Log")
         oantenna = antenna_module(None, start_frequency=2.0, stop_frequency=10.0, length_unit="mm")
         assert oantenna.synthesis_parameters
 
@@ -65,7 +65,7 @@ class TestClass(BasisTest, object):
     def test_03_sinuous(self):
         self.aedtapp = self.add_app(design_name="Sinuous")
 
-        antenna_module = getattr(models, "Sinuous")
+        antenna_module = getattr(antenna_models, "Sinuous")
         oantenna = antenna_module(None, start_frequency=4.0, stop_frequency=10.0, length_unit="mm")
         assert oantenna.synthesis_parameters
 

@@ -2,7 +2,7 @@ from conftest import BasisTest
 from pyaedt.modeler.cad.object3d import Object3d
 from pyaedt.modeler.geometry_operators import GeometryOperators
 
-from ansys.aedt.toolkits.antenna.backend import models
+from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 test_project_name = "Horn_test"
 
@@ -18,11 +18,11 @@ class TestClass(BasisTest, object):
     def test_01a_conical(self):
         self.aedtapp.design_name = "conical_horn"
 
-        antenna_module = getattr(models, "Conical")
+        antenna_module = getattr(antenna_models, "Conical")
         ohorn0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert ohorn0.synthesis_parameters
 
-        antenna_module = getattr(models, "Conical")
+        antenna_module = getattr(antenna_models, "Conical")
         ohorn1 = antenna_module(self.aedtapp, frequency=1.0, length_unit=self.aedtapp.modeler.model_units)
         ohorn1.init_model()
         ohorn1.model_hfss()
@@ -39,14 +39,14 @@ class TestClass(BasisTest, object):
         face_center_new = list(ohorn1.object_list.values())[0].faces[0].center
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
-        antenna_module = getattr(models, "Conical")
+        antenna_module = getattr(antenna_models, "Conical")
         ohorn2 = antenna_module(self.aedtapp, antenna_name=ohorn1.antenna_name)
 
         assert ohorn1.antenna_name != ohorn2.antenna_name
 
     def test_01b_conical_duplicate_along_line(self):
         self.aedtapp.design_name = "conical_horn"
-        antenna_module = getattr(models, "Conical")
+        antenna_module = getattr(antenna_models, "Conical")
         ohorn = antenna_module(
             self.aedtapp, frequency=1.0, length_unit=self.aedtapp.modeler.model_units, origin=[500, 20, 50]
         )
@@ -59,7 +59,7 @@ class TestClass(BasisTest, object):
 
     def test_01c_conical_create_3dcomponent(self):
         self.aedtapp.design_name = "conical_horn"
-        antenna_module = getattr(models, "Conical")
+        antenna_module = getattr(antenna_models, "Conical")
         ohorn = antenna_module(
             self.aedtapp, frequency=1.0, length_unit=self.aedtapp.modeler.model_units, origin=[500, 500, 0]
         )
@@ -72,7 +72,7 @@ class TestClass(BasisTest, object):
 
     def test_01d_conical_lattice_pair(self):
         self.aedtapp.design_name = "conical_horn"
-        antenna_module = getattr(models, "Conical")
+        antenna_module = getattr(antenna_models, "Conical")
         ohorn1 = antenna_module(
             self.aedtapp, frequency=1.0, length_unit=self.aedtapp.modeler.model_units, origin=[500, 500, 0]
         )
@@ -84,7 +84,7 @@ class TestClass(BasisTest, object):
 
         assert len(ohorn1.boundaries) == 2
 
-        antenna_module = getattr(models, "Conical")
+        antenna_module = getattr(antenna_models, "Conical")
         ohorn2 = antenna_module(
             self.aedtapp, frequency=1.0, length_unit=self.aedtapp.modeler.model_units, origin=[1500, 500, 0]
         )
@@ -107,7 +107,7 @@ class TestClass(BasisTest, object):
 
     def test_02_pyramidal_ridged(self):
         self.aedtapp = self.add_app(design_name="pyramidal_ridged_horn")
-        antenna_module = getattr(models, "PyramidalRidged")
+        antenna_module = getattr(antenna_models, "PyramidalRidged")
 
         ohorn0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert ohorn0.synthesis_parameters
@@ -135,7 +135,7 @@ class TestClass(BasisTest, object):
     def test_03_corrugated(self):
         self.aedtapp = self.add_app(design_name="corrugated_horn")
         self.aedtapp.solution_type = "Modal"
-        antenna_module = getattr(models, "Corrugated")
+        antenna_module = getattr(antenna_models, "Corrugated")
 
         ohorn0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert ohorn0.synthesis_parameters
@@ -164,7 +164,7 @@ class TestClass(BasisTest, object):
     def test_04_elliptical(self):
         self.aedtapp = self.add_app(design_name="elliptical_horn")
         self.aedtapp.solution_type = "Modal"
-        antenna_module = getattr(models, "Elliptical")
+        antenna_module = getattr(antenna_models, "Elliptical")
 
         ohorn0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert ohorn0.synthesis_parameters
@@ -193,7 +193,7 @@ class TestClass(BasisTest, object):
     def test_05_eplane(self):
         self.aedtapp = self.add_app(design_name="eplane_horn")
         self.aedtapp.solution_type = "Modal"
-        antenna_module = getattr(models, "EPlane")
+        antenna_module = getattr(antenna_models, "EPlane")
 
         ohorn0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert ohorn0.synthesis_parameters
@@ -222,7 +222,7 @@ class TestClass(BasisTest, object):
     def test_06_hplane(self):
         self.aedtapp = self.add_app(design_name="hplane_horn")
         self.aedtapp.solution_type = "Modal"
-        antenna_module = getattr(models, "HPlane")
+        antenna_module = getattr(antenna_models, "HPlane")
 
         ohorn0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert ohorn0.synthesis_parameters
@@ -252,7 +252,7 @@ class TestClass(BasisTest, object):
         self.aedtapp = self.add_app(design_name="pyramidal_horn")
         self.aedtapp.solution_type = "Modal"
 
-        antenna_module = getattr(models, "Pyramidal")
+        antenna_module = getattr(antenna_models, "Pyramidal")
         ohorn0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert ohorn0.synthesis_parameters
 
@@ -280,7 +280,7 @@ class TestClass(BasisTest, object):
     def test_08_quadridged(self):
         self.aedtapp = self.add_app(design_name="quadridge_horn")
         self.aedtapp.solution_type = "Modal"
-        antenna_module = getattr(models, "QuadRidged")
+        antenna_module = getattr(antenna_models, "QuadRidged")
 
         ohorn0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert ohorn0.synthesis_parameters
