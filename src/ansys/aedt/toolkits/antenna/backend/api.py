@@ -1,18 +1,37 @@
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import re
 import time
 
+from ansys.aedt.toolkits.common.backend.api import AEDTCommon
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
 import pyaedt
 
 from ansys.aedt.toolkits.antenna.backend import antenna_models
-from ansys.aedt.toolkits.antenna.backend.common.api_generic import ToolkitGeneric
-from ansys.aedt.toolkits.antenna.backend.common.logger_handler import logger
-from ansys.aedt.toolkits.antenna.backend.common.properties import properties
-from ansys.aedt.toolkits.antenna.backend.common.thread_manager import ThreadManager
-
-thread = ThreadManager()
+from ansys.aedt.toolkits.antenna.backend.models import properties
 
 
-class Toolkit(ToolkitGeneric):
+class Toolkit(AEDTCommon):
     """Provides methods for controlling the toolkit workflow.
 
     This class provides methods for creating an AEDT session, connecting to an existing
@@ -24,15 +43,12 @@ class Toolkit(ToolkitGeneric):
     >>> import time
     >>> toolkit = Toolkit()
     >>> msg1 = toolkit.launch_aedt()
-    >>> response = toolkit.get_thread_status()
-    >>> while response[0] == 0:
-    >>>     time.sleep(1)
-    >>>     response = toolkit.get_thread_status()
+    >>> toolkit.wait_to_be_idle()
     >>> toolkit.get_antenna("BowTie")
     """
 
     def __init__(self):
-        ToolkitGeneric.__init__(self)
+        AEDTCommon.__init__(self)
         self._oantenna = None
         self.antenna_type = None
         self.available_antennas = []
@@ -156,11 +172,12 @@ class Toolkit(ToolkitGeneric):
 
         if self.aedtapp:
             self.aedtapp.save_project()
-            time.sleep(1)
+            # time.sleep(1)
         #     self.aedtapp.release_desktop(False, False)
         #     self.aedtapp = None
 
         properties.parameters = antenna_parameters
+        self.release_aedt(False, False)
         return antenna_parameters
 
     def export_hfss_model(self):
@@ -271,11 +288,10 @@ class Toolkit(ToolkitGeneric):
             logger.debug("Parameter does not exist.")
             return False
 
-    @thread.launch_thread
     def analyze(self):
         """Analyze the design.
 
-        This method is launched in a thread if gRPC is enabled. AEDT is released once it is opened.
+        Launch analysis in batch. AEDT is released once it is opened.
 
         Returns
         -------
@@ -310,8 +326,7 @@ class Toolkit(ToolkitGeneric):
         self.aedtapp.save_project()
         time.sleep(1)
         self.aedtapp.solve_in_batch(run_in_thread=True, machine="localhost", num_cores=num_cores)
-        self.aedtapp.release_desktop(False, False)
-        self.aedtapp = None
+        self.release_aedt(False, False)
         return True
 
     def scattering_results(self):

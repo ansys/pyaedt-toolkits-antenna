@@ -23,5 +23,6 @@
   "substrate_height": 0.1,
   "start_frequency": 0.0,
   "stop_frequency": 0.0,
-  "synth_only": false
+  "synth_only": false,
+  "num_cores": 4
 }

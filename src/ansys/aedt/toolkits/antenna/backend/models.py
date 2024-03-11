@@ -54,6 +54,7 @@ class BackendProperties(BaseModel):
     start_frequency: float = (0.0,)
     stop_frequency: float = 0.0
     synth_only: bool = False
+    num_cores: int = 4
 
 
 class Properties(BackendProperties, CommonProperties, validate_assignment=True):
