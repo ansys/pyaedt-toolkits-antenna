@@ -58,7 +58,7 @@ doc = [
     "sphinx_design",
     "jupytext",
     "ipython==8.22.2",
-    "jupyterlab==4.1.4",
+    "jupyterlab==4.1.5",
 ]
 
 [tool.flit.module]
