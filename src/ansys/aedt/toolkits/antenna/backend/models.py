@@ -28,47 +28,63 @@ if sys.version_info >= (3, 11):
 else:
     import tomli as tomllib
 
+from typing import Any
+from typing import Dict
+from typing import List
+
 from ansys.aedt.toolkits.common.backend.models import CommonProperties
 from ansys.aedt.toolkits.common.backend.models import common_properties
 from pydantic import BaseModel
 
 
-class AntennaProperties(BaseModel):
-    """Store toolkit properties."""
+class Synthesis(BaseModel):
+    """Store antenna synthesis properties."""
 
-    antenna_type: str = ""
     antenna_name: str = ""
-    antenna_created: bool = False
-    component_3d: bool = False
     coordinate_system: str = "Global"
-    create_setup: bool = False
-    feeder_length: float = 0.0
     frequency: float = 10.0
     frequency_unit: str = "GHz"
+    feeder_length: float = 0.0
     gain_value: float = 0.0
-    lattice_pair: bool = False
     length_unit: str = "meter"
     material: str = "pec"
-    material_properties: dict = {}
-    origin: list = [0.0, 0.0, 0.0]
+    material_properties: Dict[str, Any] = {}
+    origin: List[float] = [0.0, 0.0, 0.0]
     outer_boundary: str = ""
-    parameters: dict = {}
-    parameters_hfss: dict = {}
-    sweep: int = (20,)
-    substrate_height: float = (0.1,)
-    start_frequency: float = (0.0,)
+    start_frequency: float = 0.0
     stop_frequency: float = 0.0
-    synth_only: bool = False
+    substrate_height: float = 0.1
+
+
+class Setup(BaseModel):
+    """Store antenna setup properties."""
+
+    component_3d: bool = False
+    create_setup: bool = False
+    lattice_pair: bool = False
     num_cores: int = 4
+    sweep: int = 20
+
+
+class AntennaProperties(BaseModel):
+    """Store antenna properties."""
+
+    model: str = ""
+    is_created: bool = False
+    parameters: Dict[str, Any] = {}
+    parameters_hfss: Dict[str, Any] = {}
+    synth_only: bool = False
+    synthesis: Synthesis = Synthesis()
+    setup: Setup = Setup()
 
 
 class BackendProperties(BaseModel):
     """Store toolkit properties."""
 
-    example: AntennaProperties
+    antenna: AntennaProperties
 
 
-class Properties(BackendProperties, CommonProperties, validate_assignment=True):
+class Properties(BackendProperties, CommonProperties):
     """Store all properties."""
 
 
@@ -91,4 +107,4 @@ new_common_properties = {}
 for common_key in common_properties:
     new_common_properties[common_key[0]] = common_key[1]
 
-properties = Properties(**toolkit_property, **new_common_properties)
+properties = Properties(antenna=AntennaProperties(**toolkit_property), **new_common_properties)

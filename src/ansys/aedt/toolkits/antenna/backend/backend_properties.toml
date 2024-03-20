@@ -1,23 +1,22 @@
+antenna_type = ""
+is_created = false
+parameters = {}
+parameters_hfss = {}
+synth_only = false
+
 [defaults]
 toolkit_name = "antenna"
 log_file = "backend.log"
 debug = true
 
-[antenna]
-antenna_type = ""
-antenna_created = false
-length_unit = "meter"
-parameters = {}
-parameters_hfss = {}
-synth_only = false
-
-[[antenna.synthesis]]
+[synthesis]
 antenna_name = ""
 coordinate_system = "Global"
 frequency = 10.0
 frequency_unit = "GHz"
 feeder_length = 0.0
 gain_value = 0.0
+length_unit = "meter"
 material = "pec"
 material_properties = {}
 origin = [0.0, 0.0, 0.0]
@@ -26,7 +25,7 @@ start_frequency = 0.0
 stop_frequency = 0.0
 substrate_height = 0.1
 
-[[antenna.setup]]
+[setup]
 component_3d = false
 create_setup = false
 lattice_pair = false

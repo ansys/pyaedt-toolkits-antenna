@@ -47,8 +47,9 @@ class Property:
         self._owner = owner
         self._name = name
 
-    # def __get__(self, instance, owner):
-    #     return getattr(instance, self.value)
+    @property
+    def name(self):
+        return self._name
 
     @property
     def hfss_variable(self):

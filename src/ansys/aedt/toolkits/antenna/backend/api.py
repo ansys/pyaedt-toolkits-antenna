@@ -144,7 +144,7 @@ class ToolkitBackend(AEDTCommon):
         )
         for param in oantenna_public_parameters:
             antenna_parameters[param] = self._oantenna.synthesis_parameters.__getattribute__(param).value
-        if not synth_only and not properties.antenna_created:
+        if not synth_only and not properties.antenna.is_created:
             if not self._oantenna.object_list:
                 if not self._oantenna.antenna_name:
                     self._oantenna.antenna_name = pyaedt.generate_unique_name(self.antenna_type)
@@ -152,7 +152,7 @@ class ToolkitBackend(AEDTCommon):
                 self._oantenna.init_model()
                 self._oantenna.model_hfss()
                 self._oantenna.setup_hfss()
-                properties.antenna_created = True
+                properties.antenna.is_created = True
             if properties.lattice_pair:
                 self._oantenna.create_lattice_pair()
             if properties.component_3d:

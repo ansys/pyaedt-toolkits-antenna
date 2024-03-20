@@ -12,26 +12,51 @@ import pyaedt
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded
 
-# ## Get available antennas
+# ##  Set AEDT version
 #
-# Get implemented antennas.
+# Set AEDT version.
 
+aedt_version = "2024.1"
 
-all_antennas = [cls for cls in dir() if isinstance(eval(cls), type)]
-print(all_antennas)
+# ## Set non-graphical mode
+#
+# Set non-graphical mode.
+
+non_graphical = False
 
 # ## Create antenna object only for synthesis
 #
 # Create antenna object.
 
-oantenna1 = BowTieRounded()
+oantenna1 = BowTieRounded(None)
+print(
+    "Arm length: {}{} at {}{}".format(
+        str(oantenna1.synthesis_parameters.arm_length.value),
+        oantenna1.length_unit,
+        oantenna1.frequency,
+        oantenna1.frequency_unit,
+    )
+)
+
+# ## Change synthesis frequency
+#
+# Modify resonance frequency and modify parameters.
+
 oantenna1.frequency = 12.0
+print(
+    "Arm length: {}{} at {}{}".format(
+        str(oantenna1.synthesis_parameters.arm_length.value),
+        oantenna1.length_unit,
+        oantenna1.frequency,
+        oantenna1.frequency_unit,
+    )
+)
 
 # ## Create an empty HFSS design
 #
 # Create an empty HFSS design.
 
-app = pyaedt.Hfss(specified_version="2024.1")
+app = pyaedt.Hfss(specified_version=aedt_version, non_graphical=non_graphical)
 
 # ## Create antenna in HFSS
 #

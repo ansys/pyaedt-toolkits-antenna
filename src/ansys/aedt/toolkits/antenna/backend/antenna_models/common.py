@@ -435,7 +435,7 @@ class CommonAntenna(object):
             not_used = []
         for p in self.synthesis_parameters.__dict__.values():
             if isinstance(p, Property) and p.hfss_variable not in not_used:
-                properties.parameters_hfss[p._name] = p.hfss_variable
+                properties.antenna.parameters_hfss[p.name] = p.hfss_variable
                 if "angle" in p.hfss_variable:
                     self._app[p.hfss_variable] = str(p.value) + "deg"
                 elif "ratio" in p.hfss_variable:
