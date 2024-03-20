@@ -106,7 +106,7 @@ class ToolkitBackend(AEDTCommon):
         # Get antenna properties
         freq_units = properties.frequency_unit
         antenna_module = getattr(antenna_models, antenna)
-        properties.antenna_type = antenna
+        properties.antenna.antenna_type = antenna
         self.antenna_type = antenna
 
         # Create antenna object with default values
@@ -153,9 +153,9 @@ class ToolkitBackend(AEDTCommon):
                 self._oantenna.model_hfss()
                 self._oantenna.setup_hfss()
                 properties.antenna.is_created = True
-            if properties.lattice_pair:
+            if properties.antenna.setup.lattice_pair:
                 self._oantenna.create_lattice_pair()
-            if properties.component_3d:
+            if properties.antenna.setup.component_3d:
                 self._oantenna.create_3dcomponent(replace=True)
             if properties.create_setup:
                 freq = float(self._oantenna.frequency)
@@ -172,11 +172,8 @@ class ToolkitBackend(AEDTCommon):
 
         if self.aedtapp:
             self.aedtapp.save_project()
-            # time.sleep(1)
-        #     self.aedtapp.release_desktop(False, False)
-        #     self.aedtapp = None
 
-        properties.parameters = antenna_parameters
+        properties.antenna.parameters = antenna_parameters
         self.release_aedt(False, False)
         return antenna_parameters
 
