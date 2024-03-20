@@ -48,7 +48,8 @@ class ToolkitBackend(AEDTCommon):
     """
 
     def __init__(self):
-        AEDTCommon.__init__(self)
+        AEDTCommon.__init__(self, properties)
+        self.properties = properties
         self._oantenna = None
         self.antenna_type = None
         self.available_antennas = []
@@ -94,7 +95,7 @@ class ToolkitBackend(AEDTCommon):
             return False
 
         if not synth_only and not self.aedtapp:
-            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
+            if self.properties.active_design and list(self.properties.active_design.keys())[0].lower() != "hfss":
                 logger.debug("Selected design must be HFSS.")
                 return False
             # Connect to AEDT design
@@ -104,22 +105,22 @@ class ToolkitBackend(AEDTCommon):
                 return False
 
         # Get antenna properties
-        freq_units = properties.frequency_unit
+        freq_units = self.properties.antenna.synthesis.frequency_unit
         antenna_module = getattr(antenna_models, antenna)
-        properties.antenna.antenna_type = antenna
+        self.properties.antenna.model = antenna
         self.antenna_type = antenna
 
         # Create antenna object with default values
         self._oantenna = antenna_module(
             self.aedtapp,
             frequency_unit=freq_units,
-            length_unit=properties.length_unit,
+            length_unit=self.properties.antenna.synthesis.length_unit,
         )
 
         # Update antenna properties
         oantenna_public_props = (name for name in self._oantenna.__dir__() if not name.startswith("_"))
         for antenna_prop in oantenna_public_props:
-            if antenna_prop in properties.__dir__():
+            if antenna_prop in self.properties.antenna.synthesis.__dir__():
                 if (
                     antenna_prop == "frequency"
                     and "start_frequency" in self._oantenna.__dir__()
@@ -127,12 +128,12 @@ class ToolkitBackend(AEDTCommon):
                 ):
                     pass
                 elif antenna_prop == "material_properties":
-                    if properties.material_properties:
-                        self._oantenna.material_properties["permittivity"] = properties.material_properties[
-                            "permittivity"
-                        ]
+                    if self.properties.antenna.synthesis.material_properties:
+                        self._oantenna.material_properties["permittivity"] = (
+                            self.properties.antenna.synthesis.material_properties["permittivity"]
+                        )
                 else:
-                    setattr(self._oantenna, antenna_prop, getattr(properties, antenna_prop))
+                    setattr(self._oantenna, antenna_prop, getattr(self.properties.antenna.synthesis, antenna_prop))
 
         self._oantenna._parameters = self._oantenna._synthesis()
         self._oantenna.update_synthesis_parameters(self._oantenna._parameters)
@@ -144,7 +145,7 @@ class ToolkitBackend(AEDTCommon):
         )
         for param in oantenna_public_parameters:
             antenna_parameters[param] = self._oantenna.synthesis_parameters.__getattribute__(param).value
-        if not synth_only and not properties.antenna.is_created:
+        if not synth_only and not self.properties.antenna.is_created:
             if not self._oantenna.object_list:
                 if not self._oantenna.name:
                     self._oantenna.name = pyaedt.generate_unique_name(self.antenna_type)
@@ -152,18 +153,18 @@ class ToolkitBackend(AEDTCommon):
                 self._oantenna.init_model()
                 self._oantenna.model_hfss()
                 self._oantenna.setup_hfss()
-                properties.antenna.is_created = True
-            if properties.antenna.setup.lattice_pair:
+                self.properties.antenna.is_created = True
+            if self.properties.antenna.setup.lattice_pair:
                 self._oantenna.create_lattice_pair()
-            if properties.antenna.setup.component_3d:
+            if self.properties.antenna.setup.component_3d:
                 self._oantenna.create_3dcomponent(replace=True)
-            if properties.create_setup:
+            if self.properties.create_setup:
                 freq = float(self._oantenna.frequency)
                 setup = self.aedtapp.create_setup()
                 setup.props["Frequency"] = str(freq) + freq_units
-                if int(properties.sweep) > 0:
+                if int(self.properties.sweep) > 0:
                     sweep1 = setup.add_sweep()
-                    perc_sweep = (int(properties.sweep)) / 100
+                    perc_sweep = (int(self.properties.sweep)) / 100
                     sweep1.props["RangeStart"] = str(freq * (1 - perc_sweep)) + freq_units
                     sweep1.props["RangeEnd"] = str(freq * (1 + perc_sweep)) + freq_units
                     sweep1.update()
@@ -173,7 +174,7 @@ class ToolkitBackend(AEDTCommon):
         if self.aedtapp:
             self.aedtapp.save_project()
 
-        properties.antenna.parameters = antenna_parameters
+        self.properties.antenna.parameters = antenna_parameters
         self.release_aedt(False, False)
         return antenna_parameters
 
@@ -248,7 +249,7 @@ class ToolkitBackend(AEDTCommon):
         >>> msg3 = toolkit.update_parameters()
         """
         properties = self.get_properties()
-        if not properties["parameters_hfss"]:
+        if not self.properties.antenna.parameters_hfss:
             logger.debug("Antenna was not created in HFSS.")
             return True
 
@@ -261,8 +262,8 @@ class ToolkitBackend(AEDTCommon):
 
         if (
             self.aedtapp
-            and key in properties["parameters_hfss"]
-            and properties["parameters_hfss"][key] in self.aedtapp.variable_manager.independent_variable_names
+            and key in self.properties.antenna.parameters_hfss
+            and self.properties.antenna.parameters_hfss[key] in self.aedtapp.variable_manager.independent_variable_names
         ):
             ratio_re = re.compile("|".join(["ratio", "coefficient", "points", "number"]))
             if "angle" in key:
@@ -271,14 +272,14 @@ class ToolkitBackend(AEDTCommon):
             elif ratio_re.search(key):
                 val = val
             else:
-                if properties["length_unit"] not in val:
-                    val = val + properties["length_unit"]
-            hfss_parameter = properties["parameters_hfss"][key]
+                if self.properties.antenna.synthesis.length_unit not in val:
+                    val = val + self.properties.antenna.synthesis.length_unit
+            hfss_parameter = self.properties.antenna.parameters_hfss[key]
             self.aedtapp[hfss_parameter] = val
 
-            new_value = properties["parameters"]
+            new_value = self.properties.antenna.parameters
             new_value[key] = val
-            self.set_properties({"parameters": new_value})
+            # self.set_properties({"parameters": new_value})
 
             return True
         else:

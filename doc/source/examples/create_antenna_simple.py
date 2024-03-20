@@ -1,6 +1,6 @@
 # Bowtie antenna synthesis
 #
-# This example demonstrates how to synthesize a bowtie antenna using the ``ToolkitBackend`` class.
+# This example demonstrates how to synthesize a bowtie antenna using the ``BowTieRounded`` class.
 # It initiates AEDT through PyAEDT, sets up an empty HFSS design, and proceeds to create the antenna.
 
 
@@ -63,20 +63,34 @@ app = pyaedt.Hfss(specified_version=aedt_version, non_graphical=non_graphical)
 # Create antenna object, change frequency synthesis, create antenna and setup in HFSS.
 
 oantenna1 = BowTieRounded(app)
-oantenna1.frequency = 12.0
+
+# Create antenna in HFSS.
 oantenna1.model_hfss()
+
+# Create antenna setup.
+
 oantenna1.setup_hfss()
+
+# Change default name.
+
+oantenna1.name = "MyAmazingAntenna"
 
 # ## Create antenna in HFSS
 #
 # Create antenna object, change origin parameter in the antenna definition, create antenna and setup in HFSS.
 
-oantenna2 = BowTieRounded(app, origin=[200, 50, 0])
+oantenna2 = BowTieRounded(app, origin=[2, 5, 0], name="MyAntenna")
 oantenna2.model_hfss()
 oantenna2.setup_hfss()
+
+# ## Plot HFSS model
+#
+# Plot geometry with PyVista
+
+app.plot()
 
 # ## Release AEDT
 #
 # Release AEDT.
 
-app.release_desktop(False, False)
+app.release_desktop(True, True)

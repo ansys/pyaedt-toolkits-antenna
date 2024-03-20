@@ -474,7 +474,7 @@ class CommonAntenna(object):
         for item in list(self.object_list.keys()):
             terminal_references = []
             port_lump = port = port_cap = None
-            if "port_lump_{}".format(self.antenna_name) in item:
+            if "port_lump_{}".format(self.name) in item:
                 port_lump = self.object_list[item]
                 terminal_references = [
                     i
@@ -494,10 +494,10 @@ class CommonAntenna(object):
                             axis_dir[0] = edge.midpoint
                     terminal_references = terminal_references[1:]
 
-            elif "port_{}".format(self.antenna_name) in item:
+            elif "port_{}".format(self.name) in item:
                 port = self.object_list[item]
                 for item_cap in list(self.object_list.keys()):
-                    if "port_cap_{}".format(self.antenna_name) in item_cap:
+                    if "port_cap_{}".format(self.name) in item_cap:
                         port_cap = self.object_list[item_cap]
 
             if port_lump:
@@ -505,7 +505,7 @@ class CommonAntenna(object):
                     signal=item,
                     reference=terminal_references,
                     impedance=50,
-                    name="port_" + self.antenna_name + "_" + str(port_count),
+                    name="port_" + self.name + "_" + str(port_count),
                     renormalize=True,
                     deembed=False,
                 )
@@ -518,7 +518,7 @@ class CommonAntenna(object):
                 port1 = self._app.wave_port(
                     signal=port,
                     reference=terminal_references,
-                    name="port_" + self.antenna_name + "_" + str(port_count),
+                    name="port_" + self.name + "_" + str(port_count),
                 )
                 self.excitations[port1.name] = port1
                 port_count += 1

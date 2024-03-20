@@ -1,4 +1,4 @@
-antenna_type = ""
+model = ""
 is_created = false
 parameters = {}
 parameters_hfss = {}
