@@ -6,9 +6,7 @@
 
 # ## Perform required imports
 #
-# Import the antenna toolkit class and PyAEDT.
-
-import pyaedt
+# Import the backend toolkit class.
 
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
@@ -42,13 +40,18 @@ toolkit_api = ToolkitBackend()
 
 print(toolkit_api.available_antennas)
 
-# ## Get available_antennas
+# ## Get default properties
 #
 
 backend_properties = toolkit_api.get_properties()
 frequency = backend_properties["antenna"]["synthesis"]["frequency"]
 frequency_units = backend_properties["antenna"]["synthesis"]["frequency_unit"]
 length_unit = backend_properties["antenna"]["synthesis"]["length_unit"]
+
+# ## Modify default length units
+#
+
+properties.antenna.synthesis.length_unit = "cm"
 
 # ## Create antenna object only for synthesis
 #
@@ -102,39 +105,47 @@ print(
     )
 )
 
-# ## Create an empty HFSS design
+# ## Initialize AEDT
 #
-# Create an empty HFSS design.
+# Launch a new AEDT session in a thread.
 
-app = pyaedt.Hfss(specified_version=aedt_version, non_graphical=non_graphical)
+thread_msg = toolkit_api.launch_thread(toolkit_api.launch_aedt)
+
+# ## Wait for the toolkit thread to be idle
+#
+# Wait for the toolkit thread to be idle and ready to accept a new task.
+
+idle = toolkit_api.wait_to_be_idle()
+if not idle:
+    print("AEDT not initialized.")
+    sys.exit()
 
 # ## Create antenna in HFSS
 #
-# Create antenna object, change frequency synthesis, create antenna and setup in HFSS.
+# Create antenna and setup in HFSS.
 
-oantenna1 = BowTieRounded(app)
+antenna_parameter = toolkit_api.get_antenna("RectangularPatchProbe")
 
-# Create antenna in HFSS.
-oantenna1.model_hfss()
-
-# Create antenna setup.
-
-oantenna1.setup_hfss()
-
-# Change default name.
-
-oantenna1.name = "MyAmazingAntenna"
-
-# ## Create antenna in HFSS
+# ## Trying to create a new antenna
 #
-# Create antenna object, change origin parameter in the antenna definition, create antenna and setup in HFSS.
+# The antenna toolkit API does not allow the creation of more than one antenna. The user can use the antenna models API
+# to create more than one antenna.
 
-oantenna2 = BowTieRounded(app, origin=[200, 50, 0], name="MyAntenna")
-oantenna2.model_hfss()
-oantenna2.setup_hfss()
+toolkit_api.get_antenna("BowTie")
+
+# Set parameters
+
+# Analyze
+
+# Get S parameter
+
+# Get farfield
+
+# Get model
+
 
 # ## Release AEDT
 #
 # Release AEDT.
 
-app.release_desktop(True, True)
+toolkit_api.release_aedt(True, True)

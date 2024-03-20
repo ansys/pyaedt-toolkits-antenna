@@ -78,12 +78,9 @@ class ToolkitBackend(AEDTCommon):
         >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
         >>> import time
         >>> toolkit = Toolkit()
-        >>> msg1 = toolkit.launch_aedt()
-        >>> response = toolkit.get_thread_status()
-        >>> while response[0] == 0:
-        >>>     time.sleep(1)
-        >>>     response = toolkit.get_thread_status()
-        >>> msg3 = toolkit.get_antenna("BowTie")
+        >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
+        >>> idle = toolkit_api.wait_to_be_idle()
+        >>> toolkit.get_antenna("BowTie")
         """
 
         if self._oantenna:
@@ -198,12 +195,9 @@ class ToolkitBackend(AEDTCommon):
         >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
         >>> import time
         >>> toolkit = Toolkit()
-        >>> msg1 = toolkit.launch_aedt()
-        >>> response = toolkit.get_thread_status()
-        >>> while response[0] == 0:
-        >>>     time.sleep(1)
-        >>>     response = toolkit.get_thread_status()
-        >>> msg3 = toolkit.get_antenna("BowTie")
+        >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
+        >>> idle = toolkit_api.wait_to_be_idle()
+        >>> toolkit.get_antenna("BowTie")
         """
 
         if not self._oantenna:
@@ -240,12 +234,9 @@ class ToolkitBackend(AEDTCommon):
         >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
         >>> import time
         >>> toolkit = Toolkit()
-        >>> msg1 = toolkit.launch_aedt()
-        >>> response = toolkit.get_thread_status()
-        >>> while response[0] == 0:
-        >>>     time.sleep(1)
-        >>>     response = toolkit.get_thread_status()
-        >>> msg3 = toolkit.get_antenna("BowTie")
+        >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
+        >>> idle = toolkit_api.wait_to_be_idle()
+        >>> toolkit.get_antenna("BowTie")
         >>> msg3 = toolkit.update_parameters()
         """
         properties = self.get_properties()
@@ -301,11 +292,10 @@ class ToolkitBackend(AEDTCommon):
         >>> import time
         >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
         >>> toolkit = Toolkit()
-        >>> toolkit.launch_aedt()
-        >>> while response[0] == 0:
-        >>>     time.sleep(1)
-        >>>     response = toolkit.get_thread_status()
-        >>> toolkit_free = toolkit.get_thread_status()
+        >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
+        >>> idle = toolkit_api.wait_to_be_idle()
+        >>> toolkit.get_antenna("BowTie")
+        >>> toolkit.analyze()
         """
         # Check if the backend is already connected to an AEDT session
         connected, msg = self.aedt_connected()
