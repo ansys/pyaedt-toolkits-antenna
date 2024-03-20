@@ -81,7 +81,7 @@ class BowTie(CommonPatch):
     """
 
     _default_input_parameters = {
-        "antenna_name": None,
+        "name": None,
         "origin": [0, 0, 0],
         "length_unit": "cm",
         "coordinate_system": "Global",
@@ -188,7 +188,7 @@ class BowTie(CommonPatch):
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
 
-        antenna_name = self.antenna_name
+        antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         # Substrate
@@ -302,7 +302,7 @@ class BowTieRounded(CommonPatch):
     """
 
     _default_input_parameters = {
-        "antenna_name": None,
+        "name": None,
         "origin": [0, 0, 0],
         "length_unit": "cm",
         "coordinate_system": "Global",
@@ -414,7 +414,7 @@ class BowTieRounded(CommonPatch):
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
 
-        antenna_name = self.antenna_name
+        antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         # Substrate

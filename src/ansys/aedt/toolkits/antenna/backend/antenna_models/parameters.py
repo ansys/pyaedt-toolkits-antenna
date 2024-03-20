@@ -53,7 +53,7 @@ class Property:
 
     @property
     def hfss_variable(self):
-        return f"{self._name}_{self._owner.antenna_name}"
+        return f"{self._name}_{self._owner.name}"
 
     @hfss_variable.setter
     def hfss_variable(self, var_name):
@@ -61,7 +61,7 @@ class Property:
 
     @property
     def disco_variable(self):
-        return f"{self._name}_{self._owner.antenna_name}"
+        return f"{self._name}_{self._owner.name}"
 
     @disco_variable.setter
     def disco_variable(self, var_name):
@@ -70,21 +70,21 @@ class Property:
 
 class SynthesisParameters:
     def __init__(self):
-        self._antenna_name = ""
+        self._name = ""
 
     def add_parameter(self, name, value):
         setattr(self, name, Property(copy.deepcopy(value), self, name))
 
     @property
-    def antenna_name(self):
-        return self._antenna_name
+    def name(self):
+        return self._name
 
-    @antenna_name.setter
-    def antenna_name(self, name):
-        if not self._antenna_name:
-            self._antenna_name = name
+    @name.setter
+    def name(self, name):
+        if not self._name:
+            self._name = name
         else:
-            raise AttributeError("Parameter antenna_name can be set only once in the synthesis parameters.")
+            raise AttributeError("Parameter name can be set only once in the synthesis parameters.")
 
 
 class InputParameters(FrozenClass):

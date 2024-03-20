@@ -56,10 +56,10 @@ class CommonAntenna(object):
             self._input_parameters.length_unit = self._app.modeler.model_units
 
         if self._app:
-            self._input_parameters.antenna_name = self._check_antenna_name(self._input_parameters.antenna_name)
+            self._input_parameters.name = self._check_antenna_name(self._input_parameters.name)
 
         self.synthesis_parameters = SynthesisParameters()
-        self.synthesis_parameters.antenna_name = self._input_parameters.antenna_name
+        self.synthesis_parameters.name = self._input_parameters.name
 
         self.object_list = {}
         self.boundaries = {}
@@ -176,23 +176,23 @@ class CommonAntenna(object):
             ] = self._input_parameters.coordinate_system
 
     @property
-    def antenna_name(self):
+    def name(self):
         """Antenna name.
 
         Returns
         -------
         str
         """
-        return self._input_parameters.antenna_name
+        return self._input_parameters.name
 
-    @antenna_name.setter
-    def antenna_name(self, value):
-        if value != self.antenna_name and self.object_list:
+    @name.setter
+    def name(self, value):
+        if value != self.name and self.object_list:
             for antenna_obj in self.object_list:
                 self.object_list[antenna_obj].group_name = value
-            if len(list(self._app.modeler.oeditor.GetObjectsInGroup(self.antenna_name))) == 0:
-                self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", self.antenna_name])
-        self._input_parameters.antenna_name = value
+            if len(list(self._app.modeler.oeditor.GetObjectsInGroup(self.name))) == 0:
+                self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", self.name])
+        self._input_parameters.name = value
 
     @property
     def origin(self):
@@ -247,7 +247,7 @@ class CommonAntenna(object):
         hfss_parameter = self.synthesis_parameters.lattice_height.hfss_variable
         self._app[hfss_parameter] = self.synthesis_parameters.lattice_height.value
 
-        bounding_box = self._app.modeler.get_group_bounding_box(self.antenna_name)
+        bounding_box = self._app.modeler.get_group_bounding_box(self.name)
         bounding_dim = [
             abs(bounding_box[0] - bounding_box[3]),
             abs(bounding_box[1] - bounding_box[4]),
@@ -320,9 +320,9 @@ class CommonAntenna(object):
         >>> horn = horn.create_3dcomponent()
         """
         if not component_file:
-            component_file = os.path.join(self._app.working_directory, self.antenna_name + ".a3dcomp")
+            component_file = os.path.join(self._app.working_directory, self.name + ".a3dcomp")
         if not component_name:
-            component_name = self.antenna_name
+            component_name = self.name
 
         parameters = []
         for p in self.synthesis_parameters.__dict__.values():
@@ -355,8 +355,8 @@ class CommonAntenna(object):
                 included_cs=[self.coordinate_system],
                 reference_cs=self.coordinate_system,
             )
-            if self._app.modeler.oeditor.GetObjectsInGroup(self.antenna_name).count == 0:
-                self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", self.antenna_name])
+            if self._app.modeler.oeditor.GetObjectsInGroup(self.name).count == 0:
+                self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", self.name])
             return user_defined_component
         return component_file
 

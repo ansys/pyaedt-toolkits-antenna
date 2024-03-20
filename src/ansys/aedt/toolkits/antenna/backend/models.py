@@ -40,7 +40,7 @@ from pydantic import BaseModel
 class Synthesis(BaseModel):
     """Store antenna synthesis properties."""
 
-    antenna_name: str = ""
+    name: str = ""
     coordinate_system: str = "Global"
     frequency: float = 10.0
     frequency_unit: str = "GHz"

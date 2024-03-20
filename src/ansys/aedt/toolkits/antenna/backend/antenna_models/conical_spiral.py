@@ -171,7 +171,7 @@ class Archimedean(CommonConicalSpiral):
     """
 
     _default_input_parameters = {
-        "antenna_name": "",
+        "name": "",
         "origin": [0, 0, 0],
         "length_unit": "meter",
         "coordinate_system": "Global",
@@ -272,7 +272,7 @@ class Archimedean(CommonConicalSpiral):
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
-        antenna_name = self.antenna_name
+        antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         my_udmPairs = []
@@ -373,7 +373,7 @@ class Log(CommonConicalSpiral):
     """
 
     _default_input_parameters = {
-        "antenna_name": "",
+        "name": "",
         "origin": [0, 0, 0],
         "length_unit": "meter",
         "coordinate_system": "Global",
@@ -466,7 +466,7 @@ class Log(CommonConicalSpiral):
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
-        antenna_name = self.antenna_name
+        antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         my_udmPairs = []

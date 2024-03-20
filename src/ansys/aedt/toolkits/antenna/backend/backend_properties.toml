@@ -10,7 +10,7 @@ log_file = "backend.log"
 debug = true
 
 [synthesis]
-antenna_name = ""
+name = ""
 coordinate_system = "Global"
 frequency = 10.0
 frequency_unit = "GHz"
