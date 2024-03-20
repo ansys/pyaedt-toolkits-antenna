@@ -31,7 +31,7 @@ from ansys.aedt.toolkits.antenna.backend import antenna_models
 from ansys.aedt.toolkits.antenna.backend.models import properties
 
 
-class Toolkit(AEDTCommon):
+class ToolkitBackend(AEDTCommon):
     """Provides methods for controlling the toolkit workflow.
 
     This class provides methods for creating an AEDT session, connecting to an existing
@@ -39,9 +39,9 @@ class Toolkit(AEDTCommon):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
+    >>> from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
     >>> import time
-    >>> toolkit = Toolkit()
+    >>> toolkit = ToolkitBackend()
     >>> msg1 = toolkit.launch_aedt()
     >>> toolkit.wait_to_be_idle()
     >>> toolkit.get_antenna("BowTie")

@@ -26,21 +26,21 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
-    'ansys-aedt-toolkits-common @ git+https://github.com/ansys-internal/pyaedt-toolkits-common'
+    'ansys-aedt-toolkits-common'
 ]
 
 [project.optional-dependencies]
 all = [
-    'ansys-aedt-toolkits-common[all] @ git+https://github.com/ansys-internal/pyaedt-toolkits-common'
+    'ansys-aedt-toolkits-common[all]'
 ]
 tests = [
-    'ansys-aedt-toolkits-common[tests] @ git+https://github.com/ansys-internal/pyaedt-toolkits-common'
+    'ansys-aedt-toolkits-common[tests]'
 ]
 doc = [
-    'ansys-aedt-toolkits-common[doc] @ git+https://github.com/ansys-internal/pyaedt-toolkits-common'
+    'ansys-aedt-toolkits-common[doc]'
 ]
 ci = [
-    'ansys-aedt-toolkits-common[ci] @ git+https://github.com/ansys-internal/pyaedt-toolkits-common'
+    'ansys-aedt-toolkits-common[ci]'
 ]
 
 [tool.flit.module]
