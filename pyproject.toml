@@ -11,10 +11,10 @@ readme = "README.rst"
 requires-python = ">=3.10"
 license = {file = "LICENSE"}
 authors = [
-    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
+    {name = "ANSYS, Inc.", email = "pyansys.support@ansys.com"},
 ]
 maintainers = [
-    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
+    {name = "PyAnsys developers", email = "pyansys.maintainers@ansys.com"},
 ]
 
 classifiers = [
@@ -22,8 +22,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
     'ansys-aedt-toolkits-common'
@@ -68,3 +66,12 @@ source = ["ansys.aedt"]
 
 [tool.coverage.report]
 show_missing = true
+
+[tool.pytest.ini_options]
+minversion = "7.1"
+xfail_strict = false
+markers = [
+    "patch_api: mark test as related to the patch antenna API.",
+    "toolkit_api: mark test as related to the toolkit API.",
+    "rest_api: mark test as related to the REST API.",
+]
