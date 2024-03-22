@@ -80,7 +80,7 @@ class CommonAntenna(object):
     def material(self, value):
         self._input_parameters.material = value
         if self.object_list:
-            parameters = self._synthesis()
+            parameters = self.synthesis()
             self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
 
@@ -97,7 +97,7 @@ class CommonAntenna(object):
     @frequency.setter
     def frequency(self, value):
         self._input_parameters.frequency = value
-        parameters = self._synthesis()
+        parameters = self.synthesis()
         self.update_synthesis_parameters(parameters)
         if self.object_list:
             self.set_variables_in_hfss()
@@ -115,7 +115,7 @@ class CommonAntenna(object):
     @frequency_unit.setter
     def frequency_unit(self, value):
         self._input_parameters.frequency_unit = value
-        parameters = self._synthesis()
+        parameters = self.synthesis()
         self.update_synthesis_parameters(parameters)
         if self.object_list:
             self.set_variables_in_hfss()
@@ -152,7 +152,7 @@ class CommonAntenna(object):
     @length_unit.setter
     def length_unit(self, value):
         self._input_parameters.length_unit = value
-        parameters = self._synthesis()
+        parameters = self.synthesis()
         self.update_synthesis_parameters(parameters)
         if self.object_list:
             self.set_variables_in_hfss()
@@ -208,7 +208,7 @@ class CommonAntenna(object):
     def origin(self, value):
         self._input_parameters.origin = value
         if self.object_list:
-            parameters = self._synthesis()
+            parameters = self.synthesis()
             self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
 

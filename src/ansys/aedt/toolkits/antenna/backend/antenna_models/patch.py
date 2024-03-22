@@ -72,7 +72,7 @@ class CommonPatch(CommonAntenna):
                             self.object_list[antenna_obj].material_name = value
 
                 self._input_parameters.material = value
-                parameters = self._synthesis()
+                parameters = self.synthesis()
                 self.update_synthesis_parameters(parameters)
                 self.set_variables_in_hfss()
         else:
@@ -103,12 +103,12 @@ class CommonPatch(CommonAntenna):
         self._input_parameters.substrate_height = value
 
         if self.object_list:
-            parameters = self._synthesis()
+            parameters = self.synthesis()
             self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
 
     @pyaedt_function_handler()
-    def _synthesis(self):
+    def synthesis(self):
         pass
 
 
@@ -174,12 +174,12 @@ class RectangularPatchProbe(CommonPatch):
 
     def __init__(self, *args, **kwargs):
         CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "RectangularPatchProbe"
 
     @pyaedt_function_handler()
-    def _synthesis(self):
+    def synthesis(self):
         parameters = {}
         length_unit = self.length_unit
         lightSpeed = constants.SpeedOfLight  # m/s
@@ -516,7 +516,7 @@ class RectangularPatchInset(CommonPatch):
     def __init__(self, *args, **kwargs):
         CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "RectangularPatchInset"
 
@@ -827,7 +827,7 @@ class RectangularPatchEdge(CommonPatch):
 
     def __init__(self, *args, **kwargs):
         CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "RectangularPatchEdge"
 

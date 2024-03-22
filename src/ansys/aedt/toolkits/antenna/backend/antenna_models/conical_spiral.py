@@ -66,7 +66,7 @@ class CommonConicalSpiral(CommonAntenna):
                             self.object_list[antenna_obj].material_name = value
 
                     self._input_parameters.material = value
-                    parameters = self._synthesis()
+                    parameters = self.synthesis()
                     self.update_synthesis_parameters(parameters)
                     self.set_variables_in_hfss()
         else:
@@ -95,7 +95,7 @@ class CommonConicalSpiral(CommonAntenna):
     @start_frequency.setter
     def start_frequency(self, value):
         self._input_parameters.start_frequency = value
-        parameters = self._synthesis()
+        parameters = self.synthesis()
         self.update_synthesis_parameters(parameters)
         if self.object_list:
             self.set_variables_in_hfss()
@@ -113,7 +113,7 @@ class CommonConicalSpiral(CommonAntenna):
     @stop_frequency.setter
     def stop_frequency(self, value):
         self._input_parameters.stop_frequency = value
-        parameters = self._synthesis()
+        parameters = self.synthesis()
         self.update_synthesis_parameters(parameters)
         if self.object_list:
             self.set_variables_in_hfss()
@@ -185,7 +185,7 @@ class Archimedean(CommonConicalSpiral):
     def __init__(self, *args, **kwargs):
         CommonConicalSpiral.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "Archimedean"
 
@@ -387,7 +387,7 @@ class Log(CommonConicalSpiral):
     def __init__(self, *args, **kwargs):
         CommonConicalSpiral.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "Log"
 
@@ -577,7 +577,7 @@ class Sinuous(CommonConicalSpiral):
     def __init__(self, *args, **kwargs):
         CommonConicalSpiral.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "Log"
 

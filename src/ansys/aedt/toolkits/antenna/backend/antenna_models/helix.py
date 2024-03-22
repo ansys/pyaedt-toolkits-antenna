@@ -66,7 +66,7 @@ class CommonHelix(CommonAntenna):
                             self.object_list[antenna_obj].material_name = value
 
                     self._input_parameters.material = value
-                    parameters = self._synthesis()
+                    parameters = self.synthesis()
                     self.update_synthesis_parameters(parameters)
                     self.set_variables_in_hfss()
 
@@ -84,7 +84,7 @@ class CommonHelix(CommonAntenna):
     def gain_value(self, value):
         self._input_parameters.gain_value = value
         if value != self.gain_value and self.object_list:
-            parameters = self._synthesis()
+            parameters = self.synthesis()
             self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
 
@@ -102,7 +102,7 @@ class CommonHelix(CommonAntenna):
     def direction(self, value):
         self._input_parameters.direction = value
         if value != self.direction and self.object_list:
-            parameters = self._synthesis()
+            parameters = self.synthesis()
             self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
 
@@ -120,7 +120,7 @@ class CommonHelix(CommonAntenna):
     def feeder_length(self, value):
         self._input_parameters.feeder_length = value
         if value != self.feeder_length and self.object_list:
-            parameters = self._synthesis()
+            parameters = self.synthesis()
             self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
 
@@ -194,7 +194,7 @@ class AxialMode(CommonHelix):
     def __init__(self, *args, **kwargs):
         CommonHelix.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "AxialMode"
 

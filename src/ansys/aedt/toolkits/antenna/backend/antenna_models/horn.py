@@ -66,7 +66,7 @@ class CommonHorn(CommonAntenna):
                             self.object_list[antenna_obj].material_name = value
 
                     self._input_parameters.material = value
-                    parameters = self._synthesis()
+                    parameters = self.synthesis()
                     self.update_synthesis_parameters(parameters)
                     self.set_variables_in_hfss()
         else:
@@ -150,7 +150,7 @@ class Conical(CommonHorn):
     def __init__(self, *args, **kwargs):
         CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "Conical"
 
@@ -424,7 +424,7 @@ class PyramidalRidged(CommonHorn):
     def __init__(self, *args, **kwargs):
         CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "PyramidalRidged"
 
@@ -1099,7 +1099,7 @@ class Corrugated(CommonHorn):
     def __init__(self, *args, **kwargs):
         CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "Corrugated"
 
@@ -1370,7 +1370,7 @@ class Elliptical(CommonHorn):
     def __init__(self, *args, **kwargs):
         CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "Elliptical"
 
@@ -1648,7 +1648,7 @@ class EPlane(CommonHorn):
     def __init__(self, *args, **kwargs):
         CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "EPlane"
 
@@ -2013,7 +2013,7 @@ class HPlane(CommonHorn):
     def __init__(self, *args, **kwargs):
         CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "HPlane"
 
@@ -2364,7 +2364,7 @@ class Pyramidal(CommonHorn):
     def __init__(self, *args, **kwargs):
         CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "Pyramidal"
 
@@ -2724,7 +2724,7 @@ class QuadRidged(CommonHorn):
     def __init__(self, *args, **kwargs):
         CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
 
-        self._parameters = self._synthesis()
+        self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
         self.antenna_type = "QuadRidged"
 

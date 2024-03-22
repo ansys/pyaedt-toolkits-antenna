@@ -7,6 +7,9 @@
 # ## Perform required imports
 #
 # Import the backend toolkit class.
+import tempfile
+
+import pyaedt
 
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
@@ -23,11 +26,17 @@ aedt_version = "2024.1"
 
 non_graphical = False
 
+# ## Create temporary directory
+
+temp_dir = tempfile.TemporaryDirectory(suffix="_ansys")
+project_name = pyaedt.generate_unique_project_name(rootname=temp_dir.name, project_name="antenna_toolkit")
+
 # ## Set default properties
 #
 
 properties.aedt_version = aedt_version
 properties.non_graphical = non_graphical
+properties.active_project = project_name
 
 # ## Initialize toolkit
 #
@@ -120,6 +129,12 @@ if not idle:
     print("AEDT not initialized.")
     sys.exit()
 
+# ## Create setup when antenna is created
+#
+# Set create_setup property.
+
+properties.antenna.setup.create_setup = True
+
 # ## Create antenna in HFSS
 #
 # Create antenna and setup in HFSS.
@@ -133,19 +148,40 @@ antenna_parameter = toolkit_api.get_antenna("RectangularPatchProbe")
 
 toolkit_api.get_antenna("BowTie")
 
-# Set parameters
+# ## Set properties
+#
+# Move antenna X position
 
-# Analyze
+toolkit_api.update_parameters("pos_x", "20")
 
-# Get S parameter
+# ## Analyze design in batch mode
 
-# Get farfield
+toolkit_api.analyze()
 
-# Get model
+# ## Get scattering results
 
+scattering_data = toolkit_api.scattering_results()
+
+# ## Get farfield  results
+
+farfield_data = toolkit_api.farfield_results()
+
+# ## Get antenna model
+
+files = toolkit_api.export_aedt_model()
 
 # ## Release AEDT
 #
 # Release AEDT.
 
 toolkit_api.release_aedt(True, True)
+
+pass
+
+# ## Plot results
+
+# Plot exported files using the following code
+# from pyaedt.generic.plot import ModelPlotter
+# model = ModelPlotter()
+# for file in files:
+#     model.add_object(file[0], file[1], file[2])

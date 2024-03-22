@@ -50,7 +50,7 @@ class ToolkitBackend(AEDTCommon):
     def __init__(self):
         AEDTCommon.__init__(self, properties)
         self.properties = properties
-        self._oantenna = None
+        self.oantenna = None
         self.antenna_type = None
         self.available_antennas = []
         for name, var in vars(antenna_models).items():
@@ -83,7 +83,7 @@ class ToolkitBackend(AEDTCommon):
         >>> toolkit.get_antenna("BowTie")
         """
 
-        if self._oantenna:
+        if self.oantenna:
             logger.debug("Antenna is already created.")
             return False
 
@@ -108,65 +108,63 @@ class ToolkitBackend(AEDTCommon):
         self.antenna_type = antenna
 
         # Create antenna object with default values
-        self._oantenna = antenna_module(
+        self.oantenna = antenna_module(
             self.aedtapp,
             frequency_unit=freq_units,
             length_unit=self.properties.antenna.synthesis.length_unit,
         )
 
         # Update antenna properties
-        oantenna_public_props = (name for name in self._oantenna.__dir__() if not name.startswith("_"))
-        for antenna_prop in oantenna_public_props:
-            if antenna_prop in self.properties.antenna.synthesis.__dir__():
-                if (
-                    antenna_prop == "frequency"
-                    and "start_frequency" in self._oantenna.__dir__()
-                    and "stop_frequency" in self._oantenna.__dir__()
-                ):
-                    pass
-                elif antenna_prop == "material_properties":
-                    if self.properties.antenna.synthesis.material_properties:
-                        self._oantenna.material_properties["permittivity"] = (
-                            self.properties.antenna.synthesis.material_properties["permittivity"]
-                        )
-                else:
-                    setattr(self._oantenna, antenna_prop, getattr(self.properties.antenna.synthesis, antenna_prop))
+        for antenna_prop in self.properties.antenna.synthesis.model_fields:
+            if (
+                antenna_prop == "frequency"
+                and "start_frequency" in self.oantenna.__dir__()
+                and "stop_frequency" in self.oantenna.__dir__()
+            ):
+                pass
+            elif antenna_prop == "material_properties":
+                if self.properties.antenna.synthesis.material_properties:
+                    self.oantenna.material_properties["permittivity"] = (
+                        self.properties.antenna.synthesis.material_properties["permittivity"]
+                    )
+            else:
+                setattr(self.oantenna, antenna_prop, getattr(self.properties.antenna.synthesis, antenna_prop))
 
-        self._oantenna._parameters = self._oantenna._synthesis()
-        self._oantenna.update_synthesis_parameters(self._oantenna._parameters)
+        self.oantenna._parameters = self.oantenna.synthesis()
+        self.oantenna.update_synthesis_parameters(self.oantenna._parameters)
 
         antenna_parameters = {}
 
         oantenna_public_parameters = (
-            name for name in self._oantenna.synthesis_parameters.__dict__ if not name.startswith("_")
+            name for name in self.oantenna.synthesis_parameters.__dict__ if not name.startswith("_")
         )
         for param in oantenna_public_parameters:
-            antenna_parameters[param] = self._oantenna.synthesis_parameters.__getattribute__(param).value
+            antenna_parameters[param] = self.oantenna.synthesis_parameters.__getattribute__(param).value
         if not synth_only and not self.properties.antenna.is_created:
-            if not self._oantenna.object_list:
-                if not self._oantenna.name:
-                    self._oantenna.name = pyaedt.generate_unique_name(self.antenna_type)
-                    self.set_properties({"name": self._oantenna.name})
-                self._oantenna.init_model()
-                self._oantenna.model_hfss()
-                self._oantenna.setup_hfss()
+            if not self.oantenna.object_list:
+                if not self.oantenna.name:
+                    self.oantenna.name = pyaedt.generate_unique_name(self.antenna_type)
+                    self.set_properties({"name": self.oantenna.name})
+                self.oantenna.init_model()
+                self.oantenna.model_hfss()
+                self.oantenna.setup_hfss()
                 self.properties.antenna.is_created = True
             if self.properties.antenna.setup.lattice_pair:
-                self._oantenna.create_lattice_pair()
+                self.oantenna.create_lattice_pair()
             if self.properties.antenna.setup.component_3d:
-                self._oantenna.create_3dcomponent(replace=True)
-            if self.properties.create_setup:
-                freq = float(self._oantenna.frequency)
+                self.oantenna.create_3dcomponent(replace=True)
+            if self.properties.antenna.setup.create_setup:
+                freq = float(self.oantenna.frequency)
                 setup = self.aedtapp.create_setup()
                 setup.props["Frequency"] = str(freq) + freq_units
-                if int(self.properties.sweep) > 0:
+                if int(self.properties.antenna.setup.sweep) > 0:
                     sweep1 = setup.add_sweep()
-                    perc_sweep = (int(self.properties.sweep)) / 100
+                    perc_sweep = (int(self.properties.antenna.setup.sweep)) / 100
                     sweep1.props["RangeStart"] = str(freq * (1 - perc_sweep)) + freq_units
                     sweep1.props["RangeEnd"] = str(freq * (1 + perc_sweep)) + freq_units
                     sweep1.update()
         elif synth_only:
-            self._oantenna = None
+            self.oantenna = None
 
         if self.aedtapp:
             self.aedtapp.save_project()
@@ -200,7 +198,7 @@ class ToolkitBackend(AEDTCommon):
         >>> toolkit.get_antenna("BowTie")
         """
 
-        if not self._oantenna:
+        if not self.oantenna:
             logger.debug("No antenna is available.")
             return False
 
@@ -214,14 +212,14 @@ class ToolkitBackend(AEDTCommon):
 
         return files
 
-    def update_parameters(self, key, val):
+    def update_parameters(self, key: str, val: str) -> bool:
         """Update parameters in HFSS.
 
         Parameters
         ----------
         key : str
             Key.
-        val : float
+        val : str
             Value.
 
         Returns
@@ -239,14 +237,13 @@ class ToolkitBackend(AEDTCommon):
         >>> toolkit.get_antenna("BowTie")
         >>> msg3 = toolkit.update_parameters()
         """
-        properties = self.get_properties()
         if not self.properties.antenna.parameters_hfss:
             logger.debug("Antenna was not created in HFSS.")
             return True
 
         if not self.aedtapp:
             # Connect to AEDT design
-            self.connect_design("Hfss")
+            self.connect_design()
             if not self.aedtapp:
                 logger.debug("HFSS design is not connected.")
                 return False
@@ -270,8 +267,7 @@ class ToolkitBackend(AEDTCommon):
 
             new_value = self.properties.antenna.parameters
             new_value[key] = val
-            # self.set_properties({"parameters": new_value})
-
+            self.release_aedt(False, False)
             return True
         else:
             logger.debug("Parameter does not exist.")
@@ -298,18 +294,18 @@ class ToolkitBackend(AEDTCommon):
         >>> toolkit.analyze()
         """
         # Check if the backend is already connected to an AEDT session
-        connected, msg = self.aedt_connected()
+        connected, msg = self.is_aedt_connected()
         if not connected:
             if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
                 logger.debug("Selected design must be HFSS.")
                 return False
             # Connect to AEDT design
-            self.connect_design("Hfss")
+            self.connect_design()
             if not self.aedtapp:
                 logger.debug("HFSS design is not connected.")
                 return False
 
-        num_cores = properties.core_number
+        num_cores = properties.antenna.setup.core_number
 
         self.aedtapp.save_project()
         time.sleep(1)
