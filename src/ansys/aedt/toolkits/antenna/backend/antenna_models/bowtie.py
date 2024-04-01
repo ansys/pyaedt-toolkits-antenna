@@ -100,7 +100,7 @@ class BowTie(CommonPatch):
         self.antenna_type = "BowTie"
 
     @pyaedt_function_handler()
-    def _synthesis(self):
+    def synthesis(self):
         parameters = {}
         lightSpeed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
@@ -321,7 +321,7 @@ class BowTieRounded(CommonPatch):
         self.antenna_type = "BowTieRounded"
 
     @pyaedt_function_handler()
-    def _synthesis(self):
+    def synthesis(self):
         parameters = {}
         lightSpeed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
@@ -555,7 +555,7 @@ class BowTieSlot(CommonPatch):
         self.antenna_type = "BowTieSlot"
 
     @pyaedt_function_handler()
-    def _synthesis(self):
+    def synthesis(self):
         parameters = {}
         lightSpeed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")

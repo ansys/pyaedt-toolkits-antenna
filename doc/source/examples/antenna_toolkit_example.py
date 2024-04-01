@@ -32,7 +32,6 @@ temp_dir = tempfile.TemporaryDirectory(suffix="_ansys")
 project_name = pyaedt.generate_unique_project_name(rootname=temp_dir.name, project_name="antenna_toolkit")
 
 # ## Set default properties
-#
 
 properties.aedt_version = aedt_version
 properties.non_graphical = non_graphical
@@ -45,12 +44,10 @@ properties.active_project = project_name
 toolkit_api = ToolkitBackend()
 
 # ## Get available_antennas
-#
 
 print(toolkit_api.available_antennas)
 
 # ## Get default properties
-#
 
 backend_properties = toolkit_api.get_properties()
 frequency = backend_properties["antenna"]["synthesis"]["frequency"]
@@ -58,7 +55,6 @@ frequency_units = backend_properties["antenna"]["synthesis"]["frequency_unit"]
 length_unit = backend_properties["antenna"]["synthesis"]["length_unit"]
 
 # ## Modify default length units
-#
 
 properties.antenna.synthesis.length_unit = "cm"
 
@@ -185,3 +181,7 @@ pass
 # model = ModelPlotter()
 # for file in files:
 #     model.add_object(file[0], file[1], file[2])
+
+# ## Clean temporary directory
+
+temp_dir.cleanup()

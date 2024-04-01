@@ -125,7 +125,7 @@ class CommonHelix(CommonAntenna):
             self.set_variables_in_hfss()
 
     @pyaedt_function_handler()
-    def _synthesis(self):
+    def synthesis(self):
         pass
 
 
@@ -199,7 +199,7 @@ class AxialMode(CommonHelix):
         self.antenna_type = "AxialMode"
 
     @pyaedt_function_handler()
-    def _synthesis(self):
+    def synthesis(self):
         parameters = {}
         light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")

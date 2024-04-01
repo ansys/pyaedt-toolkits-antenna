@@ -521,7 +521,7 @@ class RectangularPatchInset(CommonPatch):
         self.antenna_type = "RectangularPatchInset"
 
     @pyaedt_function_handler()
-    def _synthesis(self):
+    def synthesis(self):
         parameters = {}
         length_unit = self.length_unit
         lightSpeed = constants.SpeedOfLight  # m/s
@@ -832,7 +832,7 @@ class RectangularPatchEdge(CommonPatch):
         self.antenna_type = "RectangularPatchEdge"
 
     @pyaedt_function_handler()
-    def _synthesis(self):
+    def synthesis(self):
         parameters = {}
         length_unit = self.length_unit
         lightSpeed = constants.SpeedOfLight  # m/s

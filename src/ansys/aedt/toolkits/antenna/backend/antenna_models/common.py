@@ -401,7 +401,7 @@ class CommonAntenna(object):
         return True
 
     @pyaedt_function_handler()
-    def _synthesis(self):
+    def synthesis(self):
         pass
 
     @pyaedt_function_handler()
