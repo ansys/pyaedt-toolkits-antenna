@@ -30,7 +30,7 @@ dependencies = [
     "twine==5.0.0",
     "pyaedt",
     "importlib-metadata >=4.0",
-    "PySide6-Essentials==6.6.2",
+    "PySide6-Essentials==6.6.3.1",
     "pyqtgraph",
     "pyvistaqt",
     "qdarkstyle",
