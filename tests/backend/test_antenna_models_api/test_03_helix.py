@@ -35,4 +35,4 @@ class TestClass(BasisTest, object):
             self.aedtapp, frequency=1.0, length_unit=self.aedtapp.modeler.model_units, outer_boundary="Radiation"
         )
 
-        assert oantenna.antenna_name != oantenna2.antenna_name
+        assert oantenna.name != oantenna2.name

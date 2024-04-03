@@ -33,7 +33,7 @@ class TestClass(BasisTest, object):
 
         oantenna2 = antenna_module(self.aedtapp, frequency=1.0, outer_boundary="Radiation", length_unit="mm")
 
-        assert oantenna1.antenna_name != oantenna2.antenna_name
+        assert oantenna1.name != oantenna2.name
 
     def test_02_bowtie_rounded(self):
         self.aedtapp = self.add_app(design_name="BowTieRounded")
@@ -54,7 +54,7 @@ class TestClass(BasisTest, object):
 
         oantenna2 = antenna_module(self.aedtapp, frequency=1.0, length_unit="mm", outer_boundary="Radiation")
 
-        assert oantenna1.antenna_name != oantenna2.antenna_name
+        assert oantenna1.name != oantenna2.name
 
     def test_03_bowtie_slot(self):
         self.aedtapp = self.add_app(design_name="BowTieSlot")
@@ -73,4 +73,4 @@ class TestClass(BasisTest, object):
             assert isinstance(comp, Object3d)
         oantenna2 = antenna_module(self.aedtapp, frequency=1.0, length_unit="mm", outer_boundary="Radiation")
 
-        assert oantenna1.antenna_name != oantenna2.antenna_name
+        assert oantenna1.name != oantenna2.name

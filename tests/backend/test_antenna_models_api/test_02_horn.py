@@ -40,9 +40,9 @@ class TestClass(BasisTest, object):
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         antenna_module = getattr(antenna_models, "Conical")
-        ohorn2 = antenna_module(self.aedtapp, antenna_name=ohorn1.antenna_name)
+        ohorn2 = antenna_module(self.aedtapp, name=ohorn1.name)
 
-        assert ohorn1.antenna_name != ohorn2.antenna_name
+        assert ohorn1.name != ohorn2.name
 
     def test_01b_conical_duplicate_along_line(self):
         self.aedtapp.design_name = "conical_horn"

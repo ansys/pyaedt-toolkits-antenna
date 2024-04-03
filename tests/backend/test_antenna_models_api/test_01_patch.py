@@ -153,7 +153,7 @@ class TestClass:
         aedt_common.connect_design()
 
         antenna_module = getattr(antenna_models, "RectangularPatchInset")
-        opatch1 = antenna_module(aedtcommon.aedtapp,
+        opatch1 = antenna_module(aedt_common.aedtapp,
                                  frequency=1.0,
                                  length_unit=aedt_common.aedtapp.modeler.model_units)
         opatch1.init_model()
@@ -248,12 +248,12 @@ class TestClass:
         aedt_common.release_aedt(False, False)
 
     def test_03a_rectangular_patch_edge_model_hfss(self, aedt_common):
-        aedt_common.properties.active_design = "rectangular_patch_edge"
-        aedt_common.connect_design()
-
         antenna_module = getattr(antenna_models, "RectangularPatchEdge")
         opatch0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert opatch0.synthesis_parameters.patch_x.value
+
+        aedt_common.properties.active_design = "rectangular_patch_edge"
+        aedt_common.connect_design()
 
         antenna_module = getattr(antenna_models, "RectangularPatchEdge")
         opatch1 = antenna_module(

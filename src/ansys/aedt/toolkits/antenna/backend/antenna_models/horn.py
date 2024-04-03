@@ -1086,7 +1086,7 @@ class Corrugated(CommonHorn):
     """
 
     _default_input_parameters = {
-        "antenna_name": "",
+        "name": "",
         "origin": [0, 0, 0],
         "length_unit": "meter",
         "coordinate_system": "Global",
@@ -1181,7 +1181,7 @@ class Corrugated(CommonHorn):
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
-        antenna_name = self.antenna_name
+        antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         l = self._app.variable_manager[wg_length].numeric_value
@@ -1357,7 +1357,7 @@ class Elliptical(CommonHorn):
     """
 
     _default_input_parameters = {
-        "antenna_name": None,
+        "name": None,
         "origin": [0, 0, 0],
         "length_unit": None,
         "coordinate_system": "Global",
@@ -1438,7 +1438,7 @@ class Elliptical(CommonHorn):
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
-        antenna_name = self.antenna_name
+        antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         # Negative air
@@ -1634,7 +1634,7 @@ class EPlane(CommonHorn):
     """
 
     _default_input_parameters = {
-        "antenna_name": None,
+        "name": None,
         "origin": [0, 0, 0],
         "length_unit": None,
         "coordinate_system": "Global",
@@ -1744,7 +1744,7 @@ class EPlane(CommonHorn):
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
-        antenna_name = self.antenna_name
+        antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         # Base of the horn
@@ -2000,7 +2000,7 @@ class HPlane(CommonHorn):
     """
 
     _default_input_parameters = {
-        "antenna_name": None,
+        "name": None,
         "origin": [0, 0, 0],
         "length_unit": None,
         "coordinate_system": "Global",
@@ -2095,7 +2095,7 @@ class HPlane(CommonHorn):
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
-        antenna_name = self.antenna_name
+        antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         # Base of the horn
@@ -2351,7 +2351,7 @@ class Pyramidal(CommonHorn):
     """
 
     _default_input_parameters = {
-        "antenna_name": None,
+        "name": None,
         "origin": [0, 0, 0],
         "length_unit": None,
         "coordinate_system": "Global",
@@ -2450,7 +2450,7 @@ class Pyramidal(CommonHorn):
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
-        antenna_name = self.antenna_name
+        antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         # Base of the horn
@@ -2711,7 +2711,7 @@ class QuadRidged(CommonHorn):
     """
 
     _default_input_parameters = {
-        "antenna_name": None,
+        "name": None,
         "origin": [0, 0, 0],
         "length_unit": None,
         "coordinate_system": "Global",
@@ -2841,7 +2841,7 @@ class QuadRidged(CommonHorn):
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
-        antenna_name = self.antenna_name
+        antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         # Base of the horn

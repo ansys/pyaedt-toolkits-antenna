@@ -36,7 +36,7 @@ class TestClass(BasisTest, object):
         oantenna2 = antenna_module(
             self.aedtapp, start_frequency=4.0, stop_frequency=10.0, length_unit=self.aedtapp.modeler.model_units
         )
-        assert oantenna.antenna_name != oantenna2.antenna_name
+        assert oantenna.name != oantenna2.name
 
     def test_02_log(self):
         self.aedtapp = self.add_app(design_name="Log")
@@ -60,7 +60,7 @@ class TestClass(BasisTest, object):
         oantenna2 = antenna_module(
             self.aedtapp, start_frequency=4.0, stop_frequency=10.0, length_unit=self.aedtapp.modeler.model_units
         )
-        assert oantenna.antenna_name != oantenna2.antenna_name
+        assert oantenna.name != oantenna2.name
 
     def test_03_sinuous(self):
         self.aedtapp = self.add_app(design_name="Sinuous")
@@ -84,4 +84,4 @@ class TestClass(BasisTest, object):
         oantenna2 = antenna_module(
             self.aedtapp, start_frequency=4.0, stop_frequency=10.0, length_unit=self.aedtapp.modeler.model_units
         )
-        assert oantenna.antenna_name != oantenna2.antenna_name
+        assert oantenna.name != oantenna2.name
