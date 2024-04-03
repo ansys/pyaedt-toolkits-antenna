@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 import re
-import time
 
 from ansys.aedt.toolkits.common.backend.api import AEDTCommon
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
@@ -127,7 +126,7 @@ class ToolkitBackend(AEDTCommon):
                     self.oantenna.material_properties["permittivity"] = (
                         self.properties.antenna.synthesis.material_properties["permittivity"]
                     )
-            else:
+            elif getattr(self.properties.antenna.synthesis, antenna_prop):
                 setattr(self.oantenna, antenna_prop, getattr(self.properties.antenna.synthesis, antenna_prop))
 
         self.oantenna._parameters = self.oantenna.synthesis()
@@ -293,22 +292,17 @@ class ToolkitBackend(AEDTCommon):
         >>> toolkit.get_antenna("BowTie")
         >>> toolkit.analyze()
         """
-        # Check if the backend is already connected to an AEDT session
-        connected, msg = self.is_aedt_connected()
-        if not connected:
-            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS.")
-                return False
+        if not self.aedtapp:
             # Connect to AEDT design
             self.connect_design()
             if not self.aedtapp:
                 logger.debug("HFSS design is not connected.")
                 return False
 
-        num_cores = properties.antenna.setup.core_number
+        num_cores = properties.antenna.setup.num_cores
 
         self.aedtapp.save_project()
-        time.sleep(1)
+
         self.aedtapp.solve_in_batch(run_in_thread=True, machine="localhost", num_cores=num_cores)
         self.release_aedt(False, False)
         return True
@@ -322,19 +316,15 @@ class ToolkitBackend(AEDTCommon):
             ``True`` when successful, ``False`` when failed.
         """
         if not self.aedtapp:
-            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS.")
-                return False
             # Connect to AEDT design
-            self.connect_design("Hfss")
+            self.connect_design()
             if not self.aedtapp:
                 logger.debug("HFSS design is not connected.")
                 return False
 
         sol_data = self.aedtapp.post.get_solution_data()
 
-        self.aedtapp.release_desktop(False, False)
-        self.aedtapp = None
+        self.release_aedt(False, False)
 
         if not sol_data:
             return
@@ -349,28 +339,19 @@ class ToolkitBackend(AEDTCommon):
             ``True`` when successful, ``False`` when failed.
         """
         if not self.aedtapp:
-            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS.")
-                return False
             # Connect to AEDT design
-            self.connect_design("Hfss")
+            self.connect_design()
             if not self.aedtapp:
                 logger.debug("HFSS design is not connected.")
                 return False
 
-        field_solution = self.aedtapp.post.get_solution_data(
-            "GainTotal",
-            self.aedtapp.nominal_adaptive,
-            primary_sweep_variable="Theta",
-            context="3D",
-            report_category="Far Fields",
-        )
+        field_solution = self.aedtapp.post.get_far_field_data("GainTotal", self.aedtapp.nominal_adaptive, domain="3D")
 
         if not field_solution:
             return
 
         phi_cuts = field_solution.intrinsics["Phi"]
-        theta = field_solution.primary_sweep_values
+        theta = field_solution.intrinsics["Theta"]
         val_theta = []
         for t in phi_cuts:
             field_solution.active_intrinsic["Phi"] = t
@@ -386,7 +367,6 @@ class ToolkitBackend(AEDTCommon):
             val_phi.append(field_solution.data_db20())
         field_solution.active_intrinsic["Theta"] = theta_cuts[0]
 
-        self.aedtapp.release_desktop(False, False)
-        self.aedtapp = None
+        self.release_aedt(False, False)
 
         return [phi_cuts, theta, val_theta, theta_cuts, phi, val_phi]

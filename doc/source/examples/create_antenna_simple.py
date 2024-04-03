@@ -1,4 +1,4 @@
-# Bowtie antenna synthesis
+# # Bowtie antenna synthesis
 #
 # This example demonstrates how to synthesize a bowtie antenna using the ``BowTieRounded`` class.
 # It initiates AEDT through PyAEDT, sets up an empty HFSS design, and proceeds to create the antenna.
@@ -8,6 +8,7 @@
 #
 # Import the antenna toolkit class and PyAEDT.
 
+import tempfile
 import pyaedt
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded
@@ -23,6 +24,11 @@ aedt_version = "2024.1"
 # Set non-graphical mode.
 
 non_graphical = False
+
+# ## Create temporary directory
+
+temp_dir = tempfile.TemporaryDirectory(suffix="_ansys")
+project_name = pyaedt.generate_unique_project_name(rootname=temp_dir.name, project_name="bowtie_example")
 
 # ## Create antenna object only for synthesis
 #
@@ -56,7 +62,7 @@ print(
 #
 # Create an empty HFSS design.
 
-app = pyaedt.Hfss(specified_version=aedt_version, non_graphical=non_graphical)
+app = pyaedt.Hfss(projectname=project_name, specified_version=aedt_version, non_graphical=non_graphical)
 
 # ## Create antenna in HFSS
 #
@@ -94,3 +100,9 @@ app.plot()
 # Release AEDT.
 
 app.release_desktop(True, True)
+
+# ## Clean temporary directory
+
+temp_dir.cleanup()
+
+

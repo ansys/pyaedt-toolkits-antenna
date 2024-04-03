@@ -1,14 +1,12 @@
-# Antenna toolkit example
+# # Antenna toolkit example
 #
 # This example demonstrates how to use the ``ToolkitBackend`` class.
 # It initiates AEDT through PyAEDT, sets up an empty HFSS design, and proceeds to create the antenna.
 
 
 # ## Perform required imports
-#
-# Import the backend toolkit class.
-import tempfile
 
+import tempfile
 import pyaedt
 
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
@@ -62,11 +60,11 @@ properties.antenna.synthesis.length_unit = "cm"
 #
 # Create antenna object.
 
-antenna_parameters0 = toolkit_api.get_antenna("RectangularPatchProbe", synth_only=True)
+antenna_parameters_1 = toolkit_api.get_antenna("RectangularPatchProbe", synth_only=True)
 
 print(
     "Patch X length: {}{} at {}{}".format(
-        str(antenna_parameters0["patch_x"]),
+        str(antenna_parameters_1["patch_x"]),
         length_unit,
         frequency,
         frequency_units,
@@ -81,11 +79,11 @@ new_frequency1 = 12.0
 new_properties = {"frequency": new_frequency1}
 toolkit_api.set_properties(new_properties)
 
-antenna_parameters1 = toolkit_api.get_antenna("RectangularPatchProbe", synth_only=True)
+antenna_parameters_2 = toolkit_api.get_antenna("RectangularPatchProbe", synth_only=True)
 
 print(
     "Patch X length: {}{} at {}{}".format(
-        str(antenna_parameters1["patch_x"]),
+        str(antenna_parameters_2["patch_x"]),
         length_unit,
         new_frequency1,
         frequency_units,
@@ -99,11 +97,11 @@ print(
 new_frequency2 = 15.0
 properties.antenna.synthesis.frequency = new_frequency2
 
-antenna_parameters2 = toolkit_api.get_antenna("RectangularPatchProbe", synth_only=True)
+antenna_parameters_3 = toolkit_api.get_antenna("RectangularPatchProbe", synth_only=True)
 
 print(
     "Patch X length: {}{} at {}{}".format(
-        str(antenna_parameters2["patch_x"]),
+        str(antenna_parameters_3["patch_x"]),
         length_unit,
         new_frequency2,
         frequency_units,
@@ -130,6 +128,7 @@ if not idle:
 # Set create_setup property.
 
 properties.antenna.setup.create_setup = True
+properties.antenna.synthesis.outer_boundary = "Radiation"
 
 # ## Create antenna in HFSS
 #
@@ -142,7 +141,9 @@ antenna_parameter = toolkit_api.get_antenna("RectangularPatchProbe")
 # The antenna toolkit API does not allow the creation of more than one antenna. The user can use the antenna models API
 # to create more than one antenna.
 
-toolkit_api.get_antenna("BowTie")
+new_antenna = toolkit_api.get_antenna("BowTie")
+
+print(new_antenna)
 
 # ## Set properties
 #
@@ -150,9 +151,21 @@ toolkit_api.get_antenna("BowTie")
 
 toolkit_api.update_parameters("pos_x", "20")
 
+# ## Fit all
+
+toolkit_api.connect_design()
+
+toolkit_api.aedtapp.modeler.fit_all()
+
+toolkit_api.release_aedt(False, False)
+
 # ## Analyze design in batch mode
 
 toolkit_api.analyze()
+
+# ## Open project
+
+toolkit_api.open_project()
 
 # ## Get scattering results
 
@@ -164,7 +177,7 @@ farfield_data = toolkit_api.farfield_results()
 
 # ## Get antenna model
 
-files = toolkit_api.export_aedt_model()
+files = toolkit_api.export_aedt_model(encode=False)
 
 # ## Release AEDT
 #
@@ -172,15 +185,16 @@ files = toolkit_api.export_aedt_model()
 
 toolkit_api.release_aedt(True, True)
 
-pass
-
 # ## Plot results
 
 # Plot exported files using the following code
-# from pyaedt.generic.plot import ModelPlotter
-# model = ModelPlotter()
-# for file in files:
-#     model.add_object(file[0], file[1], file[2])
+
+from pyaedt.generic.plot import ModelPlotter
+model = ModelPlotter()
+for file in files:
+    model.add_object(file[0], file[1], file[2])
+
+model.plot()
 
 # ## Clean temporary directory
 
