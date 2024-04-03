@@ -103,7 +103,7 @@ def pytest_runtest_makereport(item, call):
 
 @pytest.fixture(scope="session")
 def common_temp_dir(tmp_path_factory, request):
-    tmp_dir = tmp_path_factory.mktemp("test_common", numbered=True)
+    tmp_dir = tmp_path_factory.mktemp("test_antenna", numbered=True)
 
     def remove_temp_dir_finalizer():
         """Remove temporary directory when no test failed."""

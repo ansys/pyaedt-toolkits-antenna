@@ -25,7 +25,7 @@ import pytest
 
 from tests.backend.conftest import PROJECT_NAME
 
-pytestmark = [pytest.mark.antenna_models_patch_api]
+pytestmark = [pytest.mark.antenna_models_api]
 
 from pyaedt.modeler.cad.object3d import Object3d
 from pyaedt.modeler.geometry_operators import GeometryOperators
@@ -36,7 +36,6 @@ from ansys.aedt.toolkits.antenna.backend import antenna_models
 class TestClass:
     """Class defining a workflow to test antenna models patch."""
     def test_01a_rectangular_patch_probe_model_hfss(self, aedt_common):
-
         antenna_module = getattr(antenna_models, "RectangularPatchProbe")
         opatch0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert opatch0.synthesis_parameters.coax_inner_rad.value
