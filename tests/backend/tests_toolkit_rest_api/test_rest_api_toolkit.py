@@ -1,0 +1,82 @@
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+import os
+import pytest
+
+from tests.backend.conftest import PROJECT_NAME
+
+pytestmark = [pytest.mark.antenna_toolkit_rest_api]
+
+from pyaedt.modeler.cad.object3d import Object3d
+from pyaedt.modeler.geometry_operators import GeometryOperators
+
+from ansys.aedt.toolkits.antenna.backend import antenna_models
+
+
+class TestClass:
+    """Class defining a workflow to test rest api toolkit."""
+    def test_01_get_antenna(self, client):
+        new_properties = {
+            "model": "RectangularPatchProbe",
+            "synth_only": False,
+        }
+        client.put("/properties", json=new_properties)
+        response = client.post("/create_antenna")
+        assert response.status_code == 200
+        data = json.loads(response.data.decode("utf-8"))
+        assert data == ToolkitThreadStatus.IDLE.value
+
+    def test_02_update_parameters(self, aedt_common):
+        parameter_list = list(aedt_common.properties.antenna.parameters.keys())
+
+        property_key = aedt_common.properties.antenna.parameters_hfss[parameter_list[0]]
+
+        assert aedt_common.update_parameters(parameter_list[0], "0.03")
+
+        aedt_common.connect_design()
+        assert aedt_common.aedtapp[property_key] == "0.03" + aedt_common.properties.antenna.synthesis.length_unit
+        aedt_common.release_aedt(False, False)
+
+        assert not aedt_common.update_parameters("hola", "0.03")
+
+    def test_03_analyze(self, aedt_common):
+
+        aedt_common.properties.antenna.setup.num_cores = 4
+        aedt_common.connect_design()
+        aedt_common.aedtapp.setups[0].props["MaxDeltaS"] = 1
+        aedt_common.aedtapp.setups[0].props["MaximumPasses"] = 2
+
+        aedt_common.release_aedt(False, False)
+
+        assert aedt_common.analyze()
+
+    def test_04_scattering_results(self, aedt_common):
+        aedt_common.open_project()
+        sweep, data = aedt_common.scattering_results()
+
+        assert len(sweep) == len(data)
+
+    def test_05_farfield_results(self, aedt_common):
+        ffdata = aedt_common.scattering_results()
+
+        assert len(ffdata) == 2

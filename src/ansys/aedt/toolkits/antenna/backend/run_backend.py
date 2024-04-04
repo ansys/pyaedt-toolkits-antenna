@@ -26,7 +26,8 @@ from ansys.aedt.toolkits.common.backend.multithreading_server import Multithread
 from ansys.aedt.toolkits.common.backend.rest_api import app
 from ansys.aedt.toolkits.common.backend.rest_api import jsonify
 from ansys.aedt.toolkits.common.backend.rest_api import logger
-from api import ToolkitBackend
+
+from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 
 toolkit_api = ToolkitBackend()
 
@@ -41,13 +42,13 @@ def create_antenna():
 
     properties = toolkit_api.get_properties()
 
-    antenna = properties["antenna_type"]
-    synth_only = properties["synth_only"]
+    antenna = properties["antenna"]["model"]
+    synth_only = properties["antenna"]["synth_only"]
 
-    response = toolkit.get_antenna(antenna, synth_only=synth_only)
+    response = toolkit_api.get_antenna(antenna, synth_only=synth_only)
     if response:
         return jsonify(response), 200
-    else:
+    else:  # pragma: no cover
         return jsonify("Antenna not created"), 500
 
 
@@ -67,7 +68,7 @@ def update_parameters():
     response = toolkit_api.update_parameters(key, value)
     if response:
         return jsonify(response), 200
-    else:
+    else:  # pragma: no cover
         return jsonify("Antenna not created"), 500
 
 
@@ -78,7 +79,7 @@ def analyze_call():
     response = toolkit_api.analyze()
     if response:
         return jsonify("AEDT design launched"), 200
-    else:
+    else:  # pragma: no cover
         return jsonify("Fail to launch design"), 500
 
 
@@ -89,7 +90,7 @@ def farfield_results():
     response = toolkit_api.farfield_results()
     if response:
         return jsonify(response), 200
-    else:
+    else:  # pragma: no cover
         return jsonify("Fail to get results"), 500
 
 
@@ -100,7 +101,7 @@ def scattering_results():
     response = toolkit_api.scattering_results()
     if response:
         return jsonify(response), 200
-    else:
+    else:  # pragma: no cover
         return jsonify("Fail to get results"), 500
 
 
