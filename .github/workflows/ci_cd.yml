@@ -175,6 +175,18 @@ jobs:
           pytest -v -m antenna_models_common_api --cov
           pytest -v -m antenna_models_api --cov --cov-append
 
+      - name: Toolkit API testing
+        timeout-minutes: 30
+        run: |
+          .\.venv\Scripts\Activate.ps1
+          pytest -v -m antenna_toolkit_api --cov --cov-append
+
+      - name: Toolkit REST API testing
+        timeout-minutes: 30
+        run: |
+          .\.venv\Scripts\Activate.ps1
+          pytest -v -m antenna_toolkit_api --cov --cov-append
+
       - name: "Combine coverage files"
         run: |
           .\.venv\Scripts\Activate.ps1
@@ -237,6 +249,20 @@ jobs:
           source .venv_linux/bin/activate
           pytest -v -m antenna_models_common_api
           pytest -v -m antenna_models_api
+
+      - name: Toolkit API testing
+        timeout-minutes: 30
+        run: |
+          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT241 }}/common/mono/Linux64/lib64:${{ env.ANSYSEM_ROOT241 }}/Delcross:$LD_LIBRARY_PATH
+          .\.venv\Scripts\Activate.ps1
+          pytest -v -m antenna_toolkit_api --cov --cov-append
+
+      - name: Toolkit REST API testing
+        timeout-minutes: 30
+        run: |
+          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT241 }}/common/mono/Linux64/lib64:${{ env.ANSYSEM_ROOT241 }}/Delcross:$LD_LIBRARY_PATH
+          .\.venv\Scripts\Activate.ps1
+          pytest -v -m antenna_toolkit_api --cov --cov-append
 
   build-library:
     name: "Build library artifacts"

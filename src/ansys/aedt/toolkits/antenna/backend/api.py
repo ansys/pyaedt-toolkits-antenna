@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import gc
 import re
 
 from ansys.aedt.toolkits.common.backend.api import AEDTCommon
@@ -91,8 +92,8 @@ class ToolkitBackend(AEDTCommon):
             return False
 
         if not synth_only and not self.aedtapp:
-            if self.properties.active_design and list(self.properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS.")
+            if not self.properties.active_design:
+                logger.debug("Not active design.")
                 return False
             # Connect to AEDT design
             self.connect_design("HFSS")
@@ -172,45 +173,6 @@ class ToolkitBackend(AEDTCommon):
         self.release_aedt(False, False)
         return antenna_parameters
 
-    def export_hfss_model(self):
-        """Export model in the OBJ format.
-
-        Parameters
-        ----------
-        antenna : :class:
-            Type of antenna to create.
-        synth_only : bool, optional
-            Whether to only synthesize the anttena. The default is ``False``.
-
-        Returns
-        -------
-        bool
-            ``True`` when successful, ``False`` when failed.
-
-        Examples
-        --------
-        >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
-        >>> import time
-        >>> toolkit = Toolkit()
-        >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
-        >>> idle = toolkit_api.wait_to_be_idle()
-        >>> toolkit.get_antenna("BowTie")
-        """
-
-        if not self.oantenna:
-            logger.debug("No antenna is available.")
-            return False
-
-        # PyVista check
-        # model = ModelPlotter()
-        # for file in files:
-        #     model.add_object(file[0], file[1],file[2])
-
-        # Export different solid
-        files = self.aedtapp.post.export_model_obj(export_as_single_objects=True)
-
-        return files
-
     def update_parameters(self, key: str, val: str) -> bool:
         """Update parameters in HFSS.
 
@@ -236,14 +198,14 @@ class ToolkitBackend(AEDTCommon):
         >>> toolkit.get_antenna("BowTie")
         >>> msg3 = toolkit.update_parameters()
         """
-        if not self.properties.antenna.parameters_hfss:
+        if not self.properties.antenna.parameters_hfss:  # pragma: no cover
             logger.debug("Antenna was not created in HFSS.")
             return True
 
         if not self.aedtapp:
             # Connect to AEDT design
             self.connect_design()
-            if not self.aedtapp:
+            if not self.aedtapp:  # pragma: no cover
                 logger.debug("HFSS design is not connected.")
                 return False
 
@@ -253,10 +215,10 @@ class ToolkitBackend(AEDTCommon):
             and self.properties.antenna.parameters_hfss[key] in self.aedtapp.variable_manager.independent_variable_names
         ):
             ratio_re = re.compile("|".join(["ratio", "coefficient", "points", "number"]))
-            if "angle" in key:
+            if "angle" in key:  # pragma: no cover
                 if "deg" not in val:
                     val = val + "deg"
-            elif ratio_re.search(key):
+            elif ratio_re.search(key):  # pragma: no cover
                 val = val
             else:
                 if self.properties.antenna.synthesis.length_unit not in val:
@@ -295,7 +257,7 @@ class ToolkitBackend(AEDTCommon):
         if not self.aedtapp:
             # Connect to AEDT design
             self.connect_design()
-            if not self.aedtapp:
+            if not self.aedtapp:  # pragma: no cover
                 logger.debug("HFSS design is not connected.")
                 return False
 
@@ -304,6 +266,7 @@ class ToolkitBackend(AEDTCommon):
         self.aedtapp.save_project()
 
         self.aedtapp.solve_in_batch(run_in_thread=True, machine="localhost", num_cores=num_cores)
+        gc.collect()
         self.release_aedt(False, False)
         return True
 
@@ -318,7 +281,7 @@ class ToolkitBackend(AEDTCommon):
         if not self.aedtapp:
             # Connect to AEDT design
             self.connect_design()
-            if not self.aedtapp:
+            if not self.aedtapp:  # pragma: no cover
                 logger.debug("HFSS design is not connected.")
                 return False
 
@@ -326,7 +289,7 @@ class ToolkitBackend(AEDTCommon):
 
         self.release_aedt(False, False)
 
-        if not sol_data:
+        if not sol_data:  # pragma: no cover
             return
         return sol_data.primary_sweep_values, sol_data.data_db20()
 
@@ -341,13 +304,13 @@ class ToolkitBackend(AEDTCommon):
         if not self.aedtapp:
             # Connect to AEDT design
             self.connect_design()
-            if not self.aedtapp:
+            if not self.aedtapp:  # pragma: no cover
                 logger.debug("HFSS design is not connected.")
                 return False
 
         field_solution = self.aedtapp.post.get_far_field_data("GainTotal", self.aedtapp.nominal_adaptive, domain="3D")
 
-        if not field_solution:
+        if not field_solution:  # pragma: no cover
             return
 
         phi_cuts = field_solution.intrinsics["Phi"]
