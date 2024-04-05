@@ -22,6 +22,7 @@
 
 import os
 import pytest
+import json
 
 from tests.backend.conftest import PROJECT_NAME
 
@@ -38,45 +39,53 @@ class TestClass:
     def test_01_get_antenna(self, client):
         new_properties = {
             "model": "RectangularPatchProbe",
+            "length_unit": "cm",
+            "create_setup": True,
+            "outer_boundary": "Radiation",
             "synth_only": False,
         }
         client.put("/properties", json=new_properties)
         response = client.post("/create_antenna")
         assert response.status_code == 200
         data = json.loads(response.data.decode("utf-8"))
-        assert data == ToolkitThreadStatus.IDLE.value
+        assert isinstance(data, dict)
 
-    def test_02_update_parameters(self, aedt_common):
-        parameter_list = list(aedt_common.properties.antenna.parameters.keys())
+    def test_02_update_parameters(self, client):
+        response1 = client.put("/update_parameters", json={})
+        assert response1.status_code == 500
 
-        property_key = aedt_common.properties.antenna.parameters_hfss[parameter_list[0]]
+        be_properties = client.get("/properties").json
+        parameter_list = list(be_properties["antenna"]["parameters"].keys())
 
-        assert aedt_common.update_parameters(parameter_list[0], "0.03")
+        property_key = parameter_list[0]
 
-        aedt_common.connect_design()
-        assert aedt_common.aedtapp[property_key] == "0.03" + aedt_common.properties.antenna.synthesis.length_unit
-        aedt_common.release_aedt(False, False)
+        response2 = client.put("/update_parameters", json={"key": property_key, "value": "0.03"})
 
-        assert not aedt_common.update_parameters("hola", "0.03")
+        assert response2.status_code == 200
 
-    def test_03_analyze(self, aedt_common):
+    def test_03_analyze(self, client):
+        new_properties = {
+            "num_cores": 4,
+        }
+        client.put("/properties", json=new_properties)
 
-        aedt_common.properties.antenna.setup.num_cores = 4
-        aedt_common.connect_design()
-        aedt_common.aedtapp.setups[0].props["MaxDeltaS"] = 1
-        aedt_common.aedtapp.setups[0].props["MaximumPasses"] = 2
+        response1 = client.post("/analyze")
 
-        aedt_common.release_aedt(False, False)
+        assert response1.status_code == 200
 
-        assert aedt_common.analyze()
+    def test_04_scattering_results(self, client):
+        be_properties = client.get("/properties").json
+        response1 = client.post("/open_project", data=os.path.abspath(be_properties["active_project"]))
 
-    def test_04_scattering_results(self, aedt_common):
-        aedt_common.open_project()
-        sweep, data = aedt_common.scattering_results()
+        assert response1.status_code == 200
 
-        assert len(sweep) == len(data)
+        response2 = client.get("/scattering_results")
+        assert response2.status_code == 200
+        data = json.loads(response2.data.decode("utf-8"))
+        assert len(data) == 2
 
-    def test_05_farfield_results(self, aedt_common):
-        ffdata = aedt_common.scattering_results()
-
-        assert len(ffdata) == 2
+    def test_05_farfield_results(self, client):
+        response2 = client.get("/farfield_results")
+        assert response2.status_code == 200
+        data = json.loads(response2.data.decode("utf-8"))
+        assert len(data) == 6

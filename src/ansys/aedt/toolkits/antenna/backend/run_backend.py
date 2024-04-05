@@ -26,6 +26,7 @@ from ansys.aedt.toolkits.common.backend.multithreading_server import Multithread
 from ansys.aedt.toolkits.common.backend.rest_api import app
 from ansys.aedt.toolkits.common.backend.rest_api import jsonify
 from ansys.aedt.toolkits.common.backend.rest_api import logger
+from flask import request
 
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 
@@ -73,25 +74,14 @@ def update_parameters():
 
 
 @app.route("/analyze", methods=["POST"])
-def analyze_call():
+def analyze():
     logger.info("[POST] /analyze (analyze AEDT project in batch)")
 
     response = toolkit_api.analyze()
     if response:
-        return jsonify("AEDT design launched"), 200
+        return jsonify("AEDT design analysis finished"), 200
     else:  # pragma: no cover
         return jsonify("Fail to launch design"), 500
-
-
-@app.route("/farfield_results", methods=["GET"])
-def farfield_results():
-    logger.info("[POST] farfield_results (Get antenna far field results)")
-
-    response = toolkit_api.farfield_results()
-    if response:
-        return jsonify(response), 200
-    else:  # pragma: no cover
-        return jsonify("Fail to get results"), 500
 
 
 @app.route("/scattering_results", methods=["GET"])
@@ -99,6 +89,17 @@ def scattering_results():
     logger.info("[POST] scattering_results (Get antenna scattering results)")
 
     response = toolkit_api.scattering_results()
+    if response:
+        return jsonify(response), 200
+    else:  # pragma: no cover
+        return jsonify("Fail to get results"), 500
+
+
+@app.route("/farfield_results", methods=["GET"])
+def farfield_results():
+    logger.info("[POST] farfield_results (Get antenna far field results)")
+
+    response = toolkit_api.farfield_results()
     if response:
         return jsonify(response), 200
     else:  # pragma: no cover

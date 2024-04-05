@@ -237,37 +237,27 @@ class RectangularPatchProbe(CommonPatch):
         feed_x = 0.0
         parameters["feed_x"] = feed_x
 
-        feed_y = round(constants.unit_converter(offset_pin_pos, "Length", "meter", length_unit), 2)
+        feed_y = constants.unit_converter(offset_pin_pos, "Length", "meter", length_unit)
         parameters["feed_y"] = feed_y
 
         sub_h = self.substrate_height
         parameters["sub_h"] = sub_h
 
-        sub_x = round(
-            constants.unit_converter(1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit),
-            1,
-        )
+        sub_x = constants.unit_converter(1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit)
+
         parameters["sub_x"] = sub_x
 
-        sub_y = round(
-            constants.unit_converter(1.5 * patch_length + 6.0 * sub_meters, "Length", "meter", length_unit),
-            1,
-        )
+        sub_y = constants.unit_converter(1.5 * patch_length + 6.0 * sub_meters, "Length", "meter", length_unit)
         parameters["sub_y"] = sub_y
 
-        coax_inner_rad = round(
-            constants.unit_converter(0.025 * (1e8 / freq_hz), "Length", "meter", length_unit),
-            3,
-        )
+        coax_inner_rad = constants.unit_converter(0.025 * (1e8 / freq_hz), "Length", "meter", length_unit)
+
         parameters["coax_inner_rad"] = coax_inner_rad
 
-        coax_outer_rad = round(
-            constants.unit_converter(0.085 * (1e8 / freq_hz), "Length", "meter", length_unit),
-            3,
-        )
+        coax_outer_rad = constants.unit_converter(0.085 * (1e8 / freq_hz), "Length", "meter", length_unit)
         parameters["coax_outer_rad"] = coax_outer_rad
 
-        feed_length = round(constants.unit_converter(wavelength / 6.0, "Length", "meter", length_unit), 2)
+        feed_length = constants.unit_converter(wavelength / 6.0, "Length", "meter", length_unit)
         parameters["feed_length"] = feed_length
 
         gnd_x = sub_x
@@ -577,31 +567,26 @@ class RectangularPatchInset(CommonPatch):
         microstrip_width = uStrip[0]
         microstrip_length = uStrip[1]
 
-        patch_x = round(constants.unit_converter(patch_width, "Length", "meter", length_unit), 2)
+        patch_x = constants.unit_converter(patch_width, "Length", "meter", length_unit)
         parameters["patch_x"] = patch_x
 
-        patch_y = round(constants.unit_converter(patch_length, "Length", "meter", length_unit), 2)
+        patch_y = constants.unit_converter(patch_length, "Length", "meter", length_unit)
         parameters["patch_y"] = patch_y
 
         sub_h = self.substrate_height
         parameters["sub_h"] = sub_h
 
-        sub_x = round(
-            constants.unit_converter(1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit),
-            1,
-        )
+        sub_x = constants.unit_converter(1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit)
         parameters["sub_x"] = sub_x
 
-        sub_y = round(
-            constants.unit_converter(2.1 * (microstrip_length + patch_length / 2), "Length", "meter", length_unit),
-            2,
-        )
+        sub_y = constants.unit_converter(2.1 * (microstrip_length + patch_length / 2), "Length", "meter", length_unit)
+
         parameters["sub_y"] = sub_y
 
-        inset_distance = round(
+        inset_distance = (
             constants.unit_converter(patch_length / 2 - inset_distance_meter, "Length", "meter", length_unit),
-            4,
         )
+
         parameters["inset_distance"] = inset_distance
 
         microstrip_length = constants.unit_converter(microstrip_length, "Length", "meter", length_unit)
@@ -895,54 +880,38 @@ class RectangularPatchEdge(CommonPatch):
         microstrip_width = uStrip2[0]
         microstrip_length = uStrip2[1]
 
-        patch_x = round(constants.unit_converter(patch_width, "Length", "meter", length_unit), 2)
+        patch_x = constants.unit_converter(patch_width, "Length", "meter", length_unit)
         parameters["patch_x"] = patch_x
 
-        patch_y = round(constants.unit_converter(patch_length, "Length", "meter", length_unit), 2)
+        patch_y = constants.unit_converter(patch_length, "Length", "meter", length_unit)
         parameters["patch_y"] = patch_y
 
         sub_h = self.substrate_height
         parameters["sub_h"] = sub_h
 
-        sub_x = round(
-            constants.unit_converter(1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit),
-            1,
-        )
+        sub_x = constants.unit_converter(1.5 * patch_width + 6.0 * sub_meters, "Length", "meter", length_unit)
         parameters["sub_x"] = sub_x
 
-        sub_y = round(
-            constants.unit_converter(
-                2.1 * (microstrip_length + microstrip_edge_length + patch_length / 2),
-                "Length",
-                "meter",
-                length_unit,
-            ),
-            2,
+        sub_y = constants.unit_converter(
+            2.1 * (microstrip_length + microstrip_edge_length + patch_length / 2),
+            "Length",
+            "meter",
+            length_unit,
         )
         parameters["sub_y"] = sub_y
 
-        edge_feed_width = round(
-            constants.unit_converter(microstrip_edge_width, "Length", "meter", length_unit),
-            3,
-        )
+        edge_feed_width = (constants.unit_converter(microstrip_edge_width, "Length", "meter", length_unit),)
+
         parameters["edge_feed_width"] = edge_feed_width
 
-        edge_feed_length = round(
-            constants.unit_converter(microstrip_edge_length, "Length", "meter", length_unit),
-            3,
-        )
+        edge_feed_length = constants.unit_converter(microstrip_edge_length, "Length", "meter", length_unit)
         parameters["edge_feed_length"] = edge_feed_length
 
-        feed_width = round(
-            constants.unit_converter(microstrip_width, "Length", "meter", length_unit),
-            3,
-        )
+        feed_width = (constants.unit_converter(microstrip_width, "Length", "meter", length_unit),)
+
         parameters["feed_width"] = feed_width
 
-        feed_length = round(
-            constants.unit_converter(microstrip_length, "Length", "meter", length_unit),
-            3,
-        )
+        feed_length = constants.unit_converter(microstrip_length, "Length", "meter", length_unit)
         parameters["feed_length"] = feed_length
 
         parameters["pos_x"] = self.origin[0]
