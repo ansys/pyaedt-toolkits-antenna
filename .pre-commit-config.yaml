@@ -1,6 +1,7 @@
 exclude: |
     (?x)(
         src/ansys/aedt/toolkits/common/ui/utils/ui_templates/.* |
+        src/.* |
         tests/.* |
         examples/.* |
         README.rst

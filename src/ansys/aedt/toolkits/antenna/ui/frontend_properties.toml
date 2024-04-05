@@ -1,0 +1,45 @@
+[defaults]
+toolkit_name= "antenna"
+backend_url= "127.0.0.1"
+backend_port= 5001
+debug= false
+app_name= "Antenna Wizard"
+main_title= "Antenna Toolkit"
+welcome_message= "Welcome to the antenna toolkit"
+version= "v0.3.0"
+copyright= "By: ansys"
+year= 2023
+theme= "ansys_dark.json"
+high_resolution= false
+
+[[defaults.add_left_menus]]
+btn_icon= "icon_home.svg"
+btn_id= "home_menu"
+btn_text= "Home"
+btn_tooltip= "Home"
+show_top= true
+is_active= false
+
+[[defaults.add_left_menus]]
+btn_icon= "connect-gold.svg"
+btn_id= "antenna_selector_menu"
+btn_text= "Antenna Selector"
+btn_tooltip= "Selector"
+show_top= true
+is_active= false
+
+[[defaults.add_left_menus]]
+btn_icon= "icon_plot_3d.svg"
+btn_id= "synthesis_menu"
+btn_text= "Antenna synthesis"
+btn_tooltip= "Synthesis"
+show_top= true
+is_active= false
+
+[[defaults.add_left_menus]]
+btn_icon= "icon_log.svg"
+btn_id= "progress_menu"
+btn_text= "Progress"
+btn_tooltip= "Progress"
+show_top= false
+is_active= false
