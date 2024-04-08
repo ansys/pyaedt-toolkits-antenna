@@ -1,6 +1,6 @@
 exclude: |
     (?x)(
-        src/ansys/aedt/toolkits/common/ui/utils/ui_templates/.* |
+        src/ansys/aedt/toolkits/antenna/ui/windows/antenna_catalog/.* |
         src/.* |
         tests/.* |
         examples/.* |

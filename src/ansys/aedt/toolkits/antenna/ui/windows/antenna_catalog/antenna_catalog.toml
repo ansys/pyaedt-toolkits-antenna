@@ -16,3 +16,33 @@ models = ["Conical", "Corrugated",
 [Patch]
 models =["RectangularPatchEdge", "RectangularPatchInset",
     "RectangularPatchProbe"]
+
+[Dipole]
+models =[]
+
+[LogPeriodic]
+models = []
+
+[Misc]
+models =[]
+
+[Monopole]
+models =[]
+
+[PIFA]
+models =[]
+
+[PlanarSpiral]
+models =[]
+
+[Reflector]
+models =[]
+
+[Slot]
+models =[]
+
+[Vivaldi]
+models =[]
+
+[YagiUda]
+models =[]
