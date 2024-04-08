@@ -21,7 +21,7 @@ show_top= true
 is_active= false
 
 [[defaults.add_left_menus]]
-btn_icon= "connect-gold.svg"
+btn_icon= "antenna.svg"
 btn_id= "antenna_catalog_menu"
 btn_text= "Antenna Catalog"
 btn_tooltip= "Catalog"
@@ -33,6 +33,14 @@ btn_icon= "icon_plot_3d.svg"
 btn_id= "synthesis_menu"
 btn_text= "Antenna synthesis"
 btn_tooltip= "Synthesis"
+show_top= true
+is_active= false
+
+[[defaults.add_left_menus]]
+btn_icon= "icon_plot_2d.svg"
+btn_id= "analysis_menu"
+btn_text= "Analysis"
+btn_tooltip= "Analysis"
 show_top= true
 is_active= false
 
