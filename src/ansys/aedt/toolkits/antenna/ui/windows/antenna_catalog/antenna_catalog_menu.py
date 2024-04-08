@@ -133,8 +133,9 @@ class AntennaCatalogMenu(object):
 
         # Antenna catalog column
         available_antennas = self.main_window.properties.antenna.available_models
+
         layout_row_obj = QVBoxLayout()
-        self.antenna_catalog_column_vertical_layout.addLayout(layout_row_obj)
+        scroll_widget = QWidget()
 
         self.antenna_catalog = [layout_row_obj]
         for idx in range(len(available_antennas)):
@@ -153,6 +154,20 @@ class AntennaCatalogMenu(object):
             button_obj.clicked.connect(partial(self.antenna_catalog_button_clicked, selected_antenna))
 
             self.antenna_catalog.append(button_obj)
+
+        scroll_widget.setLayout(layout_row_obj)
+
+        scroll_area = QScrollArea()  # Create the scroll area
+        scroll_area.setWidgetResizable(True)  # Allow resizing of the contained widget
+        scroll_area.setWidget(scroll_widget)
+
+        combo_box_style = """background-color: {_bg_color};"""
+
+        custom_style = combo_box_style.format(_bg_color=app_color["dark_three"])
+
+        scroll_area.setStyleSheet(custom_style)
+
+        self.antenna_catalog_column_vertical_layout.addWidget(scroll_area)
 
     def antenna_catalog_button_clicked(self, selected_model):
         self.main_window.ui.clear_layout(self.antenna_catalog_layout)

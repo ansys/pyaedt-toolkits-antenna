@@ -15,8 +15,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QSizePolicy, QSpacerItem, QStackedWidget,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QSizePolicy, QStackedWidget, QVBoxLayout,
+    QWidget)
 
 class Ui_LeftColumn(object):
     def setupUi(self, LeftColumn):
@@ -39,10 +39,6 @@ class Ui_LeftColumn(object):
         self.antenna_catalog_vertical_layout.setObjectName(u"antenna_catalog_vertical_layout")
 
         self.menu_home_layout.addLayout(self.antenna_catalog_vertical_layout)
-
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.menu_home_layout.addItem(self.verticalSpacer)
 
         self.menus.addWidget(self.menu_antenna_catalog)
 

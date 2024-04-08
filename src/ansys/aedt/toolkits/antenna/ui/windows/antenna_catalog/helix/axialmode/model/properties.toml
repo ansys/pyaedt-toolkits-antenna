@@ -1,0 +1,36 @@
+name = "Axial mode"
+
+[object_1]
+name = "helix"
+color = [230, 230, 230]
+opacity = 0.2
+
+[object_2]
+name = "Feed"
+color = [247, 242, 232]
+opacity = 0.8
+
+[object_3]
+name = "Feed1"
+color = [247, 242, 232]
+opacity = 0.8
+
+[object_4]
+name = "coax"
+color = [132, 132, 193]
+opacity = 0.8
+
+[object_5]
+name = "port_cap"
+color = [247, 242, 232]
+opacity = 0.8
+
+[object_6]
+name = "gnd"
+color = [230, 230, 230]
+opacity = 0.2
+
+[object_7]
+name = "port"
+color = [128, 0, 0]
+opacity = 0.2

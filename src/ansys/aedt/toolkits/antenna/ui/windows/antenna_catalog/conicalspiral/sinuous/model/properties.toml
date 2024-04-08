@@ -1,0 +1,41 @@
+name = "Sinuous"
+
+[object_1]
+name = "ant_arm1"
+color = [65, 65, 65]
+opacity = 1.0
+
+[object_2]
+name = "ant_arm2"
+color = [65, 65, 65]
+opacity = 1.0
+
+[object_3]
+name =  "ant_arm3"
+color = [65, 65, 65]
+opacity = 1.0
+
+[object_4]
+name =  "ant_arm4"
+color = [65, 65, 65]
+opacity = 1.0
+
+[object_5]
+name =  "port_lump_1"
+color = [255, 0, 0]
+opacity = 1.0
+
+[object_6]
+name =  "port_lump_2"
+color = [255, 0, 0]
+opacity = 1.0
+
+[object_7]
+name =  "gnd_1"
+color = [65, 65, 65]
+opacity = 1.0
+
+[object_8]
+name =  "gnd_2"
+color = [65, 65, 65]
+opacity = 1.0
