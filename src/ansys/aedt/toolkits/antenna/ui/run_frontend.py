@@ -39,15 +39,20 @@ from ansys.aedt.toolkits.common.ui.logger_handler import logger
 from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
 
 # Default user interface properties
-from models import properties
-
-# New windows
-from windows.antenna_selector.antenna_selector_menu import AntennaSelectorMenu
-from windows.plot_design.plot_design_menu import PlotDesignMenu
+from ansys.aedt.toolkits.antenna.ui.models import properties
 
 # Windows
 
+# New windows
+from windows.antenna_catalog.antenna_catalog_menu import AntennaCatalogMenu
 
+# Common windows
+from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
+from ansys.aedt.toolkits.common.ui.common_windows.home_menu import HomeMenu
+from ansys.aedt.toolkits.common.ui.common_windows.settings_column import SettingsMenu
+
+# Import general common frontend modules
+from ansys.aedt.toolkits.common.ui.logger_handler import logger
 
 
 # Backend URL and port
@@ -118,54 +123,53 @@ class ApplicationWindow(QMainWindow, Frontend):
         self.home_menu.setup()
 
         # Modeler menu
-        self.geometry_menu = GeometryMenu(self)
-        self.geometry_menu.setup()
-        self.ui.left_menu.clicked.connect(self.geometry_menu_clicked)
+        self.antenna_catalog_menu = AntennaCatalogMenu(self)
+        self.antenna_catalog_menu.setup()
+        self.ui.left_menu.clicked.connect(self.antenna_catalog_menu_clicked)
 
-        # Plot design menu
-        self.plot_design_menu = PlotDesignMenu(self)
-        self.plot_design_menu.setup()
-        self.ui.left_menu.clicked.connect(self.plot_design_menu_clicked)
+        # # Plot design menu
+        # self.plot_design_menu = PlotDesignMenu(self)
+        # self.plot_design_menu.setup()
+        # self.ui.left_menu.clicked.connect(self.plot_design_menu_clicked)
 
         # Home page as first page
         self.ui.set_page(self.ui.load_pages.home_page)
 
-    def geometry_menu_clicked(self):
+    def antenna_catalog_menu_clicked(self):
         selected_menu = self.ui.get_selected_menu()
         menu_name = selected_menu.objectName()
 
-        if menu_name == "geometry_menu":
+        if menu_name == "antenna_catalog_menu":
             selected_menu.set_active(True)
-            self.ui.set_page(self.geometry_menu.geometry_menu_widget)
 
             is_left_visible = self.ui.is_left_column_visible()
 
             self.ui.set_left_column_menu(
-                menu=self.geometry_menu.geometry_column_widget,
-                title="Primitives Builder",
-                icon_path=self.ui.images_load.icon_path("icon_plot_3d.svg"),
+                menu=self.antenna_catalog_menu.antenna_catalog_column_widget,
+                title=properties.add_left_menus[1]["btn_text"],
+                icon_path=self.ui.images_load.icon_path(properties.add_left_menus[1]["btn_icon"]),
             )
 
             if not is_left_visible:
                 self.ui.toggle_left_column()
 
-    def plot_design_menu_clicked(self):
-        selected_menu = self.ui.get_selected_menu()
-        menu_name = selected_menu.objectName()
-
-        if menu_name == "plot_design_menu":
-            selected_menu.set_active(True)
-            self.ui.set_page(self.plot_design_menu.plot_design_menu_widget)
-
-            self.ui.set_left_column_menu(
-                menu=self.plot_design_menu.plot_design_column_widget,
-                title="Plot Design",
-                icon_path=self.ui.images_load.icon_path("icon_plot_2d.svg"),
-            )
-
-            is_left_visible = self.ui.is_left_column_visible()
-            if not is_left_visible:
-                self.ui.toggle_left_column()
+    # def plot_design_menu_clicked(self):
+    #     selected_menu = self.ui.get_selected_menu()
+    #     menu_name = selected_menu.objectName()
+    #
+    #     if menu_name == "plot_design_menu":
+    #         selected_menu.set_active(True)
+    #         self.ui.set_page(self.plot_design_menu.plot_design_menu_widget)
+    #
+    #         self.ui.set_left_column_menu(
+    #             menu=self.plot_design_menu.plot_design_column_widget,
+    #             title="Plot Design",
+    #             icon_path=self.ui.images_load.icon_path("icon_plot_2d.svg"),
+    #         )
+    #
+    #         is_left_visible = self.ui.is_left_column_visible()
+    #         if not is_left_visible:
+    #             self.ui.toggle_left_column()
 
 
 if __name__ == "__main__":

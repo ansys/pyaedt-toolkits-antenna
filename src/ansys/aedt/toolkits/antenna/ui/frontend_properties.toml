@@ -5,7 +5,7 @@ backend_port= 5001
 debug= false
 app_name= "Antenna Wizard"
 main_title= "Antenna Toolkit"
-welcome_message= "Welcome to the antenna toolkit"
+welcome_message= "Welcome to the antenna toolkit SAMMMMMMMMMMMMMMMMMMMMMMMM SAMMMMMMMMMMMMMMM"
 version= "v0.3.0"
 copyright= "By: ansys"
 year= 2023
@@ -22,9 +22,9 @@ is_active= false
 
 [[defaults.add_left_menus]]
 btn_icon= "connect-gold.svg"
-btn_id= "antenna_selector_menu"
-btn_text= "Antenna Selector"
-btn_tooltip= "Selector"
+btn_id= "antenna_catalog_menu"
+btn_text= "Antenna Catalog"
+btn_tooltip= "Catalog"
 show_top= true
 is_active= false
 
@@ -43,3 +43,8 @@ btn_text= "Progress"
 btn_tooltip= "Progress"
 show_top= false
 is_active= false
+
+[antenna]
+antenna_created = ""
+available_models = []
+antenna_selected = ""

@@ -1,0 +1,18 @@
+[Bowtie]
+models = ["BowTie", "BowTieRounded", "BowTieSlot"]
+
+[ConicalSpiral]
+models = ["Archimedean", "Log", "Sinuous"]
+
+[Helix]
+models = ["AxialMode"]
+
+[Horn]
+models = ["Conical", "Corrugated",
+    "EPlane", "Elliptical",
+    "HPlane", "Pyramidal",
+    "PyramidalRidged", "QuadRidged"]
+
+[Patch]
+models =["RectangularPatchEdge", "RectangularPatchInset",
+    "RectangularPatchProbe"]

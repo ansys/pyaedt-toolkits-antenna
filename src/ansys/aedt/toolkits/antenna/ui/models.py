@@ -35,16 +35,18 @@ from pydantic import BaseModel
 from pydantic import Field
 
 
-class ExampleProperties(BaseModel):
+class AntennaProperties(BaseModel):
     """Store toolkit properties."""
 
-    primitives_created: List[str] = Field(default_factory=list)
+    antenna_created: str = ""
+    available_models: List[str] = Field(default_factory=list)
+    antenna_selected: str = ""
 
 
 class FrontendProperties(BaseModel):
     """Store toolkit properties."""
 
-    example: ExampleProperties
+    antenna: AntennaProperties
 
 
 class Properties(FrontendProperties, UIProperties, validate_assignment=True):
