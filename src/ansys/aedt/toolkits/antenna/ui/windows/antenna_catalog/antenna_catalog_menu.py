@@ -14,6 +14,9 @@ from PySide6.QtCore import Signal
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame
 
+from pyvistaqt import BackgroundPlotter
+import pyvista as pv
+
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyLabel
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
@@ -35,21 +38,11 @@ if os.path.isfile(os.path.join(os.path.dirname(__file__), "antenna_catalog.toml"
         antenna_catalog = tomllib.load(file_handler)
 
 
-# ANTENNAS = {
-#     "Bowtie": "bowtie_antennas"
-# }
-#
-# ANTENNA_MODELS = {"Bowtie": [
-#                                 "Bowtie1, Bowtie2"],
-#                   "Conical Spiral", "Dipole", "Helix", "Horn", "Log Periodic", "Misc", "Monopole", "PIFA",
-# "Patch", "Planar Spiral", "Reflector", "Slot", "Yagui-Uda"]
-
-
 class AntennaItem(QWidget):
     """Antenna item."""
     antenna_item_signal = Signal(int)
 
-    def __init__(self, index, image_path, label_text, app_color):
+    def __init__(self, index, antenna_info, app_color):
         super().__init__()
         self.index = index
 
@@ -58,13 +51,29 @@ class AntennaItem(QWidget):
 
         layout = QVBoxLayout(self)
 
-        pixmap = QPixmap(image_path)
-        image_label = QLabel()
-        image_label.setPixmap(pixmap)
-        layout.addWidget(image_label)
-        image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        plotter = BackgroundPlotter(show=False)
+        antenna_path = antenna_info["path"]
+        antenna_name = antenna_info["name"]
 
-        label = QLabel(label_text)
+        for element in antenna_info:
+            if element in ["path", "name"]:
+                continue
+            antenna_properties = antenna_info[element]
+            file_path = os.path.join(antenna_path, "model", antenna_properties["name"] + ".obj")
+            cad_mesh = pv.read(file_path)
+            plotter.add_mesh(
+                cad_mesh,
+                color=antenna_properties["color"],
+                show_scalar_bar=False,
+                opacity=antenna_properties["opacity"]
+            )
+
+        plotter.view_isometric()
+        plotter.set_background(color=app_color["bg_one"])
+
+        layout.addWidget(plotter)
+
+        label = QLabel(antenna_name)
         layout.addWidget(label)
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -76,7 +85,7 @@ class AntennaItem(QWidget):
                             }}
                             """
         custom_style = antenna_label_style.format(
-            _color=text_color, _bg_color=background, _font_size=30
+            _color=text_color, _bg_color=background, _font_size=20
         )
         label.setStyleSheet(custom_style)
 
@@ -145,7 +154,7 @@ class AntennaCatalogMenu(object):
 
             self.antenna_catalog.append(button_obj)
 
-    def antenna_catalog_button_clicked(self, selected_antenna):
+    def antenna_catalog_button_clicked(self, selected_model):
         self.main_window.ui.clear_layout(self.antenna_catalog_layout)
 
         app_color = self.main_window.ui.themes["app_color"]
@@ -166,8 +175,10 @@ class AntennaCatalogMenu(object):
         scroll_area.setStyleSheet(custom_style)
 
         available_antennas = {}
-        if selected_antenna in self.main_window.properties.antenna.available_models:
-            available_antennas = antenna_catalog[selected_antenna]
+        if selected_model in self.main_window.properties.antenna.available_models:
+            self.ui.update_logger("{} menu selected".format(selected_model))
+            self.main_window.properties.antenna.antenna_model_selected = selected_model
+            available_antennas = antenna_catalog[selected_model]
             if len(available_antennas["models"]) == 1:
                 rows = 1
                 columns = 1
@@ -175,6 +186,7 @@ class AntennaCatalogMenu(object):
                 columns = 2
                 rows = (len(available_antennas["models"]) + columns - 1) // columns
         else:
+            self.ui.update_logger("No antennas available")
             rows = 0
             columns = 0
 
@@ -184,8 +196,17 @@ class AntennaCatalogMenu(object):
                 if available_antennas and antenna_cont >= len(available_antennas["models"]):
                     break
                 antenna_index = i * columns + j
-                image_path = r"C:\AnsysDev\repos\pyaedt-toolkits-antenna\src\ansys\aedt\toolkits\antenna\ui_old\common\images\AxialMode.jpg"  # Provide the path to your image file
-                label_text = "test"
+                antenna_selected = available_antennas["models"][antenna_index]
+                antenna_path = os.path.join(os.path.dirname(__file__), selected_model.lower(), antenna_selected.lower())
+                antenna_model_info = {}
+                if os.path.isfile(os.path.join(antenna_path, "model", "properties.toml")):
+                    with open(os.path.join(antenna_path, "model", "properties.toml"), mode="rb") as file_handler:
+                        antenna_model_info = tomllib.load(file_handler)
+                if not antenna_model_info:
+                    antenna_cont += 1
+                    continue
+
+                antenna_model_info["path"] = antenna_path
 
                 frame = QFrame()
                 frame.setFrameShape(QFrame.Box)
@@ -193,34 +214,14 @@ class AntennaCatalogMenu(object):
                 frame_layout = QVBoxLayout(frame)
                 frame_layout.setContentsMargins(0, 0, 0, 0)
 
-                grid_item = AntennaItem(antenna_index, image_path, label_text, app_color)
-                grid_item.setFixedSize(300, 300)
-                grid_layout.addWidget(grid_item, i * 2, j * 2)  # Double the row index to leave space for separators
-
-                line_style = """
-                            QFrame {{
-                                border: 3px solid {_color};
-                                background-color: {_bg_color};
-                            }}
-                        """
-                custom_style = line_style.format(
-                    _color=app_color["dark_two"],
-                    _bg_color=background,
-                )
-
-                # Insert horizontal separators
-                if i > 0:
-                    separator_h = QFrame()
-                    separator_h.setFrameShape(QFrame.HLine)
-                    grid_layout.addWidget(separator_h, i * 2 - 1, j * 2, 1, 1)
-                    separator_h.setStyleSheet(custom_style)
-
-                # Insert vertical separators
-                if j > 0:
-                    separator_v = QFrame()
-                    separator_v.setFrameShape(QFrame.VLine)
-                    grid_layout.addWidget(separator_v, i * 2, j * 2 - 1, 1, 1)
-                    separator_v.setStyleSheet(custom_style)
+                grid_item = AntennaItem(antenna_index, antenna_model_info, app_color)
+                grid_item.setFixedSize(400, 400)
+                grid_layout.addWidget(grid_item, i * 2, j * 2)
+                line_color = """
+                    border: 2px solid {_color};
+                """
+                custom_style = line_color.format(_color=app_color["dark_two"])
+                grid_item.setStyleSheet(custom_style)
 
                 grid_item.antenna_item_signal.connect(self.on_grid_item_clicked)
 
@@ -236,8 +237,9 @@ class AntennaCatalogMenu(object):
         # Slot method to handle grid item clicks
 
     def on_grid_item_clicked(self, index):
-        # Perform your action here
-        print("Grid item clicked!")
+        available_antennas = antenna_catalog[self.main_window.properties.antenna.antenna_model_selected]
+        self.main_window.properties.antenna.antenna_selected = available_antennas["models"][index]
+        self.ui.update_logger("{} selected".format(self.main_window.properties.antenna.antenna_selected))
 
         # # Common UI API
         # geometry_button_layout = self.geometry_menu_widget.findChild(QVBoxLayout, "button_layout")

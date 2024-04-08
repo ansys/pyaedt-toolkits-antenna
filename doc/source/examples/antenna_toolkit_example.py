@@ -123,6 +123,12 @@ if not idle:
     print("AEDT not initialized.")
     sys.exit()
 
+# ## Connect to HFSS design
+#
+# Create a new HFSS design.
+
+toolkit_api.connect_design("HFSS")
+
 # ## Create setup when antenna is created
 #
 # Set create_setup property.
@@ -134,7 +140,7 @@ properties.antenna.synthesis.outer_boundary = "Radiation"
 #
 # Create antenna and setup in HFSS.
 
-antenna_parameter = toolkit_api.get_antenna("RectangularPatchProbe")
+antenna_parameter = toolkit_api.get_antenna("BowTieSlot")
 
 # ## Trying to create a new antenna
 #
@@ -159,21 +165,21 @@ toolkit_api.aedtapp.modeler.fit_all()
 
 toolkit_api.release_aedt(False, False)
 
-# ## Analyze design in batch mode
-
-toolkit_api.analyze()
-
-# ## Open project
-
-toolkit_api.open_project()
-
-# ## Get scattering results
-
-scattering_data = toolkit_api.scattering_results()
-
-# ## Get farfield  results
-
-farfield_data = toolkit_api.farfield_results()
+# # ## Analyze design in batch mode
+#
+# toolkit_api.analyze()
+#
+# # ## Open project
+#
+# toolkit_api.open_project()
+#
+# # ## Get scattering results
+#
+# scattering_data = toolkit_api.scattering_results()
+#
+# # ## Get farfield  results
+#
+# farfield_data = toolkit_api.farfield_results()
 
 # ## Get antenna model
 

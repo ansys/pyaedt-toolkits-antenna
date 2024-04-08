@@ -1,0 +1,41 @@
+name = "Rectangular Probe Fed"
+
+[object_1]
+name = "sub_Patch"
+color = [0, 128, 0]
+opacity = 0.2
+
+[object_2]
+name = "feed_pin_Patch"
+color = [255, 128, 65]
+opacity = 0.8
+
+[object_3]
+name = "feed_coax_Patch"
+color = [255, 128, 65]
+opacity = 0.8
+
+[object_4]
+name = "coax_Patch"
+color = [128, 255, 255]
+opacity = 0.8
+
+[object_5]
+name = "port_cap_Patch"
+color = [132, 132, 255]
+opacity = 0.8
+
+[object_6]
+name = "gnd_Patch"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_7]
+name = "ant_Patch"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_8]
+name = "port_Patch"
+color = [128, 0, 0]
+opacity = 0.2

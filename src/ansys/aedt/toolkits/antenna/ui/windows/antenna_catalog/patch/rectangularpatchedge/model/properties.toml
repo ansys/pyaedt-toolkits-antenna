@@ -1,0 +1,16 @@
+name = "Rectangular Edge Fed"
+
+[object_1]
+name = "sub_Patch"
+color = [0, 128, 0]
+opacity = 0.2
+
+[object_2]
+name = "gnd_Patch"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "ant_Patch"
+color = [255, 128, 65]
+opacity = 0.9

@@ -47,4 +47,5 @@ is_active= false
 [antenna]
 antenna_created = ""
 available_models = []
+antenna_model_selected = ""
 antenna_selected = ""

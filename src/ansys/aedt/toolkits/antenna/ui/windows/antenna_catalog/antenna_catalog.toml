@@ -1,5 +1,5 @@
 [Bowtie]
-models = ["BowTie", "BowTieRounded", "BowTieSlot"]
+models = ["BowTieNormal", "BowTieRounded", "BowTieSlot"]
 
 [ConicalSpiral]
 models = ["Archimedean", "Log", "Sinuous"]

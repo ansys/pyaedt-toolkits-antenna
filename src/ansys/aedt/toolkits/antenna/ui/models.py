@@ -40,6 +40,7 @@ class AntennaProperties(BaseModel):
 
     antenna_created: str = ""
     available_models: List[str] = Field(default_factory=list)
+    antenna_model_selected: str = ""
     antenna_selected: str = ""
 
 
