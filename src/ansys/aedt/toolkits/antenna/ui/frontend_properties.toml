@@ -30,7 +30,7 @@ is_active= false
 
 [[defaults.add_left_menus]]
 btn_icon= "icon_plot_3d.svg"
-btn_id= "synthesis_menu"
+btn_id= "antenna_synthesis_menu"
 btn_text= "Antenna synthesis"
 btn_tooltip= "Synthesis"
 show_top= true

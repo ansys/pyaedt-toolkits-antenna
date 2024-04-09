@@ -119,13 +119,6 @@ class AntennaCatalogMenu(object):
         # Specific properties
         self.antenna_catalog = None
         self.antenna_catalog_layout = self.antenna_catalog_menu_widget.findChild(QVBoxLayout, "antenna_catalog_layout")
-        # self.geometry_combo = self.geometry_menu_widget.findChild(QComboBox, "geometry_combo")
-        # self.multiplier = self.geometry_menu_widget.findChild(QLineEdit, "multiplier")
-        # self.select_geometry_label = self.geometry_menu_widget.findChild(QLabel, "select_geometry_label")
-        # self.multiplier_label = self.geometry_menu_widget.findChild(QLabel, "dimension_multiplier_label")
-        # self.geometry_button_layout = None
-        # self.geometry_button = None
-        # self.geometry_thread = None
 
     def setup(self):
         # Modify theme
@@ -255,6 +248,30 @@ class AntennaCatalogMenu(object):
         available_antennas = antenna_catalog[self.main_window.properties.antenna.antenna_model_selected]
         self.main_window.properties.antenna.antenna_selected = available_antennas["models"][index]
         self.ui.update_logger("{} selected".format(self.main_window.properties.antenna.antenna_selected))
+
+        selected_model = self.main_window.properties.antenna.antenna_model_selected
+        antenna_path = os.path.join(os.path.dirname(__file__),
+                                    selected_model.lower(),
+                                    self.main_window.properties.antenna.antenna_selected.lower())
+
+        antenna_picture = ""
+        for root, dirs, files in os.walk(antenna_path):
+            for file in files:
+                if file.lower().endswith(('.jpg', '.jpeg', '.png')):
+                    antenna_picture = os.path.join(root, file)
+                    break
+
+        # Clear picture
+        self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.image_layout)
+
+        if os.path.isfile(antenna_picture):
+            image_label = QLabel()
+            pixmap = QPixmap(antenna_picture)  # Replace with the path to your image
+            image_label.setPixmap(pixmap)
+            self.main_window.antenna_synthesis_menu.image_layout.addWidget(image_label)
+
+        # Populate synthesis page
+        self.ui.set_page(self.main_window.antenna_synthesis_menu.antenna_synthesis_menu_widget)
 
         # # Common UI API
         # geometry_button_layout = self.geometry_menu_widget.findChild(QVBoxLayout, "button_layout")

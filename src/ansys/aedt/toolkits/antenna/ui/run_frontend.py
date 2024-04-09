@@ -45,11 +45,7 @@ from ansys.aedt.toolkits.antenna.ui.models import properties
 
 # New windows
 from windows.antenna_catalog.antenna_catalog_menu import AntennaCatalogMenu
-
-# Common windows
-from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
-from ansys.aedt.toolkits.common.ui.common_windows.home_menu import HomeMenu
-from ansys.aedt.toolkits.common.ui.common_windows.settings_column import SettingsMenu
+from windows.antenna_synthesis.antenna_synthesis_menu import AntennaSynthesisMenu
 
 # Import general common frontend modules
 from ansys.aedt.toolkits.common.ui.logger_handler import logger
@@ -127,10 +123,10 @@ class ApplicationWindow(QMainWindow, Frontend):
         self.antenna_catalog_menu.setup()
         self.ui.left_menu.clicked.connect(self.antenna_catalog_menu_clicked)
 
-        # # Plot design menu
-        # self.plot_design_menu = PlotDesignMenu(self)
-        # self.plot_design_menu.setup()
-        # self.ui.left_menu.clicked.connect(self.plot_design_menu_clicked)
+        # Synthesis menu
+        self.antenna_synthesis_menu = AntennaSynthesisMenu(self)
+        self.antenna_synthesis_menu.setup()
+        self.ui.left_menu.clicked.connect(self.antenna_synthesis_menu_clicked)
 
         # Home page as first page
         self.ui.set_page(self.ui.load_pages.home_page)
@@ -152,6 +148,14 @@ class ApplicationWindow(QMainWindow, Frontend):
 
             if not is_left_visible:
                 self.ui.toggle_left_column()
+
+    def antenna_synthesis_menu_clicked(self):
+        selected_menu = self.ui.get_selected_menu()
+        menu_name = selected_menu.objectName()
+
+        if menu_name == "antenna_synthesis_menu":
+            selected_menu.set_active(True)
+            self.ui.set_page(self.antenna_synthesis_menu.antenna_synthesis_menu_widget)
 
     # def plot_design_menu_clicked(self):
     #     selected_menu = self.ui.get_selected_menu()
