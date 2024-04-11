@@ -146,10 +146,13 @@ class AntennaCatalogMenu(object):
                 font_size=20,
             )
             button_obj.setMinimumHeight(30)
+            button_obj.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
             layout_row_obj.addWidget(button_obj)
             button_obj.clicked.connect(partial(self.antenna_catalog_button_clicked, selected_antenna))
 
             self.antenna_catalog.append(button_obj)
+
+        layout_row_obj.setAlignment(Qt.AlignTop)
 
         scroll_widget.setLayout(layout_row_obj)
 

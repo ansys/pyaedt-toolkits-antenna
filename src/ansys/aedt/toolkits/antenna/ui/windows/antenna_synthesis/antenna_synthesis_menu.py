@@ -64,8 +64,12 @@ class AntennaSynthesisMenu(object):
         self.antenna_synthesis_right_layout = self.antenna_synthesis_layout.findChild(QVBoxLayout,
                                                                                       "right_settings_layout")
 
-        self.top_antenna_settings_layout = self.antenna_synthesis_right_layout.findChild(QHBoxLayout,
-                                                                                         "top_antenna_settings_layout")
+        self.top_antenna_options_frame = self.antenna_synthesis_menu_widget.findChild(QFrame,
+                                                                                      "top_antenna_options_frame")
+        self.top_antenna_options_frame.setFrameShape(QFrame.Box)
+
+        self.top_antenna_settings_layout = self.top_antenna_options_frame.findChild(QHBoxLayout,
+                                                                                    "top_antenna_settings_layout")
         self.top_antenna_settings_options_layout = (
             self.top_antenna_settings_layout.findChild(QVBoxLayout, "top_antenna_settings_options_layout"))
 
@@ -78,11 +82,22 @@ class AntennaSynthesisMenu(object):
         self.sweep_slider = self.antenna_synthesis_menu_widget.findChild(QSlider, "sweep_slider")
         self.sweep_label = self.antenna_synthesis_menu_widget.findChild(QLabel, "sweep_label")
 
-        self.botton_antenna_settings_layout = \
-            self.antenna_synthesis_right_layout.findChild(QHBoxLayout, "botton_antenna_settings_layout")
-        self.botton_image_layout = self.botton_antenna_settings_layout.findChild(QGridLayout, "botton_image_layout")
+        self.bottom_antenna_options_frame = self.antenna_synthesis_menu_widget.findChild(QFrame,
+                                                                                      "bottom_antenna_options_frame")
 
-        self.table_layout = self.botton_antenna_settings_layout.findChild(QVBoxLayout, "table_layout")
+        self.botton_antenna_settings_layout = \
+            self.bottom_antenna_options_frame.findChild(QHBoxLayout, "botton_antenna_settings_layout")
+        self.bottom_antenna_options_frame.setFrameShape(QFrame.Box)
+
+        self.botton_image_frame = self.bottom_antenna_options_frame.findChild(QFrame, "botton_image_frame")
+        self.botton_image_frame.setFrameShape(QFrame.Box)
+
+        self.botton_image_layout = self.botton_image_frame.findChild(QGridLayout, "botton_image_layout")
+
+        self.table_frame = self.bottom_antenna_options_frame.findChild(QFrame, "table_frame")
+
+        self.table_layout = self.table_frame.findChild(QVBoxLayout, "table_layout")
+
         self.parameter_table = None
 
         self.image_layout = None
@@ -123,7 +138,7 @@ class AntennaSynthesisMenu(object):
 
         header.setStyleSheet(table_header_style)
 
-        self.parameter_table.setFixedWidth(300)
+        self.parameter_table.setFixedWidth(250)
 
         self.table_layout.addWidget(self.parameter_table)
 

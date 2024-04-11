@@ -35,7 +35,7 @@ class Ui_AntennaCatalog(object):
         self.antenna_catalog_layout.setSpacing(0)
         self.antenna_catalog_layout.setObjectName(u"antenna_catalog_layout")
         self.antenna_catalog_layout.setSizeConstraint(QLayout.SetDefaultConstraint)
-        self.antenna_catalog_layout.setContentsMargins(-1, 0, -1, 6)
+        self.antenna_catalog_layout.setContentsMargins(-1, 0, -1, 20)
 
         self.verticalLayout_2.addLayout(self.antenna_catalog_layout)
 
