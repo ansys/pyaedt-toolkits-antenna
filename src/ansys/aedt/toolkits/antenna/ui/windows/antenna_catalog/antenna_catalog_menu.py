@@ -242,8 +242,6 @@ class AntennaCatalogMenu(object):
 
         self.ui.set_page(self.antenna_catalog_menu_widget)
 
-        # Slot method to handle grid item clicks
-
     def on_grid_item_clicked(self, index):
         available_antennas = antenna_catalog[self.main_window.properties.antenna.antenna_model_selected]
         self.main_window.properties.antenna.antenna_selected = available_antennas["models"][index]

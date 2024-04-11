@@ -15,7 +15,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QSizePolicy, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QLayout, QSizePolicy, QVBoxLayout,
+    QWidget)
 
 class Ui_AntennaCatalog(object):
     def setupUi(self, AntennaCatalog):
@@ -31,8 +32,10 @@ class Ui_AntennaCatalog(object):
         self.verticalLayout_2 = QVBoxLayout(AntennaCatalog)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.antenna_catalog_layout = QVBoxLayout()
+        self.antenna_catalog_layout.setSpacing(0)
         self.antenna_catalog_layout.setObjectName(u"antenna_catalog_layout")
-        self.antenna_catalog_layout.setContentsMargins(-1, 0, -1, -1)
+        self.antenna_catalog_layout.setSizeConstraint(QLayout.SetDefaultConstraint)
+        self.antenna_catalog_layout.setContentsMargins(-1, 0, -1, 6)
 
         self.verticalLayout_2.addLayout(self.antenna_catalog_layout)
 
