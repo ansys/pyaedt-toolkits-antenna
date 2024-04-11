@@ -6,9 +6,12 @@ from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QLineEdit
 from PySide6.QtWidgets import QVBoxLayout
+from PySide6.QtWidgets import QHBoxLayout
 from PySide6.QtWidgets import QGridLayout
 from PySide6.QtWidgets import QWidget
 from PySide6.QtWidgets import QScrollArea
+from PySide6.QtWidgets import QSizePolicy
+from PySide6.QtWidgets import QSpacerItem
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Signal
 from PySide6.QtCore import Qt
@@ -260,173 +263,39 @@ class AntennaCatalogMenu(object):
                     break
 
         # Clear picture
-        self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.image_layout)
+        self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.botton_image_layout)
 
         if os.path.isfile(antenna_picture):
-            image_label = QLabel()
-            pixmap = QPixmap(antenna_picture)  # Replace with the path to your image
-            image_label.setPixmap(pixmap)
-            self.main_window.antenna_synthesis_menu.image_layout.addWidget(image_label)
+            image = self._add_image(antenna_picture)
+            self.main_window.antenna_synthesis_menu.botton_image_layout.addLayout(image, 0, 0, 1, 1)
 
         # Populate synthesis page
         self.ui.set_page(self.main_window.antenna_synthesis_menu.antenna_synthesis_menu_widget)
 
-        # # Common UI API
-        # geometry_button_layout = self.geometry_menu_widget.findChild(QVBoxLayout, "button_layout")
-        #
-        # # Create geometry button
-        # row_returns = self.ui.add_n_buttons(
-        #     self.antenna_selector_column_vertical_layout, num_buttons=2, height=100, width=[300], text=["Create Geometry"], font_size=20
-        # )
-        #
-        # self.geometry_button_layout = row_returns[0]
-        # self.geometry_button = row_returns[1]
-        # self.geometry_button_layout.addWidget(self.geometry_button)
-        # self.geometry_button.clicked.connect(self.geometry_button_clicked)
-        #
-        # # UI from Designer
-        #
-        # # Combo box
-        # combo_box_style = """
-        #     QComboBox {{
-        #         border: none;
-        #         padding: 10px;
-        #         color: {_color};
-        #         background-color: {_bg_color};
-        #         selection-background-color: red;
-        #         font-size: {_font_size}pt;
-        #     }}
-        #     QComboBox QAbstractItemView {{
-        #         border: none;
-        #         background-color: {_bg_color};
-        #         color: {_color};
-        #     }}
-        # """
-        # custom_style = combo_box_style.format(
-        #     _color=text_color, _bg_color=background, _font_size=self.main_window.properties.font["title_size"]
-        # )
-        # self.geometry_combo.setStyleSheet(custom_style)
-        #
-        # # Multiplier line
-        # line_style = """
-        #     QLineEdit {{
-        #     border: none;
-        #     padding: 10px;
-        #     color: {_color};
-        #     background-color: {_bg_color};
-        #     selection-background-color: red;
-        #     font-size: {_font_size}pt;
-        #     }}
-        # """
-        # custom_style = line_style.format(
-        #     _color=text_color, _bg_color=background, _font_size=self.main_window.properties.font["title_size"]
-        # )
-        # self.multiplier.setStyleSheet(custom_style)
-        #
-        # # Multiplier label button
-        # multiplier_label_style = """
-        #             QLabel {{
-        #             color: {_color};
-        #             font-size: {_font_size}pt;
-        #             font-weight: bold;
-        #             }}
-        #             """
-        # custom_style = multiplier_label_style.format(
-        #     _color=text_color, _bg_color=background, _font_size=self.main_window.properties.font["title_size"]
-        # )
-        # self.multiplier_label.setStyleSheet(custom_style)
-        #
-        # # Geometry label button
-        # select_geometry_label_style = """
-        #                     QLabel {{
-        #                     color: {_color};
-        #                     font-size: {_font_size}pt;
-        #                     font-weight: bold;
-        #                     }}
-        #                     """
-        # custom_style = select_geometry_label_style.format(
-        #     _color=text_color, _bg_color=background, _font_size=self.main_window.properties.font["title_size"]
-        # )
-        # self.select_geometry_label.setStyleSheet(custom_style)
-        #
-        # # Set Column
-        # msg = "Press 'Create Geometry' button"
-        # label_widget = PyLabel(
-        #     text=msg,
-        #     font_size=self.ui.app.properties.font["title_size"],
-        #     color=self.ui.themes["app_color"]["text_description"],
-        # )
-        # self.geometry_column_vertical_layout.addWidget(label_widget)
+    def _add_image(self, image_path):
+        """Add the image to antenna settings."""
+        line_0_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-    # def clear_layout(self, layout):
-    #     while layout.count():
-    #         child = layout.takeAt(0)
-    #         if child.widget():
-    #             child.widget().deleteLater()
-    #         elif child.layout():
-    #             self.clear_layout(child.layout())
+        line_0 = QHBoxLayout()
+        line_0.setObjectName("line_0")
+        line_0.addItem(line_0_spacer)
 
-    # def geometry_button_clicked(self):
-    #     if not self.main_window.settings_menu.aedt_thread or (
-    #         hasattr(self.main_window.settings_menu.aedt_thread, "aedt_launched")
-    #         and not self.main_window.settings_menu.aedt_thread.aedt_launched
-    #     ):
-    #         msg = "AEDT not launched."
-    #         self.ui.update_logger(msg)
-    #         return False
-    #
-    #     if self.geometry_thread and self.geometry_thread.isRunning() or self.main_window.backend_busy():
-    #         msg = "Toolkit running"
-    #         self.ui.update_logger(msg)
-    #         self.main_window.logger.debug(msg)
-    #         return False
-    #
-    #     be_properties = self.main_window.get_properties()
-    #
-    #     geometry = self.geometry_combo.currentText()
-    #     multiplier = self.multiplier.text()
-    #
-    #     be_properties["example"]["geometry"] = geometry
-    #     be_properties["example"]["multiplier"] = multiplier
-    #
-    #     self.main_window.set_properties(be_properties)
-    #
-    #     if be_properties.get("active_project"):
-    #         self.ui.update_progress(0)
-    #         selected_project = self.main_window.home_menu.project_combobox.currentText()
-    #         selected_design = self.main_window.home_menu.design_combobox.currentText()
-    #
-    #         # Start a separate thread for the backend call
-    #         self.geometry_thread = CreateGeometryThread(
-    #             app=self,
-    #             selected_project=selected_project,
-    #             selected_design=selected_design,
-    #         )
-    #         self.geometry_thread.finished_signal.connect(self.geometry_created_finished)
-    #
-    #         msg = "Creating geometry."
-    #         self.ui.update_logger(msg)
-    #
-    #         self.geometry_thread.start()
-    #
-    #     else:
-    #         self.ui.update_logger("Toolkit not connect to AEDT.")
-    #
-    # def geometry_created_finished(self, success):
-    #     self.ui.update_progress(100)
-    #     selected_project = self.main_window.home_menu.project_combobox.currentText()
-    #     selected_design = self.main_window.home_menu.design_combobox.currentText()
-    #
-    #     properties = self.main_window.get_properties()
-    #     active_project = self.main_window.get_project_name(properties["active_project"])
-    #     active_design = properties["active_design"]
-    #     if active_project != selected_project or active_design != selected_design:
-    #         self.main_window.home_menu.update_project()
-    #         self.main_window.home_menu.update_design()
-    #
-    #     if success:
-    #         msg = "Geometry created."
-    #         self.ui.update_logger(msg)
-    #     else:
-    #         msg = f"Failed backend call: {self.main_window.url}"
-    #         self.ui.update_logger(msg)
+        antenna_image = QLabel()
+        antenna_image.setObjectName("antenna_image")
+        antenna_image.setMaximumHeight(self.main_window.ui.content_frame.height() / 2)
+        antenna_image.setScaledContents(True)
+        antenna_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        _pixmap = QPixmap(image_path)
+        _pixmap = _pixmap.scaled(
+            antenna_image.width(),
+            antenna_image.height(),
+            Qt.KeepAspectRatio,
+            Qt.SmoothTransformation,
+        )
+        antenna_image.setPixmap(_pixmap)
+
+        line_0.addWidget(antenna_image)
+        line_0_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        line_0.addItem(line_0_spacer)
+        return line_0

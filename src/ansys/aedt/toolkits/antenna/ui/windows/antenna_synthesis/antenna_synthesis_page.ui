@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>956</width>
-    <height>442</height>
+    <height>661</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -28,13 +28,22 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <layout class="QHBoxLayout" name="antenna_synthesis_layout">
+     <property name="leftMargin">
+      <number>6</number>
+     </property>
+     <property name="rightMargin">
+      <number>6</number>
+     </property>
+     <property name="bottomMargin">
+      <number>6</number>
+     </property>
      <item>
       <layout class="QVBoxLayout" name="left_settings_layout">
        <property name="leftMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -58,7 +67,7 @@
           <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Minimum</enum>
+          <enum>QSizePolicy::Preferred</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -76,7 +85,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::Preferred</enum>
+        <enum>QSizePolicy::Fixed</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -89,15 +98,15 @@
      <item>
       <layout class="QVBoxLayout" name="right_settings_layout">
        <property name="leftMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <item>
         <layout class="QHBoxLayout" name="top_antenna_settings_layout">
          <property name="leftMargin">
-          <number>0</number>
+          <number>6</number>
          </property>
          <property name="rightMargin">
           <number>0</number>
@@ -124,7 +133,7 @@
          <item>
           <layout class="QVBoxLayout" name="top_antenna_settings_options_layout">
            <property name="leftMargin">
-            <number>0</number>
+            <number>6</number>
            </property>
            <property name="rightMargin">
             <number>0</number>
@@ -158,8 +167,23 @@
            </item>
            <item>
             <layout class="QHBoxLayout" name="sweep_layout">
+             <property name="spacing">
+              <number>6</number>
+             </property>
+             <property name="sizeConstraint">
+              <enum>QLayout::SetDefaultConstraint</enum>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
              <item>
               <widget class="QLabel" name="sweep_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>Sweep Bandwidth %</string>
                </property>
@@ -168,7 +192,7 @@
              <item>
               <widget class="QSlider" name="sweep_slider">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -198,6 +222,12 @@
              </item>
              <item>
               <widget class="QLabel" name="slider_value">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>20</string>
                </property>
@@ -227,8 +257,17 @@
        </item>
        <item>
         <layout class="QHBoxLayout" name="botton_antenna_settings_layout">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
          <property name="topMargin">
-          <number>0</number>
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
          </property>
          <item>
           <spacer name="horizontalSpacer_3">
@@ -247,7 +286,20 @@
           </spacer>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="table_layout"/>
+          <layout class="QVBoxLayout" name="table_layout">
+           <property name="leftMargin">
+            <number>6</number>
+           </property>
+           <property name="topMargin">
+            <number>6</number>
+           </property>
+           <property name="rightMargin">
+            <number>6</number>
+           </property>
+           <property name="bottomMargin">
+            <number>6</number>
+           </property>
+          </layout>
          </item>
          <item>
           <spacer name="horizontalSpacer_4">
@@ -266,7 +318,20 @@
           </spacer>
          </item>
          <item>
-          <layout class="QGridLayout" name="botton_image_layout"/>
+          <layout class="QGridLayout" name="botton_image_layout">
+           <property name="leftMargin">
+            <number>6</number>
+           </property>
+           <property name="topMargin">
+            <number>6</number>
+           </property>
+           <property name="rightMargin">
+            <number>6</number>
+           </property>
+           <property name="bottomMargin">
+            <number>6</number>
+           </property>
+          </layout>
          </item>
         </layout>
        </item>

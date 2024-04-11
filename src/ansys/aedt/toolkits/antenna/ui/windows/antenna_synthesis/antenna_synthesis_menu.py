@@ -59,7 +59,7 @@ class AntennaSynthesisMenu(object):
                                                                                      "left_settings_layout")
 
         self.antenna_input = self.antenna_synthesis_left_layout.findChild(QVBoxLayout,
-                                                                     "antenna_input")
+                                                                          "antenna_input")
 
         self.antenna_synthesis_right_layout = self.antenna_synthesis_layout.findChild(QVBoxLayout,
                                                                                       "right_settings_layout")
@@ -78,7 +78,7 @@ class AntennaSynthesisMenu(object):
         self.sweep_slider = self.antenna_synthesis_menu_widget.findChild(QSlider, "sweep_slider")
         self.sweep_label = self.antenna_synthesis_menu_widget.findChild(QLabel, "sweep_label")
 
-        self.botton_antenna_settings_layout =\
+        self.botton_antenna_settings_layout = \
             self.antenna_synthesis_right_layout.findChild(QHBoxLayout, "botton_antenna_settings_layout")
         self.botton_image_layout = self.botton_antenna_settings_layout.findChild(QGridLayout, "botton_image_layout")
 
@@ -86,6 +86,9 @@ class AntennaSynthesisMenu(object):
         self.parameter_table = None
 
         self.image_layout = None
+        self.antenna_button_layout = None
+        self.synthesis_button = None
+        self.create_antenna_button = None
 
     def setup(self):
         # Modify theme
@@ -97,7 +100,7 @@ class AntennaSynthesisMenu(object):
         """
 
         custom_style = widge_style.format(_bg_color=app_color["dark_three"],
-                                              _color=app_color["text_foreground"])
+                                          _color=app_color["text_foreground"])
 
         self.antenna_synthesis_menu_widget.setStyleSheet(custom_style)
 
@@ -128,28 +131,38 @@ class AntennaSynthesisMenu(object):
         self.sweep_slider.valueChanged.connect(self.sweep_changed)
 
         # Antenna image
-        image_container = QWidget()
-        self.image_layout = QVBoxLayout(image_container)
-        self.botton_image_layout.addWidget(image_container)
+        # image_container = QWidget()
+        # self.image_layout = QVBoxLayout(image_container)
+        # self.botton_image_layout.addWidget(image_container)
 
         # Set minimum and maximum size for the image_container
-        image_container.setMinimumSize(200, 200)
-        image_container.setMaximumSize(400, 400)
+        # image_container.setMinimumSize(200, 200)
+        # image_container.setMaximumSize(500, 500)
 
-        # Create geometry button
-        # row_returns = self.ui.add_n_buttons(
-        #     self.antenna_synthesis_layout,
-        #     num_buttons=2,
-        #     height=100,
-        #     width=[300, 300],
-        #     text=["Synthesis", "Create HFSS model"],
-        #     font_size=20
-        # )
-        #
-        # self.geometry_button_layout = row_returns[0]
-        # self.geometry_button = row_returns[1]
-        # layout.addWidget(self.geometry_button)
+        # Antenna button
+        row_returns = self.ui.add_n_buttons(
+            self.antenna_synthesis_left_layout,
+            num_buttons=2,
+            height=40,
+            width=[200, 200],
+            text=["Synthesis", "Generate"],
+            font_size=18
+        )
+
+        self.antenna_button_layout = row_returns[0]
+        self.synthesis_button = row_returns[1]
+        self.create_antenna_button = row_returns[2]
+
+        self.synthesis_button.clicked.connect(self.synthesis_button_clicked)
+        self.create_antenna_button.clicked.connect(self.create_antenna_button_clicked)
+
+        self.create_antenna_button.setEnabled(False)
 
     def sweep_changed(self):
         self.sweep_value.setText(str(self.sweep_slider.value()))
 
+    def synthesis_button_clicked(self):
+        self.ui.update_logger("Synthesis")
+
+    def create_antenna_button_clicked(self):
+        self.ui.update_logger("Create Antenna")
