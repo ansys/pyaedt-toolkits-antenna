@@ -10,7 +10,7 @@ version= "v0.3.0"
 copyright= "By: ansys"
 year= 2023
 theme= "ansys_dark.json"
-high_resolution= false
+high_resolution= true
 
 [[defaults.add_left_menus]]
 btn_icon= "icon_home.svg"

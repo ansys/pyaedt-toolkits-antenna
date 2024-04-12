@@ -37,14 +37,16 @@ class Ui_AntennaSynthesis(object):
         self.antenna_synthesis_layout.setContentsMargins(6, -1, 6, 6)
         self.left_settings_layout = QVBoxLayout()
         self.left_settings_layout.setObjectName(u"left_settings_layout")
-        self.left_settings_layout.setContentsMargins(6, -1, 0, 0)
-        self.antenna_input = QVBoxLayout()
+        self.left_settings_layout.setContentsMargins(6, -1, 6, 0)
+        self.antenna_input_frame = QFrame(AntennaSynthesis)
+        self.antenna_input_frame.setObjectName(u"antenna_input_frame")
+        self.antenna_input = QVBoxLayout(self.antenna_input_frame)
         self.antenna_input.setObjectName(u"antenna_input")
-        self.antenna_input.setContentsMargins(-1, 0, 0, 0)
+        self.antenna_input.setContentsMargins(-1, 1, 1, 1)
 
-        self.left_settings_layout.addLayout(self.antenna_input)
+        self.left_settings_layout.addWidget(self.antenna_input_frame)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
         self.left_settings_layout.addItem(self.verticalSpacer_2)
 
@@ -86,12 +88,14 @@ class Ui_AntennaSynthesis(object):
 
         self.top_antenna_settings_options_layout.addWidget(self.lattice_pair)
 
-        self.sweep_layout = QHBoxLayout()
+        self.sweep_widget = QWidget(self.top_antenna_options_frame)
+        self.sweep_widget.setObjectName(u"sweep_widget")
+        self.sweep_layout = QHBoxLayout(self.sweep_widget)
         self.sweep_layout.setSpacing(6)
         self.sweep_layout.setObjectName(u"sweep_layout")
         self.sweep_layout.setSizeConstraint(QLayout.SetDefaultConstraint)
-        self.sweep_layout.setContentsMargins(0, -1, -1, -1)
-        self.sweep_label = QLabel(self.top_antenna_options_frame)
+        self.sweep_layout.setContentsMargins(1, -1, -1, -1)
+        self.sweep_label = QLabel(self.sweep_widget)
         self.sweep_label.setObjectName(u"sweep_label")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy1.setHorizontalStretch(0)
@@ -101,7 +105,7 @@ class Ui_AntennaSynthesis(object):
 
         self.sweep_layout.addWidget(self.sweep_label)
 
-        self.sweep_slider = QSlider(self.top_antenna_options_frame)
+        self.sweep_slider = QSlider(self.sweep_widget)
         self.sweep_slider.setObjectName(u"sweep_slider")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
@@ -118,7 +122,7 @@ class Ui_AntennaSynthesis(object):
 
         self.sweep_layout.addWidget(self.sweep_slider)
 
-        self.slider_value = QLabel(self.top_antenna_options_frame)
+        self.slider_value = QLabel(self.sweep_widget)
         self.slider_value.setObjectName(u"slider_value")
         sizePolicy.setHeightForWidth(self.slider_value.sizePolicy().hasHeightForWidth())
         self.slider_value.setSizePolicy(sizePolicy)
@@ -126,7 +130,11 @@ class Ui_AntennaSynthesis(object):
         self.sweep_layout.addWidget(self.slider_value)
 
 
-        self.top_antenna_settings_options_layout.addLayout(self.sweep_layout)
+        self.top_antenna_settings_options_layout.addWidget(self.sweep_widget)
+
+        self.verticalSpacer_4 = QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+
+        self.top_antenna_settings_options_layout.addItem(self.verticalSpacer_4)
 
 
         self.top_antenna_settings_layout.addLayout(self.top_antenna_settings_options_layout)
@@ -134,7 +142,7 @@ class Ui_AntennaSynthesis(object):
 
         self.right_settings_layout.addWidget(self.top_antenna_options_frame)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        self.verticalSpacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
         self.right_settings_layout.addItem(self.verticalSpacer)
 

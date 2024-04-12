@@ -11,6 +11,9 @@ from PySide6.QtWidgets import QGridLayout
 from PySide6.QtWidgets import QWidget
 from PySide6.QtWidgets import QScrollArea
 from PySide6.QtWidgets import QTableWidget
+from PySide6.QtWidgets import QSizePolicy
+from PySide6.QtWidgets import QLineEdit
+
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Signal
 from PySide6.QtCore import Qt
@@ -58,8 +61,10 @@ class AntennaSynthesisMenu(object):
         self.antenna_synthesis_left_layout = self.antenna_synthesis_layout.findChild(QVBoxLayout,
                                                                                      "left_settings_layout")
 
-        self.antenna_input = self.antenna_synthesis_left_layout.findChild(QVBoxLayout,
-                                                                          "antenna_input")
+        self.antenna_input_frame = self.antenna_synthesis_menu_widget.findChild(QFrame, "antenna_input_frame")
+        self.antenna_input_frame.setFrameShape(QFrame.Box)
+
+        self.antenna_input = self.antenna_input_frame.findChild(QVBoxLayout, "antenna_input")
 
         self.antenna_synthesis_right_layout = self.antenna_synthesis_layout.findChild(QVBoxLayout,
                                                                                       "right_settings_layout")
@@ -77,7 +82,7 @@ class AntennaSynthesisMenu(object):
         self.create_setup = self.antenna_synthesis_menu_widget.findChild(QCheckBox, "create_hfss_setup")
         self.lattice_pair = self.antenna_synthesis_menu_widget.findChild(QCheckBox, "lattice_pair")
 
-        self.sweep_layout = self.top_antenna_settings_options_layout.findChild(QHBoxLayout, "sweep_layout")
+        self.sweep_layout = self.top_antenna_settings_options_layout.findChild(QWidget, "sweep_layout")
         self.sweep_value = self.antenna_synthesis_menu_widget.findChild(QLabel, "slider_value")
         self.sweep_slider = self.antenna_synthesis_menu_widget.findChild(QSlider, "sweep_slider")
         self.sweep_label = self.antenna_synthesis_menu_widget.findChild(QLabel, "sweep_label")
@@ -138,7 +143,7 @@ class AntennaSynthesisMenu(object):
 
         header.setStyleSheet(table_header_style)
 
-        self.parameter_table.setFixedWidth(250)
+        self.parameter_table.setFixedWidth(300)
 
         self.table_layout.addWidget(self.parameter_table)
 

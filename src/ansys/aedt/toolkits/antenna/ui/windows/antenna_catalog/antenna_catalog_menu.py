@@ -13,6 +13,7 @@ from PySide6.QtWidgets import QScrollArea
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtWidgets import QSpacerItem
 from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QFont
 from PySide6.QtCore import Signal
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame
@@ -258,6 +259,7 @@ class AntennaCatalogMenu(object):
                                     selected_model.lower(),
                                     self.main_window.properties.antenna.antenna_selected.lower())
 
+        # Load antenna picture
         antenna_picture = ""
         for root, dirs, files in os.walk(antenna_path):
             for file in files:
@@ -269,36 +271,67 @@ class AntennaCatalogMenu(object):
         self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.botton_image_layout)
 
         if os.path.isfile(antenna_picture):
-            image = self._add_image(antenna_picture)
+            image = self.add_image(antenna_picture)
             self.main_window.antenna_synthesis_menu.botton_image_layout.addLayout(image, 0, 0, 1, 1)
 
+        # Load parameters
+        antenna_parameters = {}
+        if os.path.isfile(os.path.join(antenna_path, "parameters.toml")):
+            with open(os.path.join(antenna_path, "parameters.toml"), mode="rb") as parameter_handler:
+                antenna_parameters = tomllib.load(parameter_handler)
+        if antenna_parameters:
+            for parameter in antenna_parameters:
+                line = self.add_line(parameter.replace("_", " "), antenna_parameters[parameter])
+                self.main_window.antenna_synthesis_menu.antenna_input.addLayout(line)
         # Populate synthesis page
         self.ui.set_page(self.main_window.antenna_synthesis_menu.antenna_synthesis_menu_widget)
 
-    def _add_image(self, image_path):
+    @staticmethod
+    def add_image(image_path):
         """Add the image to antenna settings."""
-        line_0_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        line_0 = QHBoxLayout()
-        line_0.setObjectName("line_0")
-        line_0.addItem(line_0_spacer)
-
+        image_layout = QHBoxLayout()
+        image_layout.setObjectName("image_layout_pixmap")
         antenna_image = QLabel()
-        antenna_image.setObjectName("antenna_image")
-        antenna_image.setMaximumHeight(self.main_window.ui.content_frame.height() / 2)
+        antenna_image.setObjectName("antenna_picture")
         antenna_image.setScaledContents(True)
         antenna_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        _pixmap = QPixmap(image_path)
-        _pixmap = _pixmap.scaled(
-            antenna_image.width(),
-            antenna_image.height(),
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation,
-        )
-        antenna_image.setPixmap(_pixmap)
 
-        line_0.addWidget(antenna_image)
-        line_0_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Expanding)
+        def resize_pixmap():
+            pixmap = QPixmap(image_path)
+            pixmap = pixmap.scaled(antenna_image.width(), antenna_image.height(),
+                                   Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            antenna_image.setPixmap(pixmap)
 
-        line_0.addItem(line_0_spacer)
-        return line_0
+        antenna_image.resizeEvent = lambda event: resize_pixmap()
+
+        resize_pixmap()
+        image_layout.addWidget(antenna_image)
+        return image_layout
+
+    def add_line(self, label_value, value):
+        """Add a new parameter to antenna settings."""
+        layout_line = QHBoxLayout()
+
+        label = QLabel()
+        layout_line.addWidget(label)
+        label.setText(label_value)
+        font = QFont(self.main_window.properties.font["family"], self.main_window.properties.font["title_size"])
+        label.setFont(font)
+        if isinstance(value, list):
+            combobox = QComboBox()
+            combobox.addItems(value)
+            combobox.setFixedWidth(200)
+            combobox.setStyleSheet("border: 2px solid {};".format(self.ui.themes['app_color']['text_foreground']))
+            layout_line.addWidget(combobox)
+        else:
+            edit = QLineEdit()
+            edit.setFont(font)
+            edit.setText(str(value))
+            edit.setFixedWidth(200)
+            edit.setStyleSheet("border: 2px solid {};".format(self.ui.themes['app_color']['text_foreground']))
+            layout_line.addWidget(edit)
+
+        spacer = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Fixed)
+        layout_line.addItem(spacer)
+
+        return layout_line

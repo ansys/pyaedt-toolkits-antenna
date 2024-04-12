@@ -1,0 +1,7 @@
+Antenna_Name = "Bow Tie"
+Frequency = 10
+Boundary_Condition = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"
