@@ -150,15 +150,6 @@ class AntennaSynthesisMenu(object):
         # Sweep slider
         self.sweep_slider.valueChanged.connect(self.sweep_changed)
 
-        # Antenna image
-        # image_container = QWidget()
-        # self.image_layout = QVBoxLayout(image_container)
-        # self.botton_image_layout.addWidget(image_container)
-
-        # Set minimum and maximum size for the image_container
-        # image_container.setMinimumSize(200, 200)
-        # image_container.setMaximumSize(500, 500)
-
         # Antenna button
         row_returns = self.ui.add_n_buttons(
             self.antenna_synthesis_left_layout,

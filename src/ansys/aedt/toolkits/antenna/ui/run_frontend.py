@@ -157,6 +157,12 @@ class ApplicationWindow(QMainWindow, Frontend):
             selected_menu.set_active(True)
             self.ui.set_page(self.antenna_synthesis_menu.antenna_synthesis_menu_widget)
 
+    def closeEvent(self, event):
+        if self.antenna_catalog_menu.grid_item:
+            for item in self.antenna_catalog_menu.grid_item:
+                item.plotter.close()
+        event.accept()
+
     # def plot_design_menu_clicked(self):
     #     selected_menu = self.ui.get_selected_menu()
     #     menu_name = selected_menu.objectName()

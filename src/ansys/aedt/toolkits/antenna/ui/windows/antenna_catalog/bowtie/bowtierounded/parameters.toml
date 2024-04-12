@@ -1,4 +1,4 @@
-Antenna_Name = "BowTie_Normal"
+Antenna_Name = "BowTie_Rounded"
 Frequency = 10
 Boundary_Condition = ["Radiation", "PML", "FEBI", "None"]
 Origin_X_Position = 0.0

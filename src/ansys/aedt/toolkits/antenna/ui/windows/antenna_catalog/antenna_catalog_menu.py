@@ -55,7 +55,7 @@ class AntennaItem(QWidget):
 
         layout = QVBoxLayout(self)
 
-        plotter = BackgroundPlotter(show=False)
+        self.plotter = BackgroundPlotter(show=False)
         antenna_path = antenna_info["path"]
         antenna_name = antenna_info["name"]
 
@@ -65,17 +65,17 @@ class AntennaItem(QWidget):
             antenna_properties = antenna_info[element]
             file_path = os.path.join(antenna_path, "model", antenna_properties["name"] + ".obj")
             cad_mesh = pv.read(file_path)
-            plotter.add_mesh(
+            self.plotter.add_mesh(
                 cad_mesh,
                 color=antenna_properties["color"],
                 show_scalar_bar=False,
                 opacity=antenna_properties["opacity"]
             )
 
-        plotter.view_isometric()
-        plotter.set_background(color=app_color["bg_one"])
+        self.plotter.view_isometric()
+        self.plotter.set_background(color=app_color["bg_one"])
 
-        layout.addWidget(plotter)
+        layout.addWidget(self.plotter)
 
         label = QLabel(antenna_name)
         layout.addWidget(label)
@@ -123,6 +123,7 @@ class AntennaCatalogMenu(object):
         # Specific properties
         self.antenna_catalog = None
         self.antenna_catalog_layout = self.antenna_catalog_menu_widget.findChild(QVBoxLayout, "antenna_catalog_layout")
+        self.grid_item = []
 
     def setup(self):
         # Modify theme
@@ -229,16 +230,16 @@ class AntennaCatalogMenu(object):
                 frame_layout = QVBoxLayout(frame)
                 frame_layout.setContentsMargins(0, 0, 0, 0)
 
-                grid_item = AntennaItem(antenna_index, antenna_model_info, app_color)
-                grid_item.setFixedSize(400, 400)
-                grid_layout.addWidget(grid_item, i * 2, j * 2)
+                self.grid_item.append(AntennaItem(antenna_index, antenna_model_info, app_color))
+                self.grid_item[-1].setFixedSize(400, 400)
+                grid_layout.addWidget(self.grid_item[-1], i * 2, j * 2)
                 line_color = """
                     border: 2px solid {_color};
                 """
                 custom_style = line_color.format(_color=app_color["dark_two"])
-                grid_item.setStyleSheet(custom_style)
+                self.grid_item[-1].setStyleSheet(custom_style)
 
-                grid_item.antenna_item_signal.connect(self.on_grid_item_clicked)
+                self.grid_item[-1].antenna_item_signal.connect(self.on_grid_item_clicked)
 
                 antenna_cont += 1
 
@@ -260,6 +261,7 @@ class AntennaCatalogMenu(object):
                                     self.main_window.properties.antenna.antenna_selected.lower())
 
         # Load antenna picture
+        self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.botton_image_layout)
         antenna_picture = ""
         for root, dirs, files in os.walk(antenna_path):
             for file in files:
@@ -267,14 +269,12 @@ class AntennaCatalogMenu(object):
                     antenna_picture = os.path.join(root, file)
                     break
 
-        # Clear picture
-        self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.botton_image_layout)
-
         if os.path.isfile(antenna_picture):
             image = self.add_image(antenna_picture)
             self.main_window.antenna_synthesis_menu.botton_image_layout.addLayout(image, 0, 0, 1, 1)
 
-        # Load parameters
+        # Load antenna input parameters
+        self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.antenna_input)
         antenna_parameters = {}
         if os.path.isfile(os.path.join(antenna_path, "parameters.toml")):
             with open(os.path.join(antenna_path, "parameters.toml"), mode="rb") as parameter_handler:
@@ -283,6 +283,7 @@ class AntennaCatalogMenu(object):
             for parameter in antenna_parameters:
                 line = self.add_line(parameter.replace("_", " "), antenna_parameters[parameter])
                 self.main_window.antenna_synthesis_menu.antenna_input.addLayout(line)
+
         # Populate synthesis page
         self.ui.set_page(self.main_window.antenna_synthesis_menu.antenna_synthesis_menu_widget)
 

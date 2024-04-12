@@ -197,10 +197,6 @@ class Ui_AntennaSynthesis(object):
 
         self.right_settings_layout.addWidget(self.bottom_antenna_options_frame)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-
-        self.right_settings_layout.addItem(self.verticalSpacer_3)
-
 
         self.antenna_synthesis_layout.addLayout(self.right_settings_layout)
 
