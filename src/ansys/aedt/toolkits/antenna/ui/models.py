@@ -22,6 +22,8 @@
 
 import os
 import sys
+from typing import Any
+from typing import Dict
 from typing import List
 
 if sys.version_info >= (3, 11):
@@ -42,6 +44,7 @@ class AntennaProperties(BaseModel):
     available_models: List[str] = Field(default_factory=list)
     antenna_model_selected: str = ""
     antenna_selected: str = ""
+    antenna_parameters: Dict[str, Any] = Field(default_factory=dict)
 
 
 class FrontendProperties(BaseModel):
