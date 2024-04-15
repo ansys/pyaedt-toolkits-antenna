@@ -324,6 +324,9 @@ class AntennaCatalogMenu(object):
             combobox.setFixedWidth(200)
             combobox.setStyleSheet("border: 2px solid {};".format(self.ui.themes['app_color']['text_foreground']))
             layout_line.addWidget(combobox)
+            combobox.setFont(font)
+            for i in range(combobox.count()):
+                combobox.setItemData(i, font, Qt.FontRole)
         else:
             edit = QLineEdit()
             edit.setFont(font)

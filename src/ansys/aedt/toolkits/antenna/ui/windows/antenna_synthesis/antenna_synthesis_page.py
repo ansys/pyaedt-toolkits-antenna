@@ -40,9 +40,12 @@ class Ui_AntennaSynthesis(object):
         self.left_settings_layout.setContentsMargins(6, -1, 6, 0)
         self.antenna_input_frame = QFrame(AntennaSynthesis)
         self.antenna_input_frame.setObjectName(u"antenna_input_frame")
+        sizePolicy.setHeightForWidth(self.antenna_input_frame.sizePolicy().hasHeightForWidth())
+        self.antenna_input_frame.setSizePolicy(sizePolicy)
+        self.antenna_input_frame.setMinimumSize(QSize(0, 0))
         self.antenna_input = QVBoxLayout(self.antenna_input_frame)
         self.antenna_input.setObjectName(u"antenna_input")
-        self.antenna_input.setContentsMargins(-1, 1, 1, 1)
+        self.antenna_input.setContentsMargins(6, 1, 6, 1)
 
         self.left_settings_layout.addWidget(self.antenna_input_frame)
 

@@ -50,12 +50,27 @@
        </property>
        <item>
         <widget class="QFrame" name="antenna_input_frame">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <layout class="QVBoxLayout" name="antenna_input">
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
           <property name="topMargin">
            <number>1</number>
           </property>
           <property name="rightMargin">
-           <number>1</number>
+           <number>6</number>
           </property>
           <property name="bottomMargin">
            <number>1</number>
