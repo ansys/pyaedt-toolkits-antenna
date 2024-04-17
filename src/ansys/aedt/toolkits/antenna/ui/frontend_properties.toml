@@ -9,7 +9,7 @@ welcome_message= "Welcome to the antenna toolkit"
 version= "v0.3.0"
 copyright= "By: ansys"
 year= 2023
-theme= "ansys_light.json"
+theme= "ansys_dark.json"
 high_resolution= false
 
 [[defaults.add_left_menus]]
