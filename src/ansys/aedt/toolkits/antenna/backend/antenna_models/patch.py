@@ -900,14 +900,14 @@ class RectangularPatchEdge(CommonPatch):
         )
         parameters["sub_y"] = sub_y
 
-        edge_feed_width = (constants.unit_converter(microstrip_edge_width, "Length", "meter", length_unit),)
+        edge_feed_width = constants.unit_converter(microstrip_edge_width, "Length", "meter", length_unit)
 
         parameters["edge_feed_width"] = edge_feed_width
 
         edge_feed_length = constants.unit_converter(microstrip_edge_length, "Length", "meter", length_unit)
         parameters["edge_feed_length"] = edge_feed_length
 
-        feed_width = (constants.unit_converter(microstrip_width, "Length", "meter", length_unit),)
+        feed_width = constants.unit_converter(microstrip_width, "Length", "meter", length_unit)
 
         parameters["feed_width"] = feed_width
 
