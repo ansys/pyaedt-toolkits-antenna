@@ -25,8 +25,15 @@ import re
 from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QLineEdit
-from ansys.aedt.toolkits.common.ui.actions_generic import FrontendGeneric
+
+# isort: off
+
 from ansys.aedt.toolkits.common.ui.logger_handler import logger
+
+from ansys.aedt.toolkits.common.ui.actions_generic import FrontendGeneric
+
+# isort: on
+
 from pyaedt.generic.general_methods import generate_unique_project_name
 import requests
 
