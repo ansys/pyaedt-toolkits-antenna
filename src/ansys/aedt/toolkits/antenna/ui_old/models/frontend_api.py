@@ -97,7 +97,7 @@ class ToolkitFrontend(FrontendGeneric):
             be_properties.material_properties = {"permittivity": self.default_materials[material]}
         if "gain_value" in self.__dir__():
             gain = self.gain_value.text()
-            be_properties.gain_value = float(gain)
+            be_properties.gain = float(gain)
         if "feeder_length" in self.__dir__():
             feed = self.feeder_length.text()
             be_properties.feeder_length = float(feed)

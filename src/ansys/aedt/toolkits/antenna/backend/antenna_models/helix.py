@@ -71,19 +71,19 @@ class CommonHelix(CommonAntenna):
                     self.set_variables_in_hfss()
 
     @property
-    def gain_value(self):
+    def gain(self):
         """Helix expected gain.
 
         Returns
         -------
         float
         """
-        return self._input_parameters.gain_value
+        return self._input_parameters.gain
 
-    @gain_value.setter
-    def gain_value(self, value):
-        self._input_parameters.gain_value = value
-        if value != self.gain_value and self.object_list:
+    @gain.setter
+    def gain(self, value):
+        self._input_parameters.gain = value
+        if value != self.gain and self.object_list:
             parameters = self.synthesis()
             self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
@@ -184,7 +184,7 @@ class AxialMode(CommonHelix):
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",
-        "gain_value": 10,
+        "gain": 10,
         "direction": 0,
         "feeder_length": 10,
         "outer_boundary": "",
@@ -205,7 +205,7 @@ class AxialMode(CommonHelix):
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
         wl_meters = light_speed / freq_hz
-        gain_value_dB = self.gain_value
+        gain_value_dB = self.gain
         gain_value_mag = math.pow(10.0, gain_value_dB / 10.0)
 
         groundx = constants.unit_converter(4.0 * (3.33 / freq_ghz), "Length", "in", "mm")

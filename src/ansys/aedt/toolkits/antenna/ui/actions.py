@@ -20,51 +20,75 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import re
+
+from PySide6.QtWidgets import QComboBox
+from PySide6.QtWidgets import QLabel
+from PySide6.QtWidgets import QLineEdit
 from ansys.aedt.toolkits.common.ui.actions_generic import FrontendGeneric
 from ansys.aedt.toolkits.common.ui.logger_handler import logger
 from pyaedt.generic.general_methods import generate_unique_project_name
 import requests
+
+number_pattern = re.compile(r"^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$")
 
 
 class Frontend(FrontendGeneric):
     def __init__(self):
         FrontendGeneric.__init__(self)
 
-    def create_geometry_toolkit(self, project_selected=None, design_selected=None):
-        # Set active project and design
-        be_properties = self.get_properties()
-        if project_selected and design_selected:
-            if project_selected == "No Project":
-                project_selected = generate_unique_project_name()
-                project_selected = self.get_project_name(project_selected)
-                be_properties["active_project"] = project_selected
+    def antenna_synthesis(self):
 
-            for project in be_properties["project_list"]:
-                if self.get_project_name(project) == project_selected:
-                    be_properties["active_project"] = project
-                    if project_selected in list(be_properties["design_list"].keys()):
-                        designs = be_properties["design_list"][project_selected]
-                        for design in designs:
-                            if design_selected == design:
-                                be_properties["active_design"] = design
-                                break
-                    break
+        be_properties = requests.get(self.url + "/properties").json()
+
+        new_properties = {
+            "model": self.properties.antenna.antenna_selected,
+            "length_unit": self.antenna_synthesis_menu.length_unit.text(),
+            "frequency_unit": self.antenna_synthesis_menu.frequency_unit.text(),
+            "synth_only": True,
+        }
+
+        synthesis_inputs = {}
+        label = ""
+        origin = [0.0, 0.0, 0.0]
+        new_properties["origin"] = origin
+
+        for antenna_input_lines in self.antenna_synthesis_menu.antenna_input_frame.children():
+
+            if isinstance(antenna_input_lines, QLabel):
+                original_label = antenna_input_lines.text()
+                label = original_label.lower().replace(" ", "_")
+
+            if label and isinstance(antenna_input_lines, QLineEdit):
+                data = antenna_input_lines.text()
+
+                if number_pattern.match(data):
+                    data = float(data)
+
+                if label in be_properties["antenna"]["synthesis"]:
+                    new_properties[label] = data
+                elif label == "origin_x_position":
+                    new_properties["origin"][0] = data
+                elif label == "origin_y_position":
+                    new_properties["origin"][1] = data
+                elif label == "origin_z_position":
+                    new_properties["origin"][2] = data
+                label = ""
+            elif label and isinstance(antenna_input_lines, QComboBox):
+                if label in be_properties["antenna"]["synthesis"]:
+                    new_properties[label] = antenna_input_lines.currentText()
+                label = ""
+
+        response_1 = requests.put(self.url + "/properties", json=new_properties)
+
+        if response_1.ok:
+            response_2 = requests.post(self.url + "/create_antenna")
+            if response_2.ok:
+                self.ui.update_logger("{} synthesis".format(self.properties.antenna.antenna_selected))
+                return response_2.json()
+            else:
+                self.ui.update_logger("Wrong synthesis")
+                return False
         else:
-            project_selected = generate_unique_project_name()
-            project_selected = self.get_project_name(project_selected)
-            be_properties["active_project"] = project_selected
-
-        self.set_properties(be_properties)
-
-        response = requests.post(self.url + "/create_geometry")
-
-        self.properties.example.primitives_created.append(response.text)
-
-        if response.ok:
-            msg = "Geometry created."
-            logger.info(msg)
-            return True
-        else:
-            msg = f"Failed backend call: {self.url}"
-            logger.error(msg)
+            self.ui.update_logger(response_1.json())
             return False

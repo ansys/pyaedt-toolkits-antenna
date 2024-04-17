@@ -1,4 +1,4 @@
-Antenna_Name = "Rectangular_Patch_Edge"
+Name = "Rectangular_Patch_Edge"
 Frequency = 10.0
 Substrate_Material = ["FR4_epoxy", "Teflon (tm)", "Rogers RT / duroid 6002(tm)"]
 Substrate_Height = 1.575

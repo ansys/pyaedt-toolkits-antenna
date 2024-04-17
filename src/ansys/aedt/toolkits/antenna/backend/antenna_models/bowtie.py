@@ -30,7 +30,7 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.common import Transmissi
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import CommonPatch
 
 
-class BowTie(CommonPatch):
+class BowTieNormal(CommonPatch):
     """Manages a bowtie antenna.
 
     This class is accessible through the ``Hfss`` object [1]_.
@@ -66,14 +66,14 @@ class BowTie(CommonPatch):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTie
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieNormal
     >>> import pyaedt
     >>> app = pyaedt.Hfss()
-    >>> oantenna1 = BowTie(app)
+    >>> oantenna1 = BowTieNormal(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()
-    >>> oantenna2 = BowTie(app, origin=[200, 50, 0])
+    >>> oantenna2 = BowTieNormal(app, origin=[200, 50, 0])
     >>> oantenna2.model_hfss()
     >>> oantenna2.setup_hfss()
     >>> app.release_desktop(False, False)

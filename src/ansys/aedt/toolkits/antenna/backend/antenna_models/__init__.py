@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTie
+from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieNormal
 from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded
 from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieSlot
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Archimedean
