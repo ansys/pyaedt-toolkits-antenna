@@ -23,12 +23,17 @@
 import gc
 import re
 
+# isort: off
+
+from ansys.aedt.toolkits.antenna.backend.models import properties
+
+# isort: on
+
 from ansys.aedt.toolkits.common.backend.api import AEDTCommon
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
 import pyaedt
 
 from ansys.aedt.toolkits.antenna.backend import antenna_models
-from ansys.aedt.toolkits.antenna.backend.models import properties
 
 
 class ToolkitBackend(AEDTCommon):
