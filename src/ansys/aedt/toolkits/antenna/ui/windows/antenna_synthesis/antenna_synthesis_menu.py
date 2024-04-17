@@ -105,7 +105,7 @@ class AntennaSynthesisMenu(object):
         self.image_layout = None
         self.antenna_button_layout = None
         self.synthesis_button = None
-        self.create_antenna_button = None
+        self.generate_antenna_button = None
 
     def setup(self):
         # Modify theme
@@ -135,12 +135,12 @@ class AntennaSynthesisMenu(object):
 
         self.antenna_button_layout = row_returns[0]
         self.synthesis_button = row_returns[1]
-        self.create_antenna_button = row_returns[2]
+        self.generate_antenna_button = row_returns[2]
 
         self.synthesis_button.clicked.connect(self.synthesis_button_clicked)
-        self.create_antenna_button.clicked.connect(self.create_antenna_button_clicked)
+        self.generate_antenna_button.clicked.connect(self.generate_antenna_button_clicked)
 
-        self.create_antenna_button.setEnabled(False)
+        self.generate_antenna_button.setEnabled(False)
 
     def sweep_changed(self):
         self.sweep_value.setText(str(self.sweep_slider.value()))
@@ -153,6 +153,10 @@ class AntennaSynthesisMenu(object):
             self.ui.update_logger("No antenna selected")
             return
         else:
+            is_backend_busy = self.main_window.backend_busy()
+            if is_backend_busy:
+                self.ui.update_logger("Toolkit running")
+                return
             self.main_window.properties.antenna.antenna_parameters = self.main_window.antenna_synthesis()
             if self.main_window.properties.antenna.antenna_parameters:
                 self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.table_layout)
@@ -196,7 +200,11 @@ class AntennaSynthesisMenu(object):
                 scroll_area.setWidget(self.parameter_table)
                 self.table_layout.addWidget(scroll_area)
 
-    def create_antenna_button_clicked(self):
+                be_properties = self.main_window.get_properties()
+                if be_properties["design_list"]:
+                    self.generate_antenna_button.setEnabled(True)
+
+    def generate_antenna_button_clicked(self):
         self.ui.update_logger("Create Antenna")
 
     def parameter_value_change(self, item):
