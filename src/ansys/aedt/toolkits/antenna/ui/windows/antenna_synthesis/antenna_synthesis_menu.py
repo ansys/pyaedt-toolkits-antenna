@@ -18,6 +18,8 @@ from PySide6.QtWidgets import QSlider
 from PySide6.QtWidgets import QTableWidget
 from PySide6.QtWidgets import QVBoxLayout
 from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QTableWidgetItem
+from PySide6.QtGui import QColor
 
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyLabel
@@ -25,16 +27,6 @@ from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
 from windows.antenna_synthesis.antenna_synthesis_page import Ui_AntennaSynthesis
-
-# if sys.version_info >= (3, 11):
-#     import tomllib
-# else:
-#     import tomli as tomllib
-#
-# antenna_catalog = {}
-# if os.path.isfile(os.path.join(os.path.dirname(__file__), "antenna_synteh.toml")):
-#     with open(os.path.join(os.path.dirname(__file__), "antenna_catalog.toml"), mode="rb") as file_handler:
-#         antenna_catalog = tomllib.load(file_handler)
 
 
 class AntennaSynthesisMenu(object):
@@ -128,28 +120,6 @@ class AntennaSynthesisMenu(object):
 
         self.antenna_synthesis_menu_widget.setStyleSheet(custom_style)
 
-        # Add table
-        self.parameter_table = QTableWidget(0, 2)  # 0 initial rows, 2 columns
-        self.parameter_table.setObjectName("parameter_table")  # Set object name
-
-        self.parameter_table.setHorizontalHeaderLabels(["Parameter", "Value"])
-
-        header = self.parameter_table.horizontalHeader()
-        custom_style = """
-        QHeaderView::section {{
-        background-color: {_bg_color};
-        color: {_color};
-        }}
-        """
-
-        table_header_style = custom_style.format(_bg_color=app_color["dark_three"], _color=app_color["text_foreground"])
-
-        header.setStyleSheet(table_header_style)
-
-        self.parameter_table.setFixedWidth(300)
-
-        self.table_layout.addWidget(self.parameter_table)
-
         # Sweep slider
         self.sweep_slider.valueChanged.connect(self.sweep_changed)
 
@@ -183,8 +153,54 @@ class AntennaSynthesisMenu(object):
             self.ui.update_logger("No antenna selected")
             return
         else:
-            self.main_window.properties.antenna_parameters = self.main_window.antenna_synthesis()
-            self.parameter_table
+            self.main_window.properties.antenna.antenna_parameters = self.main_window.antenna_synthesis()
+            if self.main_window.properties.antenna.antenna_parameters:
+                self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.table_layout)
+                app_color = self.main_window.ui.themes["app_color"]
+                num_rows = len(self.main_window.properties.antenna.antenna_parameters)
+
+                self.parameter_table = QTableWidget(num_rows, 2)
+
+                self.parameter_table.setHorizontalHeaderLabels(["Parameter", "Value"])
+
+                h_header = self.parameter_table.horizontalHeader()
+                v_header = self.parameter_table.verticalHeader()
+
+                custom_style = """
+                QHeaderView::section {{
+                background-color: {_bg_color};
+                color: {_color};
+                }}
+                """
+
+                table_header_style = custom_style.format(_bg_color=app_color["dark_three"],
+                                                         _color=app_color["text_foreground"])
+
+                h_header.setStyleSheet(table_header_style)
+                v_header.setStyleSheet(table_header_style)
+
+                for row, (key, value) in enumerate(self.main_window.properties.antenna.antenna_parameters.items()):
+
+                    key_item = QTableWidgetItem(key)
+                    value_item = QTableWidgetItem(str(value))
+
+                    self.parameter_table.setItem(row, 0, key_item)
+                    self.parameter_table.setItem(row, 1, value_item)
+
+                    key_item.setFlags(key_item.flags() & ~Qt.ItemIsEditable)
+
+                self.parameter_table.itemChanged.connect(self.parameter_value_change)
+
+                scroll_area = QScrollArea()
+                scroll_area.setWidgetResizable(True)
+                scroll_area.setWidget(self.parameter_table)
+                self.table_layout.addWidget(scroll_area)
 
     def create_antenna_button_clicked(self):
         self.ui.update_logger("Create Antenna")
+
+    def parameter_value_change(self, item):
+        if item.column() == 1:
+            key = self.parameter_table.item(item.row(), 0).text()
+            value = item.text()
+            self.ui.update_logger("Changed value of key '{}' to '{}'".format(key, value))

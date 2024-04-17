@@ -91,11 +91,17 @@ class Frontend(FrontendGeneric):
         if response_1.ok:
             response_2 = requests.post(self.url + "/create_antenna")
             if response_2.ok:
-                self.ui.update_logger("{} synthesis".format(self.properties.antenna.antenna_selected))
+                msg = "{} synthesis".format(self.properties.antenna.antenna_selected)
+                self.ui.update_logger(msg)
+                logger.debug(msg)
                 return response_2.json()
             else:
-                self.ui.update_logger("Wrong synthesis")
+                msg = "Wrong synthesis"
+                self.ui.update_logger(msg)
+                logger.error(msg)
                 return False
         else:
-            self.ui.update_logger(response_1.json())
+            msg = response_1.json()
+            self.ui.update_logger(msg)
+            logger.error(msg)
             return False

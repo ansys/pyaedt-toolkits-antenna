@@ -284,6 +284,8 @@ class AntennaCatalogMenu(object):
                 line = self.add_line(parameter.replace("_", " "), antenna_parameters[parameter])
                 self.main_window.antenna_synthesis_menu.antenna_input.addLayout(line)
 
+        self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.table_layout)
+
         # Populate synthesis page
         self.ui.set_page(self.main_window.antenna_synthesis_menu.antenna_synthesis_menu_widget)
 
@@ -318,6 +320,8 @@ class AntennaCatalogMenu(object):
         label.setText(label_value)
         font = QFont(self.main_window.properties.font["family"], self.main_window.properties.font["title_size"])
         label.setFont(font)
+        font.setPointSize(self.main_window.properties.font["title_size"])
+
         if isinstance(value, list):
             combobox = QComboBox()
             combobox.addItems(value)

@@ -62,6 +62,12 @@
            <height>0</height>
           </size>
          </property>
+         <property name="maximumSize">
+          <size>
+           <width>400</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <layout class="QVBoxLayout" name="antenna_input">
           <property name="leftMargin">
            <number>6</number>
@@ -142,7 +148,7 @@
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>40</width>
+              <width>20</width>
               <height>20</height>
              </size>
             </property>
@@ -270,7 +276,7 @@
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>85</width>
+                  <width>101</width>
                   <height>0</height>
                  </size>
                 </property>
@@ -326,6 +332,18 @@
              <layout class="QHBoxLayout" name="frequency_unit_layout">
               <item>
                <widget class="QLabel" name="frequency_unit_label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>95</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Frequency Unit</string>
                 </property>
@@ -430,7 +448,7 @@
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>40</width>
+              <width>20</width>
               <height>20</height>
              </size>
             </property>
@@ -446,7 +464,7 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>260</width>
               <height>0</height>
              </size>
             </property>
@@ -482,7 +500,7 @@
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>40</width>
+              <width>20</width>
               <height>20</height>
              </size>
             </property>

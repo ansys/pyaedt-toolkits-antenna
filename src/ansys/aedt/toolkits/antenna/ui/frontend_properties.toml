@@ -2,14 +2,14 @@
 toolkit_name= "antenna"
 backend_url= "127.0.0.1"
 backend_port= 5001
-debug= false
+debug= true
 app_name= "Antenna Wizard"
 main_title= "Antenna Toolkit"
 welcome_message= "Welcome to the antenna toolkit"
 version= "v0.3.0"
 copyright= "By: ansys"
 year= 2023
-theme= "ansys_dark.json"
+theme= "ansys_light.json"
 high_resolution= false
 
 [[defaults.add_left_menus]]
