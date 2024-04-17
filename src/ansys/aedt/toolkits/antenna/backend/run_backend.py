@@ -22,10 +22,15 @@
 
 import sys
 
+# isort: off
+
+from ansys.aedt.toolkits.common.backend.rest_api import logger
+
+# isort: on
+
 from ansys.aedt.toolkits.common.backend.multithreading_server import MultithreadingServer
 from ansys.aedt.toolkits.common.backend.rest_api import app
 from ansys.aedt.toolkits.common.backend.rest_api import jsonify
-from ansys.aedt.toolkits.common.backend.rest_api import logger
 from flask import request
 
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
