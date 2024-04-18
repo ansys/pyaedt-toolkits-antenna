@@ -229,6 +229,8 @@ class AntennaSynthesisMenu(object):
             self.ui.update_logger("Changed value of key {} to {}".format(key, value))
             if self.main_window.properties.antenna.antenna_created:
                 self.main_window.update_antenna_parameter(key, value)
+                selected_project = self.main_window.home_menu.project_combobox.currentText()
+                selected_design = self.main_window.home_menu.design_combobox.currentText()
                 self.model_info = self.main_window.get_aedt_model(selected_project, selected_design)
                 self.__update_antenna_model()
 
@@ -274,7 +276,7 @@ class AntennaSynthesisMenu(object):
         self.table_layout.addWidget(scroll_area)
 
     def antenna_created_finished(self):
-        self.ui.update_progress(100)
+        self.ui.update_progress(50)
         selected_project = self.main_window.home_menu.project_combobox.currentText()
         selected_design = self.main_window.home_menu.design_combobox.currentText()
 
@@ -292,6 +294,7 @@ class AntennaSynthesisMenu(object):
 
         self.model_info = self.main_window.get_aedt_model(selected_project, selected_design)
         self.__update_antenna_model()
+        self.ui.update_progress(100)
 
     def __update_antenna_model(self):
         if self.model_info:
