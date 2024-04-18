@@ -170,7 +170,7 @@ class ApplicationWindow(QMainWindow, Frontend):
 
         if menu_name == "antenna_results_menu":
             selected_menu.set_active(True)
-
+            self.ui.set_page(self.antenna_results_menu.antenna_results_menu_widget)
             is_left_visible = self.ui.is_left_column_visible()
 
             self.ui.set_left_column_menu(
@@ -186,6 +186,7 @@ class ApplicationWindow(QMainWindow, Frontend):
         if self.antenna_catalog_menu.grid_item:
             for item in self.antenna_catalog_menu.grid_item:
                 item.plotter.close()
+        # Remove Antenna
         event.accept()
 
 

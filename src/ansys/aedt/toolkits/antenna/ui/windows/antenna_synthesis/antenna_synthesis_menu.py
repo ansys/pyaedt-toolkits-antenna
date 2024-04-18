@@ -215,7 +215,7 @@ class AntennaSynthesisMenu(object):
         be_properties = self.main_window.get_properties()
 
         if be_properties.get("active_project"):
-            self.ui.update_progress(0)
+            self.ui.update_progress(50)
             active_project = self.main_window.home_menu.project_combobox.currentText()
             active_design = self.main_window.home_menu.design_combobox.currentText()
 
@@ -293,7 +293,7 @@ class AntennaSynthesisMenu(object):
         self.table_layout.addWidget(scroll_area)
 
     def antenna_created_finished(self):
-        self.ui.update_progress(50)
+        self.ui.update_progress(75)
         selected_project = self.main_window.home_menu.project_combobox.currentText()
         selected_design = self.main_window.home_menu.design_combobox.currentText()
 

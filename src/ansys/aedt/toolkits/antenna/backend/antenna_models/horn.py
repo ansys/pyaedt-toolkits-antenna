@@ -207,6 +207,9 @@ class Conical(CommonHorn):
 
         self.set_variables_in_hfss()
 
+        # Solution type: Modal
+        self._app.solution_type = "Modal"
+
         # Map parameters
         horn_length = self.synthesis_parameters.horn_length.hfss_variable
         horn_radius = self.synthesis_parameters.horn_radius.hfss_variable
@@ -495,6 +498,9 @@ class PyramidalRidged(CommonHorn):
             return False
 
         self.set_variables_in_hfss()
+
+        # Solution type: Modal
+        self._app.solution_type = "Modal"
 
         # Map parameters
         aperture_height = self.synthesis_parameters.aperture_height.hfss_variable
@@ -1163,6 +1169,9 @@ class Corrugated(CommonHorn):
         notches_value = self.synthesis_parameters.notches.value
         del self.synthesis_parameters.notches
 
+        # Solution type: Modal
+        self._app.solution_type = "Modal"
+
         self.set_variables_in_hfss([notches])
 
         # Map parameters
@@ -1427,6 +1436,9 @@ class Elliptical(CommonHorn):
             return False
 
         self.set_variables_in_hfss()
+
+        # Solution type: Modal
+        self._app.solution_type = "Modal"
 
         # Map parameters
         horn_length = self.synthesis_parameters.horn_length.hfss_variable
@@ -1733,6 +1745,9 @@ class EPlane(CommonHorn):
             return False
 
         self.set_variables_in_hfss()
+
+        # Solution type: Modal
+        self._app.solution_type = "Modal"
 
         # Map parameters
         wg_length = self.synthesis_parameters.wg_length.hfss_variable
@@ -2083,7 +2098,11 @@ class HPlane(CommonHorn):
             self._app.logger.warning("Material not found. Create the material before assigning it.")
 
             return False
+
         self.set_variables_in_hfss()
+
+        # Solution type: Modal
+        self._app.solution_type = "Modal"
 
         # Map parameters
         wg_length = self.synthesis_parameters.wg_length.hfss_variable
@@ -2438,6 +2457,9 @@ class Pyramidal(CommonHorn):
             return False
 
         self.set_variables_in_hfss()
+
+        # Solution type: Modal
+        self._app.solution_type = "Modal"
 
         # Map parameters
         wg_length = self.synthesis_parameters.wg_length.hfss_variable
@@ -2818,6 +2840,9 @@ class QuadRidged(CommonHorn):
             return False
 
         self.set_variables_in_hfss()
+
+        # Solution type: Modal
+        self._app.solution_type = "Modal"
 
         # Map parameters
         aperture_width = self.synthesis_parameters.aperture_width.hfss_variable

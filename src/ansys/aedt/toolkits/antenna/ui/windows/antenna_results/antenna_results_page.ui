@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>605</width>
-    <height>442</height>
+    <width>1471</width>
+    <height>1083</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,7 +25,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <layout class="QVBoxLayout" name="antenna_results_layout">
      <property name="spacing">
@@ -38,19 +38,28 @@
       <number>0</number>
      </property>
      <property name="bottomMargin">
-      <number>20</number>
+      <number>0</number>
      </property>
      <item>
-      <layout class="QHBoxLayout" name="farfield_results">
+      <layout class="QHBoxLayout" name="farfield_2d_results">
        <item>
-        <widget class="QFrame" name="farfield_2d_frame">
-         <layout class="QVBoxLayout" name="farfield_2d_layout"/>
+        <widget class="QFrame" name="farfield_2d_phi_frame">
+         <property name="maximumSize">
+          <size>
+           <width>350</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <layout class="QVBoxLayout" name="farfield_2d_phi_layout"/>
         </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -61,14 +70,20 @@
         </spacer>
        </item>
        <item>
-        <widget class="QFrame" name="farfield_3d_frame">
-         <layout class="QVBoxLayout" name="farfield_3d_layout"/>
+        <widget class="QFrame" name="farfield_2d_theta_frame">
+         <property name="maximumSize">
+          <size>
+           <width>350</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <layout class="QVBoxLayout" name="farfield_2d_theta_layout"/>
         </widget>
        </item>
       </layout>
      </item>
      <item>
-      <spacer name="verticalSpacer">
+      <spacer name="verticalSpacer_2">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -85,10 +100,61 @@
      </item>
      <item>
       <widget class="QFrame" name="scattering_frame">
+       <property name="maximumSize">
+        <size>
+         <width>740</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <layout class="QVBoxLayout" name="scattering_layout"/>
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="farfield_3d_result_layout">
+     <item>
+      <widget class="QFrame" name="farfield_3d_frame">
+       <layout class="QVBoxLayout" name="farfield_3d_layout">
+        <property name="topMargin">
+         <number>1</number>
+        </property>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

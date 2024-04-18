@@ -40,6 +40,7 @@ from PySide6.QtWidgets import QFrame
 
 from pyvistaqt import BackgroundPlotter
 import pyvista as pv
+import pyqtgraph as pg
 
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
@@ -83,10 +84,30 @@ class AntennaResultsMenu(object):
         self.antenna_results_column_vertical_layout = new_ui.antenna_results_vertical_layout
 
         # Specific properties
+        self.farfield_2d_phi_layout = self.antenna_results_menu_widget.findChild(QVBoxLayout, "farfield_2d_phi_layout")
+        self.farfield_2d_phi_frame = self.antenna_results_menu_widget.findChild(QFrame, "farfield_2d_phi_frame")
+        self.farfield_2d_phi_frame.setFrameShape(QFrame.Box)
+
+        self.farfield_2d_theta_layout = self.antenna_results_menu_widget.findChild(QVBoxLayout, "farfield_2d_theta_layout")
+        self.farfield_2d_theta_frame = self.antenna_results_menu_widget.findChild(QFrame, "farfield_2d_theta_frame")
+        self.farfield_2d_theta_frame.setFrameShape(QFrame.Box)
+
+        self.farfield_3d_layout = self.antenna_results_menu_widget.findChild(QVBoxLayout, "farfield_3d_layout")
+        self.farfield_3d_frame = self.antenna_results_menu_widget.findChild(QFrame, "farfield_3d_frame")
+        self.farfield_3d_frame.setFrameShape(QFrame.Box)
+
+        self.scattering_layout = self.antenna_results_menu_widget.findChild(QVBoxLayout, "scattering_layout")
+        self.scattering_frame = self.antenna_results_menu_widget.findChild(QFrame, "scattering_frame")
+
+        self.scattering_frame.setFrameShape(QFrame.Box)
+
         self.antenna_results_thread = None
-        # self.antenna_catalog = None
-        # self.antenna_catalog_layout = self.antenna_catalog_menu_widget.findChild(QVBoxLayout, "antenna_catalog_layout")
-        # self.grid_item = []
+        self.scattering_graph = None
+        self.farfield_2d_phi_widget = None
+        self.farfield_2d_phi_graph = None
+        self.farfield_2d_theta_graph = None
+        self.farfield_3d_plotter = None
+        self.cad_actor = None
 
     def setup(self):
         # Modify theme
@@ -138,6 +159,31 @@ class AntennaResultsMenu(object):
 
         self.antenna_results_column_vertical_layout.addLayout(layout_row_obj)
 
+        # Set results page
+
+        # Scattering
+        self.scattering_graph = pg.PlotWidget()
+        self.scattering_layout.addWidget(self.scattering_graph)
+
+        # 2D Cut phi
+        # Add combobox
+        # Add check box
+        self.farfield_2d_phi_graph = pg.PlotWidget()
+        self.farfield_2d_phi_layout.addWidget(self.farfield_2d_phi_graph)
+
+        # 2D Cut theta
+        self.farfield_2d_theta_graph = pg.PlotWidget()
+        self.farfield_2d_theta_layout.addWidget(self.farfield_2d_theta_graph)
+
+        # 3D
+        self.farfield_3d_plotter = BackgroundPlotter(show=False)
+        self.farfield_3d_plotter.view_isometric()
+        self.farfield_3d_plotter.set_background(color=self.main_window.ui.themes["app_color"]["bg_one"])
+        logo_path = os.path.join(os.path.dirname(__file__), "ANSYS_logo.obj")
+        cad_mesh = pv.read(logo_path)
+        self.cad_actor = self.farfield_3d_plotter.add_mesh(cad_mesh)
+        self.farfield_3d_layout.addWidget(self.farfield_3d_plotter)
+
     def antenna_results_button_clicked(self):
         if (not self.main_window.properties.antenna.antenna_created
                 or not self.main_window.properties.antenna.create_setup):
@@ -146,7 +192,6 @@ class AntennaResultsMenu(object):
         # Start a separate thread for the backend call
         self.antenna_results_thread = GetResultsThread(app=self)
         self.antenna_results_thread.finished_signal.connect(self.antenna_results_finished)
-
         msg = "Analyzing antenna"
         self.ui.update_logger(msg)
 
@@ -155,10 +200,11 @@ class AntennaResultsMenu(object):
     def antenna_results_finished(self):
         self.ui.update_progress(100)
 
-        farfield_2d_results = self.main_window.farfield_2d_results()
-        scattering_results = self.main_window.scattering_results()
+        farfield_data = self.main_window.export_farfield()
 
-        # Get results: get sparameters, get farfield
+        farfield_data.polar_plot_3d_pyvista()
+
+        scattering_results = self.main_window.scattering_results()
 
         # Create layout
 

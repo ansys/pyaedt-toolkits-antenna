@@ -336,8 +336,9 @@ class ToolkitBackend(AEDTCommon):
             farfield_exporter = self.aedtapp.get_antenna_ffd_solution_data(
                 frequencies=frequencies, setup=setup, sphere=sphere, variations=variations
             )
-
+            frequencies = farfield_exporter.frequencies
             if encode:
+
                 eep_files = farfield_exporter.eep_files
                 encoded_eep_files = []
                 encoded_eep_json_files = []
@@ -374,7 +375,13 @@ class ToolkitBackend(AEDTCommon):
 
                     self.release_aedt(False, False)
 
-                    return encoded_eep_files, encoded_eep_json_files, encoded_geometry_files, encoded_ffd_files
+                    return (
+                        encoded_eep_files,
+                        encoded_eep_json_files,
+                        encoded_geometry_files,
+                        encoded_ffd_files,
+                        frequencies,
+                    )
 
             self.release_aedt(False, False)
-            return farfield_exporter.eep_files, farfield_exporter.frequency
+            return farfield_exporter.eep_files, farfield_exporter.frequencies
