@@ -164,24 +164,6 @@ class ApplicationWindow(QMainWindow, Frontend):
                 item.plotter.close()
         event.accept()
 
-    # def plot_design_menu_clicked(self):
-    #     selected_menu = self.ui.get_selected_menu()
-    #     menu_name = selected_menu.objectName()
-    #
-    #     if menu_name == "plot_design_menu":
-    #         selected_menu.set_active(True)
-    #         self.ui.set_page(self.plot_design_menu.plot_design_menu_widget)
-    #
-    #         self.ui.set_left_column_menu(
-    #             menu=self.plot_design_menu.plot_design_column_widget,
-    #             title="Plot Design",
-    #             icon_path=self.ui.images_load.icon_path("icon_plot_2d.svg"),
-    #         )
-    #
-    #         is_left_visible = self.ui.is_left_column_visible()
-    #         if not is_left_visible:
-    #             self.ui.toggle_left_column()
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -1,6 +1,6 @@
 import os
 import sys
-
+import base64
 from PySide6.QtCore import QThread
 from PySide6.QtCore import Qt
 from PySide6.QtCore import Signal
@@ -27,6 +27,18 @@ from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
 from windows.antenna_synthesis.antenna_synthesis_page import Ui_AntennaSynthesis
+
+
+class GenerateAntennaThread(QThread):
+    finished_signal = Signal(bool)
+
+    def __init__(self, app):
+        super().__init__()
+        self.main_window = app.main_window
+
+    def run(self):
+        success = self.main_window.antenna_generate()
+        self.finished_signal.emit(success)
 
 
 class AntennaSynthesisMenu(object):
@@ -106,6 +118,8 @@ class AntennaSynthesisMenu(object):
         self.antenna_button_layout = None
         self.synthesis_button = None
         self.generate_antenna_button = None
+        self.generate_antenna_thread = None
+        self.model_info = None
 
     def setup(self):
         # Modify theme
@@ -152,6 +166,9 @@ class AntennaSynthesisMenu(object):
         ):
             self.ui.update_logger("No antenna selected")
             return
+        elif self.main_window.settings_menu.aedt_thread and self.main_window.settings_menu.aedt_thread.isRunning():
+            self.ui.update_logger("AEDT launching")
+            return
         else:
             is_backend_busy = self.main_window.backend_busy()
             if is_backend_busy:
@@ -159,56 +176,159 @@ class AntennaSynthesisMenu(object):
                 return
             self.main_window.properties.antenna.antenna_parameters = self.main_window.antenna_synthesis()
             if self.main_window.properties.antenna.antenna_parameters:
-                self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.table_layout)
-                app_color = self.main_window.ui.themes["app_color"]
-                num_rows = len(self.main_window.properties.antenna.antenna_parameters)
-
-                self.parameter_table = QTableWidget(num_rows, 2)
-
-                self.parameter_table.setHorizontalHeaderLabels(["Parameter", "Value"])
-
-                h_header = self.parameter_table.horizontalHeader()
-                v_header = self.parameter_table.verticalHeader()
-
-                custom_style = """
-                QHeaderView::section {{
-                background-color: {_bg_color};
-                color: {_color};
-                }}
-                """
-
-                table_header_style = custom_style.format(_bg_color=app_color["dark_three"],
-                                                         _color=app_color["text_foreground"])
-
-                h_header.setStyleSheet(table_header_style)
-                v_header.setStyleSheet(table_header_style)
-
-                for row, (key, value) in enumerate(self.main_window.properties.antenna.antenna_parameters.items()):
-
-                    key_item = QTableWidgetItem(key)
-                    value_item = QTableWidgetItem(str(value))
-
-                    self.parameter_table.setItem(row, 0, key_item)
-                    self.parameter_table.setItem(row, 1, value_item)
-
-                    key_item.setFlags(key_item.flags() & ~Qt.ItemIsEditable)
-
-                self.parameter_table.itemChanged.connect(self.parameter_value_change)
-
-                scroll_area = QScrollArea()
-                scroll_area.setWidgetResizable(True)
-                scroll_area.setWidget(self.parameter_table)
-                self.table_layout.addWidget(scroll_area)
-
+                self.__update_antenna_table()
                 be_properties = self.main_window.get_properties()
                 if be_properties["design_list"]:
                     self.generate_antenna_button.setEnabled(True)
 
     def generate_antenna_button_clicked(self):
-        self.ui.update_logger("Create Antenna")
+        if (not self.main_window.settings_menu.aedt_thread or
+                (hasattr(self.main_window.settings_menu.aedt_thread, 'aedt_launched') and
+                 not self.main_window.settings_menu.aedt_thread.aedt_launched)):
+            msg = "AEDT not launched."
+            self.ui.update_logger(msg)
+            return False
+
+        if self.generate_antenna_thread and self.generate_antenna_thread.isRunning() or self.main_window.backend_busy():
+            msg = "Toolkit running"
+            self.ui.update_logger(msg)
+            self.main_window.logger.debug(msg)
+            return False
+
+        be_properties = self.main_window.get_properties()
+
+        if be_properties.get("active_project"):
+            self.ui.update_progress(0)
+            active_project = self.main_window.home_menu.project_combobox.currentText()
+            active_design = self.main_window.home_menu.design_combobox.currentText()
+
+            for project in be_properties["project_list"]:
+                if self.main_window.get_project_name(project) == active_project:
+                    be_properties["active_project"] = project
+                    break
+            be_properties["active_design"] = active_design
+
+            self.main_window.set_properties(be_properties)
+
+            # Start a separate thread for the backend call
+            self.generate_antenna_thread = GenerateAntennaThread(app=self)
+            self.generate_antenna_thread.finished_signal.connect(self.antenna_created_finished)
+
+            msg = "Generating antenna"
+            self.ui.update_logger(msg)
+
+            self.generate_antenna_thread.start()
+
+        else:
+            self.ui.update_logger("Toolkit not connect to AEDT.")
 
     def parameter_value_change(self, item):
         if item.column() == 1:
             key = self.parameter_table.item(item.row(), 0).text()
             value = item.text()
-            self.ui.update_logger("Changed value of key '{}' to '{}'".format(key, value))
+            self.ui.update_logger("Changed value of key {} to {}".format(key, value))
+            if self.main_window.properties.antenna.antenna_created:
+                self.main_window.update_antenna_parameter(key, value)
+                self.model_info = self.main_window.get_aedt_model(selected_project, selected_design)
+                self.__update_antenna_model()
+
+    def __update_antenna_table(self):
+        self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.table_layout)
+        app_color = self.main_window.ui.themes["app_color"]
+        num_rows = len(self.main_window.properties.antenna.antenna_parameters)
+
+        self.parameter_table = QTableWidget(num_rows, 2)
+
+        self.parameter_table.setHorizontalHeaderLabels(["Parameter", "Value"])
+
+        h_header = self.parameter_table.horizontalHeader()
+        v_header = self.parameter_table.verticalHeader()
+
+        custom_style = """
+                        QHeaderView::section {{
+                        background-color: {_bg_color};
+                        color: {_color};
+                        }}
+                        """
+
+        table_header_style = custom_style.format(_bg_color=app_color["dark_three"],
+                                                 _color=app_color["text_foreground"])
+
+        h_header.setStyleSheet(table_header_style)
+        v_header.setStyleSheet(table_header_style)
+
+        for row, (key, value) in enumerate(self.main_window.properties.antenna.antenna_parameters.items()):
+            key_item = QTableWidgetItem(key)
+            value_item = QTableWidgetItem(str(value))
+
+            self.parameter_table.setItem(row, 0, key_item)
+            self.parameter_table.setItem(row, 1, value_item)
+
+            key_item.setFlags(key_item.flags() & ~Qt.ItemIsEditable)
+
+        self.parameter_table.itemChanged.connect(self.parameter_value_change)
+
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setWidget(self.parameter_table)
+        self.table_layout.addWidget(scroll_area)
+
+    def antenna_created_finished(self):
+        self.ui.update_progress(100)
+        selected_project = self.main_window.home_menu.project_combobox.currentText()
+        selected_design = self.main_window.home_menu.design_combobox.currentText()
+
+        properties = self.main_window.get_properties()
+        active_project = self.main_window.get_project_name(properties["active_project"])
+        active_design = properties["active_design"]
+        if active_project != selected_project or active_design != selected_design:
+            self.main_window.home_menu.update_project()
+            self.main_window.home_menu.update_design()
+
+        self.main_window.properties.antenna.antenna_created = self.main_window.properties.antenna.antenna_selected
+
+        self.generate_antenna_button.setEnabled(False)
+        self.synthesis_button.setEnabled(False)
+
+        self.model_info = self.main_window.get_aedt_model(selected_project, selected_design)
+        self.__update_antenna_model()
+
+    def __update_antenna_model(self):
+        if self.model_info:
+            self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.botton_image_layout)
+
+            plotter = BackgroundPlotter(show=False)
+            for element in self.model_info:
+                # Decode response
+                encoded_data = self.model_info[element][0]
+                encoded_data_bytes = bytes(encoded_data, "utf-8")
+                decoded_data = base64.b64decode(encoded_data_bytes)
+                # Create obj file locally
+                file_path = os.path.join(self.main_window.temp_folder, element + ".obj")
+                with open(file_path, "wb") as f:
+                    f.write(decoded_data)
+                # Create PyVista object
+                if not os.path.exists(file_path):
+                    break
+
+                cad_mesh = pv.read(file_path)
+
+                plotter.add_mesh(cad_mesh,
+                                 color=self.model_info[element][1],
+                                 show_scalar_bar=False,
+                                 opacity=self.model_info[element][2]
+                                 )
+
+            plotter.view_isometric()
+            plotter.set_background(color=self.main_window.ui.themes["app_color"]["bg_one"])
+            plotter.add_axes_at_origin(labels_off=True, line_width=5)
+            plotter.show_grid(color=self.main_window.ui.themes["app_color"]["dark_two"])
+
+            image_layout = QHBoxLayout()
+            antenna_image = QLabel()
+            antenna_image.setScaledContents(True)
+            antenna_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+            image_layout.addWidget(plotter)
+
+            self.main_window.antenna_synthesis_menu.botton_image_layout.addLayout(image_layout, 0, 0, 1, 1)

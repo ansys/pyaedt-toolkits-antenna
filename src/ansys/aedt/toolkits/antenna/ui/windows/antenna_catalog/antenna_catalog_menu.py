@@ -251,6 +251,9 @@ class AntennaCatalogMenu(object):
         self.ui.set_page(self.antenna_catalog_menu_widget)
 
     def on_grid_item_clicked(self, index):
+        if self.main_window.properties.antenna.antenna_created:
+            self.ui.update_logger("{} antenna generated".format(self.main_window.properties.antenna.antenna_created))
+            return
         available_antennas = antenna_catalog[self.main_window.properties.antenna.antenna_model_selected]
         self.main_window.properties.antenna.antenna_selected = available_antennas["models"][index]
         self.ui.update_logger("{} selected".format(self.main_window.properties.antenna.antenna_selected))

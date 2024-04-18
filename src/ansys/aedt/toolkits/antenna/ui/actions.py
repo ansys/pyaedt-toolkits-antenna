@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 import re
-
+import tempfile
 from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QLineEdit
@@ -43,19 +43,102 @@ number_pattern = re.compile(r"^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$")
 class Frontend(FrontendGeneric):
     def __init__(self):
         FrontendGeneric.__init__(self)
+        self.temp_folder = tempfile.mkdtemp()
 
     def antenna_synthesis(self):
+        """Antenna synthesis."""
+        if not self.__update_antenna_properties():
+            return False
 
-        be_properties = requests.get(self.url + "/properties").json()
+        response = requests.post(self.url + "/create_antenna")
+        if response.ok:
+            msg = "{} synthesis".format(self.properties.antenna.antenna_selected)
+            self.ui.update_logger(msg)
+            logger.debug(msg)
+            return response.json()
+
+        else:
+            msg = response.json()
+            self.ui.update_logger(msg)
+            logger.error(msg)
+            return False
+
+    def antenna_generate(self):
+        """Generate antenna in HFSS design."""
+        # Antenna properties
+        if not self.__update_antenna_properties(synth_only=False):
+            return False
+
+        be_properties = self.get_properties()
+
+        # Toolkit properties
+        project_selected = be_properties["active_project"]
+        design_selected = be_properties["active_design"]
+        if project_selected and design_selected:
+            if project_selected == "No Project":
+                project_selected = generate_unique_project_name(rootname=self.temp_folder)
+                be_properties["active_project"] = project_selected
+
+            for project in be_properties["project_list"]:
+                if self.get_project_name(project) == project_selected:
+                    be_properties["active_project"] = project
+                    if project_selected in list(be_properties["design_list"].keys()):
+                        designs = be_properties["design_list"][project_selected]
+                        for design in designs:
+                            if design_selected == design:
+                                be_properties["active_design"] = design
+                                break
+                    break
+        else:
+            project_selected = generate_unique_project_name()
+            project_selected = self.get_project_name(project_selected)
+            be_properties["active_project"] = project_selected
+
+        # Set properties
+        if not self.set_properties(be_properties):
+            msg = "Wrong parameters {}".format(be_properties)
+            self.ui.update_logger(msg)
+            logger.debug(msg)
+            return False
+
+        response = requests.post(self.url + "/create_antenna")
+        if response.ok:
+            msg = "{} antenna created".format(self.properties.antenna.antenna_selected)
+            self.ui.update_logger(msg)
+            logger.debug(msg)
+            return response.json()
+        else:
+            msg = "Generation failed"
+            self.ui.update_logger(msg)
+            logger.error(msg)
+            return False
+
+    def update_antenna_parameter(self, key, value):
+        """Update antenna parameter."""
+        response = requests.put(self.url + "/update_parameters", json={"key": key, "value": value})
+        if response.ok:
+            msg = "{} updated in design".format(key)
+            self.ui.update_logger(msg)
+            logger.debug(msg)
+            return response.json()
+
+        else:
+            msg = "{} not updated".format(key)
+            self.ui.update_logger(msg)
+            logger.error(msg)
+            return False
+
+    def __update_antenna_properties(self, synth_only=True):
+        """Update antenna backend properties."""
+        be_properties = self.get_properties()
 
         new_properties = {
             "model": self.properties.antenna.antenna_selected,
             "length_unit": self.antenna_synthesis_menu.length_unit.text(),
             "frequency_unit": self.antenna_synthesis_menu.frequency_unit.text(),
-            "synth_only": True,
+            "synth_only": synth_only,
         }
 
-        synthesis_inputs = {}
         label = ""
         origin = [0.0, 0.0, 0.0]
         new_properties["origin"] = origin
@@ -86,22 +169,10 @@ class Frontend(FrontendGeneric):
                     new_properties[label] = antenna_input_lines.currentText()
                 label = ""
 
-        response_1 = requests.put(self.url + "/properties", json=new_properties)
-
-        if response_1.ok:
-            response_2 = requests.post(self.url + "/create_antenna")
-            if response_2.ok:
-                msg = "{} synthesis".format(self.properties.antenna.antenna_selected)
-                self.ui.update_logger(msg)
-                logger.debug(msg)
-                return response_2.json()
-            else:
-                msg = "Wrong synthesis"
-                self.ui.update_logger(msg)
-                logger.error(msg)
-                return False
-        else:
-            msg = response_1.json()
+        if not self.set_properties(new_properties):
+            msg = "Wrong parameters {}".format(new_properties)
             self.ui.update_logger(msg)
-            logger.error(msg)
+            logger.debug(msg)
             return False
+        else:
+            return True

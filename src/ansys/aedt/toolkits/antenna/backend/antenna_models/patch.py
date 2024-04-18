@@ -583,8 +583,8 @@ class RectangularPatchInset(CommonPatch):
 
         parameters["sub_y"] = sub_y
 
-        inset_distance = (
-            constants.unit_converter(patch_length / 2 - inset_distance_meter, "Length", "meter", length_unit),
+        inset_distance = constants.unit_converter(
+            patch_length / 2 - inset_distance_meter, "Length", "meter", length_unit
         )
 
         parameters["inset_distance"] = inset_distance
