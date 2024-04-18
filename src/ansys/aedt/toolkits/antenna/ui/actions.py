@@ -101,6 +101,18 @@ class Frontend(FrontendGeneric):
             logger.debug(msg)
             return False
 
+        new_properties = {
+            "create_setup": self.main_window.create_setup.isChecked(),
+            "component_3d": self.main_window.create_setup.isChecked(),
+            "lattice_pair": self.main_window.create_setup.isChecked(),
+        }
+
+        if not self.set_properties(new_properties):
+            msg = "Wrong parameters {}".format(new_properties)
+            self.ui.update_logger(msg)
+            logger.debug(msg)
+            return False
+
         response = requests.post(self.url + "/create_antenna")
         if response.ok:
             msg = "{} antenna created".format(self.properties.antenna.antenna_selected)

@@ -38,7 +38,7 @@ is_active= false
 
 [[defaults.add_left_menus]]
 btn_icon= "icon_plot_2d.svg"
-btn_id= "analysis_menu"
+btn_id= "antenna_results_menu"
 btn_text= "Analysis"
 btn_tooltip= "Analysis"
 show_top= true
@@ -58,3 +58,4 @@ available_models = []
 antenna_model_selected = ""
 antenna_selected = ""
 antenna_parameters = {}
+create_setup = true

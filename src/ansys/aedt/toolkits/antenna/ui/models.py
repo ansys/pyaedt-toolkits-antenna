@@ -45,6 +45,7 @@ class AntennaProperties(BaseModel):
     antenna_model_selected: str = ""
     antenna_selected: str = ""
     antenna_parameters: Dict[str, Any] = Field(default_factory=dict)
+    create_setup: bool = True
 
 
 class FrontendProperties(BaseModel):

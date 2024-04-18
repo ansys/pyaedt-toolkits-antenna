@@ -47,6 +47,7 @@ from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWin
 # New windows
 from windows.antenna_catalog.antenna_catalog_menu import AntennaCatalogMenu
 from windows.antenna_synthesis.antenna_synthesis_menu import AntennaSynthesisMenu
+from windows.antenna_results.antenna_results_menu import AntennaResultsMenu
 
 # Import general common frontend modules
 from ansys.aedt.toolkits.common.ui.logger_handler import logger
@@ -129,6 +130,11 @@ class ApplicationWindow(QMainWindow, Frontend):
         self.antenna_synthesis_menu.setup()
         self.ui.left_menu.clicked.connect(self.antenna_synthesis_menu_clicked)
 
+        # Results menu
+        self.antenna_results_menu = AntennaResultsMenu(self)
+        self.antenna_results_menu.setup()
+        self.ui.left_menu.clicked.connect(self.antenna_results_menu_clicked)
+
         # Home page as first page
         self.ui.set_page(self.ui.load_pages.home_page)
 
@@ -157,6 +163,24 @@ class ApplicationWindow(QMainWindow, Frontend):
         if menu_name == "antenna_synthesis_menu":
             selected_menu.set_active(True)
             self.ui.set_page(self.antenna_synthesis_menu.antenna_synthesis_menu_widget)
+
+    def antenna_results_menu_clicked(self):
+        selected_menu = self.ui.get_selected_menu()
+        menu_name = selected_menu.objectName()
+
+        if menu_name == "antenna_results_menu":
+            selected_menu.set_active(True)
+
+            is_left_visible = self.ui.is_left_column_visible()
+
+            self.ui.set_left_column_menu(
+                menu=self.antenna_results_menu.antenna_results_column_widget,
+                title=properties.add_left_menus[1]["btn_text"],
+                icon_path=self.ui.images_load.icon_path(properties.add_left_menus[1]["btn_icon"]),
+            )
+
+            if not is_left_visible:
+                self.ui.toggle_left_column()
 
     def closeEvent(self, event):
         if self.antenna_catalog_menu.grid_item:

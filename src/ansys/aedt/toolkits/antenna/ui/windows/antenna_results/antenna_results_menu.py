@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from functools import partial
-
 from PySide6.QtCore import QThread
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QComboBox
@@ -44,156 +42,94 @@ from pyvistaqt import BackgroundPlotter
 import pyvista as pv
 
 # toolkit PySide6 Widgets
-from ansys.aedt.toolkits.common.ui.utils.widgets import PyLabel
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
 
-from windows.antenna_catalog.antenna_catalog_page import Ui_AntennaCatalog
-from windows.antenna_catalog.antenna_catalog_column import Ui_LeftColumn
+# from windows.antenna_results.antenna_results_page import Ui_AntennaResults
+from windows.antenna_results.antenna_results_column import Ui_LeftColumn
 
 import os
 import sys
 
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib
 
-antenna_catalog = {}
-if os.path.isfile(os.path.join(os.path.dirname(__file__), "antenna_catalog.toml")):
-    with open(os.path.join(os.path.dirname(__file__), "antenna_catalog.toml"), mode="rb") as file_handler:
-        antenna_catalog = tomllib.load(file_handler)
-
-
-class AntennaItem(QWidget):
-    """Antenna item."""
-    antenna_item_signal = Signal(int)
-
-    def __init__(self, index, antenna_info, app_color):
-        super().__init__()
-        self.index = index
-
-        text_color = app_color["text_active"]
-        background = app_color["dark_three"]
-
-        layout = QVBoxLayout(self)
-
-        self.plotter = BackgroundPlotter(show=False)
-        antenna_path = antenna_info["path"]
-        antenna_name = antenna_info["name"]
-
-        for element in antenna_info:
-            if element in ["path", "name"]:
-                continue
-            antenna_properties = antenna_info[element]
-            file_path = os.path.join(antenna_path, "model", antenna_properties["name"] + ".obj")
-            cad_mesh = pv.read(file_path)
-            self.plotter.add_mesh(
-                cad_mesh,
-                color=antenna_properties["color"],
-                show_scalar_bar=False,
-                opacity=antenna_properties["opacity"]
-            )
-
-        self.plotter.view_isometric()
-        self.plotter.set_background(color=app_color["bg_one"])
-
-        layout.addWidget(self.plotter)
-
-        label = QLabel(antenna_name)
-        layout.addWidget(label)
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        antenna_label_style = """
-                            QLabel {{
-                            color: {_color};
-                            font-size: {_font_size}pt;
-                            font-weight: bold;
-                            }}
-                            """
-        custom_style = antenna_label_style.format(
-            _color=text_color, _bg_color=background, _font_size=20
-        )
-        label.setStyleSheet(custom_style)
-
-    def mousePressEvent(self, event):
-        self.antenna_item_signal.emit(self.index)
-        super().mousePressEvent(event)
-
-
-class AntennaCatalogMenu(object):
+class AntennaResultsMenu(object):
     def __init__(self, main_window):
         # General properties
         self.main_window = main_window
         self.ui = main_window.ui
 
-        # Add properties
-        self.main_window.properties.antenna.available_models = list(antenna_catalog.keys())
-
         # Add page
-        antenna_catalog_menu_index = self.ui.add_page(Ui_AntennaCatalog)
-        self.ui.load_pages.pages.setCurrentIndex(antenna_catalog_menu_index)
-        self.antenna_catalog_menu_widget = self.ui.load_pages.pages.currentWidget()
+        # antenna_catalog_menu_index = self.ui.add_page(Ui_AntennaCatalog)
+        # self.ui.load_pages.pages.setCurrentIndex(antenna_catalog_menu_index)
+        # self.antenna_catalog_menu_widget = self.ui.load_pages.pages.currentWidget()
 
         # Add left column
         new_column_widget = QWidget()
         new_ui = Ui_LeftColumn()
         new_ui.setupUi(new_column_widget)
         self.ui.left_column.menus.menus.addWidget(new_column_widget)
-        self.antenna_catalog_column_widget = new_column_widget
-        self.antenna_catalog_column_vertical_layout = new_ui.antenna_catalog_vertical_layout
+        self.antenna_results_column_widget = new_column_widget
+        self.antenna_results_column_vertical_layout = new_ui.antenna_results_vertical_layout
 
         # Specific properties
-        self.antenna_catalog = None
-        self.antenna_catalog_layout = self.antenna_catalog_menu_widget.findChild(QVBoxLayout, "antenna_catalog_layout")
-        self.grid_item = []
+        # self.antenna_catalog = None
+        # self.antenna_catalog_layout = self.antenna_catalog_menu_widget.findChild(QVBoxLayout, "antenna_catalog_layout")
+        # self.grid_item = []
 
     def setup(self):
         # Modify theme
         app_color = self.main_window.ui.themes["app_color"]
 
-        # Antenna catalog column
-        available_antennas = self.main_window.properties.antenna.available_models
-
         layout_row_obj = QVBoxLayout()
-        scroll_widget = QWidget()
 
-        self.antenna_catalog = [layout_row_obj]
-        for idx in range(len(available_antennas)):
-            selected_antenna = available_antennas[idx]
-            button_obj = PyPushButton(
-                text=selected_antenna,
-                radius=8,
-                color=app_color["text_foreground"],
-                bg_color=app_color["dark_one"],
-                bg_color_hover=app_color["dark_three"],
-                bg_color_pressed=app_color["dark_four"],
-                font_size=20,
-            )
-            button_obj.setMinimumHeight(30)
-            button_obj.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
-            layout_row_obj.addWidget(button_obj)
-            button_obj.clicked.connect(partial(self.antenna_catalog_button_clicked, selected_antenna))
+        layout_line = QHBoxLayout()
 
-            self.antenna_catalog.append(button_obj)
+        label = QLabel()
+        layout_line.addWidget(label)
+        label.setText("Cores")
+        font = QFont(self.main_window.properties.font["family"], self.main_window.properties.font["title_size"])
+        label.setFont(font)
+        font.setPointSize(self.main_window.properties.font["title_size"])
+
+        spacer = QSpacerItem(10, 20, QSizePolicy.Fixed, QSizePolicy.Fixed)
+        layout_line.addItem(spacer)
+
+        edit = QLineEdit()
+        edit.setFont(font)
+        edit.setText("4")
+        edit.setFixedWidth(200)
+        edit.setStyleSheet("border: 2px solid {};".format(self.ui.themes['app_color']['text_foreground']))
+        layout_line.addWidget(edit)
+
+        spacer = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Fixed)
+        layout_line.addItem(spacer)
+
+        layout_row_obj.addLayout(layout_line)
+
+        layout_row_obj.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Fixed))
+
+        button_obj = PyPushButton(
+            text="Get Results",
+            radius=8,
+            color=app_color["text_foreground"],
+            bg_color=app_color["dark_one"],
+            bg_color_hover=app_color["dark_three"],
+            bg_color_pressed=app_color["dark_four"],
+            font_size=20,
+        )
+        button_obj.setMinimumHeight(30)
+        button_obj.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
+        layout_row_obj.addWidget(button_obj)
+        button_obj.clicked.connect(self.antenna_results_button_clicked)
 
         layout_row_obj.setAlignment(Qt.AlignTop)
 
-        scroll_widget.setLayout(layout_row_obj)
+        self.antenna_results_column_vertical_layout.addLayout(layout_row_obj)
 
-        scroll_area = QScrollArea()  # Create the scroll area
-        scroll_area.setWidgetResizable(True)  # Allow resizing of the contained widget
-        scroll_area.setWidget(scroll_widget)
+    def antenna_results_button_clicked(self):
 
-        combo_box_style = """background-color: {_bg_color};"""
-
-        custom_style = combo_box_style.format(_bg_color=app_color["dark_three"])
-
-        scroll_area.setStyleSheet(custom_style)
-
-        self.antenna_catalog_column_vertical_layout.addWidget(scroll_area)
-
-    def antenna_catalog_button_clicked(self, selected_model):
-        self.main_window.ui.clear_layout(self.antenna_catalog_layout)
+        if not self.main_window.properties.antenna.antenna_created or not self.main_window.properties.antenna.create_setup:
+            self.ui.update_logger("Antenna can not be solved")
+            return
 
         app_color = self.main_window.ui.themes["app_color"]
         background = app_color["dark_three"]
