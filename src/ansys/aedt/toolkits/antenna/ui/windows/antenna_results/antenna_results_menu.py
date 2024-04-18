@@ -44,11 +44,23 @@ import pyvista as pv
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
 
-# from windows.antenna_results.antenna_results_page import Ui_AntennaResults
+from windows.antenna_results.antenna_results_page import Ui_AntennaResults
 from windows.antenna_results.antenna_results_column import Ui_LeftColumn
 
 import os
 import sys
+
+
+class GetResultsThread(QThread):
+    finished_signal = Signal(bool)
+
+    def __init__(self, app):
+        super().__init__()
+        self.main_window = app.main_window
+
+    def run(self):
+        success = self.main_window.analyze_design()
+        self.finished_signal.emit(success)
 
 
 class AntennaResultsMenu(object):
@@ -58,9 +70,9 @@ class AntennaResultsMenu(object):
         self.ui = main_window.ui
 
         # Add page
-        # antenna_catalog_menu_index = self.ui.add_page(Ui_AntennaCatalog)
-        # self.ui.load_pages.pages.setCurrentIndex(antenna_catalog_menu_index)
-        # self.antenna_catalog_menu_widget = self.ui.load_pages.pages.currentWidget()
+        antenna_results_menu_index = self.ui.add_page(Ui_AntennaResults)
+        self.ui.load_pages.pages.setCurrentIndex(antenna_results_menu_index)
+        self.antenna_results_menu_widget = self.ui.load_pages.pages.currentWidget()
 
         # Add left column
         new_column_widget = QWidget()
@@ -71,6 +83,7 @@ class AntennaResultsMenu(object):
         self.antenna_results_column_vertical_layout = new_ui.antenna_results_vertical_layout
 
         # Specific properties
+        self.antenna_results_thread = None
         # self.antenna_catalog = None
         # self.antenna_catalog_layout = self.antenna_catalog_menu_widget.findChild(QVBoxLayout, "antenna_catalog_layout")
         # self.grid_item = []
@@ -126,181 +139,35 @@ class AntennaResultsMenu(object):
         self.antenna_results_column_vertical_layout.addLayout(layout_row_obj)
 
     def antenna_results_button_clicked(self):
-
-        if not self.main_window.properties.antenna.antenna_created or not self.main_window.properties.antenna.create_setup:
+        if (not self.main_window.properties.antenna.antenna_created
+                or not self.main_window.properties.antenna.create_setup):
             self.ui.update_logger("Antenna can not be solved")
             return
+        # Start a separate thread for the backend call
+        self.antenna_results_thread = GetResultsThread(app=self)
+        self.antenna_results_thread.finished_signal.connect(self.antenna_results_finished)
 
-        app_color = self.main_window.ui.themes["app_color"]
-        background = app_color["dark_three"]
+        msg = "Analyzing antenna"
+        self.ui.update_logger(msg)
 
-        # Antenna catalog menu
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_widget = QWidget()
-        grid_layout = QGridLayout()
+        self.antenna_results_thread.start()
 
-        combo_box_style = """
-                            background-color: {_bg_color};
-                            """
+    def antenna_results_finished(self):
+        self.ui.update_progress(100)
 
-        custom_style = combo_box_style.format(_bg_color=background)
+        farfield_2d_results = self.main_window.farfield_2d_results()
+        scattering_results = self.main_window.scattering_results()
 
-        scroll_area.setStyleSheet(custom_style)
+        # Get results: get sparameters, get farfield
 
-        available_antennas = {}
-        if selected_model in self.main_window.properties.antenna.available_models:
-            self.ui.update_logger("{} menu selected".format(selected_model))
-            self.main_window.properties.antenna.antenna_model_selected = selected_model
-            available_antennas = antenna_catalog[selected_model]
-            if len(available_antennas["models"]) == 1:
-                rows = 1
-                columns = 1
-            else:
-                columns = 2
-                rows = (len(available_antennas["models"]) + columns - 1) // columns
-        else:
-            self.ui.update_logger("No antennas available")
-            rows = 0
-            columns = 0
+        # Create layout
 
-        antenna_cont = 0
-        for i in range(rows):
-            for j in range(columns):
-                if available_antennas and antenna_cont >= len(available_antennas["models"]):
-                    break
-                antenna_index = i * columns + j
-                antenna_selected = available_antennas["models"][antenna_index]
-                antenna_path = os.path.join(os.path.dirname(__file__), selected_model.lower(), antenna_selected.lower())
-                antenna_model_info = {}
-                if os.path.isfile(os.path.join(antenna_path, "model", "properties.toml")):
-                    with open(os.path.join(antenna_path, "model", "properties.toml"), mode="rb") as file_handler:
-                        antenna_model_info = tomllib.load(file_handler)
-                if not antenna_model_info:
-                    antenna_cont += 1
-                    continue
+        selected_project = self.main_window.home_menu.project_combobox.currentText()
+        selected_design = self.main_window.home_menu.design_combobox.currentText()
 
-                antenna_model_info["path"] = antenna_path
-
-                frame = QFrame()
-                frame.setFrameShape(QFrame.Box)
-                frame.setFrameShadow(QFrame.Raised)  # Optional: Set shadow effect
-                frame_layout = QVBoxLayout(frame)
-                frame_layout.setContentsMargins(0, 0, 0, 0)
-
-                self.grid_item.append(AntennaItem(antenna_index, antenna_model_info, app_color))
-                self.grid_item[-1].setFixedSize(400, 400)
-                grid_layout.addWidget(self.grid_item[-1], i * 2, j * 2)
-                line_color = """
-                    border: 2px solid {_color};
-                """
-                custom_style = line_color.format(_color=app_color["dark_two"])
-                self.grid_item[-1].setStyleSheet(custom_style)
-
-                self.grid_item[-1].antenna_item_signal.connect(self.on_grid_item_clicked)
-
-                antenna_cont += 1
-
-        scroll_widget.setLayout(grid_layout)
-        scroll_area.setWidget(scroll_widget)
-
-        self.antenna_catalog_layout.addWidget(scroll_area)
-
-        self.ui.set_page(self.antenna_catalog_menu_widget)
-
-    def on_grid_item_clicked(self, index):
-        if self.main_window.properties.antenna.antenna_created:
-            self.ui.update_logger("{} antenna generated".format(self.main_window.properties.antenna.antenna_created))
-            return
-        available_antennas = antenna_catalog[self.main_window.properties.antenna.antenna_model_selected]
-        self.main_window.properties.antenna.antenna_selected = available_antennas["models"][index]
-        self.ui.update_logger("{} selected".format(self.main_window.properties.antenna.antenna_selected))
-
-        selected_model = self.main_window.properties.antenna.antenna_model_selected
-        antenna_path = os.path.join(os.path.dirname(__file__),
-                                    selected_model.lower(),
-                                    self.main_window.properties.antenna.antenna_selected.lower())
-
-        # Load antenna picture
-        self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.botton_image_layout)
-        antenna_picture = ""
-        for root, dirs, files in os.walk(antenna_path):
-            for file in files:
-                if file.lower().endswith(('.jpg', '.jpeg', '.png')):
-                    antenna_picture = os.path.join(root, file)
-                    break
-
-        if os.path.isfile(antenna_picture):
-            image = self.add_image(antenna_picture)
-            self.main_window.antenna_synthesis_menu.botton_image_layout.addLayout(image, 0, 0, 1, 1)
-
-        # Load antenna input parameters
-        self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.antenna_input)
-        antenna_parameters = {}
-        if os.path.isfile(os.path.join(antenna_path, "parameters.toml")):
-            with open(os.path.join(antenna_path, "parameters.toml"), mode="rb") as parameter_handler:
-                antenna_parameters = tomllib.load(parameter_handler)
-        if antenna_parameters:
-            for parameter in antenna_parameters:
-                line = self.add_line(parameter.replace("_", " "), antenna_parameters[parameter])
-                self.main_window.antenna_synthesis_menu.antenna_input.addLayout(line)
-
-        self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.table_layout)
-
-        # Populate synthesis page
-        self.ui.set_page(self.main_window.antenna_synthesis_menu.antenna_synthesis_menu_widget)
-
-    @staticmethod
-    def add_image(image_path):
-        """Add the image to antenna settings."""
-        image_layout = QHBoxLayout()
-        image_layout.setObjectName("image_layout_pixmap")
-        antenna_image = QLabel()
-        antenna_image.setObjectName("antenna_picture")
-        antenna_image.setScaledContents(True)
-        antenna_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
-        def resize_pixmap():
-            pixmap = QPixmap(image_path)
-            pixmap = pixmap.scaled(antenna_image.width(), antenna_image.height(),
-                                   Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            antenna_image.setPixmap(pixmap)
-
-        antenna_image.resizeEvent = lambda event: resize_pixmap()
-
-        resize_pixmap()
-        image_layout.addWidget(antenna_image)
-        return image_layout
-
-    def add_line(self, label_value, value):
-        """Add a new parameter to antenna settings."""
-        layout_line = QHBoxLayout()
-
-        label = QLabel()
-        layout_line.addWidget(label)
-        label.setText(label_value)
-        font = QFont(self.main_window.properties.font["family"], self.main_window.properties.font["title_size"])
-        label.setFont(font)
-        font.setPointSize(self.main_window.properties.font["title_size"])
-
-        if isinstance(value, list):
-            combobox = QComboBox()
-            combobox.addItems(value)
-            combobox.setFixedWidth(200)
-            combobox.setStyleSheet("border: 2px solid {};".format(self.ui.themes['app_color']['text_foreground']))
-            layout_line.addWidget(combobox)
-            combobox.setFont(font)
-            for i in range(combobox.count()):
-                combobox.setItemData(i, font, Qt.FontRole)
-        else:
-            edit = QLineEdit()
-            edit.setFont(font)
-            edit.setText(str(value))
-            edit.setFixedWidth(200)
-            edit.setStyleSheet("border: 2px solid {};".format(self.ui.themes['app_color']['text_foreground']))
-            layout_line.addWidget(edit)
-
-        spacer = QSpacerItem(40, 20, QSizePolicy.Fixed, QSizePolicy.Fixed)
-        layout_line.addItem(spacer)
-
-        return layout_line
+        properties = self.main_window.get_properties()
+        active_project = self.main_window.get_project_name(properties["active_project"])
+        active_design = properties["active_design"]
+        if active_project != selected_project or active_design != selected_design:
+            self.main_window.home_menu.update_project()
+            self.main_window.home_menu.update_design()

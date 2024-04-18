@@ -22,7 +22,6 @@
 
 from functools import partial
 
-from PySide6.QtCore import QThread
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QLabel
@@ -36,7 +35,6 @@ from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtWidgets import QSpacerItem
 from PySide6.QtGui import QPixmap
 from PySide6.QtGui import QFont
-from PySide6.QtCore import Signal
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame
 
@@ -44,7 +42,6 @@ from pyvistaqt import BackgroundPlotter
 import pyvista as pv
 
 # toolkit PySide6 Widgets
-from ansys.aedt.toolkits.common.ui.utils.widgets import PyLabel
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
 
 from windows.antenna_catalog.antenna_catalog_page import Ui_AntennaCatalog

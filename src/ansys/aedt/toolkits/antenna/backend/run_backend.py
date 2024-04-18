@@ -100,11 +100,31 @@ def scattering_results():
         return jsonify("Fail to get results"), 500
 
 
-@app.route("/farfield_results", methods=["GET"])
-def farfield_results():
-    logger.info("[POST] farfield_results (Get antenna far field results)")
+@app.route("/export_farfield", methods=["GET"])
+def export_farfield():
+    logger.info("[POST] farfield_results (Get antenna far field data)")
 
-    response = toolkit_api.farfield_results()
+    body = request.json
+
+    # Default values
+    default_values = {
+        "frequencies": None,
+        "setup": None,
+        "sphere": None,
+        "variations": None,
+        "encode": True,
+    }
+
+    props = toolkit_api.get_properties()
+    default_values["frequencies"] = (
+        str(props["antenna"]["synthesis"]["frequency"]) + props["antenna"]["synthesis"]["frequency_unit"]
+    )
+
+    # Extract values from the request body
+    params = {key: body.get(key, default_values[key]) for key in default_values}
+
+    response = toolkit_api.export_farfield(**params)
+
     if response:
         return jsonify(response), 200
     else:  # pragma: no cover

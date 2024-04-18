@@ -502,7 +502,7 @@ class CommonAntenna(object):
 
             if port_lump:
                 port1 = self._app.lumped_port(
-                    signal=item,
+                    assignment=item,
                     reference=terminal_references,
                     impedance=50,
                     name="port_" + self.name + "_" + str(port_count),
@@ -516,7 +516,7 @@ class CommonAntenna(object):
                 if self._app.solution_type == "Terminal" and port_cap:
                     terminal_references = port_cap.name
                 port1 = self._app.wave_port(
-                    signal=port,
+                    assignment=port,
                     reference=terminal_references,
                     name="port_" + self.name + "_" + str(port_count),
                 )

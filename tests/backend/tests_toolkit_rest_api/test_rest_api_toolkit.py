@@ -74,18 +74,13 @@ class TestClass:
         assert response1.status_code == 200
 
     def test_04_scattering_results(self, client):
-        be_properties = client.get("/properties").json
-        response1 = client.post("/open_project", data=os.path.abspath(be_properties["active_project"]))
-
-        assert response1.status_code == 200
-
         response2 = client.get("/scattering_results")
         assert response2.status_code == 200
         data = json.loads(response2.data.decode("utf-8"))
         assert len(data) == 2
 
     def test_05_farfield_results(self, client):
-        response2 = client.get("/farfield_results")
+        response2 = client.get("/export_farfield", json={"sphere": "3D"})
         assert response2.status_code == 200
         data = json.loads(response2.data.decode("utf-8"))
-        assert len(data) == 6
+        assert len(data) == 4

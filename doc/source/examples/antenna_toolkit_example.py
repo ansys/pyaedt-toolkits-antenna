@@ -7,7 +7,9 @@
 # ## Perform required imports
 
 import tempfile
+
 import pyaedt
+from pyaedt.modules.solutions import FfdSolutionData
 
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
@@ -165,21 +167,28 @@ toolkit_api.aedtapp.modeler.fit_all()
 
 toolkit_api.release_aedt(False, False)
 
+# ## Set properties
+#
+# Move antenna X position to origin
+
+toolkit_api.update_parameters("pos_x", "0")
+
 # ## Analyze design in batch mode
 
 toolkit_api.analyze()
-
-# ## Open project
-
-toolkit_api.open_project()
 
 # ## Get scattering results
 
 scattering_data = toolkit_api.scattering_results()
 
-# ## Get farfield  results
+# ## Get farfield results
 
 farfield_data = toolkit_api.farfield_results()
+
+# ## Get farfield results
+
+frequency_str = str(properties.antenna.synthesis.frequency) + properties.antenna.synthesis.frequency_unit
+farfield_eep, farfield_frequency = toolkit_api.export_farfield(frequencies=frequency_str, sphere="3D", encode=False)
 
 # ## Get antenna model
 
@@ -196,11 +205,20 @@ toolkit_api.release_aedt(True, True)
 # Plot exported files using the following code
 
 from pyaedt.generic.plot import ModelPlotter
+
 model = ModelPlotter()
 for file in files:
     model.add_object(file[0], file[1], file[2])
 
 model.plot()
+
+# ## Load far field
+
+farfield_data = FfdSolutionData(farfield_eep[0], farfield_frequency)
+
+# ## Plot far field
+
+data = farfield_data.polar_plot_3d_pyvista()
 
 # ## Clean temporary directory
 

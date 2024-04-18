@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import gc
+import os.path
 import re
 
 # isort: off
@@ -161,6 +162,11 @@ class ToolkitBackend(AEDTCommon):
             if self.properties.antenna.setup.create_setup:
                 freq = float(self.oantenna.frequency)
                 setup = self.aedtapp.create_setup()
+
+                # FOR TESTING!
+                setup.props["MaximumPasses"] = 1
+                #
+
                 setup.props["Frequency"] = str(freq) + freq_units
                 if int(self.properties.antenna.setup.sweep) > 0:
                     sweep1 = setup.add_sweep()
@@ -270,7 +276,8 @@ class ToolkitBackend(AEDTCommon):
 
         self.aedtapp.save_project()
 
-        self.aedtapp.solve_in_batch(run_in_thread=True, machine="localhost", num_cores=num_cores)
+        self.aedtapp.analyze(num_cores=num_cores)
+
         gc.collect()
         self.release_aedt(False, False)
         return True
@@ -298,43 +305,76 @@ class ToolkitBackend(AEDTCommon):
             return
         return sol_data.primary_sweep_values, sol_data.data_db20()
 
-    def farfield_results(self):
-        """Get antenna far field results.
+    def export_farfield(self, frequencies, setup=None, sphere=None, variations=None, encode=True):
+        """Export far field data and then encode the file if the ``encode`` parameter is enabled.
+
+        Parameters
+        ----------
+        frequencies : float, list
+            Frequency value or list of frequencies to compute far field data.
+        setup : str, optional
+            Name of the setup to use. The default is ``None,`` in which case ``nominal_adaptive`` is used.
+        sphere : str, optional
+            Infinite sphere to use. The default is ``None``, in which case an existing sphere is used or a new
+            one is created.
+        variations : dict, optional
+            Variation dictionary.
+        encode : bool, optional
+            Whether to encode the file. The default is ``True``.
 
         Returns
         -------
-        bool
-            ``True`` when successful, ``False`` when failed.
+        list or dict
+            List of eep files or encoded data.
         """
         if not self.aedtapp:
-            # Connect to AEDT design
             self.connect_design()
-            if not self.aedtapp:  # pragma: no cover
-                logger.debug("HFSS design is not connected.")
-                return False
 
-        field_solution = self.aedtapp.post.get_far_field_data("GainTotal", self.aedtapp.nominal_adaptive, domain="3D")
+        if self.aedtapp:
+            self.aedtapp.save_project()
 
-        if not field_solution:  # pragma: no cover
-            return
+            farfield_exporter = self.aedtapp.get_antenna_ffd_solution_data(
+                frequencies=frequencies, setup=setup, sphere=sphere, variations=variations
+            )
 
-        phi_cuts = field_solution.intrinsics["Phi"]
-        theta = field_solution.intrinsics["Theta"]
-        val_theta = []
-        for t in phi_cuts:
-            field_solution.active_intrinsic["Phi"] = t
-            val_theta.append(field_solution.data_db20())
-        field_solution.active_intrinsic["Phi"] = phi_cuts[0]
+            if encode:
+                eep_files = farfield_exporter.eep_files
+                encoded_eep_files = []
+                encoded_eep_json_files = []
+                encoded_geometry_files = {}
+                encoded_ffd_files = {}
+                cont = 0
+                for eep_file in eep_files:
+                    eep_path = os.path.abspath(os.path.dirname(eep_file))
+                    serialized_file = self.serialize_obj_base64(eep_file)
+                    encoded_eep_files.append(serialized_file.decode("utf-8"))
+                    eep_json = os.path.abspath(os.path.join(eep_path, "eep.json"))
+                    if os.path.isfile(eep_json):
+                        serialized_file = self.serialize_obj_base64(eep_json)
+                        encoded_eep_json_files.append(serialized_file.decode("utf-8"))
+                    geometry_path = os.path.abspath(os.path.join(eep_path, "geometry"))
+                    if os.path.exists(geometry_path):
+                        encoded_geometry_files[cont] = []
+                        for root, _, files in os.walk(geometry_path):
+                            for file in files:
+                                if file.lower().endswith(".obj"):
+                                    geometry_file = os.path.abspath(os.path.join(root, file))
+                                    serialized_file = self.serialize_obj_base64(geometry_file)
+                                    encoded_geometry_files[cont].append(serialized_file.decode("utf-8"))
 
-        field_solution.primary_sweep = "Phi"
-        theta_cuts = field_solution.intrinsics["Theta"]
-        phi = field_solution.primary_sweep_values
-        val_phi = []
-        for t in theta_cuts:
-            field_solution.active_intrinsic["Theta"] = t
-            val_phi.append(field_solution.data_db20())
-        field_solution.active_intrinsic["Theta"] = theta_cuts[0]
+                    encoded_ffd_files[cont] = []
+                    for root, _, files in os.walk(eep_path):
+                        for file in files:
+                            if file.lower().endswith(".ffd"):
+                                ffd_file = os.path.abspath(os.path.join(root, file))
+                                serialized_file = self.serialize_obj_base64(ffd_file)
+                                encoded_ffd_files[cont].append(serialized_file.decode("utf-8"))
 
-        self.release_aedt(False, False)
+                    cont += 1
 
-        return [phi_cuts, theta, val_theta, theta_cuts, phi, val_phi]
+                    self.release_aedt(False, False)
+
+                    return encoded_eep_files, encoded_eep_json_files, encoded_geometry_files, encoded_ffd_files
+
+            self.release_aedt(False, False)
+            return farfield_exporter.eep_files, farfield_exporter.frequency

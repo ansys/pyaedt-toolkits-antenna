@@ -102,9 +102,9 @@ class Frontend(FrontendGeneric):
             return False
 
         new_properties = {
-            "create_setup": self.main_window.create_setup.isChecked(),
-            "component_3d": self.main_window.create_setup.isChecked(),
-            "lattice_pair": self.main_window.create_setup.isChecked(),
+            "create_setup": self.ui.app.antenna_synthesis_menu.create_setup.isChecked(),
+            "component_3d": self.ui.app.antenna_synthesis_menu.component_3d.isChecked(),
+            "lattice_pair": self.ui.app.antenna_synthesis_menu.lattice_pair.isChecked(),
         }
 
         if not self.set_properties(new_properties):
@@ -136,6 +136,54 @@ class Frontend(FrontendGeneric):
 
         else:
             msg = "{} not updated".format(key)
+            self.ui.update_logger(msg)
+            logger.error(msg)
+            return False
+
+    def analyze_design(self):
+        """Analyze design."""
+        response = requests.post(self.url + "/analyze")
+
+        if response.ok:
+            msg = "Antenna solved"
+            self.ui.update_logger(msg)
+            logger.debug(msg)
+            return response.json()
+
+        else:
+            msg = response.json()
+            self.ui.update_logger(msg)
+            logger.error(msg)
+            return False
+
+    def farfield_2d_results(self):
+        """Get farfield 2D results."""
+        response = requests.get(self.url + "/farfield_2d_results")
+
+        if response.ok:
+            msg = "Far field results extracted"
+            self.ui.update_logger(msg)
+            logger.debug(msg)
+            return response.json()
+
+        else:
+            msg = response.json()
+            self.ui.update_logger(msg)
+            logger.error(msg)
+            return False
+
+    def scattering_results(self):
+        """Get farfield 2D results."""
+        response = requests.get(self.url + "/scattering_results")
+
+        if response.ok:
+            msg = "Scattering results extracted"
+            self.ui.update_logger(msg)
+            logger.debug(msg)
+            return response.json()
+
+        else:
+            msg = response.json()
             self.ui.update_logger(msg)
             logger.error(msg)
             return False

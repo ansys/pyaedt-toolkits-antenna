@@ -26,7 +26,6 @@ import base64
 from PySide6.QtCore import QThread
 from PySide6.QtCore import Qt
 from PySide6.QtCore import Signal
-from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QCheckBox
 from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QFrame
@@ -41,11 +40,7 @@ from PySide6.QtWidgets import QTableWidget
 from PySide6.QtWidgets import QVBoxLayout
 from PySide6.QtWidgets import QWidget
 from PySide6.QtWidgets import QTableWidgetItem
-from PySide6.QtGui import QColor
 
-# toolkit PySide6 Widgets
-from ansys.aedt.toolkits.common.ui.utils.widgets import PyLabel
-from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
 from windows.antenna_synthesis.antenna_synthesis_page import Ui_AntennaSynthesis

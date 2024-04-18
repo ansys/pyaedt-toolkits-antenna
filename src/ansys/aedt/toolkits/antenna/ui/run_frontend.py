@@ -175,8 +175,8 @@ class ApplicationWindow(QMainWindow, Frontend):
 
             self.ui.set_left_column_menu(
                 menu=self.antenna_results_menu.antenna_results_column_widget,
-                title=properties.add_left_menus[1]["btn_text"],
-                icon_path=self.ui.images_load.icon_path(properties.add_left_menus[1]["btn_icon"]),
+                title=properties.add_left_menus[3]["btn_text"],
+                icon_path=self.ui.images_load.icon_path(properties.add_left_menus[3]["btn_icon"]),
             )
 
             if not is_left_visible:

@@ -79,12 +79,17 @@ class TestClass:
         assert aedt_common.analyze()
 
     def test_04_scattering_results(self, aedt_common):
-        aedt_common.open_project()
         sweep, data = aedt_common.scattering_results()
 
         assert len(sweep) == len(data)
 
-    def test_05_farfield_results(self, aedt_common):
-        ffdata = aedt_common.scattering_results()
-
-        assert len(ffdata) == 2
+    def test_05_export_farfield(self, aedt_common):
+        """Get aedt model."""
+        frequency = (str(aedt_common.properties.antenna.synthesis.frequency) +
+                     aedt_common.properties.antenna.synthesis.frequency_unit)
+        encoded_files = aedt_common.export_farfield(frequencies=frequency, encode=True, sphere="3D")
+        assert isinstance(encoded_files, tuple)
+        assert len(encoded_files) == 4
+        farfield_data = aedt_common.export_farfield(frequencies=frequency, encode=False, sphere="3D")
+        assert isinstance(farfield_data, tuple)
+        assert len(farfield_data) == 2
