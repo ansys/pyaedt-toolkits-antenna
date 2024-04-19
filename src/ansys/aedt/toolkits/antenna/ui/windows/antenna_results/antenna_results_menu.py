@@ -32,6 +32,7 @@ from PySide6.QtWidgets import QWidget
 from PySide6.QtWidgets import QScrollArea
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtWidgets import QSpacerItem
+from PySide6.QtWidgets import QCheckBox
 from PySide6.QtGui import QPixmap
 from PySide6.QtGui import QFont
 from PySide6.QtCore import Signal
@@ -50,6 +51,8 @@ from windows.antenna_results.antenna_results_column import Ui_LeftColumn
 
 import os
 import sys
+
+from pyaedt.modules.solutions import FfdSolutionData
 
 
 class GetResultsThread(QThread):
@@ -88,7 +91,8 @@ class AntennaResultsMenu(object):
         self.farfield_2d_phi_frame = self.antenna_results_menu_widget.findChild(QFrame, "farfield_2d_phi_frame")
         self.farfield_2d_phi_frame.setFrameShape(QFrame.Box)
 
-        self.farfield_2d_theta_layout = self.antenna_results_menu_widget.findChild(QVBoxLayout, "farfield_2d_theta_layout")
+        self.farfield_2d_theta_layout = self.antenna_results_menu_widget.findChild(QVBoxLayout,
+                                                                                   "farfield_2d_theta_layout")
         self.farfield_2d_theta_frame = self.antenna_results_menu_widget.findChild(QFrame, "farfield_2d_theta_frame")
         self.farfield_2d_theta_frame.setFrameShape(QFrame.Box)
 
@@ -102,16 +106,34 @@ class AntennaResultsMenu(object):
         self.scattering_frame.setFrameShape(QFrame.Box)
 
         self.antenna_results_thread = None
+
+        # Scattering
+        self.scattering_data = None
         self.scattering_graph = None
+
+        # Farfield Cut
+        self.farfield_data = None
         self.farfield_2d_phi_widget = None
         self.farfield_2d_phi_graph = None
         self.farfield_2d_theta_graph = None
+        self.phi_cut_overlap = None
+        self.phi_cut_combobox = None
+        self.theta_cut_overlap = None
+        self.theta_cut_combobox = None
+
+        # Farfield 3D
         self.farfield_3d_plotter = None
         self.cad_actor = None
+
+        self.line_color = None
 
     def setup(self):
         # Modify theme
         app_color = self.main_window.ui.themes["app_color"]
+        text_font_size = self.main_window.properties.font["text_size"]
+        title_font_size = self.main_window.properties.font["title_size"]
+
+        # Column
 
         layout_row_obj = QVBoxLayout()
 
@@ -159,37 +181,81 @@ class AntennaResultsMenu(object):
 
         self.antenna_results_column_vertical_layout.addLayout(layout_row_obj)
 
-        # Set results page
+        # Results page
 
         # Scattering
         self.scattering_graph = pg.PlotWidget()
         self.scattering_layout.addWidget(self.scattering_graph)
 
         # 2D Cut phi
-        # Add combobox
-        # Add check box
+
+        line_farfield_2d_phi_layout = QHBoxLayout()
+        row_returns = self.ui.add_combobox(
+            line_farfield_2d_phi_layout,
+            height=40,
+            width=[60, 100],
+            label="Phi cut",
+            combobox_list=[],
+            font_size=text_font_size,
+        )
+
+        self.phi_cut_combobox = row_returns[2]
+
+        self.phi_cut_overlap = QCheckBox()
+        self.phi_cut_overlap.setChecked(True)
+        self.phi_cut_overlap.setText("Overlap Plot")
+        self.phi_cut_overlap.setStyleSheet(
+            "color: {}; font-size: {};".format(self.ui.themes['app_color']['text_foreground'], text_font_size))
+        line_farfield_2d_phi_layout.addWidget(self.phi_cut_overlap)
+
+        self.farfield_2d_phi_layout.addLayout(line_farfield_2d_phi_layout)
+
         self.farfield_2d_phi_graph = pg.PlotWidget()
         self.farfield_2d_phi_layout.addWidget(self.farfield_2d_phi_graph)
 
         # 2D Cut theta
+        line_farfield_2d_theta_layout = QHBoxLayout()
+        row_returns = self.ui.add_combobox(
+            line_farfield_2d_theta_layout,
+            height=40,
+            width=[60, 100],
+            label="Theta cut",
+            combobox_list=[],
+            font_size=text_font_size,
+        )
+
+        self.theta_cut_combobox = row_returns[2]
+
+        self.theta_cut_overlap = QCheckBox()
+        self.theta_cut_overlap.setChecked(True)
+        self.theta_cut_overlap.setText("Overlap Plot")
+        self.theta_cut_overlap.setStyleSheet(
+            "color: {}; font-size: {};".format(self.ui.themes['app_color']['text_foreground'], text_font_size))
+        line_farfield_2d_theta_layout.addWidget(self.theta_cut_overlap)
+
+        self.farfield_2d_theta_layout.addLayout(line_farfield_2d_theta_layout)
+
         self.farfield_2d_theta_graph = pg.PlotWidget()
         self.farfield_2d_theta_layout.addWidget(self.farfield_2d_theta_graph)
 
         # 3D
         self.farfield_3d_plotter = BackgroundPlotter(show=False)
-        self.farfield_3d_plotter.view_isometric()
         self.farfield_3d_plotter.set_background(color=self.main_window.ui.themes["app_color"]["bg_one"])
         logo_path = os.path.join(os.path.dirname(__file__), "ANSYS_logo.obj")
         cad_mesh = pv.read(logo_path)
         self.cad_actor = self.farfield_3d_plotter.add_mesh(cad_mesh)
+        self.farfield_3d_plotter.view_xy()
+        self.farfield_3d_plotter.camera.roll = 90
         self.farfield_3d_layout.addWidget(self.farfield_3d_plotter)
+
+        self.line_color = self.main_window.ui.themes["app_color"]["text_foreground"]
 
     def antenna_results_button_clicked(self):
         if (not self.main_window.properties.antenna.antenna_created
                 or not self.main_window.properties.antenna.create_setup):
             self.ui.update_logger("Antenna can not be solved")
             return
-        # Start a separate thread for the backend call
+        self.ui.update_progress(50)
         self.antenna_results_thread = GetResultsThread(app=self)
         self.antenna_results_thread.finished_signal.connect(self.antenna_results_finished)
         msg = "Analyzing antenna"
@@ -200,20 +266,124 @@ class AntennaResultsMenu(object):
     def antenna_results_finished(self):
         self.ui.update_progress(100)
 
-        farfield_data = self.main_window.export_farfield()
+        self.scattering_data = self.main_window.scattering_results()
+        if self.scattering_data and len(self.scattering_data):
+            # Scattering results
 
-        farfield_data.polar_plot_3d_pyvista()
+            freq = self.scattering_data[0]
+            val = self.scattering_data[1]
 
-        scattering_results = self.main_window.scattering_results()
+            self.scattering_graph.plot(
+                freq,
+                val,
+                pen=self.line_color,
+            )
+            self.scattering_graph.setTitle("Scattering Plot")
+            self.scattering_graph.setLabel(
+                "bottom",
+                "Frequency {}".format(self.main_window.antenna_synthesis_menu.frequency_unit.text()),
+            )
+            self.scattering_graph.setLabel(
+                "left",
+                "Value in dB",
+            )
 
-        # Create layout
+        # Farfield Phi Cut
+        self.farfield_data = self.main_window.export_farfield()
 
-        selected_project = self.main_window.home_menu.project_combobox.currentText()
-        selected_design = self.main_window.home_menu.design_combobox.currentText()
+        if self.farfield_data:
+            phi = self.farfield_data.farfield_data["Phi"]
+            theta = self.farfield_data.farfield_data["Theta"]
 
-        properties = self.main_window.get_properties()
-        active_project = self.main_window.get_project_name(properties["active_project"])
-        active_design = properties["active_design"]
-        if active_project != selected_project or active_design != selected_design:
-            self.main_window.home_menu.update_project()
-            self.main_window.home_menu.update_design()
+            self.phi_cut_combobox.addItems([str(num) for num in phi])
+
+            self.phi_cut_combobox.currentIndexChanged.connect(self.phi_cut_combobox_clicked)
+
+            self.theta_cut_combobox.addItems([str(num) for num in theta])
+
+            self.theta_cut_combobox.currentIndexChanged.connect(self.theta_cut_combobox_clicked)
+
+            data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
+                                                  primary_sweep="theta",
+                                                  secondary_sweep_value=phi[0],
+                                                  phi=0,
+                                                  theta=0,
+                                                  title="Far Field Cut",
+                                                  quantity_format="dB10",
+                                                  image_path=None,
+                                                  show=False,
+                                                  is_polar=False)
+
+            self.__plot_2d_cut(self.farfield_2d_phi_graph, data, phi[0], "Phi", "Theta")
+
+            data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
+                                                  primary_sweep="phi",
+                                                  secondary_sweep_value=theta[0],
+                                                  phi=0,
+                                                  theta=0,
+                                                  title="Far Field Cut",
+                                                  quantity_format="dB10",
+                                                  image_path=None,
+                                                  show=False,
+                                                  is_polar=False)
+
+            self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta[0], "Theta", "Phi")
+
+            # 3D Plot
+            background_hex = self.main_window.ui.themes["app_color"]["bg_one"]
+            background_hex = background_hex.lstrip('#')
+            rgb_tuple = tuple(int(background_hex[i:i + 2], 16) for i in (0, 2, 4))
+            self.farfield_3d_plotter.clear()
+            self.farfield_data.polar_plot_3d_pyvista(pyvista_object=self.farfield_3d_plotter, background=rgb_tuple)
+
+    def phi_cut_combobox_clicked(self):
+        if self.farfield_data:
+            phi = self.phi_cut_combobox.currentText()
+            data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
+                                                  primary_sweep="theta",
+                                                  secondary_sweep_value=float(phi),
+                                                  phi=0,
+                                                  theta=0,
+                                                  title="Far Field Cut",
+                                                  quantity_format="dB10",
+                                                  image_path=None,
+                                                  show=False,
+                                                  is_polar=False)
+            overlap = self.phi_cut_overlap.isChecked()
+            if not overlap:
+                self.farfield_2d_phi_graph.clear()
+            self.__plot_2d_cut(self.farfield_2d_phi_graph, data, phi, "Phi", "Theta")
+
+    def theta_cut_combobox_clicked(self):
+        if self.farfield_data:
+            theta = self.theta_cut_combobox.currentText()
+            data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
+                                                  primary_sweep="phi",
+                                                  secondary_sweep_value=float(theta),
+                                                  phi=0,
+                                                  theta=0,
+                                                  title="Far Field Cut",
+                                                  quantity_format="dB10",
+                                                  image_path=None,
+                                                  show=False,
+                                                  is_polar=False)
+            overlap = self.theta_cut_overlap.isChecked()
+            if not overlap:
+                self.farfield_2d_theta_graph.clear()
+            self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta, "Theta", "Phi")
+
+    def __plot_2d_cut(self, graph_obj, data, cut, cut_name, sweep):
+        graph_obj.plot(
+            data[0][0],
+            data[0][1],
+            pen=self.line_color
+        )
+        graph_obj.setTitle("Realized gain at {} {}".format(cut_name, cut))
+        graph_obj.setLabel(
+            "left",
+            "Realized Gain",
+        )
+        graph_obj.setLabel(
+            "bottom",
+            sweep,
+        )

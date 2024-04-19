@@ -177,6 +177,10 @@ class AntennaSynthesisMenu(object):
         self.sweep_value.setText(str(self.sweep_slider.value()))
 
     def synthesis_button_clicked(self):
+        success = self.main_window.check_connection()
+        if not success:
+            self.ui.update_logger("Backend not running")
+            return
         if (
             not self.main_window.properties.antenna.antenna_model_selected
             or not self.main_window.properties.antenna.antenna_selected

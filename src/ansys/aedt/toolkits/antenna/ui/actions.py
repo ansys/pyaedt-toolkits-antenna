@@ -110,6 +110,7 @@ class Frontend(FrontendGeneric):
             "create_setup": self.ui.app.antenna_synthesis_menu.create_setup.isChecked(),
             "component_3d": self.ui.app.antenna_synthesis_menu.component_3d.isChecked(),
             "lattice_pair": self.ui.app.antenna_synthesis_menu.lattice_pair.isChecked(),
+            "sweep": int(self.ui.app.antenna_synthesis_menu.sweep_value.text())
         }
 
         if not self.set_properties(new_properties):

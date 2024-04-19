@@ -162,11 +162,6 @@ class ToolkitBackend(AEDTCommon):
             if self.properties.antenna.setup.create_setup:
                 freq = float(self.oantenna.frequency)
                 setup = self.aedtapp.create_setup()
-
-                # FOR TESTING!
-                setup.props["MaximumPasses"] = 1
-                #
-
                 setup.props["Frequency"] = str(freq) + freq_units
                 if int(self.properties.antenna.setup.sweep) > 0:
                     sweep1 = setup.add_sweep()
