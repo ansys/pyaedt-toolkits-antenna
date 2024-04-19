@@ -191,6 +191,13 @@ class Archimedean(CommonConicalSpiral):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         lightSpeed = constants.SpeedOfLight
         start_freq_hz = constants.unit_converter(self.start_frequency, "Freq", self.frequency_unit, "Hz")
@@ -393,6 +400,13 @@ class Log(CommonConicalSpiral):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         start_freq_hz = constants.unit_converter(self.start_frequency, "Freq", self.frequency_unit, "Hz")
         stop_freq_hz = constants.unit_converter(self.stop_frequency, "Freq", self.frequency_unit, "Hz")
@@ -583,6 +597,13 @@ class Sinuous(CommonConicalSpiral):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         lightSpeed = constants.SpeedOfLight
         start_freq_hz = constants.unit_converter(self.start_frequency, "Freq", self.frequency_unit, "Hz")

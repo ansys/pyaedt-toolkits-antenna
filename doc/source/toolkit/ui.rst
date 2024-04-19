@@ -1,8 +1,8 @@
-============
-UI reference
-============
+==============
+Antenna wizard
+==============
 
-This section describes how to use the Antenna Toolkit Wizard, which requires an
+This section describes how to use the Antenna wizard, which requires an
 installed and licensed copy of AEDT. It assumes that you have already launched the
 wizard from either the AEDT menu or AEDT console. For toolkit installation and wizard
 launching information, see these topics:

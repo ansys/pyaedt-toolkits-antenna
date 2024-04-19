@@ -2,7 +2,7 @@ Horn
 ====
 This page lists the classes available for horns:
 
-.. currentmodule:: ansys.aedt.toolkits.antenna.backend.models.horn
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.horn
 
 .. autosummary::
    :toctree: _autosummary
@@ -22,7 +22,7 @@ You must use these methods from PyAEDT as shown in this example:
 
     import pyaedt.Hfss
 
-    from ansys.aedt.toolkits.antenna.backend.models.horn import Conical
+    from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
 
     aedtapp = Hfss()
 

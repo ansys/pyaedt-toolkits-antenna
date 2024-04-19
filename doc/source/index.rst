@@ -15,12 +15,12 @@ from a Python console.
 
     .. grid-item-card:: Getting started :fa:`person-running`
         :padding: 2 2 2 2
-        :link: getting-started
+        :link: getting_started/index
         :link-type: doc
 
         Learn more about the Antenna Toolkit and how to install it.
 
-    .. grid-item-card:: UI reference :fa:`book-bookmark`
+    .. grid-item-card:: Antenna wizard :fa:`scroll`
         :padding: 2 2 2 2
         :link: toolkit/ui
         :link-type: doc
@@ -51,7 +51,7 @@ from a Python console.
 .. toctree::
    :hidden:
 
-   getting-started
+   getting_started/index
    toolkit/ui
    toolkit/index
    examples/index

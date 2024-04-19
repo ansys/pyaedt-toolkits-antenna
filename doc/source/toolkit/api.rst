@@ -15,7 +15,7 @@ of the Antenna API.
 .. autosummary::
    :toctree: _autosummary
 
-   Toolkit
+   ToolkitBackend
 
 You can use the Toolkit API as shown in this example:
 

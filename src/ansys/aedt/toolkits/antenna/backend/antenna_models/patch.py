@@ -180,6 +180,13 @@ class RectangularPatchProbe(CommonPatch):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         length_unit = self.length_unit
         lightSpeed = constants.SpeedOfLight  # m/s
@@ -512,6 +519,13 @@ class RectangularPatchInset(CommonPatch):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         length_unit = self.length_unit
         lightSpeed = constants.SpeedOfLight  # m/s
@@ -818,6 +832,13 @@ class RectangularPatchEdge(CommonPatch):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         length_unit = self.length_unit
         lightSpeed = constants.SpeedOfLight  # m/s

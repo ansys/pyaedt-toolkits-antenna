@@ -200,6 +200,13 @@ class AxialMode(CommonHelix):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")

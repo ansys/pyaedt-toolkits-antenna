@@ -27,4 +27,3 @@ This section provides descriptions of the three APIs available for the Antenna T
 
    api
    models/index
-   api_generic

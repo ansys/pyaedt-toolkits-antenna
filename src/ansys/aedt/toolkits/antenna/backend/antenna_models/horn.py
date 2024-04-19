@@ -156,6 +156,13 @@ class Conical(CommonHorn):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         lightSpeed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
@@ -433,6 +440,13 @@ class PyramidalRidged(CommonHorn):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
@@ -1111,6 +1125,13 @@ class Corrugated(CommonHorn):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
@@ -1385,6 +1406,13 @@ class Elliptical(CommonHorn):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         lightSpeed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
@@ -1666,6 +1694,13 @@ class EPlane(CommonHorn):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
@@ -2034,6 +2069,13 @@ class HPlane(CommonHorn):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
@@ -2389,6 +2431,13 @@ class Pyramidal(CommonHorn):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
@@ -2752,6 +2801,13 @@ class QuadRidged(CommonHorn):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 

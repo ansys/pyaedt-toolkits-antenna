@@ -2,7 +2,7 @@ Patch
 =====
 This page lists the classes available for patch antennas:
 
-.. currentmodule:: ansys.aedt.toolkits.antenna.backend.models.patch
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.patch
 
 .. autosummary::
    :toctree: _autosummary
@@ -17,7 +17,9 @@ You must use these methods from PyAEDT as shown in this example:
 
     from pyaedt import Hfss
 
-    from ansys.aedt.toolkits.antenna.backend.models.patch import RectangularPatchEdge
+    from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import (
+        RectangularPatchEdge,
+    )
 
     aedtapp = Hfss()
 

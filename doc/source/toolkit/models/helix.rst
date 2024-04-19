@@ -2,7 +2,7 @@ Helix
 =====
 This pages lists the classes available for helix antennas:
 
-.. currentmodule:: ansys.aedt.toolkits.antenna.backend.models.helix
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.helix
 
 .. autosummary::
    :toctree: _autosummary
@@ -15,7 +15,7 @@ You must use these methods from PyAEDT as shown in this example:
 
     from pyaedt import Hfss
 
-    from ansys.aedt.toolkits.antenna.backend.models.helix import AxialMode
+    from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialMode
 
     aedtapp = Hfss()
 

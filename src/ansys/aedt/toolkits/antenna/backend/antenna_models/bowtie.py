@@ -101,6 +101,13 @@ class BowTieNormal(CommonPatch):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         lightSpeed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
@@ -322,6 +329,13 @@ class BowTieRounded(CommonPatch):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         lightSpeed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
@@ -556,6 +570,13 @@ class BowTieSlot(CommonPatch):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
         parameters = {}
         lightSpeed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")

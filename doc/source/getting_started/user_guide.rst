@@ -1,31 +1,29 @@
-===============
-Getting started
-===============
+==========
+User guide
+==========
 
 To run the Antenna Toolkit, you must have a licensed copy of AEDT installed.
 You have multiple options for installing and launching this toolkit:
 
-- You can install the toolkit directly in AEDT via an installation script and then launch it
-  as a wizard. For more information, see :ref:`install-toolkit-AEDT`.
-- You can install the toolkit from the AEDT console and then launch it as a wizard. For more
-  information, see :ref:`install_toolkit_console_ui`.
-- You can install and launch the toolkit directly from a Python console and then use the toolkit's APIs.
+- You can install the toolkit directly in AEDT via an installation script and then launch it as a wizard.
+  For more information, see :ref:`install-toolkit-AEDT`.
+- You can install the toolkit from a Python console and then launch Antenna wizard.
+  For more information, see :ref:`install_toolkit_console_ui`.
+- You can install the toolkit from a Python console and then use the toolkit's APIs.
   For more information, see :ref:`install_toolkit_console_api`.
 
 .. _install-toolkit-AEDT:
 
-How to install directly in AEDT and launch as a wizard
-------------------------------------------------------
+Install toolkit in AEDT and launch the Antenna wizard
+-----------------------------------------------------
 
 You can install the Antenna Toolkit directly in AEDT using the base
 interpreter from the AEDT installation.
 
-#. From `Install from a Python file <https://aedt.docs.pyansys.com/version/stable//Getting_started/Installation.html#install-from-a-python-file>`_
-   in the PyAEDT documentation, download the ``PyAEDTInstallerFromDesktop.py`` file and then run this Python script.
+#. From `Install from a Python file <https://aedt.docs.pyansys.com/version/stable/Getting_started/Installation.html#install-from-a-python-file>`_,
+   follow the steps to install PyAEDT inside AEDT.
 
-#. If this is the first toolkit being installed in AEDT, restart AEDT to update its **Tools** menu.
-
-#. In AEDT, select **Tools > Toolkit > PyAEDT > Console** to load the PyAEDT console:
+#. In AEDT, select Tools > Toolkit > PyAEDT > Console to load the PyAEDT console:
 
    .. image:: ./_static/console.png
       :width: 800
@@ -38,32 +36,27 @@ interpreter from the AEDT installation.
        desktop.add_custom_toolkit("AntennaWizard")
        exit()
 
-#. Close the PyAEDT console.
-
 #. In the AEDT toolbar, click the **AntennaWizard** button to open this wizard in AEDT:
 
-   .. image:: ./_static/toolkit_in_AEDT.png
+   .. image:: ./_static/dummy.png
       :width: 800
       :alt: Antenna Toolkit in AEDT
 
-   If the toolkit does not open, restart AEDT.
-
-   .. image:: ./_static/design_connected.png
-      :width: 800
-      :alt: UI opened from AEDT, design tab
-
 The Antenna Toolkit Wizard is connected directly to the AEDT session. For wizard usage information,
-see :doc:`toolkit/ui`.
+see :doc:`./toolkit/ui`.
 
 .. _install_toolkit_console_ui:
 
-How to install from the AEDT console and launch as a wizard
------------------------------------------------------------
+Install toolkit from Python console and launch the Antenna wizard
+-----------------------------------------------------------------
 
 You can install the Antenna Toolkit in a specific Python environment from the AEDT console.
 
-- If you have an existing virtual environment, skip step 1.
-- If you have already installed the toolkit in your virtual environment, skip step 2.
+.. note::
+    If you have an existing virtual environment, skip step 1.
+
+.. note::
+    If you have already installed the toolkit in your virtual environment, skip step 2.
 
 #. Create a fresh-clean Python environment and activate it:
 
@@ -85,7 +78,7 @@ You can install the Antenna Toolkit in a specific Python environment from the AE
 
    .. code:: bash
 
-       python -m pip install git+https://github.com/pyansys/pyaedt-toolkits-antenna.git
+       python -m pip install pyaedt-toolkits-antenna[all]
 
 #. Launch the Antenna Toolkit Wizard:
 
@@ -95,25 +88,48 @@ You can install the Antenna Toolkit in a specific Python environment from the AE
 
 #. On the **AEDT Settings** tab, create a new AEDT session or connect to an existing one:
 
-   .. image:: ./_static/settings.png
+   .. image:: ./_static/dummy.png
         :width: 800
         :alt: UI opened from console, settings tab
 
-For wizard usage information, see :doc:`toolkit/ui`.
+For wizard usage information, see :doc:`./toolkit/ui`.
 
 .. _install_toolkit_console_api:
 
-How to install from a Python console and use the toolkit's APIs
----------------------------------------------------------------
+Install toolkit from Python console and use the toolkit's APIs
+--------------------------------------------------------------
 
 You can install the toolkit in a specific Python environment and use the toolkit's APIs.
 The code example included in this topic shows how to use the APIs at the model level
 and toolkit level.
 
 .. note::
-    The following procedure assumes that you have already performed steps 1 and 2 in
-    :ref:`install_toolkit_console_ui`. These steps create and activate a virtual environment
-    and install the toolkit from the GitHub repository.
+    If you have an existing virtual environment, skip step 1.
+
+.. note::
+    If you have already installed the toolkit in your virtual environment, skip step 2.
+
+#. Create a fresh-clean Python environment and activate it:
+
+   .. code:: text
+
+       # Create a virtual environment
+       python -m venv .venv
+
+       # Activate it in a POSIX system
+       source .venv/bin/activate
+
+       # Activate it in a Windows CMD environment
+       .venv\Scripts\activate.bat
+
+       # Activate it in Windows PowerShell
+       .venv\Scripts\Activate.ps1
+
+#. Install the toolkit from the GitHub repository:
+
+   .. code:: bash
+
+       python -m pip install pyaedt-toolkits-antenna
 
 #. Open a Python console in your virtual environment:
 
