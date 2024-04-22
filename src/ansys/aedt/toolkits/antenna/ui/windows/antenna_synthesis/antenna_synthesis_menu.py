@@ -187,7 +187,8 @@ class AntennaSynthesisMenu(object):
         ):
             self.ui.update_logger("No antenna selected")
             return
-        elif self.main_window.settings_menu.aedt_thread and self.main_window.settings_menu.aedt_thread.isRunning():
+        elif (not isinstance(self.main_window.settings_menu.aedt_thread, bool) and
+              self.main_window.settings_menu.aedt_thread and self.main_window.settings_menu.aedt_thread.isRunning()):
             self.ui.update_logger("AEDT launching")
             return
         else:
