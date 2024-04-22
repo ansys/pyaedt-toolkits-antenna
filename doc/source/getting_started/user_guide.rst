@@ -37,7 +37,7 @@ interpreter from the AEDT installation.
 
 #. In the AEDT toolbar, click the **AntennaWizard** button to open this wizard in AEDT:
 
-   .. image:: ../_static/dummy.png
+   .. image:: ../_static/antenna_catalog.png
       :width: 800
       :alt: Antenna Toolkit in AEDT
 
@@ -87,7 +87,7 @@ You can install the Antenna Toolkit in a specific Python environment from the AE
 
 #. On the **AEDT Settings** tab, create a new AEDT session or connect to an existing one:
 
-   .. image:: ../_static/dummy.png
+   .. image:: ../_static/settings.png
         :width: 800
         :alt: UI opened from console, settings tab
 

@@ -314,34 +314,46 @@ class AntennaSynthesisMenu(object):
         self.generate_antenna_button.setEnabled(False)
         self.synthesis_button.setEnabled(False)
 
-        self.model_info = self.main_window.get_aedt_model(selected_project, selected_design)
-        self.__update_antenna_model()
+        if self.main_window.properties.backend_url in ["127.0.0.1", "localhost"]:
+            encode = False
+        else:
+            encode = True
+
+        self.model_info = self.main_window.get_aedt_model(properties["active_project"], active_design, encode=encode)
+        self.__update_antenna_model(encode)
         self.ui.update_progress(100)
 
-    def __update_antenna_model(self):
+    def __update_antenna_model(self, encode):
         if self.model_info:
             self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.botton_image_layout)
 
             plotter = BackgroundPlotter(show=False)
             for element in self.model_info:
-                # Decode response
-                encoded_data = self.model_info[element][0]
-                encoded_data_bytes = bytes(encoded_data, "utf-8")
-                decoded_data = base64.b64decode(encoded_data_bytes)
-                # Create obj file locally
-                file_path = os.path.join(self.main_window.temp_folder, element + ".obj")
-                with open(file_path, "wb") as f:
-                    f.write(decoded_data)
-                # Create PyVista object
-                if not os.path.exists(file_path):
-                    break
+                if encode:
+                    # Decode response
+                    encoded_data = self.model_info[element][0]
+                    encoded_data_bytes = bytes(encoded_data, "utf-8")
+                    decoded_data = base64.b64decode(encoded_data_bytes)
+                    # Create obj file locally
+                    file_path = os.path.join(self.main_window.temp_folder, element + ".obj")
+                    with open(file_path, "wb") as f:
+                        f.write(decoded_data)
+                    # Create PyVista object
+                    if not os.path.exists(file_path):
+                        break
+                    color = self.model_info[element][1]
+                    opacity = self.model_info[element][2]
+                else:
+                    file_path = element[0]
+                    color = element[1]
+                    opacity = element[2]
 
                 cad_mesh = pv.read(file_path)
 
                 plotter.add_mesh(cad_mesh,
-                                 color=self.model_info[element][1],
+                                 color=color,
                                  show_scalar_bar=False,
-                                 opacity=self.model_info[element][2]
+                                 opacity=opacity
                                  )
 
             plotter.view_isometric()

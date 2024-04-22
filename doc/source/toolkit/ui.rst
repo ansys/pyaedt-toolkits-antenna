@@ -22,7 +22,7 @@ launching information, see these topics:
 
    The wizard has a progress bar and a logger box, where you can see the status of every operation.
 
-    .. image:: ../_static/progress.png
+   .. image:: ../_static/progress.png
       :width: 800
       :alt: Progress tab
 
@@ -33,75 +33,65 @@ launching information, see these topics:
       :width: 800
       :alt: Antenna catalog
 
-    .. image:: ../_static/antenna_catalog2.png
+   .. image:: ../_static/antenna_catalog_2.png
       :width: 800
-      :alt: Antenna catalog
+      :alt: Antenna catalog 2
 
-   For example, if you select **Antennas > Bowtie > Bowtie Normal**, the **Design** tab displays
-   the **Synthesis** button and antenna template:
+   For instance, if you select **Antennas > Bowtie > Bowtie Normal**,
+   the central page is updated to the **Synthesis** page and it shows the antenna template:
 
-   .. image:: ../_static/corrugated_1.png
+   .. image:: ../_static/antenna_template.png
       :width: 800
-      :alt: Antenna Toolkit Wizard, corrugated synthesis
+      :alt: Antenna template
 
-   In addition to the **Synthesis** button, the **Design** tab displays a **Create Hfss Model** button. This
-   button is unavailable if the Antenna Toolkit Wizard is not connected to AEDT.
+   The user has two options: **Synthesis** and **Generate**.
+   **Generate** button is unavailable if the wizard is not connected to AEDT.
 
    - The **Synthesis** button is for performing the synthesis of the antenna. It does not need AEDT.
      You can see the parameters that control the antenna geometry. Additionally, you can do as many
      syntheses as you want and even change the antenna template.
 
-     .. image:: ../_static/corrugated_synthesis.png
+     .. image:: ../_static/antenna_synthesis.png
         :width: 800
-        :alt: Antenna Toolkit Wizard, corrugated synthesis
+        :alt: Antenna synthesis
 
-   - The **Create HFSS Model** button is for creating an HFSS model. It uses the **3D Component**,
+   - The **Generate** button is for creating a HFSS model. It uses the **3D Component**,
      **Create Hfss Setup**, and **Lattice pair** checkboxes along with the **Sweep Bandwidth %** option
-     It also uses the **Toolkit Settings** tab:
-
-     .. image:: ../_static/settings_toolkit.png
-        :width: 800
-        :alt: Toolkit Settings tab
+     It also uses the length and frequency unit to perform the HFSS setup.
 
      Descriptions follow for how to use the checkboxes on the **Design** tab:
 
      - If you select the **3D Component** checkbox, the toolkit creates the antenna and replaces it
        with a 3D component.
 
-     - If you select the **Create Hfss Setup** checkbox, the toolkit automatically creates the boundaries,
-       excitations, and ports needed to simulate the antenna. Once you create an HFSS model, you cannot
-       create another antenna. Both the **Synthesis** and **Create Hfss Model** buttons become unavailable.
-       If you want to create another antenna, you must restart the Antenna Toolkit Wizard.
+     - If you select the **Generate** checkbox, the toolkit automatically creates the boundaries,
+       excitations, and ports needed to simulate the antenna. Once you create a HFSS model, you cannot
+       create another antenna. Both the **Synthesis** and **Generate** buttons become unavailable.
+       If you want to create another antenna, you must restart the toolkit.
 
      - If you select the **Lattice pair** checkbox, the toolkit creates a unit cell assigning a
        lattice pair boundary.
 
-Once you create an antenna, the **Design** tab displays an interactive 3D model rather than
+Once you create an antenna, the **Synthesis** tab displays an interactive 3D model rather than
 the image of the antenna template:
 
-.. image:: ../_static/antenna.png
+.. image:: ../_static/antenna_generate.png
    :width: 800
-   :alt: Antenna Toolkit Wizard, antenna
+   :alt: Antenna generated
 
-If AEDT is launched in graphical mode, you can see the generated model.
+If AEDT is launched in non graphical mode, you can still see the generated model.
 
 In the wizard, you can modify the parameters interactively, watching both the HFSS model and the
 interactive 3D plot in the wizard change.
 
-Finally, on the wizard's **Analysis** tab, you have two buttons: **Analyze Project** and **Get results**.
+Finally, on the wizard's **Analysis** tab, you have the **Get results** button.
 This second button is unavailable until after you analyze the HFSS design.
 
-When you click **Analyze Project**, the project is submitted and then closed. You can see
-the job status in the wizard's progress bar or by opening the AEDT Job Monitor.
-
-.. image:: ../_static/analysis.png
-   :width: 800
-   :alt: Analysis
+When you click **Get results**, the project is analyzed.
+The user can specify the number of cores to use in the simulation.
 
 Once the project is solved, you can click **Get results** on the **Analysis** tab to view results.
 
-.. image:: ../_static/results.png
+.. image:: ../_static/get_results.png
    :width: 800
    :alt: Result
-
-To save the project, from the wizard's **File** menu, select **Save project**.
