@@ -33,96 +33,96 @@ jobs:
     name: "Code style"
     runs-on: ubuntu-latest
     steps:
-      - uses: ansys/actions/code-style@v5
+      - uses: ansys/actions/code-style@v6
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
 
-#  doc-style:
-#    name: "Documentation style"
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: ansys/actions/doc-style@v5
-#        with:
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#
-#  doc-build:
-#    name: "Build documentation"
-#    runs-on: [self-hosted, pyaedt, toolkits, Windows]
-#    needs: [ doc-style ]
-#    timeout-minutes: 10
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - name: "Set up Python"
-#        uses: ansys/actions/_setup-python@main
-#        with:
-#          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-#          use-cache: false
-#
-#      - name: 'Create virtual env'
-#        run: |
-#          python -m venv .venv
-#
-#      - name: "Update pip"
-#        run: |
-#          . .venv\Scripts\Activate.ps1
-#          python -m pip install pip -U
-#          python -m pip install wheel setuptools -U
-#          python -c "import sys; print(sys.executable)"
-#
-#      - name: Install antenna toolkit with doc dependencies
-#        run: |
-#          . .venv\Scripts\Activate.ps1
-#          pip install .
-#          pip install .[doc]
-#
-#      - name: Uninstall conflicting CI packages
-#        run: |
-#          .venv\Scripts\Activate.ps1
-#          pip uninstall vtk pypandoc -y
-#
-#      - name: Install CI related dependencies
-#        run: |
-#          .venv\Scripts\Activate.ps1
-#          pip install --extra-index-url https://wheels.vtk.org .[ci]
-#
-#      - name: Retrieve antenna toolkit version
-#        run: |
-#          . .venv\Scripts\Activate.ps1
-#          echo "Antenna Toolkit version is: $(python -c "from ansys.aedt.toolkits.antenna import __version__; print(); print(__version__)")"
-#
-#      - name: Build the documentation (HTML)
-#        run: |
-#          .\.venv\Scripts\Activate.ps1
-#          cd doc
-#          .\make.bat html
-#
-#      - name: Build the documentation (PDF)
-#        run: |
-#          .\.venv\Scripts\Activate.ps1
-#          cd doc
-#          .\make.bat pdf
-#
-#      - name: Add assets to HTML docs
-#        run: |
-#          zip -r documentation-html.zip .\doc\_build\html
-#          mv documentation-html.zip .\doc\_build\html\_static\assets\download\
-#          cp doc/_build/latex/ansys-aedt-toolkits-antenna.pdf .\doc\_build\html\_static\assets\download\
-#
-#      - name: Upload HTML Documentation artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: documentation-html
-#          path: doc/_build/html
-#          retention-days: 1
-#
-#      - name: Upload PDF Documentation artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: documentation-pdf
-#          path: doc/_build/latex/*.pdf
-#          retention-days: 7
+  doc-style:
+    name: "Documentation style"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ansys/actions/doc-style@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  doc-build:
+    name: "Build documentation"
+    runs-on: [self-hosted, pyaedt, toolkits, Windows]
+    needs: [ doc-style ]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Set up Python"
+        uses: ansys/actions/_setup-python@main
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          use-cache: false
+
+      - name: 'Create virtual env'
+        run: |
+          python -m venv .venv
+
+      - name: "Update pip"
+        run: |
+          . .venv\Scripts\Activate.ps1
+          python -m pip install pip -U
+          python -m pip install wheel setuptools -U
+          python -c "import sys; print(sys.executable)"
+
+      - name: Install antenna toolkit with doc dependencies
+        run: |
+          . .venv\Scripts\Activate.ps1
+          pip install .
+          pip install .[doc]
+
+      - name: Uninstall conflicting CI packages
+        run: |
+          .venv\Scripts\Activate.ps1
+          pip uninstall vtk pypandoc -y
+
+      - name: Install CI related dependencies
+        run: |
+          .venv\Scripts\Activate.ps1
+          pip install --extra-index-url https://wheels.vtk.org .[ci]
+
+      - name: Retrieve antenna toolkit version
+        run: |
+          . .venv\Scripts\Activate.ps1
+          echo "Antenna Toolkit version is: $(python -c "from ansys.aedt.toolkits.antenna import __version__; print(); print(__version__)")"
+
+      - name: Build the documentation (HTML)
+        run: |
+          .\.venv\Scripts\Activate.ps1
+          cd doc
+          .\make.bat html
+
+      - name: Build the documentation (PDF)
+        run: |
+          .\.venv\Scripts\Activate.ps1
+          cd doc
+          .\make.bat pdf
+
+      - name: Add assets to HTML docs
+        run: |
+          zip -r documentation-html.zip .\doc\_build\html
+          mv documentation-html.zip .\doc\_build\html\_static\assets\download\
+          cp doc/_build/latex/ansys-aedt-toolkits-antenna.pdf .\doc\_build\html\_static\assets\download\
+
+      - name: Upload HTML Documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-html
+          path: doc/_build/html
+          retention-days: 1
+
+      - name: Upload PDF Documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-pdf
+          path: doc/_build/latex/*.pdf
+          retention-days: 7
 
   smoke-tests:
     name: "Build and Smoke tests"
@@ -134,7 +134,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [ code-style ]
     steps:
-      - uses: ansys/actions/build-wheelhouse@v5
+      - uses: ansys/actions/build-wheelhouse@v6
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           operating-system: ${{ matrix.os }}
@@ -146,8 +146,8 @@ jobs:
       matrix:
         python-version: [ '3.10' ]
       fail-fast: false
-    runs-on: [ self-hosted, pyaedt, toolkits, Windows ]
-    needs: [ smoke-tests ]
+    runs-on: [self-hosted, pyaedt, toolkits, Windows]
+    needs: [smoke-tests]
     steps:
       - uses: actions/checkout@v4
 
@@ -214,7 +214,7 @@ jobs:
       matrix:
         python-version: [ '3.10' ]
       fail-fast: false
-    runs-on: [ self-hosted, pyaedt, toolkits, Linux ]
+    runs-on: [self-hosted, pyaedt, toolkits, Linux]
     needs: [ smoke-tests ]
     env:
       ANSYSEM_ROOT241: '/ansys_inc/AnsysEM/v241/Linux64'
@@ -254,14 +254,14 @@ jobs:
         timeout-minutes: 30
         run: |
           export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT241 }}/common/mono/Linux64/lib64:${{ env.ANSYSEM_ROOT241 }}/Delcross:$LD_LIBRARY_PATH
-          .\.venv\Scripts\Activate.ps1
+          source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_api
 
       - name: Toolkit REST API testing
         timeout-minutes: 30
         run: |
           export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT241 }}/common/mono/Linux64/lib64:${{ env.ANSYSEM_ROOT241 }}/Delcross:$LD_LIBRARY_PATH
-          .\.venv\Scripts\Activate.ps1
+          source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_rest_api
 
   build-library:
@@ -269,91 +269,91 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ doc-build, tests_windows, tests_linux ]
     steps:
-      - uses: ansys/actions/build-library@v5
+      - uses: ansys/actions/build-library@v6
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
-#  release:
-#    name: "Release"
-#    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-#    needs: build-library
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: "Release to the public PyPI repository"
-#        uses: ansys/actions/release-pypi-public@v5
-#        with:
-#          library-name: ${{ env.LIBRARY_NAME }}
-#          twine-username: "__token__"
-#          twine-token: ${{ secrets.PYPI_TOKEN }}
-#
-#      - name: "Release to GitHub"
-#        uses: ansys/actions/release-github@v5
-#        with:
-#          library-name: ${{ env.LIBRARY_NAME }}
-#
-#  doc-deploy-dev:
-#    name: "Deploy development documentation"
-#    runs-on: ubuntu-latest
-#    needs: build-library
-#    if: github.event_name == 'push'
-#    steps:
-#      - uses: ansys/actions/doc-deploy-dev@v5
-#        with:
-#          cname: ${{ env.DOCUMENTATION_CNAME }}
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#
-#  doc-index-dev:
-#    name: "Deploy development index documentation"
-#    if: github.ref == 'refs/heads/main'
-#    runs-on: ubuntu-latest
-#    needs: doc-deploy-dev
-#    steps:
-#      - name: "Deploy the latest documentation index"
-#        uses: ansys/actions/doc-deploy-index@v5
-#        with:
-#          cname: ${{ env.DOCUMENTATION_CNAME }}/version/dev
-#          index-name: pyaedt-toolkits-antenna-vdev
-#          host-url: ${{ env.MEILISEARCH_HOST_URL }}
-#          api-key: ${{ env.MEILISEARCH_API_KEY }}
-#          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-#
-#  doc-deploy-stable:
-#    name: "Deploy stable documentation"
-#    runs-on: ubuntu-latest
-#    needs: release
-#    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-#    steps:
-#      - uses: ansys/actions/doc-deploy-stable@v5
-#        with:
-#          cname: ${{ env.DOCUMENTATION_CNAME }}
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#
-#  doc-index-stable:
-#    name: "Deploy stable documentation index"
-#    runs-on: ubuntu-latest
-#    needs: doc-deploy-stable
-#    steps:
-#      - name: "Install Git and clone project"
-#        uses: actions/checkout@v4
-#
-#      - name: "Install the package requirements"
-#        run: pip install -e .
-#
-#      - name: "Get the version to PyMeilisearch"
-#        run: |
-#          VERSION=$(python -c "from ansys.aedt.toolkits.antenna import __version__; print('.'.join(__version__.split('.')[:2]))")
-#          VERSION_MEILI=$(python -c "from ansys.aedt.toolkits.antenna import __version__; print('-'.join(__version__.split('.')[:2]))")
-#          echo "Calculated VERSION: $VERSION"
-#          echo "Calculated VERSION_MEILI: $VERSION_MEILI"
-#          echo "VERSION=$VERSION" >> $GITHUB_ENV
-#          echo "VERSION_MEILI=$VERSION_MEILI" >> $GITHUB_ENV
-#
-#      - name: "Deploy the latest documentation index"
-#        uses: ansys/actions/doc-deploy-index@v5
-#        with:
-#          cname: ${{ env.DOCUMENTATION_CNAME }}/version/${{ env.VERSION }}
-#          index-name: pyaedt-toolkits-antenna-v${{ env.VERSION_MEILI }}
-#          host-url: ${{ env.MEILISEARCH_HOST_URL }}
-#          api-key: ${{ env.MEILISEARCH_API_KEY }}
-#          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+  release:
+    name: "Release"
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    needs: build-library
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Release to the public PyPI repository"
+        uses: ansys/actions/release-pypi-public@v6
+        with:
+          library-name: ${{ env.LIBRARY_NAME }}
+          twine-username: "__token__"
+          twine-token: ${{ secrets.PYPI_TOKEN }}
+
+      - name: "Release to GitHub"
+        uses: ansys/actions/release-github@v6
+        with:
+          library-name: ${{ env.LIBRARY_NAME }}
+
+  doc-deploy-dev:
+    name: "Deploy development documentation"
+    runs-on: ubuntu-latest
+    needs: build-library
+    if: github.event_name == 'push'
+    steps:
+      - uses: ansys/actions/doc-deploy-dev@v6
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  doc-index-dev:
+    name: "Deploy development index documentation"
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: doc-deploy-dev
+    steps:
+      - name: "Deploy the latest documentation index"
+        uses: ansys/actions/doc-deploy-index@v6
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}/version/dev
+          index-name: pyaedt-toolkits-antenna-vdev
+          host-url: ${{ env.MEILISEARCH_HOST_URL }}
+          api-key: ${{ env.MEILISEARCH_API_KEY }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+  doc-deploy-stable:
+    name: "Deploy stable documentation"
+    runs-on: ubuntu-latest
+    needs: release
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    steps:
+      - uses: ansys/actions/doc-deploy-stable@v6
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  doc-index-stable:
+    name: "Deploy stable documentation index"
+    runs-on: ubuntu-latest
+    needs: doc-deploy-stable
+    steps:
+      - name: "Install Git and clone project"
+        uses: actions/checkout@v4
+
+      - name: "Install the package requirements"
+        run: pip install -e .
+
+      - name: "Get the version to PyMeilisearch"
+        run: |
+          VERSION=$(python -c "from ansys.aedt.toolkits.antenna import __version__; print('.'.join(__version__.split('.')[:2]))")
+          VERSION_MEILI=$(python -c "from ansys.aedt.toolkits.antenna import __version__; print('-'.join(__version__.split('.')[:2]))")
+          echo "Calculated VERSION: $VERSION"
+          echo "Calculated VERSION_MEILI: $VERSION_MEILI"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION_MEILI=$VERSION_MEILI" >> $GITHUB_ENV
+
+      - name: "Deploy the latest documentation index"
+        uses: ansys/actions/doc-deploy-index@v6
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}/version/${{ env.VERSION }}
+          index-name: pyaedt-toolkits-antenna-v${{ env.VERSION_MEILI }}
+          host-url: ${{ env.MEILISEARCH_HOST_URL }}
+          api-key: ${{ env.MEILISEARCH_API_KEY }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
