@@ -200,7 +200,7 @@ class AntennaSynthesisMenu(object):
             if self.main_window.properties.antenna.antenna_parameters:
                 self.__update_antenna_table()
                 be_properties = self.main_window.get_properties()
-                if be_properties["design_list"]:
+                if be_properties.get("selected_process") != 0:
                     self.generate_antenna_button.setEnabled(True)
 
     def generate_antenna_button_clicked(self):
@@ -219,7 +219,7 @@ class AntennaSynthesisMenu(object):
 
         be_properties = self.main_window.get_properties()
 
-        if be_properties.get("active_project"):
+        if be_properties.get("selected_process") != 0:
             self.ui.update_progress(50)
             active_project = self.main_window.home_menu.project_combobox.currentText()
             active_design = self.main_window.home_menu.design_combobox.currentText()

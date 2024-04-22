@@ -266,75 +266,83 @@ class AntennaResultsMenu(object):
     def antenna_results_finished(self):
         self.ui.update_progress(100)
 
-        self.scattering_data = self.main_window.scattering_results()
-        if self.scattering_data and len(self.scattering_data):
-            # Scattering results
+        try:
+            self.scattering_data = self.main_window.scattering_results()
+            if self.scattering_data and len(self.scattering_data):
+                # Scattering results
 
-            freq = self.scattering_data[0]
-            val = self.scattering_data[1]
+                freq = self.scattering_data[0]
+                val = self.scattering_data[1]
 
-            self.scattering_graph.plot(
-                freq,
-                val,
-                pen=self.line_color,
-            )
-            self.scattering_graph.setTitle("Scattering Plot")
-            self.scattering_graph.setLabel(
-                "bottom",
-                "Frequency {}".format(self.main_window.antenna_synthesis_menu.frequency_unit.text()),
-            )
-            self.scattering_graph.setLabel(
-                "left",
-                "Value in dB",
-            )
+                self.scattering_graph.plot(
+                    freq,
+                    val,
+                    pen=self.line_color,
+                )
+                self.scattering_graph.setTitle("Scattering Plot")
+                self.scattering_graph.setLabel(
+                    "bottom",
+                    "Frequency {}".format(self.main_window.antenna_synthesis_menu.frequency_unit.text()),
+                )
+                self.scattering_graph.setLabel(
+                    "left",
+                    "Value in dB",
+                )
+        except Exception as e:
+            self.ui.update_logger("Scattering results can not be obtained")
+            self.ui.update_logger("An error occurred:{}".format(e))
 
-        # Farfield Phi Cut
-        self.farfield_data = self.main_window.export_farfield()
+        try:
+            # Farfield Phi Cut
+            self.farfield_data = self.main_window.export_farfield()
 
-        if self.farfield_data:
-            phi = self.farfield_data.farfield_data["Phi"]
-            theta = self.farfield_data.farfield_data["Theta"]
+            if self.farfield_data:
+                phi = self.farfield_data.farfield_data["Phi"]
+                theta = self.farfield_data.farfield_data["Theta"]
 
-            self.phi_cut_combobox.addItems([str(num) for num in phi])
+                self.phi_cut_combobox.addItems([str(num) for num in phi])
 
-            self.phi_cut_combobox.currentIndexChanged.connect(self.phi_cut_combobox_clicked)
+                self.phi_cut_combobox.currentIndexChanged.connect(self.phi_cut_combobox_clicked)
 
-            self.theta_cut_combobox.addItems([str(num) for num in theta])
+                self.theta_cut_combobox.addItems([str(num) for num in theta])
 
-            self.theta_cut_combobox.currentIndexChanged.connect(self.theta_cut_combobox_clicked)
+                self.theta_cut_combobox.currentIndexChanged.connect(self.theta_cut_combobox_clicked)
 
-            data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
-                                                  primary_sweep="theta",
-                                                  secondary_sweep_value=phi[0],
-                                                  phi=0,
-                                                  theta=0,
-                                                  title="Far Field Cut",
-                                                  quantity_format="dB10",
-                                                  image_path=None,
-                                                  show=False,
-                                                  is_polar=False)
+                data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
+                                                      primary_sweep="theta",
+                                                      secondary_sweep_value=phi[0],
+                                                      phi=0,
+                                                      theta=0,
+                                                      title="Far Field Cut",
+                                                      quantity_format="dB10",
+                                                      image_path=None,
+                                                      show=False,
+                                                      is_polar=False)
 
-            self.__plot_2d_cut(self.farfield_2d_phi_graph, data, phi[0], "Phi", "Theta")
+                self.__plot_2d_cut(self.farfield_2d_phi_graph, data, phi[0], "Phi", "Theta")
 
-            data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
-                                                  primary_sweep="phi",
-                                                  secondary_sweep_value=theta[0],
-                                                  phi=0,
-                                                  theta=0,
-                                                  title="Far Field Cut",
-                                                  quantity_format="dB10",
-                                                  image_path=None,
-                                                  show=False,
-                                                  is_polar=False)
+                data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
+                                                      primary_sweep="phi",
+                                                      secondary_sweep_value=theta[0],
+                                                      phi=0,
+                                                      theta=0,
+                                                      title="Far Field Cut",
+                                                      quantity_format="dB10",
+                                                      image_path=None,
+                                                      show=False,
+                                                      is_polar=False)
 
-            self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta[0], "Theta", "Phi")
+                self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta[0], "Theta", "Phi")
 
-            # 3D Plot
-            background_hex = self.main_window.ui.themes["app_color"]["bg_one"]
-            background_hex = background_hex.lstrip('#')
-            rgb_tuple = tuple(int(background_hex[i:i + 2], 16) for i in (0, 2, 4))
-            self.farfield_3d_plotter.clear()
-            self.farfield_data.polar_plot_3d_pyvista(pyvista_object=self.farfield_3d_plotter, background=rgb_tuple)
+                # 3D Plot
+                background_hex = self.main_window.ui.themes["app_color"]["bg_one"]
+                background_hex = background_hex.lstrip('#')
+                rgb_tuple = tuple(int(background_hex[i:i + 2], 16) for i in (0, 2, 4))
+                self.farfield_3d_plotter.clear()
+                self.farfield_data.polar_plot_3d_pyvista(pyvista_object=self.farfield_3d_plotter, background=rgb_tuple)
+        except Exception as e:
+            self.ui.update_logger("Far field results can not be obtained")
+            self.ui.update_logger("An error occurred:{}".format(e))
 
     def phi_cut_combobox_clicked(self):
         if self.farfield_data:
