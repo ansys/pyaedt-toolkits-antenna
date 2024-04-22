@@ -1,8 +1,6 @@
 exclude: |
     (?x)(
-        src/ansys/aedt/toolkits/antenna/ui/windows/antenna_catalog/.* |
-        src/ansys/aedt/toolkits/antenna/ui_old.* |
-        src/ansys/aedt/toolkits/antenna/ui.* |
+        src/ansys/aedt/toolkits/antenna/ui/windows/.* |
         tests/.* |
         README.rst
     )
