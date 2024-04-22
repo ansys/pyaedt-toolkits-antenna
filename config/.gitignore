@@ -1,4 +1,4 @@
-*
+.gitignore
 !vocabularies
 !vocabularies/**
 !.gitignore
