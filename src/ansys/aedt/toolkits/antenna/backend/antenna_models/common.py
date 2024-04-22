@@ -53,7 +53,7 @@ class CommonAntenna(object):
                 )
 
         if self._input_parameters.length_unit is None:
-            self._input_parameters.length_unit = self._app.modeler.model_units
+            self._input_parameters.length_unit = properties.antenna.synthesis.length_unit
 
         if self._app:
             self._input_parameters.name = self._check_antenna_name(self._input_parameters.name)

@@ -24,7 +24,7 @@ aedt_version = "2024.1"
 #
 # Set non-graphical mode.
 
-non_graphical = False
+non_graphical = True
 
 # ## Create temporary directory
 

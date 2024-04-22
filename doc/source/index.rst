@@ -18,21 +18,21 @@ from a Python console.
         :link: getting_started/index
         :link-type: doc
 
-        Learn more about the Antenna Toolkit and how to install it.
+        Learn more about the Antenna toolkit and how to install it.
 
     .. grid-item-card:: Antenna wizard :fa:`scroll`
         :padding: 2 2 2 2
         :link: toolkit/ui
         :link-type: doc
 
-        Understand how to use the Antenna Toolkit Wizard.
+        Understand how to use the Antenna toolkit wizard.
 
     .. grid-item-card:: API reference :fa:`book-bookmark`
         :padding: 2 2 2 2
         :link: toolkit/index
         :link-type: doc
 
-        Understand the APIs available for the Antenna Toolkit.
+        Understand the APIs available for the Antenna toolkit.
 
     .. grid-item-card:: Examples :fa:`scroll`
         :padding: 2 2 2 2
@@ -46,7 +46,7 @@ from a Python console.
         :link: contributing
         :link-type: doc
 
-        Learn how to contribute to the Antenna Toolkit codebase or documentation.
+        Learn how to contribute to the Antenna toolkit codebase or documentation.
 
 .. toctree::
    :hidden:

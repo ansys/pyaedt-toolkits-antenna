@@ -123,7 +123,7 @@ class Conical(CommonHorn):
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
     >>> import pyaedt
-    >>> oantenna1 = Conical()
+    >>> oantenna1 = Conical(None)
     >>> oantenna1.frequency = 12.0
     >>> app = pyaedt.Hfss()
     >>> oantenna1 = Conical(app)
@@ -3303,4 +3303,289 @@ class QuadRidged(CommonHorn):
     @pyaedt_function_handler()
     def setup_disco(self):
         """Set up model in PyDiscovery. To be implemented."""
+        pass
+
+
+class Conical_Special(CommonHorn):
+    """Manages a conical horn antenna.
+
+    This class is accessible through the app hfss object [1]_.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Horn material. If a material is not defined, a new material, ``parametrized``, is defined.
+        The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
+        ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"cm"``.
+    parametrized : bool, optional
+        Whether to create a parametrized antenna.  The default is ``True``.
+
+    Returns
+    -------
+    :class:`aedt.toolkits.antenna.ConicalHorn`
+        Conical horn object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Aperture Antennas: Analysis, Design, and Applications,"
+        *Modern Antenna Handbook*, New York, 2008.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
+    >>> import pyaedt
+    >>> oantenna1 = Conical()
+    >>> oantenna1.frequency = 12.0
+    >>> app = pyaedt.Hfss()
+    >>> oantenna1 = Conical(app)
+    >>> oantenna1.model_hfss()
+    >>> oantenna1.setup_hfss()
+    >>> oantenna2 = Conical(app, origin=[200, 50, 0])
+    >>> oantenna2.model_hfss()
+    >>> oantenna2.setup_hfss()
+    >>> app.release_desktop(False, False)
+
+    """
+
+    _default_input_parameters = {
+        "name": "",
+        "origin": [0, 0, 0],
+        "length_unit": None,
+        "coordinate_system": "Global",
+        "frequency": 10.0,
+        "frequency_unit": "GHz",
+        "material": "pec",
+        "outer_boundary": "",
+    }
+
+    def __init__(self, *args, **kwargs):
+        CommonHorn.__init__(self, self._default_input_parameters, *args, **kwargs)
+
+        self._parameters = self.synthesis()
+        self.update_synthesis_parameters(self._parameters)
+        self.antenna_type = "Conical"
+
+    @pyaedt_function_handler()
+    def synthesis(self):
+        """Antenna synthesis.
+
+        Returns
+        -------
+        dict
+            Analytical parameters.
+        """
+        parameters = {}
+        lightSpeed = constants.SpeedOfLight  # m/s
+        freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
+        wavelength = lightSpeed / freq_hz
+        wavelength_in = constants.unit_converter(wavelength, "Length", "meter", "in")
+
+        wg_radius_in = 0.5 * wavelength_in
+        wg_length_in = 0.4 * wavelength_in
+        horn_radius_in = 1.4 * wavelength_in
+        horn_length_in = 2 * wavelength_in
+        wall_thickness_in = 0.02 * wavelength_in
+
+        wg_radius = constants.unit_converter(wg_radius_in, "Length", "in", self.length_unit)
+        parameters["wg_radius"] = wg_radius
+        wg_length = constants.unit_converter(wg_length_in, "Length", "in", self.length_unit)
+        parameters["wg_length"] = wg_length
+        horn_radius = constants.unit_converter(horn_radius_in, "Length", "in", self.length_unit)
+        parameters["horn_radius"] = horn_radius
+        horn_length = constants.unit_converter(horn_length_in, "Length", "in", self.length_unit)
+        parameters["horn_length"] = horn_length
+        wall_thickness = constants.unit_converter(wall_thickness_in, "Length", "in", self.length_unit)
+        parameters["wall_thickness"] = wall_thickness
+
+        parameters["pos_x"] = self.origin[0]
+        parameters["pos_y"] = self.origin[1]
+        parameters["pos_z"] = self.origin[2]
+
+        myKeys = list(parameters.keys())
+        myKeys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+
+        return parameters_out
+
+    @pyaedt_function_handler()
+    def model_hfss(self):
+        """Draw a conical horn antenna.
+
+        Once the antenna is created, this method is not used anymore."""
+        if self.object_list:
+            logger.debug("This antenna already exists")
+            return False
+
+        if (
+            self.material not in self._app.materials.mat_names_aedt
+            and self.material not in self._app.materials.mat_names_aedt_lower
+        ):
+            self._app.logger.warning("Material not found. Create the material before assigning it.")
+            return False
+
+        self.set_variables_in_hfss()
+
+        # Solution type: Modal
+        self._app.solution_type = "Modal"
+
+        # Map parameters
+        horn_length = self.synthesis_parameters.horn_length.hfss_variable
+        horn_radius = self.synthesis_parameters.horn_radius.hfss_variable
+        wall_thickness = self.synthesis_parameters.wall_thickness.hfss_variable
+        wg_length = self.synthesis_parameters.wg_length.hfss_variable
+        wg_radius = self.synthesis_parameters.wg_radius.hfss_variable
+        pos_x = self.synthesis_parameters.pos_x.hfss_variable
+        pos_y = self.synthesis_parameters.pos_y.hfss_variable
+        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        antenna_name = self.name
+        coordinate_system = self.coordinate_system
+
+        # Negative air
+        neg_air = self._app.modeler.create_cylinder(
+            cs_axis=2,
+            position=["0", "0", "0"],
+            radius=wg_radius,
+            height="-" + wg_length,
+            matname="vacuum",
+        )
+        neg_air.history().props["Coordinate System"] = coordinate_system
+
+        # Wall
+        wall = self._app.modeler.create_cylinder(
+            cs_axis=2,
+            position=["0", "0", "0"],
+            radius=wg_radius + "+" + wall_thickness,
+            height="-" + wg_length,
+            name="wg_outer_" + antenna_name,
+            matname=self.material,
+        )
+        wall.history().props["Coordinate System"] = coordinate_system
+
+        # Subtract
+        new_wall = self._app.modeler.subtract(tool_list=[neg_air.name], blank_list=[wall.name], keep_originals=False)
+
+        # Input
+        wg_in = self._app.modeler.create_cylinder(
+            cs_axis=2,
+            position=["0", "0", "0"],
+            radius=wg_radius,
+            height="-" + wg_length,
+            name="wg_inner_" + antenna_name,
+            matname="vacuum",
+        )
+        wg_in.history().props["Coordinate System"] = coordinate_system
+
+        # Cap
+        cap = self._app.modeler.create_cylinder(
+            cs_axis=2,
+            position=["0", "0", "-" + wg_length],
+            radius=wg_radius + "+" + wall_thickness,
+            height="-" + wall_thickness,
+            name="port_cap_" + antenna_name,
+            matname="pec",
+        )
+        cap.history().props["Coordinate System"] = coordinate_system
+
+        # P1
+        p1 = self._app.modeler.create_circle(
+            cs_plane=2,
+            position=["0", "0", "-" + wg_length],
+            radius=wg_radius,
+            name="port_" + antenna_name,
+        )
+        p1.color = (128, 0, 0)
+        p1.history().props["Coordinate System"] = coordinate_system
+
+        # Horn wall
+        base = self._app.modeler.create_circle(
+            cs_plane=2,
+            position=["0", "0", "0"],
+            radius=wg_radius,
+        )
+        base.history().props["Coordinate System"] = coordinate_system
+
+        base_wall = self._app.modeler.create_circle(
+            cs_plane=2,
+            position=["0", "0", "0"],
+            radius=wg_radius + "+" + wall_thickness,
+        )
+        base_wall.history().props["Coordinate System"] = coordinate_system
+
+        horn_top = self._app.modeler.create_circle(
+            cs_plane=2,
+            position=["0", "0", horn_length],
+            radius=horn_radius,
+        )
+        horn_top.history().props["Coordinate System"] = coordinate_system
+
+        horn_sheet = self._app.modeler.create_circle(
+            cs_plane=2,
+            position=["0", "0", horn_length],
+            radius=horn_radius + "+" + wall_thickness,
+        )
+        horn_sheet.history().props["Coordinate System"] = coordinate_system
+
+        self._app.modeler.connect([horn_sheet.name, base_wall.name])
+        self._app.modeler.connect([base.name, horn_top.name])
+
+        # Horn
+        self._app.modeler.subtract(blank_list=[horn_sheet.name], tool_list=[base.name], keep_originals=False)
+        self._app.modeler.unite([horn_sheet.name, wall.name])
+
+        air_base = self._app.modeler.create_circle(
+            cs_plane=2,
+            position=["0", "0", "0"],
+            radius=wg_radius,
+        )
+        air_base.history().props["Coordinate System"] = coordinate_system
+
+        air_top = self._app.modeler.create_circle(
+            cs_plane=2,
+            position=["0", "0", horn_length],
+            radius=horn_radius,
+        )
+        air_top.history().props["Coordinate System"] = coordinate_system
+
+        self._app.modeler.connect([air_base, air_top])
+
+        self._app.modeler.unite([wg_in, air_base])
+
+        wg_in.name = "internal_" + antenna_name
+        wg_in.color = (128, 255, 255)
+
+        horn_sheet.name = "metal_" + antenna_name
+        horn_sheet.material_name = self.material
+        horn_sheet.color = (255, 128, 65)
+
+        cap.color = (132, 132, 192)
+        p1.color = (128, 0, 0)
+
+        self.object_list[wg_in.name] = wg_in
+        self.object_list[horn_sheet.name] = horn_sheet
+        self.object_list[cap.name] = cap
+        self.object_list[p1.name] = p1
+
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+
+        wg_in.group_name = antenna_name
+        horn_sheet.group_name = antenna_name
+        cap.group_name = antenna_name
+        p1.group_name = antenna_name
+
+    @pyaedt_function_handler()
+    def model_disco(self):
+        """Model in PyDiscovery. To be implemented."""
+        pass
+
+    @pyaedt_function_handler()
+    def setup_disco(self):
+        """Set up in PyDiscovery. To be implemented."""
         pass

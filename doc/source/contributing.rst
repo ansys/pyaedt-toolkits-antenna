@@ -20,16 +20,26 @@ development mode, run:
     python -m pip install --upgrade pip
     pip install -e .
 
+
+Add new antennas
+----------------
+TBD
+
+
 Post issues
 -----------
 Use the `PyAEDT antenna toolkit issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_ page
 to submit questions, report bugs, and request new features.
 
-View toolkit documentation
------------------------------------------
-Documentation for the latest development version, which tracks the
-``main`` branch, is hosted at  `PyAEDT antenna toolkit Documentation <https://aedt.antenna.toolkit.docs.pyansys.com/>`_.
-This version is automatically kept up to date via GitHub actions.
+
+View documentation
+-------------------
+Documentation for the latest stable release is hosted at `<https://aedt.antenna.toolkit.docs.pyansys.com/>`_.
+
+In the upper right corner of the documentation’s title bar, there is an option for switching from viewing
+the documentation for the latest stable release to viewing the documentation for the development version
+or previously released versions.
+
 
 Adhere to code style
 --------------------

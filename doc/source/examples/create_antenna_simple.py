@@ -9,6 +9,7 @@
 # Import the antenna toolkit class and PyAEDT.
 
 import tempfile
+
 import pyaedt
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded
@@ -23,7 +24,7 @@ aedt_version = "2024.1"
 #
 # Set non-graphical mode.
 
-non_graphical = False
+non_graphical = True
 
 # ## Create temporary directory
 
@@ -104,5 +105,3 @@ app.release_desktop(True, True)
 # ## Clean temporary directory
 
 temp_dir.cleanup()
-
-

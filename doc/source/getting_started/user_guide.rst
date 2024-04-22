@@ -2,7 +2,6 @@
 User guide
 ==========
 
-To run the Antenna Toolkit, you must have a licensed copy of AEDT installed.
 You have multiple options for installing and launching this toolkit:
 
 - You can install the toolkit directly in AEDT via an installation script and then launch it as a wizard.
@@ -25,7 +24,7 @@ interpreter from the AEDT installation.
 
 #. In AEDT, select Tools > Toolkit > PyAEDT > Console to load the PyAEDT console:
 
-   .. image:: ./_static/console.png
+   .. image:: ../_static/console.png
       :width: 800
       :alt: PyAEDT console in AEDT
 
@@ -38,12 +37,12 @@ interpreter from the AEDT installation.
 
 #. In the AEDT toolbar, click the **AntennaWizard** button to open this wizard in AEDT:
 
-   .. image:: ./_static/dummy.png
+   .. image:: ../_static/dummy.png
       :width: 800
       :alt: Antenna Toolkit in AEDT
 
 The Antenna Toolkit Wizard is connected directly to the AEDT session. For wizard usage information,
-see :doc:`./toolkit/ui`.
+see :doc:`../toolkit/ui`.
 
 .. _install_toolkit_console_ui:
 
@@ -88,11 +87,11 @@ You can install the Antenna Toolkit in a specific Python environment from the AE
 
 #. On the **AEDT Settings** tab, create a new AEDT session or connect to an existing one:
 
-   .. image:: ./_static/dummy.png
+   .. image:: ../_static/dummy.png
         :width: 800
         :alt: UI opened from console, settings tab
 
-For wizard usage information, see :doc:`./toolkit/ui`.
+For wizard usage information, see :doc:`../toolkit/ui`.
 
 .. _install_toolkit_console_api:
 
@@ -146,16 +145,13 @@ and toolkit level.
 
        # Import required modules
        from pyaedt import Hfss
-       from ansys.aedt.toolkits.antenna.backend.models.bowtie import BowTie
+       from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTie
 
        # Open AEDT and create an HFSS design
        aedtapp = Hfss()
 
        # Create antenna object
        oantenna1 = BowTie(aedtapp)
-
-       # Define parameters
-       parameter_list = list(oantenna1.synthesis_parameters.__dict__.keys())
 
        # Change frequency
        oantenna1.frequency = 12.0
@@ -180,10 +176,10 @@ and toolkit level.
 
        # Import required modules
        import time
-       from ansys.aedt.toolkits.antenna.backend.api import Toolkit
+       from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 
        # Backend object
-       toolkit = Toolkit()
+       toolkit = ToolkitBackend()
 
        # Get available antennas
        toolkit.available_antennas
@@ -198,11 +194,7 @@ and toolkit level.
        toolkit.launch_aedt()
 
        # Wait until thread is finished
-       response = toolkit.get_thread_status()
-
-       while response[0] == 0:
-           time.sleep(1)
-           response = toolkit.get_thread_status()
+       idle = toolkit.wait_to_be_idle()
 
        # Update antenna properties
        response = toolkit.set_properties({"substrate_height": 0.1575, "length_unit": "cm"})

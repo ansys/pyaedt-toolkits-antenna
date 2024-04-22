@@ -4,7 +4,7 @@
 Getting started
 ===============
 
-This section explains how to install the Antenna Toolkit.
+This section explains how to install the Antenna toolkit.
 
 .. grid:: 2
 
@@ -13,7 +13,7 @@ This section explains how to install the Antenna Toolkit.
         :link: installation
         :link-type: doc
 
-        Learn how to install the PyAEDT Common Toolkit.
+        Learn how to install the Antenna toolkit.
 
     .. grid-item-card:: User guide :fa:`person-running`
         :padding: 2 2 2 2

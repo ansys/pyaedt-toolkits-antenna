@@ -2,13 +2,12 @@ Toolkit API
 ===========
 
 The Toolkit API contains the ``Toolkit`` class, which provides methods for
-controlling the toolkit workflow. In addition to methods for creating an AEDT
-session or connecting to an existing AEDT session, this API provides methods
+controlling the toolkit workflow. This API provides methods
 for synthesizing and creating an antenna. You use the Toolkit API at the
 toolkit level.
 
-The frontend makes calls to the Toolkit API. This API wraps some of the methods
-of the Antenna API.
+The common methods for creating an AEDT session or connecting to an existing AEDT session are provided by the
+`Common PyAEDT toolkit library <https://aedt.common.toolkit.docs.pyansys.com/>`_.
 
 .. currentmodule:: ansys.aedt.toolkits.antenna.backend.api
 
@@ -25,36 +24,37 @@ You can use the Toolkit API as shown in this example:
     import time
 
     # Import backend
-    from ansys.aedt.toolkits.template.backend.api import Toolkit
+    from ansys.aedt.toolkits.template.backend.api import ToolkitBackend
 
     # Initialize generic service
-    service = Toolkit()
+    toolkit_api = Toolkit()
 
     # Load default properties from a JSON file
-    properties = service.get_properties()
+    properties = toolkit_api.get_properties()
 
     # Set properties
     new_properties = {"aedt_version": "2023.1"}
-    service.set_properties(new_properties)
-    properties = service.get_properties()
+    toolkit_api.set_properties(new_properties)
+    properties = toolkit_api.get_properties()
 
     # Launch AEDT
-    msg = service.launch_aedt()
+    thread_msg = toolkit_api.launch_thread(toolkit_api.launch_aedt)
 
     # Wait until thread is finished
-    response = service.get_thread_status()
-    while response[0] == 0:
-        time.sleep(1)
-        response = service.get_thread_status()
+    idle = toolkit_api.wait_to_be_idle()
+    if not idle:
+        print("AEDT not initialized.")
+        sys.exit()
 
     # Create geometry
-    msg = service.create_geometry()
+    toolkit_api.connect_design("HFSS")
 
-    # Wait until thread is finished
-    response = service.get_thread_status()
-    while response[0] == 0:
-        time.sleep(1)
-        response = service.get_thread_status()
+    # Create setup when antenna is created
+    properties.antenna.setup.create_setup = True
+    properties.antenna.synthesis.outer_boundary = "Radiation"
+
+    # Generate antenna
+    antenna_parameter = toolkit_api.get_antenna("RectangularPatchProbe")
 
     # Release AEDT
-    service.release_aedt()
+    toolkit_api.release_aedt()

@@ -2,19 +2,18 @@
 Antenna wizard
 ==============
 
-This section describes how to use the Antenna wizard, which requires an
-installed and licensed copy of AEDT. It assumes that you have already launched the
+This section describes how to use the Antenna wizard. It assumes that you have already launched the
 wizard from either the AEDT menu or AEDT console. For toolkit installation and wizard
 launching information, see these topics:
 
 - :ref:`install-toolkit-AEDT`
 - :ref:`install_toolkit_console_ui`
 
-#. On the **AEDT Settings** tab, specify settings for either creating an AEDT session or
+#. On the **Settings** tab, specify settings for either creating an AEDT session or
    connecting to an existing AEDT session.
 
    .. note::
-      If the Antenna Toolkit Wizard is launched from AEDT, the **AEDT Settings** tab does not appear
+      If the Antenna Toolkit Wizard is launched from AEDT, the **Settings** tab does not appear
       because the toolkit is directly connected to the specific AEDT session.
 
    .. image:: ../_static/settings.png
@@ -22,16 +21,23 @@ launching information, see these topics:
       :alt: Settings tab
 
    The wizard has a progress bar and a logger box, where you can see the status of every operation.
-   A red progress bar means that the toolkit is busy. Every operation must wait until the toolkit is released.
 
-   Once the wizard is connected to AEDT, you want to use the wizard's **Antennas** menu to load an antenna
-   template into the wizard's **Design** tab.
-
-   .. image:: ../_static/design_connected.png
+    .. image:: ../_static/progress.png
       :width: 800
-      :alt: Antenna Toolkit Wizard, Design tab
+      :alt: Progress tab
 
-   For example, if you select **Antennas > Horn > Conical Corrugated**, the **Design** tab displays
+   You can choose different antennas from the **Antenna catalog** menu to load the antennas
+   template.
+
+   .. image:: ../_static/antenna_catalog.png
+      :width: 800
+      :alt: Antenna catalog
+
+    .. image:: ../_static/antenna_catalog2.png
+      :width: 800
+      :alt: Antenna catalog
+
+   For example, if you select **Antennas > Bowtie > Bowtie Normal**, the **Design** tab displays
    the **Synthesis** button and antenna template:
 
    .. image:: ../_static/corrugated_1.png

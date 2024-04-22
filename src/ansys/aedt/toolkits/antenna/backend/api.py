@@ -81,9 +81,9 @@ class ToolkitBackend(AEDTCommon):
 
         Examples
         --------
-        >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
+        >>> from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
         >>> import time
-        >>> toolkit = Toolkit()
+        >>> toolkit = ToolkitBackend()
         >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
         >>> idle = toolkit_api.wait_to_be_idle()
         >>> toolkit.get_antenna("BowTie")
@@ -196,9 +196,9 @@ class ToolkitBackend(AEDTCommon):
 
         Examples
         --------
-        >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
+        >>> from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
         >>> import time
-        >>> toolkit = Toolkit()
+        >>> toolkit = ToolkitBackend()
         >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
         >>> idle = toolkit_api.wait_to_be_idle()
         >>> toolkit.get_antenna("BowTie")
@@ -253,8 +253,8 @@ class ToolkitBackend(AEDTCommon):
         Examples
         --------
         >>> import time
-        >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
-        >>> toolkit = Toolkit()
+        >>> from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
+        >>> toolkit = ToolkitBackend()
         >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
         >>> idle = toolkit_api.wait_to_be_idle()
         >>> toolkit.get_antenna("BowTie")
