@@ -36,7 +36,7 @@ from ansys.aedt.toolkits.antenna.backend import antenna_models
 class TestClass:
     """Class defining a workflow to test antenna models bowtie."""
     def test_01_bowtie(self, aedt_common):
-        antenna_module = getattr(antenna_models, "BowTie")
+        antenna_module = getattr(antenna_models, "BowTieNormal")
         oantenna0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert oantenna0.synthesis_parameters
 
