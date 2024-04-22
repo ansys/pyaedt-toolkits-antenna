@@ -53,8 +53,6 @@ from windows.antenna_synthesis.antenna_synthesis_menu import AntennaSynthesisMen
 # Windows
 
 
-
-
 # Backend URL and port
 if len(sys.argv) == 3:
     properties.backend_url = sys.argv[1]
