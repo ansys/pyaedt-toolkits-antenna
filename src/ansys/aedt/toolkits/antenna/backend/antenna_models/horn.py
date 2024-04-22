@@ -129,7 +129,7 @@ class Conical(CommonHorn):
     >>> oantenna1 = Conical(app)
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()
-    >>> oantenna2 = Conical(app, origin=[200, 50, 0])
+    >>> oantenna2 = Conical(app, origin=[0.2, 0.5, 0])
     >>> oantenna2.model_hfss()
     >>> oantenna2.setup_hfss()
     >>> app.release_desktop(False, False)
@@ -413,7 +413,7 @@ class PyramidalRidged(CommonHorn):
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()
-    >>> oantenna2 = PyramidalRidged(app, origin=[200, 50, 0])
+    >>> oantenna2 = PyramidalRidged(app, origin=[0.2, 0.5, 0])
     >>> oantenna2.model_hfss()
     >>> oantenna2.setup_hfss()
     >>> app.release_desktop(False, False)
@@ -1379,7 +1379,7 @@ class Elliptical(CommonHorn):
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()
-    >>> oantenna2 = Elliptical(app, origin=[200, 50, 0])
+    >>> oantenna2 = Elliptical(app, origin=[0.2, 0.5, 0])
     >>> oantenna2.model_hfss()
     >>> oantenna2.setup_hfss()
     >>> app.release_desktop(False, False)
@@ -1666,7 +1666,7 @@ class EPlane(CommonHorn):
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()
-    >>> oantenna2 = EPlane(app, origin=[200, 50, 0])
+    >>> oantenna2 = EPlane(app, origin=[0.2, 0.5, 0])
     >>> oantenna2.model_hfss()
     >>> oantenna2.setup_hfss()
     >>> app.release_desktop(False, False)
@@ -2042,7 +2042,7 @@ class HPlane(CommonHorn):
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()
-    >>> oantenna2 = HPlane(app, origin=[200, 50, 0])
+    >>> oantenna2 = HPlane(app, origin=[0.2, 0.5, 0])
     >>> oantenna2.model_hfss()
     >>> oantenna2.setup_hfss()
     >>> app.release_desktop(False, False)
@@ -2404,7 +2404,7 @@ class Pyramidal(CommonHorn):
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()
-    >>> oantenna2 = Pyramidal(app, origin=[200, 50, 0])
+    >>> oantenna2 = Pyramidal(app, origin=[0.2, 0.5, 0])
     >>> oantenna2.model_hfss()
     >>> oantenna2.setup_hfss()
     >>> app.release_desktop(False, False)
@@ -2774,7 +2774,7 @@ class QuadRidged(CommonHorn):
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()
-    >>> oantenna2 = QuadRidged(app, origin=[200, 50, 0])
+    >>> oantenna2 = QuadRidged(app, origin=[0.2, 0.5, 0])
     >>> oantenna2.model_hfss()
     >>> oantenna2.setup_hfss()
     >>> app.release_desktop(False, False)
@@ -3348,7 +3348,7 @@ class Conical_Special(CommonHorn):
     >>> oantenna1 = Conical(app)
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()
-    >>> oantenna2 = Conical(app, origin=[200, 50, 0])
+    >>> oantenna2 = Conical(app, origin=[0.2, 0.5, 0])
     >>> oantenna2.model_hfss()
     >>> oantenna2.setup_hfss()
     >>> app.release_desktop(False, False)
