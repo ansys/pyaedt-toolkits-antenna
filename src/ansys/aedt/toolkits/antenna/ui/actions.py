@@ -21,15 +21,16 @@
 # SOFTWARE.
 
 import base64
-import re
-import os
-import tempfile
 import json
+import os
+import re
+import tempfile
+
 from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QLineEdit
-from pyaedt.modules.solutions import FfdSolutionData
 from pyaedt.generic.general_methods import read_json
+from pyaedt.modules.solutions import FfdSolutionData
 
 # isort: off
 
@@ -110,7 +111,7 @@ class Frontend(FrontendGeneric):
             "create_setup": self.ui.app.antenna_synthesis_menu.create_setup.isChecked(),
             "component_3d": self.ui.app.antenna_synthesis_menu.component_3d.isChecked(),
             "lattice_pair": self.ui.app.antenna_synthesis_menu.lattice_pair.isChecked(),
-            "sweep": int(self.ui.app.antenna_synthesis_menu.sweep_value.text())
+            "sweep": int(self.ui.app.antenna_synthesis_menu.sweep_value.text()),
         }
 
         if not self.set_properties(new_properties):
@@ -216,8 +217,9 @@ class Frontend(FrontendGeneric):
                     for encoded_geometry in encoded_data:
                         encoded_data_bytes = bytes(encoded_geometry, "utf-8")
                         decoded_data = base64.b64decode(encoded_data_bytes)
-                        file_path = os.path.join(self.temp_folder, str(cont), "geometry",
-                                                 geometry_names[cont_geom] + ".obj")
+                        file_path = os.path.join(
+                            self.temp_folder, str(cont), "geometry", geometry_names[cont_geom] + ".obj"
+                        )
                         with open(file_path, "wb") as f:
                             f.write(decoded_data)
                         cont_geom += 1

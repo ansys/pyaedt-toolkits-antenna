@@ -39,18 +39,20 @@ from actions import Frontend
 from ansys.aedt.toolkits.common.ui.common_windows.home_menu import HomeMenu
 from ansys.aedt.toolkits.common.ui.common_windows.settings_column import SettingsMenu
 
+# Import general common frontend modules
+from ansys.aedt.toolkits.common.ui.logger_handler import logger
+
 # Common windows
 from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
 
-# Windows
-
 # New windows
 from windows.antenna_catalog.antenna_catalog_menu import AntennaCatalogMenu
-from windows.antenna_synthesis.antenna_synthesis_menu import AntennaSynthesisMenu
 from windows.antenna_results.antenna_results_menu import AntennaResultsMenu
+from windows.antenna_synthesis.antenna_synthesis_menu import AntennaSynthesisMenu
 
-# Import general common frontend modules
-from ansys.aedt.toolkits.common.ui.logger_handler import logger
+# Windows
+
+
 
 
 # Backend URL and port
