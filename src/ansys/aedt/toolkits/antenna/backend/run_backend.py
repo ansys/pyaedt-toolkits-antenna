@@ -58,9 +58,9 @@ def create_antenna():
         return jsonify("Antenna not created"), 500
 
 
-@app.route("/update_hfss_parameters", methods=["PATCH"])
-def update_hfss_parameters():
-    logger.info("[PATCH] /update_hfss_parameters (Update parameters in HFSS)")
+@app.route("/hfss_parameters", methods=["PATCH"])
+def hfss_parameters():
+    logger.info("[PATCH] /hfss_parameters (Update parameters in HFSS)")
 
     body = request.json
     if not body:

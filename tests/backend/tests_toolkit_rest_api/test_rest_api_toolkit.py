@@ -51,7 +51,7 @@ class TestClass:
         assert isinstance(data, dict)
 
     def test_02_update_parameters(self, client):
-        response1 = client.patch("/update_hfss_parameters", json={})
+        response1 = client.patch("/hfss_parameters", json={})
         assert response1.status_code == 500
 
         be_properties = client.get("/properties").json
@@ -59,7 +59,7 @@ class TestClass:
 
         property_key = parameter_list[0]
 
-        response2 = client.patch("/update_hfss_parameters", json={"key": property_key, "value": "0.03"})
+        response2 = client.patch("/hfss_parameters", json={"key": property_key, "value": "0.03"})
 
         assert response2.status_code == 200
 
