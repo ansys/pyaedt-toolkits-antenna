@@ -91,7 +91,7 @@ def analyze():
 
 @app.route("/scattering_results", methods=["GET"])
 def scattering_results():
-    logger.info("[POST] scattering_results (Get antenna scattering results)")
+    logger.info("[GET] scattering_results (Get antenna scattering results)")
 
     response = toolkit_api.scattering_results()
     if response:
@@ -102,7 +102,7 @@ def scattering_results():
 
 @app.route("/export_farfield", methods=["GET"])
 def export_farfield():
-    logger.info("[POST] farfield_results (Get antenna far field data)")
+    logger.info("[GET] farfield_results (Get antenna far field data)")
 
     body = request.json
 
