@@ -37,9 +37,6 @@ tests = [
 doc = [
     'ansys-aedt-toolkits-common[doc]'
 ]
-ci = [
-    'ansys-aedt-toolkits-common[ci]'
-]
 
 [tool.flit.module]
 name = "ansys.aedt.toolkits.antenna"
