@@ -59,7 +59,7 @@ def create_antenna():
 
 
 @app.route("/hfss_parameters", methods=["PATCH"])
-def hfss_parameters():
+def update_hfss_parameters():
     logger.info("[PATCH] /hfss_parameters (Update parameters in HFSS)")
 
     body = request.json
