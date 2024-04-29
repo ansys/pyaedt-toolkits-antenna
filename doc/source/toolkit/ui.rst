@@ -20,7 +20,7 @@ launching information, see these topics:
       :width: 800
       :alt: Settings tab
 
-   The wizard has a progress bar and a logger box, where you can see the status of every operation.
+   The wizard has a progress circle and a logger box, where you can see the status of every operation.
 
    .. image:: ../_static/progress.png
       :width: 800
