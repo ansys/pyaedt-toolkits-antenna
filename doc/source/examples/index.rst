@@ -1,6 +1,6 @@
 Examples
 ========
-End-to-end examples show how to use the API of the PyAEDT antenna toolkit.
+End-to-end examples show how to use the API of the AEDT Antenna Toolkit.
 
 Antenna synthesis
 ~~~~~~~~~~~~~~~~~

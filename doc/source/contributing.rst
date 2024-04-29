@@ -28,8 +28,8 @@ TBD
 
 Post issues
 -----------
-Use the `PyAEDT antenna toolkit issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_ page
-to submit questions, report bugs, and request new features.
+Use the AEDT Antenna Toolkit `Issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_ page
+to report bugs and request new features.
 
 
 View documentation

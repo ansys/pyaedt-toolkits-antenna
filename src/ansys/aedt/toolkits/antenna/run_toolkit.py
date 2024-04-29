@@ -73,7 +73,7 @@ process_desktop_properties(is_linux, url_call)
 # Launch frontend thread
 frontend_thread = server_actions(frontend_command, "template_frontend", is_linux)
 
-# Check if backend is running. Try every 1 second with a timeout of 10 seconds
+# Check if backend is running. Try every 1 second with a timeout of 10 seconds.
 backend_flag = wait_for_server(server=url, port=port)
 if not backend_flag:
     raise Exception("There is a process running in: {}".format(url_call))

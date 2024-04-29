@@ -1,10 +1,10 @@
 # Contributors
 
-## Project Lead
+## Project lead
 
 * [Samuel Lopez](https://github.com/Samuelopez-ansys)
 
-## Individual Contributors
+## Individual contributors
 
 * [Sébastien Morais](https://github.com/SMoraisAnsys)
 * [Kathy Pippert](https://github.com/PipKat)

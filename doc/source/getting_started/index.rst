@@ -4,7 +4,7 @@
 Getting started
 ===============
 
-This section explains how to install the Antenna toolkit.
+This section explains how to install the AEDT Antenna Toolkit.
 
 .. grid:: 2
 
@@ -13,7 +13,7 @@ This section explains how to install the Antenna toolkit.
         :link: installation
         :link-type: doc
 
-        Learn how to install the Antenna toolkit.
+        Learn how to install the AEDT Antenna Toolkit.
 
     .. grid-item-card:: User guide :fa:`person-running`
         :padding: 2 2 2 2

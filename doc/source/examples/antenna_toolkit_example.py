@@ -75,7 +75,7 @@ print(
 
 # ## Change synthesis frequency
 #
-# Modify resonance frequency and modify parameters with set_properties method.
+# Modify resonance frequency and modify parameters with the ``set_properties()`` method.
 
 new_frequency1 = 12.0
 new_properties = {"frequency": new_frequency1}
@@ -127,26 +127,26 @@ if not idle:
 
 # ## Connect to HFSS design
 #
-# Create a new HFSS design.
+# Create an HFSS design.
 
 toolkit_api.connect_design("HFSS")
 
 # ## Create setup when antenna is created
 #
-# Set create_setup property.
+# Set ``create_setup`` property.
 
 properties.antenna.setup.create_setup = True
 properties.antenna.synthesis.outer_boundary = "Radiation"
 
 # ## Create antenna in HFSS
 #
-# Create antenna and setup in HFSS.
+# Create antenna and set up in HFSS.
 
 antenna_parameter = toolkit_api.get_antenna("RectangularPatchProbe")
 
-# ## Trying to create a new antenna
+# ## Try. to create antenna
 #
-# The antenna toolkit API does not allow the creation of more than one antenna. The user can use the antenna models API
+# The AEDT Antenna Toolkit API does not allow the creation of more than one antenna. However, you can use the antenna model's API
 # to create more than one antenna.
 
 new_antenna = toolkit_api.get_antenna("BowTie")
@@ -202,7 +202,7 @@ toolkit_api.release_aedt(True, True)
 
 # ## Plot results
 
-# Plot exported files using the following code
+# Plot exported files
 
 from pyaedt.generic.plot import ModelPlotter
 

@@ -37,17 +37,18 @@ launching information, see these topics:
       :width: 800
       :alt: Antenna catalog 2
 
-   For instance, if you select **Antennas > Bowtie > Bowtie Normal**,
+   For example, if you select **Antennas > Bowtie > Bowtie Normal**,
    the central page is updated to the **Synthesis** page and it shows the antenna template:
 
    .. image:: ../_static/antenna_template.png
       :width: 800
       :alt: Antenna template
 
-   The user has two options: **Synthesis** and **Generate**.
-   **Generate** button is unavailable if the wizard is not connected to AEDT.
+   You have two options: **Synthesis** and **Generate**.
+   The **Generate** button is unavailable if the wizard is not connected to AEDT.
 
-   - The **Synthesis** button is for performing the synthesis of the antenna. It does not need AEDT.
+   - The **Synthesis** button is for performing the synthesis of the antenna. A connection to AEDT
+   is not needed.
      You can see the parameters that control the antenna geometry. Additionally, you can do as many
      syntheses as you want and even change the antenna template.
 
@@ -55,7 +56,7 @@ launching information, see these topics:
         :width: 800
         :alt: Antenna synthesis
 
-   - The **Generate** button is for creating a HFSS model. It uses the **3D Component**,
+   - The **Generate** button is for creating an HFSS model. It uses the **3D Component**,
      **Create Hfss Setup**, and **Lattice pair** checkboxes along with the **Sweep Bandwidth %** option
      It also uses the length and frequency unit to perform the HFSS setup.
 
@@ -65,7 +66,7 @@ launching information, see these topics:
        with a 3D component.
 
      - If you select the **Generate** checkbox, the toolkit automatically creates the boundaries,
-       excitations, and ports needed to simulate the antenna. Once you create a HFSS model, you cannot
+       excitations, and ports needed to simulate the antenna. Once you create an HFSS model, you cannot
        create another antenna. Both the **Synthesis** and **Generate** buttons become unavailable.
        If you want to create another antenna, you must restart the toolkit.
 
@@ -79,7 +80,7 @@ the image of the antenna template:
    :width: 800
    :alt: Antenna generated
 
-If AEDT is launched in non graphical mode, you can still see the generated model.
+If AEDT is launched in non-graphical mode, you can still see the generated model.
 
 In the wizard, you can modify the parameters interactively, watching both the HFSS model and the
 interactive 3D plot in the wizard change.
@@ -88,7 +89,7 @@ Finally, on the wizard's **Analysis** tab, you have the **Get results** button.
 This second button is unavailable until after you analyze the HFSS design.
 
 When you click **Get results**, the project is analyzed.
-The user can specify the number of cores to use in the simulation.
+You can specify the number of cores to use in the simulation.
 
 Once the project is solved, you can click **Get results** on the **Analysis** tab to view results.
 

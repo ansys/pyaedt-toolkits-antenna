@@ -44,7 +44,7 @@ if len(sys.argv) == 3:
 
 @app.route("/create_antenna", methods=["POST"])
 def create_antenna():
-    logger.info("[POST] /create_antenna (create antenna in HFSS)")
+    logger.info("[POST] /reate_antenna (Create antenna in HFSS.)")
 
     properties = toolkit_api.get_properties()
 

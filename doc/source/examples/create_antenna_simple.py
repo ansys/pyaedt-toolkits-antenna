@@ -67,7 +67,7 @@ app = pyaedt.Hfss(projectname=project_name, specified_version=aedt_version, non_
 
 # ## Create antenna in HFSS
 #
-# Create antenna object, change frequency synthesis, create antenna and setup in HFSS.
+# Create antenna object, change frequency synthesis, create antenna, and set up in HFSS.
 
 oantenna1 = BowTieRounded(app)
 
@@ -84,7 +84,7 @@ oantenna1.name = "MyAmazingAntenna"
 
 # ## Create antenna in HFSS
 #
-# Create antenna object, change origin parameter in the antenna definition, create antenna and setup in HFSS.
+# Create antenna object, change origin parameter in the antenna definition, create antenna, and set up in HFSS.
 
 oantenna2 = BowTieRounded(app, origin=[2, 5, 0], name="MyAntenna")
 oantenna2.model_hfss()
@@ -92,7 +92,7 @@ oantenna2.setup_hfss()
 
 # ## Plot HFSS model
 #
-# Plot geometry with PyVista
+# Plot geometry with PyVista.
 
 app.plot()
 

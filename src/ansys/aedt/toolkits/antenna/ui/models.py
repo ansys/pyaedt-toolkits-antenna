@@ -38,7 +38,7 @@ from pydantic import Field
 
 
 class AntennaProperties(BaseModel):
-    """Store toolkit properties."""
+    """Stores toolkit properties."""
 
     antenna_created: str = ""
     available_models: List[str] = Field(default_factory=list)
@@ -49,13 +49,13 @@ class AntennaProperties(BaseModel):
 
 
 class FrontendProperties(BaseModel):
-    """Store toolkit properties."""
+    """Stores toolkit properties."""
 
     antenna: AntennaProperties
 
 
 class Properties(FrontendProperties, UIProperties, validate_assignment=True):
-    """Store all properties."""
+    """Stores all properties."""
 
 
 frontend_properties = {}

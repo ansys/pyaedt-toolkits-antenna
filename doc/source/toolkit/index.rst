@@ -5,7 +5,7 @@
 API reference
 =============
 
-This section provides descriptions of the two APIs available for the Antenna toolkit:
+This section provides descriptions of the two APIs available for the AEDT Antenna Toolkit:
 
 - **Toolkit API**: Contains the ``Toolkit`` class, which provides methods for
   controlling the toolkit workflow. This API provides methods

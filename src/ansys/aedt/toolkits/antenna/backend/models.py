@@ -38,7 +38,7 @@ from pydantic import BaseModel
 
 
 class Synthesis(BaseModel, validate_assignment=True):
-    """Store antenna synthesis properties."""
+    """Stores antenna synthesis properties."""
 
     name: str = ""
     coordinate_system: str = "Global"
@@ -57,7 +57,7 @@ class Synthesis(BaseModel, validate_assignment=True):
 
 
 class Setup(BaseModel, validate_assignment=True):
-    """Store antenna setup properties."""
+    """Stores antenna setup properties."""
 
     component_3d: bool = False
     create_setup: bool = False
@@ -67,7 +67,7 @@ class Setup(BaseModel, validate_assignment=True):
 
 
 class AntennaProperties(BaseModel, validate_assignment=True):
-    """Store antenna properties."""
+    """Stores antenna properties."""
 
     model: str = ""
     is_created: bool = False
@@ -79,13 +79,13 @@ class AntennaProperties(BaseModel, validate_assignment=True):
 
 
 class BackendProperties(BaseModel):
-    """Store toolkit properties."""
+    """Stores toolkit properties."""
 
     antenna: AntennaProperties
 
 
 class Properties(BackendProperties, CommonProperties, validate_assignment=True):
-    """Store all properties."""
+    """Stores all properties."""
 
 
 backend_properties = {}
