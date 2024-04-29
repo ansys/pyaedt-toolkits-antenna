@@ -83,10 +83,12 @@ jobs:
           .venv\Scripts\Activate.ps1
           pip uninstall vtk pypandoc -y
 
-      - name: Install CI related dependencies
+      - name: Install CI dependencies (e.g. vtk-osmesa)
         run: |
           .venv\Scripts\Activate.ps1
-          pip install --extra-index-url https://wheels.vtk.org .[ci]
+          pip uninstall --yes pypandoc vtk
+          pip install --extra-index-url https://wheels.vtk.org vtk-osmesa==9.2.20230527.dev0
+          pip install pypandoc-binary
 
       - name: Retrieve antenna toolkit version
         run: |
