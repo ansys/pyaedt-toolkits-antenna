@@ -58,9 +58,9 @@ def create_antenna():
         return jsonify("Antenna not created"), 500
 
 
-@app.route("/update_parameters", methods=["PUT"])
-def update_parameters():
-    logger.info("[POST] /update_parameters (Update parameters in HFSS)")
+@app.route("/update_hfss_parameters", methods=["PATCH"])
+def update_hfss_parameters():
+    logger.info("[PATCH] /update_hfss_parameters (Update parameters in HFSS)")
 
     body = request.json
     if not body:
@@ -71,7 +71,7 @@ def update_parameters():
     key = body["key"]
     value = body["value"]
 
-    response = toolkit_api.update_parameters(key, value)
+    response = toolkit_api.update_hfss_parameters(key, value)
     if response:
         return jsonify(response), 200
     else:  # pragma: no cover

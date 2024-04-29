@@ -179,7 +179,7 @@ class ToolkitBackend(AEDTCommon):
         self.release_aedt(False, False)
         return antenna_parameters
 
-    def update_parameters(self, key: str, val: str) -> bool:
+    def update_hfss_parameters(self, key: str, val: str) -> bool:
         """Update parameters in HFSS.
 
         Parameters
@@ -202,7 +202,7 @@ class ToolkitBackend(AEDTCommon):
         >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
         >>> idle = toolkit_api.wait_to_be_idle()
         >>> toolkit.get_antenna("BowTie")
-        >>> msg3 = toolkit.update_parameters()
+        >>> msg3 = toolkit.update_hfss_parameters()
         """
         if not self.properties.antenna.parameters_hfss:  # pragma: no cover
             logger.debug("Antenna was not created in HFSS.")

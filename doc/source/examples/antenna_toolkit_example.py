@@ -157,7 +157,7 @@ print(new_antenna)
 #
 # Move antenna X position
 
-toolkit_api.update_parameters("pos_x", "20")
+toolkit_api.update_hfss_parameters("pos_x", "20")
 
 # ## Fit all
 
@@ -171,7 +171,7 @@ toolkit_api.release_aedt(False, False)
 #
 # Move antenna X position to origin
 
-toolkit_api.update_parameters("pos_x", "0")
+toolkit_api.update_hfss_parameters("pos_x", "0")
 
 # ## Analyze design in batch mode
 

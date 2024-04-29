@@ -59,13 +59,13 @@ class TestClass:
 
         property_key = aedt_common.properties.antenna.parameters_hfss[parameter_list[0]]
 
-        assert aedt_common.update_parameters(parameter_list[0], "0.03")
+        assert aedt_common.update_hfss_parameters(parameter_list[0], "0.03")
 
         aedt_common.connect_design()
         assert aedt_common.aedtapp[property_key] == "0.03" + aedt_common.properties.antenna.synthesis.length_unit
         aedt_common.release_aedt(False, False)
 
-        assert not aedt_common.update_parameters("hola", "0.03")
+        assert not aedt_common.update_hfss_parameters("hola", "0.03")
 
     def test_03_analyze(self, aedt_common):
 

@@ -133,7 +133,7 @@ class Frontend(FrontendGeneric):
 
     def update_antenna_parameter(self, key, value):
         """Update antenna parameter."""
-        response = requests.put(self.url + "/update_parameters", json={"key": key, "value": value})
+        response = requests.patch(self.url + "/update_hfss_parameters", json={"key": key, "value": value})
         if response.ok:
             msg = "{} updated in design".format(key)
             self.ui.update_logger(msg)
