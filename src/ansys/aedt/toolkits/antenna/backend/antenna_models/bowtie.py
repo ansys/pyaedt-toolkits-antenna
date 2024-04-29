@@ -57,7 +57,7 @@ class BowTieNormal(CommonPatch):
     Returns
     -------
     :class:`aedt.toolkits.antenna.BowTie`
-        Bow tie antenna object.
+        Bowtie antenna object.
 
     Notes
     -----
@@ -526,7 +526,7 @@ class BowTieSlot(CommonPatch):
     Returns
     -------
     :class:`aedt.toolkits.antenna.BowTieSlot`
-        Bow tie antenna object.
+        Bowtie antenna object.
 
     Notes
     -----
