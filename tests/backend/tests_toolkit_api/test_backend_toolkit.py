@@ -69,10 +69,10 @@ class TestClass:
 
     def test_03_analyze(self, aedt_common):
 
-        aedt_common.properties.antenna.setup.num_cores = 4
+        aedt_common.properties.antenna.setup.num_cores = 2
         aedt_common.connect_design()
         aedt_common.aedtapp.setups[0].props["MaxDeltaS"] = 1
-        aedt_common.aedtapp.setups[0].props["MaximumPasses"] = 2
+        aedt_common.aedtapp.setups[0].props["MaximumPasses"] = 1
 
         aedt_common.release_aedt(False, False)
 
