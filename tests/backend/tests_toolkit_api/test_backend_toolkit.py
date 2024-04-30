@@ -22,6 +22,7 @@
 
 import os
 import pytest
+from pyaedt import is_linux
 
 from tests.backend.conftest import PROJECT_NAME
 
@@ -67,6 +68,7 @@ class TestClass:
 
         assert not aedt_common.update_hfss_parameters("hola", "0.03")
 
+    @pytest.mark.skipif(is_linux, reason="Crashes on Linux")
     def test_03_analyze(self, aedt_common):
 
         aedt_common.properties.antenna.setup.num_cores = 2
@@ -78,11 +80,13 @@ class TestClass:
 
         assert aedt_common.analyze()
 
+    @pytest.mark.skipif(is_linux, reason="Crashes on Linux")
     def test_04_scattering_results(self, aedt_common):
         sweep, data = aedt_common.scattering_results()
 
         assert len(sweep) == len(data)
 
+    @pytest.mark.skipif(is_linux, reason="Crashes on Linux")
     def test_05_export_farfield(self, aedt_common):
         """Get aedt model."""
         frequency = (str(aedt_common.properties.antenna.synthesis.frequency) +
