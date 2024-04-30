@@ -146,8 +146,8 @@ antenna_parameter = toolkit_api.get_antenna("RectangularPatchProbe")
 
 # ## Try. to create antenna
 #
-# The AEDT Antenna Toolkit API does not allow the creation of more than one antenna. However, you can use the antenna model's API
-# to create more than one antenna.
+# The AEDT Antenna Toolkit API does not allow the creation of more than one antenna. However, you can use the antenna
+# model's API to create more than one antenna.
 
 new_antenna = toolkit_api.get_antenna("BowTie")
 
