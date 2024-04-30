@@ -115,7 +115,6 @@ class ApplicationWindow(QMainWindow, Frontend):
                 self.settings_menu.aedt_version.setCurrentText(be_properties.get("aedt_version"))
 
         # Custom toolkit setup starts here
-
         # Home menu
         self.home_menu = HomeMenu(self)
         self.home_menu.setup()
