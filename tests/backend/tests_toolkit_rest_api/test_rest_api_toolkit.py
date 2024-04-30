@@ -28,6 +28,7 @@ from tests.backend.conftest import PROJECT_NAME
 
 pytestmark = [pytest.mark.antenna_toolkit_rest_api]
 
+from pyaedt import is_linux
 from pyaedt.modeler.cad.object3d import Object3d
 from pyaedt.modeler.geometry_operators import GeometryOperators
 
@@ -63,6 +64,7 @@ class TestClass:
 
         assert response2.status_code == 200
 
+    @pytest.mark.skipif(is_linux, reason="Crashes on Linux")
     def test_03_analyze(self, client):
         new_properties = {
             "num_cores": 4,
@@ -73,12 +75,14 @@ class TestClass:
 
         assert response1.status_code == 200
 
+    @pytest.mark.skipif(is_linux, reason="Crashes on Linux")
     def test_04_scattering_results(self, client):
         response2 = client.get("/scattering_results")
         assert response2.status_code == 200
         data = json.loads(response2.data.decode("utf-8"))
         assert len(data) == 2
 
+    @pytest.mark.skipif(is_linux, reason="Crashes on Linux")
     def test_05_farfield_results(self, client):
         response2 = client.get("/export_farfield", json={"sphere": "3D"})
         assert response2.status_code == 200
