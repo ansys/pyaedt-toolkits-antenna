@@ -39,7 +39,7 @@ from ansys.aedt.toolkits.antenna.ui.models import properties as frontend_propert
 
 # Set resolution and user interface theme
 os.environ["AEDT_TOOLKIT_HIGH_RESOLUTION"] = "True"
-os.environ["AEDT_TOOLKIT_THEME"] = "ansys_light.json"
+os.environ["AEDT_TOOLKIT_THEME"] = "ansys_dark.json"
 
 # Define global variables or constants
 backend_file = os.path.join(backend.__path__[0], "run_backend.py")
