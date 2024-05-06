@@ -11,10 +11,10 @@ readme = "README.rst"
 requires-python = ">=3.10"
 license = {file = "LICENSE"}
 authors = [
-    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
+    {name = "ANSYS, Inc.", email = "pyansys.support@ansys.com"},
 ]
 maintainers = [
-    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
+    {name = "PyAnsys developers", email = "pyansys.maintainers@ansys.com"},
 ]
 
 classifiers = [
@@ -22,43 +22,20 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
-    "build==1.0.3",
-    "twine==5.0.0",
-    "pyaedt",
-    "importlib-metadata >=4.0",
-    "PySide6-Essentials==6.6.2",
-    "pyqtgraph",
-    "pyvistaqt",
-    "qdarkstyle",
-    "flask",
+    'ansys-aedt-toolkits-common'
 ]
 
 [project.optional-dependencies]
+all = [
+    'ansys-aedt-toolkits-common[all]'
+]
 tests = [
-    "pytest==8.0.2",
-    "pytest-cov==4.1.0",
+    'ansys-aedt-toolkits-common[tests]'
 ]
 doc = [
-    "ansys-sphinx-theme==0.14.0",
-    "numpydoc==1.6.0",
-    "recommonmark==0.7.1",
-    "sphinx==7.2.6",
-    "sphinx-copybutton==0.5.2",
-    "enum-tools[sphinx]==0.11.0",
-    "sphinx-autoapi==3.0.0",
-    "sphinx-autobuild==2024.2.4",
-    "sphinx-autodoc-typehints==2.0.0",
-    "sphinx-gallery==0.15.0",
-    "sphinx-notfound-page==1.0.0",
-    "nbsphinx==0.9.3",
-    "sphinx_design",
-    "jupytext",
-    "ipython==8.22.2",
-    "jupyterlab==4.1.4",
+    'ansys-aedt-toolkits-common[doc]'
 ]
 
 [tool.flit.module]
@@ -86,3 +63,12 @@ source = ["ansys.aedt"]
 
 [tool.coverage.report]
 show_missing = true
+
+[tool.pytest.ini_options]
+minversion = "7.1"
+xfail_strict = false
+markers = [
+    "patch_api: mark test as related to the patch antenna API.",
+    "toolkit_api: mark test as related to the toolkit API.",
+    "rest_api: mark test as related to the REST API.",
+]

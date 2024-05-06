@@ -1,0 +1,16 @@
+name = "Archimedean"
+
+[object_1]
+name = "ant_arm1"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_2]
+name = "ant_arm2"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_3]
+name = "port_lump"
+color = [255, 0, 0]
+opacity = 0.2

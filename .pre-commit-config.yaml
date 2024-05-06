@@ -1,6 +1,8 @@
 exclude: |
     (?x)(
-        src/ansys/aedt/toolkits/antenna/ui/common/frontend_ui.py
+        src/ansys/aedt/toolkits/antenna/ui/windows/.* |
+        tests/.* |
+        README.rst
     )
 
 repos:
@@ -36,4 +38,4 @@ repos:
   rev: v2.2.6
   hooks:
   - id: codespell
-    args: ["--ignore-words=doc/styles/Vocab/ANSYS/accept.txt"]
+    args: ["--ignore-words=doc/styles/config/vocabularies/ANSYS/accept.txt"]

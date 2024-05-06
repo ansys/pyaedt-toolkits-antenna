@@ -2,7 +2,7 @@ Common
 ======
 This pages lists common methods available in the Antenna API:
 
-.. currentmodule:: ansys.aedt.toolkits.antenna.backend.models.common
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.common
 
 .. autosummary::
    :toctree: _autosummary
@@ -14,7 +14,7 @@ You must use these methods from PyAEDT as shown in this example:
 
 .. code:: python
 
-    from ansys.aedt.toolkits.antenna.backend.models.common import TransmissionLine
+    from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
 
     # Transmission line calculation
     tl_calc = TransmissionLine(frequency=2)

@@ -1,18 +1,43 @@
-import re
-import time
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
+import gc
+import os.path
+import re
+
+# isort: off
+
+from ansys.aedt.toolkits.antenna.backend.models import properties
+
+# isort: on
+
+from ansys.aedt.toolkits.common.backend.api import AEDTCommon
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
 import pyaedt
 
-from ansys.aedt.toolkits.antenna.backend import models
-from ansys.aedt.toolkits.antenna.backend.common.api_generic import ToolkitGeneric
-from ansys.aedt.toolkits.antenna.backend.common.logger_handler import logger
-from ansys.aedt.toolkits.antenna.backend.common.properties import properties
-from ansys.aedt.toolkits.antenna.backend.common.thread_manager import ThreadManager
-
-thread = ThreadManager()
+from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 
-class Toolkit(ToolkitGeneric):
+class ToolkitBackend(AEDTCommon):
     """Provides methods for controlling the toolkit workflow.
 
     This class provides methods for creating an AEDT session, connecting to an existing
@@ -20,23 +45,21 @@ class Toolkit(ToolkitGeneric):
 
     Examples
     --------
-    >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
+    >>> from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
     >>> import time
-    >>> toolkit = Toolkit()
+    >>> toolkit = ToolkitBackend()
     >>> msg1 = toolkit.launch_aedt()
-    >>> response = toolkit.get_thread_status()
-    >>> while response[0] == 0:
-    >>>     time.sleep(1)
-    >>>     response = toolkit.get_thread_status()
+    >>> toolkit.wait_to_be_idle()
     >>> toolkit.get_antenna("BowTie")
     """
 
     def __init__(self):
-        ToolkitGeneric.__init__(self)
-        self._oantenna = None
+        AEDTCommon.__init__(self, properties)
+        self.properties = properties
+        self.oantenna = None
         self.antenna_type = None
         self.available_antennas = []
-        for name, var in vars(models).items():
+        for name, var in vars(antenna_models).items():
             # If the variable is a module, print the module's name
             if isinstance(var, type):
                 self.available_antennas.append(name)
@@ -58,28 +81,25 @@ class Toolkit(ToolkitGeneric):
 
         Examples
         --------
-        >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
+        >>> from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
         >>> import time
-        >>> toolkit = Toolkit()
-        >>> msg1 = toolkit.launch_aedt()
-        >>> response = toolkit.get_thread_status()
-        >>> while response[0] == 0:
-        >>>     time.sleep(1)
-        >>>     response = toolkit.get_thread_status()
-        >>> msg3 = toolkit.get_antenna("BowTie")
+        >>> toolkit = ToolkitBackend()
+        >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
+        >>> idle = toolkit_api.wait_to_be_idle()
+        >>> toolkit.get_antenna("BowTie")
         """
 
-        if self._oantenna:
+        if self.oantenna:
             logger.debug("Antenna is already created.")
             return False
 
-        if antenna not in models.__dir__():
+        if antenna not in antenna_models.__dir__():
             logger.debug("Antenna is not implemented.")
             return False
 
         if not synth_only and not self.aedtapp:
-            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS.")
+            if not self.properties.active_design:
+                logger.debug("Not active design.")
                 return False
             # Connect to AEDT design
             self.connect_design("HFSS")
@@ -88,131 +108,85 @@ class Toolkit(ToolkitGeneric):
                 return False
 
         # Get antenna properties
-        freq_units = properties.frequency_unit
-        antenna_module = getattr(models, antenna)
-        properties.antenna_type = antenna
+        freq_units = self.properties.antenna.synthesis.frequency_unit
+        antenna_module = getattr(antenna_models, antenna)
+        self.properties.antenna.model = antenna
         self.antenna_type = antenna
 
         # Create antenna object with default values
-        self._oantenna = antenna_module(
+        self.oantenna = antenna_module(
             self.aedtapp,
             frequency_unit=freq_units,
-            length_unit=properties.length_unit,
+            length_unit=self.properties.antenna.synthesis.length_unit,
         )
 
         # Update antenna properties
-        oantenna_public_props = (name for name in self._oantenna.__dir__() if not name.startswith("_"))
-        for antenna_prop in oantenna_public_props:
-            if antenna_prop in properties.__dir__():
-                if (
-                    antenna_prop == "frequency"
-                    and "start_frequency" in self._oantenna.__dir__()
-                    and "stop_frequency" in self._oantenna.__dir__()
-                ):
-                    pass
-                elif antenna_prop == "material_properties":
-                    if properties.material_properties:
-                        self._oantenna.material_properties["permittivity"] = properties.material_properties[
-                            "permittivity"
-                        ]
-                else:
-                    setattr(self._oantenna, antenna_prop, getattr(properties, antenna_prop))
+        for antenna_prop in self.properties.antenna.synthesis.model_fields:
+            if (
+                antenna_prop == "frequency"
+                and "start_frequency" in self.oantenna.__dir__()
+                and "stop_frequency" in self.oantenna.__dir__()
+            ):
+                pass
+            elif antenna_prop == "material_properties":
+                if self.properties.antenna.synthesis.material_properties:
+                    self.oantenna.material_properties["permittivity"] = (
+                        self.properties.antenna.synthesis.material_properties["permittivity"]
+                    )
+            elif getattr(self.properties.antenna.synthesis, antenna_prop):
+                setattr(self.oantenna, antenna_prop, getattr(self.properties.antenna.synthesis, antenna_prop))
 
-        self._oantenna._parameters = self._oantenna._synthesis()
-        self._oantenna.update_synthesis_parameters(self._oantenna._parameters)
+        self.oantenna._parameters = self.oantenna.synthesis()
+        self.oantenna.update_synthesis_parameters(self.oantenna._parameters)
 
         antenna_parameters = {}
 
         oantenna_public_parameters = (
-            name for name in self._oantenna.synthesis_parameters.__dict__ if not name.startswith("_")
+            name for name in self.oantenna.synthesis_parameters.__dict__ if not name.startswith("_")
         )
         for param in oantenna_public_parameters:
-            antenna_parameters[param] = self._oantenna.synthesis_parameters.__getattribute__(param).value
-        if not synth_only and not properties.antenna_created:
-            if not self._oantenna.object_list:
-                if not self._oantenna.antenna_name:
-                    self._oantenna.antenna_name = pyaedt.generate_unique_name(self.antenna_type)
-                    self.set_properties({"antenna_name": self._oantenna.antenna_name})
-                self._oantenna.init_model()
-                self._oantenna.model_hfss()
-                self._oantenna.setup_hfss()
-                properties.antenna_created = True
-            if properties.lattice_pair:
-                self._oantenna.create_lattice_pair()
-            if properties.component_3d:
-                self._oantenna.create_3dcomponent(replace=True)
-            if properties.create_setup:
-                freq = float(self._oantenna.frequency)
+            antenna_parameters[param] = self.oantenna.synthesis_parameters.__getattribute__(param).value
+        if not synth_only and not self.properties.antenna.is_created:
+            if not self.oantenna.object_list:
+                if not self.oantenna.name:
+                    self.oantenna.name = pyaedt.generate_unique_name(self.antenna_type)
+                    self.set_properties({"name": self.oantenna.name})
+                self.oantenna.init_model()
+                self.oantenna.model_hfss()
+                self.oantenna.setup_hfss()
+                self.properties.antenna.is_created = True
+            if self.properties.antenna.setup.lattice_pair:
+                self.oantenna.create_lattice_pair()
+            if self.properties.antenna.setup.component_3d:
+                self.oantenna.create_3dcomponent(replace=True)
+            if self.properties.antenna.setup.create_setup:
+                freq = float(self.oantenna.frequency)
                 setup = self.aedtapp.create_setup()
                 setup.props["Frequency"] = str(freq) + freq_units
-                if int(properties.sweep) > 0:
+                if int(self.properties.antenna.setup.sweep) > 0:
                     sweep1 = setup.add_sweep()
-                    perc_sweep = (int(properties.sweep)) / 100
+                    perc_sweep = (int(self.properties.antenna.setup.sweep)) / 100
                     sweep1.props["RangeStart"] = str(freq * (1 - perc_sweep)) + freq_units
                     sweep1.props["RangeEnd"] = str(freq * (1 + perc_sweep)) + freq_units
                     sweep1.update()
         elif synth_only:
-            self._oantenna = None
+            self.oantenna = None
 
         if self.aedtapp:
             self.aedtapp.save_project()
-            time.sleep(1)
-        #     self.aedtapp.release_desktop(False, False)
-        #     self.aedtapp = None
 
-        properties.parameters = antenna_parameters
+        self.properties.antenna.parameters = antenna_parameters
+        self.release_aedt(False, False)
         return antenna_parameters
 
-    def export_hfss_model(self):
-        """Export model in the OBJ format.
-
-        Parameters
-        ----------
-        antenna : :class:
-            Type of antenna to create.
-        synth_only : bool, optional
-            Whether to only synthesize the anttena. The default is ``False``.
-
-        Returns
-        -------
-        bool
-            ``True`` when successful, ``False`` when failed.
-
-        Examples
-        --------
-        >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
-        >>> import time
-        >>> toolkit = Toolkit()
-        >>> msg1 = toolkit.launch_aedt()
-        >>> response = toolkit.get_thread_status()
-        >>> while response[0] == 0:
-        >>>     time.sleep(1)
-        >>>     response = toolkit.get_thread_status()
-        >>> msg3 = toolkit.get_antenna("BowTie")
-        """
-
-        if not self._oantenna:
-            logger.debug("No antenna is available.")
-            return False
-
-        # PyVista check
-        # model = ModelPlotter()
-        # for file in files:
-        #     model.add_object(file[0], file[1],file[2])
-
-        # Export different solid
-        files = self.aedtapp.post.export_model_obj(export_as_single_objects=True)
-
-        return files
-
-    def update_parameters(self, key, val):
+    def update_hfss_parameters(self, key: str, val: str) -> bool:
         """Update parameters in HFSS.
 
         Parameters
         ----------
         key : str
             Key.
-        val : float
+        val : str
             Value.
 
         Returns
@@ -222,60 +196,54 @@ class Toolkit(ToolkitGeneric):
 
         Examples
         --------
-        >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
+        >>> from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
         >>> import time
-        >>> toolkit = Toolkit()
-        >>> msg1 = toolkit.launch_aedt()
-        >>> response = toolkit.get_thread_status()
-        >>> while response[0] == 0:
-        >>>     time.sleep(1)
-        >>>     response = toolkit.get_thread_status()
-        >>> msg3 = toolkit.get_antenna("BowTie")
-        >>> msg3 = toolkit.update_parameters()
+        >>> toolkit = ToolkitBackend()
+        >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
+        >>> idle = toolkit_api.wait_to_be_idle()
+        >>> toolkit.get_antenna("BowTie")
+        >>> msg3 = toolkit.update_hfss_parameters()
         """
-        properties = self.get_properties()
-        if not properties["parameters_hfss"]:
+        if not self.properties.antenna.parameters_hfss:  # pragma: no cover
             logger.debug("Antenna was not created in HFSS.")
             return True
 
         if not self.aedtapp:
             # Connect to AEDT design
-            self.connect_design("Hfss")
-            if not self.aedtapp:
+            self.connect_design()
+            if not self.aedtapp:  # pragma: no cover
                 logger.debug("HFSS design is not connected.")
                 return False
 
         if (
             self.aedtapp
-            and key in properties["parameters_hfss"]
-            and properties["parameters_hfss"][key] in self.aedtapp.variable_manager.independent_variable_names
+            and key in self.properties.antenna.parameters_hfss
+            and self.properties.antenna.parameters_hfss[key] in self.aedtapp.variable_manager.independent_variable_names
         ):
             ratio_re = re.compile("|".join(["ratio", "coefficient", "points", "number"]))
-            if "angle" in key:
+            if "angle" in key:  # pragma: no cover
                 if "deg" not in val:
                     val = val + "deg"
-            elif ratio_re.search(key):
+            elif ratio_re.search(key):  # pragma: no cover
                 val = val
             else:
-                if properties["length_unit"] not in val:
-                    val = val + properties["length_unit"]
-            hfss_parameter = properties["parameters_hfss"][key]
+                if self.properties.antenna.synthesis.length_unit not in val:
+                    val = val + self.properties.antenna.synthesis.length_unit
+            hfss_parameter = self.properties.antenna.parameters_hfss[key]
             self.aedtapp[hfss_parameter] = val
 
-            new_value = properties["parameters"]
+            new_value = self.properties.antenna.parameters
             new_value[key] = val
-            self.set_properties({"parameters": new_value})
-
+            self.release_aedt(False, False)
             return True
         else:
             logger.debug("Parameter does not exist.")
             return False
 
-    @thread.launch_thread
     def analyze(self):
         """Analyze the design.
 
-        This method is launched in a thread if gRPC is enabled. AEDT is released once it is opened.
+        Launch analysis in batch. AEDT is released once it is opened.
 
         Returns
         -------
@@ -285,33 +253,28 @@ class Toolkit(ToolkitGeneric):
         Examples
         --------
         >>> import time
-        >>> from ansys.aedt.toolkits.antenna.backend.api import Toolkit
-        >>> toolkit = Toolkit()
-        >>> toolkit.launch_aedt()
-        >>> while response[0] == 0:
-        >>>     time.sleep(1)
-        >>>     response = toolkit.get_thread_status()
-        >>> toolkit_free = toolkit.get_thread_status()
+        >>> from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
+        >>> toolkit = ToolkitBackend()
+        >>> msg1 = toolkit_api.launch_thread(toolkit.launch_aedt)
+        >>> idle = toolkit_api.wait_to_be_idle()
+        >>> toolkit.get_antenna("BowTie")
+        >>> toolkit.analyze()
         """
-        # Check if the backend is already connected to an AEDT session
-        connected, msg = self.aedt_connected()
-        if not connected:
-            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS.")
-                return False
+        if not self.aedtapp:
             # Connect to AEDT design
-            self.connect_design("Hfss")
-            if not self.aedtapp:
+            self.connect_design()
+            if not self.aedtapp:  # pragma: no cover
                 logger.debug("HFSS design is not connected.")
                 return False
 
-        num_cores = properties.core_number
+        num_cores = properties.antenna.setup.num_cores
 
         self.aedtapp.save_project()
-        time.sleep(1)
-        self.aedtapp.solve_in_batch(run_in_thread=True, machine="localhost", num_cores=num_cores)
-        self.aedtapp.release_desktop(False, False)
-        self.aedtapp = None
+
+        self.aedtapp.analyze(num_cores=num_cores)
+
+        gc.collect()
+        self.release_aedt(False, False)
         return True
 
     def scattering_results(self):
@@ -323,71 +286,97 @@ class Toolkit(ToolkitGeneric):
             ``True`` when successful, ``False`` when failed.
         """
         if not self.aedtapp:
-            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS.")
-                return False
             # Connect to AEDT design
-            self.connect_design("Hfss")
-            if not self.aedtapp:
+            self.connect_design()
+            if not self.aedtapp:  # pragma: no cover
                 logger.debug("HFSS design is not connected.")
                 return False
 
         sol_data = self.aedtapp.post.get_solution_data()
 
-        self.aedtapp.release_desktop(False, False)
-        self.aedtapp = None
+        self.release_aedt(False, False)
 
-        if not sol_data:
+        if not sol_data:  # pragma: no cover
             return
         return sol_data.primary_sweep_values, sol_data.data_db20()
 
-    def farfield_results(self):
-        """Get antenna far field results.
+    def export_farfield(self, frequencies, setup=None, sphere=None, variations=None, encode=True):
+        """Export far field data and then encode the file if the ``encode`` parameter is enabled.
+
+        Parameters
+        ----------
+        frequencies : float, list
+            Frequency value or list of frequencies to compute far field data.
+        setup : str, optional
+            Name of the setup to use. The default is ``None,`` in which case ``nominal_adaptive`` is used.
+        sphere : str, optional
+            Infinite sphere to use. The default is ``None``, in which case an existing sphere is used or a new
+            one is created.
+        variations : dict, optional
+            Variation dictionary.
+        encode : bool, optional
+            Whether to encode the file. The default is ``True``.
 
         Returns
         -------
-        bool
-            ``True`` when successful, ``False`` when failed.
+        list or dict
+            List of eep files or encoded data.
         """
         if not self.aedtapp:
-            if properties.active_design and list(properties.active_design.keys())[0].lower() != "hfss":
-                logger.debug("Selected design must be HFSS.")
-                return False
-            # Connect to AEDT design
-            self.connect_design("Hfss")
-            if not self.aedtapp:
-                logger.debug("HFSS design is not connected.")
-                return False
+            self.connect_design()
 
-        field_solution = self.aedtapp.post.get_solution_data(
-            "GainTotal",
-            self.aedtapp.nominal_adaptive,
-            primary_sweep_variable="Theta",
-            context="3D",
-            report_category="Far Fields",
-        )
+        if self.aedtapp:
+            self.aedtapp.save_project()
 
-        if not field_solution:
-            return
+            farfield_exporter = self.aedtapp.get_antenna_ffd_solution_data(
+                frequencies=frequencies, setup=setup, sphere=sphere, variations=variations
+            )
+            frequencies = farfield_exporter.frequencies
+            if encode:
 
-        phi_cuts = field_solution.intrinsics["Phi"]
-        theta = field_solution.primary_sweep_values
-        val_theta = []
-        for t in phi_cuts:
-            field_solution.active_intrinsic["Phi"] = t
-            val_theta.append(field_solution.data_db20())
-        field_solution.active_intrinsic["Phi"] = phi_cuts[0]
+                eep_files = farfield_exporter.eep_files
+                encoded_eep_files = []
+                encoded_eep_json_files = []
+                encoded_geometry_files = {}
+                encoded_ffd_files = {}
+                cont = 0
+                for eep_file in eep_files:
+                    eep_path = os.path.abspath(os.path.dirname(eep_file))
+                    serialized_file = self.serialize_obj_base64(eep_file)
+                    encoded_eep_files.append(serialized_file.decode("utf-8"))
+                    eep_json = os.path.abspath(os.path.join(eep_path, "eep.json"))
+                    if os.path.isfile(eep_json):
+                        serialized_file = self.serialize_obj_base64(eep_json)
+                        encoded_eep_json_files.append(serialized_file.decode("utf-8"))
+                    geometry_path = os.path.abspath(os.path.join(eep_path, "geometry"))
+                    if os.path.exists(geometry_path):
+                        encoded_geometry_files[cont] = []
+                        for root, _, files in os.walk(geometry_path):
+                            for file in files:
+                                if file.lower().endswith(".obj"):
+                                    geometry_file = os.path.abspath(os.path.join(root, file))
+                                    serialized_file = self.serialize_obj_base64(geometry_file)
+                                    encoded_geometry_files[cont].append(serialized_file.decode("utf-8"))
 
-        field_solution.primary_sweep = "Phi"
-        theta_cuts = field_solution.intrinsics["Theta"]
-        phi = field_solution.primary_sweep_values
-        val_phi = []
-        for t in theta_cuts:
-            field_solution.active_intrinsic["Theta"] = t
-            val_phi.append(field_solution.data_db20())
-        field_solution.active_intrinsic["Theta"] = theta_cuts[0]
+                    encoded_ffd_files[cont] = []
+                    for root, _, files in os.walk(eep_path):
+                        for file in files:
+                            if file.lower().endswith(".ffd"):
+                                ffd_file = os.path.abspath(os.path.join(root, file))
+                                serialized_file = self.serialize_obj_base64(ffd_file)
+                                encoded_ffd_files[cont].append(serialized_file.decode("utf-8"))
 
-        self.aedtapp.release_desktop(False, False)
-        self.aedtapp = None
+                    cont += 1
 
-        return [phi_cuts, theta, val_theta, theta_cuts, phi, val_phi]
+                    self.release_aedt(False, False)
+
+                    return (
+                        encoded_eep_files,
+                        encoded_eep_json_files,
+                        encoded_geometry_files,
+                        encoded_ffd_files,
+                        frequencies,
+                    )
+
+            self.release_aedt(False, False)
+            return farfield_exporter.eep_files, farfield_exporter.frequencies

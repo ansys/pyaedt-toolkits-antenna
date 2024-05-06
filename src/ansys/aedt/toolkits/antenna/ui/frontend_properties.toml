@@ -1,0 +1,61 @@
+[defaults]
+toolkit_name= "antenna"
+backend_url= "127.0.0.1"
+backend_port= 5001
+debug= true
+app_name= "Antenna Wizard"
+main_title= "AEDT Antenna Toolkit"
+welcome_message= "Welcome to the AEDT Antenna Toolkit"
+version= "v0.3.0"
+copyright= "By: ansys"
+year= 2023
+theme= "ansys_dark.json"
+high_resolution= false
+
+[[defaults.add_left_menus]]
+btn_icon= "icon_home.svg"
+btn_id= "home_menu"
+btn_text= "Home"
+btn_tooltip= "Home"
+show_top= true
+is_active= false
+
+[[defaults.add_left_menus]]
+btn_icon= "antenna.svg"
+btn_id= "antenna_catalog_menu"
+btn_text= "Antenna Catalog"
+btn_tooltip= "Catalog"
+show_top= true
+is_active= false
+
+[[defaults.add_left_menus]]
+btn_icon= "icon_plot_3d.svg"
+btn_id= "antenna_synthesis_menu"
+btn_text= "Antenna synthesis"
+btn_tooltip= "Synthesis"
+show_top= true
+is_active= false
+
+[[defaults.add_left_menus]]
+btn_icon= "icon_plot_2d.svg"
+btn_id= "antenna_results_menu"
+btn_text= "Analysis"
+btn_tooltip= "Analysis"
+show_top= true
+is_active= false
+
+[[defaults.add_left_menus]]
+btn_icon= "icon_log.svg"
+btn_id= "progress_menu"
+btn_text= "Progress"
+btn_tooltip= "Progress"
+show_top= false
+is_active= false
+
+[antenna]
+antenna_created = ""
+available_models = []
+antenna_model_selected = ""
+antenna_selected = ""
+antenna_parameters = {}
+create_setup = true

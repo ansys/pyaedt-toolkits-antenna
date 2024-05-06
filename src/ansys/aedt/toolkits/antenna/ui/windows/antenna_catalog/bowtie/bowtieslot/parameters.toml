@@ -1,0 +1,9 @@
+Name = "BowTie_Slot"
+Frequency = 10.0
+Material = ["FR4_epoxy", "Teflon (tm)", "Rogers RT / duroid 6002(tm)"]
+Substrate_Height = 1.575
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"

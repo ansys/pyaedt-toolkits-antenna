@@ -2,7 +2,7 @@ Conical spiral
 ==============
 This page lists the classes available for conical spiral antennas:
 
-.. currentmodule:: ansys.aedt.toolkits.antenna.backend.models.conical_spiral
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral
 
 .. autosummary::
    :toctree: _autosummary
@@ -15,7 +15,9 @@ You must use these methods from PyAEDT as shown in this example:
 
     from pyaedt import Hfss
 
-    from ansys.aedt.toolkits.antenna.backend.models.conical_spiral import Archimedean
+    from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import (
+        Archimedean,
+    )
 
     aedtapp = Hfss()
 

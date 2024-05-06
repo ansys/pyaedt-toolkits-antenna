@@ -1,0 +1,21 @@
+name = "Bowtie Rounded"
+
+[object_1]
+name = "sub"
+color = [0, 128, 0]
+opacity = 0.2
+
+[object_2]
+name = "ant_arm"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "ant_arm_1"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_4]
+name = "port_lump"
+color = [128, 0, 0]
+opacity = 0.2
