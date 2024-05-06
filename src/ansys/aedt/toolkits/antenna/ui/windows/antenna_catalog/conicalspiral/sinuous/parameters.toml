@@ -1,0 +1,8 @@
+Name = "Sinuous_Spiral"
+Start_Frequency = 4.0
+Stop_Frequency = 10.0
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"

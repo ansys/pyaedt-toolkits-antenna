@@ -1,5 +1,5 @@
-AEDT Antenna toolkit
-====================
+Antenna Toolkit
+===============
 
 |pyansys| |PythonVersion| |GH-CI| |MIT| |coverage| |black|
 
@@ -23,33 +23,37 @@ AEDT Antenna toolkit
   :target: https://github.com/psf/black
   :alt: black
 
-The ``ansys-aedt-toolkits-antenna`` package provides a Python wrapper for modeling
-antennas using Ansys Electronics Desktop (AEDT).
-The toolkit could be used inside AEDT or launched from a python console.
-Toolkit features are accessible from the user interface, **Antenna Wizard** or directly from the API.
+.. reuse_start
+
+The Antenna Toolkit is a Python interface for accelerating antenna design
+using `Ansys Electronics Desktop <https://www.ansys.com/products/electronics>`_
+(AEDT). You can launch this toolkit from the AEDT UI or launch it directly
+from a Python console.
 
 Requirements
 ~~~~~~~~~~~~
-In addition to the runtime dependencies listed in the installation information, this toolkit
-requires Ansys Electronics Desktop (AEDT) 2023 R1 or later. The AEDT Student Version is also supported.
+In addition to the runtime dependencies listed in the `Getting started <https://aedt.antenna.toolkit.docs.pyansys.com/version/stable/getting-started.html>`,
+the Antenna Toolkit requires AEDT 2023 R1 or later. This toolkit also supports the
+AEDT Student Version for 2023 R1 or later.
 
 Documentation and issues
 ~~~~~~~~~~~~~~~~~~~~~~~~
-In addition to installation and usage information, the toolkit
-documentation provides
-`API reference <https://aedt.antenna.toolkit.docs.pyansys.com/version/stable/toolkit/index.html>`_,
-and `Contribute
-<https://github.com/ansys/pyaedt-toolkits-antenna/graphs/contributors>`_ sections.
+Documentation for the latest stable release of the Antenna Toolkit is hosted at
+`Antenna Toolkit documentation <https://aedt.antenna.toolkit.docs.pyansys.com/version/stable/index.html>`_.
 
-On the `AEDT Antenna toolkit Issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_ page, you can
-create issues to submit questions, report bugs, and request new features.
+In the upper right corner of the documentation's title bar, there is an option for switching from
+viewing the documentation for the latest stable release to viewing the documentation for the
+development version or previously released versions.
+
+On the `Antenna Toolkit Issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_
+page, you can create issues to report bugs and request new features. On the `Discussions <https://discuss.ansys.com/>`_
+page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback.
 
 License
 ~~~~~~~
-AEDT Antenna toolkit is licensed under the MIT license.
+The Antenna Toolkit is licensed under the `MIT license <https://opensource.org/license/mit/>`_.
 
-This module makes no commercial claim over Ansys whatsoever.
-The use of the interactive control of AEDT Antenna toolkit requires a legally licensed
-local copy of AEDT. For more information about AEDT, 
-visit the `AEDT page <https://www.ansys.com/products/electronics>`_ 
-on the Ansys website.
+This toolkit makes no commercial claim over Ansys whatsoever.
+The use of this toolkit requires a legally licensed copy of AEDT.
+For more information, see the `Ansys Electronics <https://www.ansys.com/products/electronics>`_ 
+page on the Ansys website.

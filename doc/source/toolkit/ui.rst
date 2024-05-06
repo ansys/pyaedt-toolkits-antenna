@@ -1,82 +1,98 @@
-============
-UI reference
-============
+==============
+Antenna wizard
+==============
 
-This section describes the **Antenna Wizard**.
-To run the **Antenna Wizard**, you must have a licensed copy of Ansys Electronics
-Desktop (AEDT) installed.
+This section describes how to use the Antenna wizard. It assumes that you have already launched the
+wizard from either the AEDT menu or AEDT console. For toolkit installation and wizard
+launching information, see these topics:
 
-Once the **Antenna Wizard** is launched, you can choose settings from first page and connect to an existing
-AEDT session or create a new session.
+- :ref:`install-toolkit-AEDT`
+- :ref:`install_toolkit_console_ui`
 
-.. image:: ../_static/settings.png
-  :width: 800
-  :alt: Settings Tab
+#. On the **Settings** tab, specify settings for either creating an AEDT session or
+   connecting to an existing AEDT session.
 
-If the toolkit is launched from AEDT, the previous tab does not appear because the toolkit is directly connected to
-the specific AEDT session.
+   .. note::
+      If the Antenna Toolkit Wizard is launched from AEDT, the **Settings** tab does not appear
+      because the toolkit is directly connected to the specific AEDT session.
 
-Once the toolkit is connected to AEDT, you can load the antenna template from the list **Antennas**.
+   .. image:: ../_static/settings.png
+      :width: 800
+      :alt: Settings tab
 
-.. image:: ../_static/design_connected.png
-  :width: 800
-  :alt: Antenna Toolkit UI, Design Tab
+   The wizard has a progress circle and a logger box, where you can see the status of every operation.
 
-For example, if you select Antennas>Horn>Conical Corrugated, the synthesis option and the antenna template appears.
+   .. image:: ../_static/progress.png
+      :width: 800
+      :alt: Progress tab
 
-.. image:: ../_static/corrugated_1.png
-  :width: 800
-  :alt: Antenna Toolkit UI, Corrugated 1
+   You can choose different antennas from the **Antenna catalog** menu to load the antennas
+   template.
 
-You have two options, Synthesis, and Create HFSS Model. If the toolkit is not connected to AEDT, the second option is off.
+   .. image:: ../_static/antenna_catalog.png
+      :width: 800
+      :alt: Antenna catalog
 
-**Synthesis** is performing the synthesis of the antenna and it does not need AEDT. You can see the parameters which controls the antenna geometry.
-You can do as many synthesis as you want, and even change the antenna template.
+   .. image:: ../_static/antenna_catalog_2.png
+      :width: 800
+      :alt: Antenna catalog 2
 
-.. image:: ../_static/corrugated_synthesis.png
-  :width: 800
-  :alt: Antenna Toolkit UI, Corrugated Synthesis
+   For example, if you select **Antennas > Bowtie > Bowtie Normal**,
+   the central page is updated to the **Synthesis** page and it shows the antenna template:
 
-**Create HFSS Model** creates the HFSS model. It uses the select boxes (3D Component, Create HFSS Setup, Lattice Pair and Sweep Bandwidth).
-It also uses the Toolkit Settings.
+   .. image:: ../_static/antenna_template.png
+      :width: 800
+      :alt: Antenna template
 
-.. image:: ../_static/settings_toolkit.png
-  :width: 800
-  :alt: Toolkit Settings Tab
+   You have two options: **Synthesis** and **Generate**.
+   The **Generate** button is unavailable if the wizard is not connected to AEDT.
 
-If you select 3D Component, the toolkit creates the antenna and replaces it with a 3D Component.
+   - The **Synthesis** button is for performing the synthesis of the antenna. A connection to AEDT
+   is not needed.
+     You can see the parameters that control the antenna geometry. Additionally, you can do as many
+     syntheses as you want and even change the antenna template.
 
-If you selected Create HFSS Setup, it creates automatically boundaries, excitations and ports needed to simulate the antenna.
+     .. image:: ../_static/antenna_synthesis.png
+        :width: 800
+        :alt: Antenna synthesis
 
-If you select Lattice pair, it creates a unit cell assigning Lattice Pair boundary.
+   - The **Generate** button is for creating an HFSS model. It uses the **3D Component**,
+     **Create Hfss Setup**, and **Lattice pair** checkboxes along with the **Sweep Bandwidth %** option
+     It also uses the length and frequency unit to perform the HFSS setup.
 
-Once you create the HFSS model, you can not create a new antenna. Synthesis and Create HFSS Model buttons are off.
-If you need a new antenna, you can restart the toolkit.
+     Descriptions follow for how to use the checkboxes on the **Design** tab:
 
-Once the antenna is created, the previous picture is replaced by an interactive 3D model, then if AEDT is launched in non-graphical mode, you can see the generated model.
+     - If you select the **3D Component** checkbox, the toolkit creates the antenna and replaces it
+       with a 3D component.
 
-.. image:: ../_static/antenna.png
-  :width: 800
-  :alt: Antenna Toolkit UI, Antenna
+     - If you select the **Generate** checkbox, the toolkit automatically creates the boundaries,
+       excitations, and ports needed to simulate the antenna. Once you create an HFSS model, you cannot
+       create another antenna. Both the **Synthesis** and **Generate** buttons become unavailable.
+       If you want to create another antenna, you must restart the toolkit.
 
-You can modify the parameters interactively. The HFSS model and the interactive 3D plot in the user interface change.
+     - If you select the **Lattice pair** checkbox, the toolkit creates a unit cell assigning a
+       lattice pair boundary.
 
-Finally, you can analyze the HFSS design. You have two options, analyze, and get results, the last one is off until the design is not solved.
-The project is submitted, then it is closed. You can see the job status opening the AEDT Job Monitor interface or in the user interface progress bar.
+Once you create an antenna, the **Synthesis** tab displays an interactive 3D model rather than
+the image of the antenna template:
 
-.. image:: ../_static/analysis.png
-  :width: 800
-  :alt: Analysis
+.. image:: ../_static/antenna_generate.png
+   :width: 800
+   :alt: Antenna generated
 
-Once the project is solved, you can get the results.
+If AEDT is launched in non-graphical mode, you can still see the generated model.
 
-.. image:: ../_static/results.png
-  :width: 800
-  :alt: Result
+In the wizard, you can modify the parameters interactively, watching both the HFSS model and the
+interactive 3D plot in the wizard change.
 
-You can save the project, File>Save project.
+Finally, on the wizard's **Analysis** tab, you have the **Get results** button.
+This second button is unavailable until after you analyze the HFSS design.
 
-The wizard has a progress bar and a logger box, where the user can see the status of every operation.
-Red progress bar means the toolkit is busy, and every operation need to wait until the toolkit is released.
+When you click **Get results**, the project is analyzed.
+You can specify the number of cores to use in the simulation.
 
-Enjoy.
+Once the project is solved, you can click **Get results** on the **Analysis** tab to view results.
+
+.. image:: ../_static/get_results.png
+   :width: 800
+   :alt: Result

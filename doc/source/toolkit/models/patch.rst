@@ -1,8 +1,8 @@
 Patch
 =====
-This section list the available patch antennas:
+This page lists the classes available for patch antennas:
 
-.. currentmodule:: ansys.aedt.toolkits.antenna.backend.models.patch
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.patch
 
 .. autosummary::
    :toctree: _autosummary
@@ -11,13 +11,15 @@ This section list the available patch antennas:
    RectangularPatchProbe
    RectangularPatchInset
 
-The API must be used using PyAEDT as in the following example:
+You must use these methods from PyAEDT as shown in this example:
 
 .. code:: python
 
     from pyaedt import Hfss
 
-    from ansys.aedt.toolkits.antenna.backend.models.patch import RectangularPatchEdge
+    from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import (
+        RectangularPatchEdge,
+    )
 
     aedtapp = Hfss()
 

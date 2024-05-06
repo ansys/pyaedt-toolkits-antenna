@@ -1,161 +1,89 @@
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import atexit
 import os
-import socket
-import subprocess
 import sys
-import threading
-import time
 
-import psutil
-import requests
+from ansys.aedt.toolkits.common.utils import check_backend_communication
+from ansys.aedt.toolkits.common.utils import clean_python_processes
+from ansys.aedt.toolkits.common.utils import find_free_port
+from ansys.aedt.toolkits.common.utils import is_server_running
+from ansys.aedt.toolkits.common.utils import process_desktop_properties
+from ansys.aedt.toolkits.common.utils import server_actions
+from ansys.aedt.toolkits.common.utils import wait_for_server
 
 from ansys.aedt.toolkits.antenna import backend
 from ansys.aedt.toolkits.antenna import ui
-from ansys.aedt.toolkits.antenna.ui.common.properties import general_settings
+from ansys.aedt.toolkits.antenna.backend.models import properties as backend_properties
+from ansys.aedt.toolkits.antenna.ui.models import properties as frontend_properties
+
+# Set resolution and user interface theme
+os.environ["AEDT_TOOLKIT_HIGH_RESOLUTION"] = "True"
+os.environ["AEDT_TOOLKIT_THEME"] = "ansys_dark.json"
 
 # Define global variables or constants
-BACKEND_FILE = os.path.join(backend.__path__[0], "rest_api.py")
-FRONTEND_FILE = os.path.join(ui.__path__[0], "frontend_actions.py")
-IS_LINUX = os.name == "posix"
-URL = general_settings.backend_url
-PORT = general_settings.backend_port
-PYTHON_PATH = sys.executable
-KILL_BACKEND = True
-BACKEND_COMMAND = [PYTHON_PATH, BACKEND_FILE]
-FRONTEND_COMMAND = [PYTHON_PATH, FRONTEND_FILE]
-URL_CALL = f"http://{URL}:{PORT}"
+backend_file = os.path.join(backend.__path__[0], "run_backend.py")
+frontend_file = os.path.join(ui.__path__[0], "run_frontend.py")
 
+is_linux = os.name == "posix"
+new_port = find_free_port(backend_properties.url, backend_properties.port)
+if not new_port:
+    raise Exception("No free ports in {}".format(backend_properties.url))
 
-# Global functions
-def run_command(*command):
-    create_no_window = 0x08000000 if not IS_LINUX else 0
-    process = subprocess.Popen(
-        command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        creationflags=create_no_window,
-    )
-    stdout, stderr = process.communicate()
-    print(stdout.decode())
-
-
-def server_actions(command, name):
-    thread = threading.Thread(target=run_command, args=command, name=name)
-    thread.daemon = True
-    thread.start()
-    return thread
-
-
-def wait_for_server(server="localhost", port=5001, timeout=10.0):
-    start_time = time.time()
-    first_time = True
-    result = None
-    while time.time() - start_time < timeout:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            result = sock.connect_ex((server, port))
-        except socket.error as e:
-            print(f"Socket error occurred: {e}")
-        finally:
-            sock.close()
-        if result == 0:
-            print("\nServer is ready.")
-            return True
-        if first_time:
-            print("Server not ready yet. Retrying...", end="")
-            first_time = False
-        else:
-            print(".", end="")
-        time.sleep(1)
-    print("\nTimed out waiting for server.")
-    return False
-
-
-def is_server_running(server="localhost", port=5001):
-    result = None
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        result = sock.connect_ex((server, port))
-    except socket.error as e:
-        print(f"Socket error occurred: {e}")
-    finally:
-        sock.close()
-    if result == 0:
-        return True
-    return False
-
-
-def clean_python_processes():
-    if KILL_BACKEND:
-        for conn in psutil.net_connections():
-            (ip, port) = conn.laddr
-            pid = conn.pid
-            if ip == URL and port == PORT and pid and pid != 0:
-                process = psutil.Process(pid)
-                print(f"Killing process {process.pid} on {ip}:{port}")
-                process.terminate()
-
-
-def check_backend_communication():
-    response = requests.get(URL_CALL + "/health")
-    if response.ok:
-        return True
-    return False
-
-
-def process_desktop_properties():
-    desktop_pid = None
-    desktop_version = None
-    grpc = False
-    if "PYAEDT_SCRIPT_VERSION" in os.environ and (
-        "PYAEDT_SCRIPT_PROCESS_ID" in os.environ or "PYAEDT_SCRIPT_PORT" in os.environ
-    ):
-        desktop_version = os.environ["PYAEDT_SCRIPT_VERSION"]
-        desktop_pid = os.environ[
-            "PYAEDT_SCRIPT_PORT" if desktop_version > "2023.2" or IS_LINUX else "PYAEDT_SCRIPT_PROCESS_ID"
-        ]
-        grpc = desktop_version > "2023.2" or IS_LINUX
-
-    elif len(sys.argv) == 3:
-        desktop_pid, desktop_version = sys.argv[1], sys.argv[2]
-
-    if desktop_pid and desktop_version:
-        properties = {
-            "selected_process": int(desktop_pid),
-            "aedt_version": desktop_version,
-            "use_grpc": grpc,
-        }
-        requests.put(URL_CALL + "/set_properties", json=properties)
-        # requests.post(URL_CALL + "/launch_aedt")
-
+frontend_properties.backend_port = new_port
+url = frontend_properties.backend_url
+port = frontend_properties.backend_port
+python_path = sys.executable
+backend_command = [python_path, backend_file, url, str(port)]
+frontend_command = [python_path, frontend_file, url, str(port)]
+url_call = f"http://{url}:{port}"
 
 # Main Execution
 
 # Clean python process when script ends
-atexit.register(clean_python_processes)
+atexit.register(clean_python_processes, url, port)
 
 # Check if backend is already running
-is_server_busy = is_server_running(server=URL, port=PORT)
+is_server_busy = is_server_running(server=url, port=port)
 if is_server_busy:
-    KILL_BACKEND = False
-    raise Exception("There is a process running in: {}".format(URL_CALL))
+    raise Exception("There is a process running in: {}".format(url_call))
 
 # Launch backend thread
-backend_thread = server_actions(BACKEND_COMMAND, "template_backend")
+backend_thread = server_actions(backend_command, "template_backend", is_linux)
 
 # Connect to AEDT session if arguments or environment variables are passed
-process_desktop_properties()
+process_desktop_properties(is_linux, url_call)
 
 # Launch frontend thread
-frontend_thread = server_actions(FRONTEND_COMMAND, "template_frontend")
+frontend_thread = server_actions(frontend_command, "template_frontend", is_linux)
 
-# Check if backend is running. Try every 1 second with a timeout of 10 seconds
-is_server_running = wait_for_server(server=URL, port=PORT)
-if not is_server_running:
-    raise Exception("There is a process running in: {}".format(URL_CALL))
+# Check if backend is running. Try every 1 second with a timeout of 10 seconds.
+backend_flag = wait_for_server(server=url, port=port)
+if not backend_flag:
+    raise Exception("There is a process running in: {}".format(url_call))
 
 # Make a first call to the backend to check the communication
-backend_communication_flag = check_backend_communication()
+backend_communication_flag = check_backend_communication(url_call)
 if not backend_communication_flag:
     raise Exception("Backend communication is not working.")
 

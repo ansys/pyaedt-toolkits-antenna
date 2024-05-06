@@ -1,0 +1,23 @@
+(?i)AEDT
+(?i)Ansys
+(?i)API
+(?i)UI
+AEDT's
+Api.py
+application
+[Bb]owtie
+CPython
+docstring
+GitHub
+HFSS
+Properties.json
+PyAEDT
+PyAEDT Common Toolkit
+pyaedt
+REST API
+Rest_api.py
+toolkit's
+toolkits
+toml
+url
+walkthrough

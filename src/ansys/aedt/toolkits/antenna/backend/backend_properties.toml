@@ -1,0 +1,33 @@
+model = ""
+is_created = false
+parameters = {}
+parameters_hfss = {}
+synth_only = false
+
+[defaults]
+toolkit_name = "antenna"
+log_file = "backend.log"
+debug = true
+
+[synthesis]
+name = ""
+coordinate_system = "Global"
+frequency = 10.0
+frequency_unit = "GHz"
+feeder_length = 0.0
+gain = 0.0
+length_unit = "meter"
+material = ""
+material_properties = {}
+origin = [0.0, 0.0, 0.0]
+outer_boundary = ""
+start_frequency = 0.0
+stop_frequency = 0.0
+substrate_height = 0.1
+
+[setup]
+component_3d = false
+create_setup = false
+lattice_pair = false
+num_cores = 4
+sweep = 20

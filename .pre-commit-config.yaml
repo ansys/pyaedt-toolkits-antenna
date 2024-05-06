@@ -1,12 +1,14 @@
 exclude: |
     (?x)(
-        src/ansys/aedt/toolkits/antenna/ui/common/frontend_ui.py
+        src/ansys/aedt/toolkits/antenna/ui/windows/.* |
+        tests/.* |
+        README.rst
     )
 
 repos:
 
 - repo: https://github.com/psf/black
-  rev: 23.11.0  # IF VERSION CHANGES --> MODIFY "blacken-docs" MANUALLY AS WELL!!
+  rev: 24.4.2  # IF VERSION CHANGES --> MODIFY "blacken-docs" MANUALLY AS WELL!!
   hooks:
   - id: black
     args:
@@ -16,17 +18,17 @@ repos:
   rev: 1.16.0
   hooks:
   -   id: blacken-docs
-      additional_dependencies: [black==23.11.0]
+      additional_dependencies: [black==24.4.2]
 
 - repo: https://github.com/pycqa/isort
-  rev: 5.12.0
+  rev: 5.13.2
   hooks:
     - id: isort
       name: isort (python)
       args: ['--force-single-line-imports', '--profile', 'black']
 
 - repo: https://github.com/PyCQA/flake8
-  rev: 6.1.0
+  rev: 7.0.0
   hooks:
   - id: flake8
     args:
@@ -36,4 +38,4 @@ repos:
   rev: v2.2.6
   hooks:
   - id: codespell
-    args: ["--ignore-words=doc/styles/Vocab/ANSYS/accept.txt"]
+    args: ["--ignore-words=doc/styles/config/vocabularies/ANSYS/accept.txt"]
