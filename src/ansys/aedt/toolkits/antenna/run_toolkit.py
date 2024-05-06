@@ -31,11 +31,15 @@ from ansys.aedt.toolkits.common.utils import is_server_running
 from ansys.aedt.toolkits.common.utils import process_desktop_properties
 from ansys.aedt.toolkits.common.utils import server_actions
 from ansys.aedt.toolkits.common.utils import wait_for_server
-import ui
-from ui.models import properties as frontend_properties
 
-import backend
-from backend.models import properties as backend_properties
+from ansys.aedt.toolkits.antenna import backend
+from ansys.aedt.toolkits.antenna import ui
+from ansys.aedt.toolkits.antenna.backend.models import properties as backend_properties
+from ansys.aedt.toolkits.antenna.ui.models import properties as frontend_properties
+
+# Set resolution and user interface theme
+os.environ["AEDT_TOOLKIT_HIGH_RESOLUTION"] = "True"
+os.environ["AEDT_TOOLKIT_THEME"] = "ansys_dark.json"
 
 # Define global variables or constants
 backend_file = os.path.join(backend.__path__[0], "run_backend.py")
