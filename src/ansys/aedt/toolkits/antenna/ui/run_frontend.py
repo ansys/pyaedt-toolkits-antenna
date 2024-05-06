@@ -64,7 +64,7 @@ port = properties.backend_port
 os.environ["QT_API"] = "pyside6"
 os.environ["QT_FONT_DPI"] = "96"
 
-if properties.high_resolution:
+if properties.high_resolution or os.environ.get("AEDT_TOOLKIT_HIGH_RESOLUTION", False) == "True":
     os.environ["QT_SCALE_FACTOR"] = "2"
 
 
