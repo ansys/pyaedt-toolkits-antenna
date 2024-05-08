@@ -24,7 +24,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    'ansys-aedt-toolkits-common'
+    'ansys-aedt-toolkits-common[all]'
 ]
 
 [project.optional-dependencies]
