@@ -38,7 +38,7 @@ from ansys.aedt.toolkits.antenna.backend.models import properties as backend_pro
 from ansys.aedt.toolkits.antenna.ui.models import properties as frontend_properties
 
 # Set resolution and user interface theme
-os.environ["AEDT_TOOLKIT_HIGH_RESOLUTION"] = "True"
+os.environ["AEDT_TOOLKIT_HIGH_RESOLUTION"] = "False"
 os.environ["AEDT_TOOLKIT_THEME"] = "ansys_dark.json"
 
 # Define global variables or constants
@@ -71,6 +71,15 @@ if is_server_busy:
 # Launch backend thread
 backend_thread = server_actions(backend_command, "template_backend", is_linux)
 
+# Make a first call to the backend to check the communication
+backend_communication_flag = check_backend_communication(url_call)
+count = 0
+while not backend_communication_flag and count < 10:
+    backend_communication_flag = check_backend_communication(url_call)
+    count += 1
+if not backend_communication_flag:
+    raise Exception("Backend communication is not working.")
+
 # Connect to AEDT session if arguments or environment variables are passed
 process_desktop_properties(is_linux, url_call)
 
@@ -81,11 +90,6 @@ frontend_thread = server_actions(frontend_command, "template_frontend", is_linux
 backend_flag = wait_for_server(server=url, port=port)
 if not backend_flag:
     raise Exception("There is a process running in: {}".format(url_call))
-
-# Make a first call to the backend to check the communication
-backend_communication_flag = check_backend_communication(url_call)
-if not backend_communication_flag:
-    raise Exception("Backend communication is not working.")
 
 # Keep frontend thread alive until it is closed
 frontend_thread.join()
