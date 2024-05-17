@@ -32,7 +32,7 @@ from a Python console.
 
 Requirements
 ~~~~~~~~~~~~
-In addition to the runtime dependencies listed in the `Getting started <https://aedt.antenna.toolkit.docs.pyansys.com/version/stable/getting-started.html>`,
+In addition to the runtime dependencies listed in the `Getting started <https://aedt.antenna.toolkit.docs.pyansys.com/version/stable/getting-started.html>`_,
 the Antenna Toolkit requires AEDT 2023 R1 or later. This toolkit also supports the
 AEDT Student Version for 2023 R1 or later.
 
