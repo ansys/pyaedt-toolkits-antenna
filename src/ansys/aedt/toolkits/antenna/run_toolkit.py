@@ -23,6 +23,7 @@
 import atexit
 import os
 import sys
+import time
 
 from ansys.aedt.toolkits.common.utils import check_backend_communication
 from ansys.aedt.toolkits.common.utils import clean_python_processes
@@ -76,6 +77,7 @@ backend_communication_flag = check_backend_communication(url_call)
 count = 0
 while not backend_communication_flag and count < 10:
     backend_communication_flag = check_backend_communication(url_call)
+    time.sleep(1)
     count += 1
 if not backend_communication_flag:
     raise Exception("Backend communication is not working.")
