@@ -28,7 +28,8 @@ Antenna Toolkit
 The Antenna Toolkit is a Python interface for accelerating antenna design
 using `Ansys Electronics Desktop <https://www.ansys.com/products/electronics>`_
 (AEDT). You can launch this toolkit from the AEDT UI or launch it directly
-from a Python console.
+from a Python console. This toolkit can also be launched as desktop application
+based on `Pyside6 <https://doc.qt.io/qtforpython-6/quickstart.html>`_.
 
 Requirements
 ~~~~~~~~~~~~
