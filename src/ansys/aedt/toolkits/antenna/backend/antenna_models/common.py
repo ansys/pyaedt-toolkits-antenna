@@ -334,26 +334,26 @@ class CommonAntenna(object):
             boundaries = [""]
 
         self._app.modeler.create_3dcomponent(
-            component_file=component_file,
-            component_name=component_name,
+            input_file=component_file,
+            name=component_name,
             variables_to_include=parameters,
-            object_list=list(self.object_list.keys()),
-            boundaries_list=boundaries,
-            excitation_list=list(self.excitations.keys()),
-            included_cs=[self.coordinate_system],
-            reference_cs=self.coordinate_system,
+            assignment=list(self.object_list.keys()),
+            boundaries=boundaries,
+            excitations=list(self.excitations.keys()),
+            coordinate_systems=[self.coordinate_system],
+            reference_coordinate_system=self.coordinate_system,
             component_outline="None",
         )
 
         if replace:
             user_defined_component = self._app.modeler.replace_3dcomponent(
-                component_name=component_name,
+                name=component_name,
                 variables_to_include=parameters,
-                object_list=list(self.object_list.keys()),
-                boundaries_list=boundaries,
-                excitation_list=list(self.excitations.keys()),
-                included_cs=[self.coordinate_system],
-                reference_cs=self.coordinate_system,
+                assignment=list(self.object_list.keys()),
+                boundaries=boundaries,
+                excitations=list(self.excitations.keys()),
+                coordinate_systems=[self.coordinate_system],
+                reference_coordinate_system=self.coordinate_system,
             )
             if self._app.modeler.oeditor.GetObjectsInGroup(self.name).count == 0:
                 self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", self.name])

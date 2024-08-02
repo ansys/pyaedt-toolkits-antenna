@@ -93,7 +93,7 @@ class TestClass:
                      aedt_common.properties.antenna.synthesis.frequency_unit)
         encoded_files = aedt_common.export_farfield(frequencies=frequency, encode=True, sphere="3D")
         assert isinstance(encoded_files, tuple)
-        assert len(encoded_files) == 5
+        assert len(encoded_files) == 4
         farfield_data = aedt_common.export_farfield(frequencies=frequency, encode=False, sphere="3D")
         assert isinstance(farfield_data, tuple)
         assert len(farfield_data) == 2
