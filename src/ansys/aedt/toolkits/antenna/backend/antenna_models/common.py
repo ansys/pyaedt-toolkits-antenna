@@ -261,12 +261,12 @@ class CommonAntenna(object):
                     str(bounding_box[1]) + self._app.modeler.model_units,
                     str(bounding_box[2]) + self._app.modeler.model_units + "-" + hfss_parameter,
                 ],
-                dimensions_list=[
+                sizes=[
                     str(bounding_dim[0]) + self._app.modeler.model_units,
                     str(bounding_dim[1]) + self._app.modeler.model_units,
                     str(bounding_dim[2]) + self._app.modeler.model_units + "+2*" + hfss_parameter,
                 ],
-                matname="vacuum",
+                material="vacuum",
             )
         else:
             lattice_box = self._app.modeler.create_box(
@@ -275,12 +275,12 @@ class CommonAntenna(object):
                     str(bounding_box[1]) + self._app.modeler.model_units,
                     str(bounding_box[2]) + self._app.modeler.model_units,
                 ],
-                dimensions_list=[
+                sizes=[
                     str(bounding_dim[0]) + self._app.modeler.model_units,
                     str(bounding_dim[1]) + self._app.modeler.model_units,
                     str(bounding_dim[2]) + self._app.modeler.model_units + "+" + hfss_parameter,
                 ],
-                matname="vacuum",
+                material="vacuum",
             )
 
         lattice1 = self._app.assign_lattice_pair(face_couple=[lattice_box.bottom_face_x.id, lattice_box.top_face_x.id])

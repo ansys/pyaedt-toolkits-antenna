@@ -341,7 +341,7 @@ class AxialMode(CommonHelix):
 
         # Negative air
         feed_pin = self._app.modeler.create_cylinder(
-            cs_axis=2,
+            orientation=2,
             origin=[
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pinD),
@@ -350,12 +350,12 @@ class AxialMode(CommonHelix):
             radius=feed_pinD + "/2",
             height=feed_pinL + "+" + wire_diameter + "/2",
             name="Feed_{}".format(antenna_name),
-            matname="pec",
+            material="pec",
         )
         feed_pin.history().props["Coordinate System"] = coordinate_system
 
         feed_coax = self._app.modeler.create_cylinder(
-            cs_axis=2,
+            orientation=2,
             origin=[
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pinD),
@@ -364,12 +364,12 @@ class AxialMode(CommonHelix):
             radius=coax_inner_radius,
             height="-{}".format(feeder_length),
             name="Feed1_{}".format(antenna_name),
-            matname="pec",
+            material="pec",
         )
         feed_coax.history().props["Coordinate System"] = coordinate_system
 
         Coax = self._app.modeler.create_cylinder(
-            cs_axis=2,
+            orientation=2,
             origin=[
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pinD),
@@ -378,13 +378,13 @@ class AxialMode(CommonHelix):
             radius=coax_outer_radius,
             height="-{}".format(feeder_length),
             name="coax_{}".format(antenna_name),
-            matname="Teflon (tm)",
+            material="Teflon (tm)",
         )
         Coax.history().props["Coordinate System"] = coordinate_system
 
         # Cap
         cap = self._app.modeler.create_cylinder(
-            cs_axis=2,
+            orientation=2,
             origin=[
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pinD),
@@ -393,7 +393,7 @@ class AxialMode(CommonHelix):
             radius=coax_outer_radius,
             height="-{}/2".format(feed_pinL),
             name="port_cap_" + antenna_name,
-            matname="pec",
+            material="pec",
         )
         cap.history().props["Coordinate System"] = coordinate_system
 

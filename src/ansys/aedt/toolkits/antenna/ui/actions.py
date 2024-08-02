@@ -28,8 +28,8 @@ import tempfile
 from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QLineEdit
+from pyaedt.generic.farfield_visualization import FfdSolutionData
 from pyaedt.generic.general_methods import read_json
-from pyaedt.modules.solutions import FfdSolutionData
 
 # isort: off
 
@@ -175,69 +175,46 @@ class Frontend(FrontendGeneric):
             if response.ok:
                 data = response.json()
 
-                # Create directories
-                cont = 0
-                for encoded_data in range(len(data[0])):
-                    os.mkdir(os.path.join(self.temp_folder, str(cont)))
-                    os.mkdir(os.path.join(self.temp_folder, str(cont), "geometry"))
-                    cont += 1
-
-                # EEP files
-                cont = 0
-                eep_files = []
-                for encoded_data in data[0]:
-                    encoded_data_bytes = bytes(encoded_data, "utf-8")
-                    decoded_data = base64.b64decode(encoded_data_bytes)
-                    file_path = os.path.join(self.temp_folder, str(cont), "eep.txt")
-                    eep_files.append(file_path)
-                    with open(file_path, "wb") as f:
-                        f.write(decoded_data)
-                    cont += 1
+                # Create directory
+                os.mkdir(os.path.join(self.temp_folder, "geometry"))
 
                 # JSON files
-                json_data = []
-                cont = 0
-                for encoded_data in data[1]:
-                    encoded_data_bytes = bytes(encoded_data, "utf-8")
-                    decoded_data = base64.b64decode(encoded_data_bytes)
-                    file_path = os.path.join(self.temp_folder, str(cont), "eep.json")
-                    with open(file_path, "wb") as f:
-                        f.write(decoded_data)
-                    cont += 1
-                    json_data.append(read_json(file_path))
-
-                # LOAD json to know the obj names
+                encoded_data_bytes = bytes(data[0], "utf-8")
+                decoded_data = base64.b64decode(encoded_data_bytes)
+                metadata_path = os.path.join(self.temp_folder, "pyaedt_antenna_metadata.json")
+                with open(metadata_path, "wb") as f:
+                    f.write(decoded_data)
+                json_data = read_json(metadata_path)
 
                 # Geometry files
-                cont = 0
-                for encoded_data in data[2].values():
-                    cont_geom = 0
-                    geometry_names = list(json_data[0]["model_info"].keys())
-                    for encoded_geometry in encoded_data:
-                        encoded_data_bytes = bytes(encoded_geometry, "utf-8")
-                        decoded_data = base64.b64decode(encoded_data_bytes)
-                        file_path = os.path.join(
-                            self.temp_folder, str(cont), "geometry", geometry_names[cont_geom] + ".obj"
-                        )
-                        with open(file_path, "wb") as f:
-                            f.write(decoded_data)
-                        cont_geom += 1
-                    cont += 1
+                cont_geom = 0
+                for encoded_data in data[1]:
+                    geometry_names = list(json_data["model_info"].keys())
+                    encoded_data_bytes = bytes(encoded_data, "utf-8")
+                    decoded_data = base64.b64decode(encoded_data_bytes)
+                    file_path = os.path.join(self.temp_folder, "geometry", geometry_names[cont_geom] + ".obj")
+                    with open(file_path, "wb") as f:
+                        f.write(decoded_data)
+                    cont_geom += 1
 
                 # FFD files
-                cont = 0
-                for encoded_data in data[3].values():
-                    cont_ffd = 1
-                    for encoded_ffd in encoded_data:
-                        encoded_data_bytes = bytes(encoded_ffd, "utf-8")
-                        decoded_data = base64.b64decode(encoded_data_bytes)
-                        file_path = os.path.join(self.temp_folder, str(cont), "eep_{}.ffd".format(str(cont_ffd)))
-                        with open(file_path, "wb") as f:
-                            f.write(decoded_data)
-                        cont_ffd += 1
-                    cont += 1
+                cont_ffd = 0
+                for encoded_ffd in data[2]:
+                    encoded_data_bytes = bytes(encoded_ffd, "utf-8")
+                    decoded_data = base64.b64decode(encoded_data_bytes)
+                    file_path = os.path.join(self.temp_folder, "exportfield_{}.ffd".format(str(cont_ffd)))
+                    with open(file_path, "wb") as f:
+                        f.write(decoded_data)
+                    cont_ffd += 1
 
-                farfield_data = FfdSolutionData(eep_files[0], data[4])
+                # Scattering files
+                encoded_data_bytes = bytes(data[3], "utf-8")
+                decoded_data = base64.b64decode(encoded_data_bytes)
+                sNp_file = os.path.join(self.temp_folder, json_data["touchstone_file"])
+                with open(sNp_file, "wb") as f:
+                    f.write(decoded_data)
+
+                farfield_data = FfdSolutionData(file_path)
 
         if farfield_data:
             msg = "Far field results extracted"

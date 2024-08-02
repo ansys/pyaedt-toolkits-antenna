@@ -52,7 +52,7 @@ from windows.antenna_results.antenna_results_column import Ui_LeftColumn
 import os
 import sys
 
-from pyaedt.modules.solutions import FfdSolutionData
+from pyaedt.generic.farfield_visualization import FfdSolutionData
 
 
 class GetResultsThread(QThread):
