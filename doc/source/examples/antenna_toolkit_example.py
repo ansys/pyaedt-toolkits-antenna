@@ -9,7 +9,7 @@
 import tempfile
 
 import pyaedt
-from pyaedt.modules.solutions import FfdSolutionData
+from pyaedt.generic.farfield_visualization import FfdSolutionData
 
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
@@ -188,7 +188,9 @@ farfield_data = toolkit_api.farfield_results()
 # ## Get farfield results
 
 frequency_str = str(properties.antenna.synthesis.frequency) + properties.antenna.synthesis.frequency_unit
-farfield_eep, farfield_frequency = toolkit_api.export_farfield(frequencies=frequency_str, sphere="3D", encode=False)
+farfield_metadata, farfield_frequency = toolkit_api.export_farfield(
+    frequencies=frequency_str, sphere="3D", encode=False
+)
 
 # ## Get antenna model
 
@@ -214,7 +216,7 @@ model.plot()
 
 # ## Load far field
 
-farfield_data = FfdSolutionData(farfield_eep[0], farfield_frequency)
+farfield_data = FfdSolutionData(farfield_metadata)
 
 # ## Plot far field
 
