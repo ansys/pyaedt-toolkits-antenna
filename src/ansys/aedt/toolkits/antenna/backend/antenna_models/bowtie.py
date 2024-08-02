@@ -200,7 +200,7 @@ class BowTieNormal(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
             dimensions_list=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             matname=self.material,
@@ -226,7 +226,7 @@ class BowTieNormal(CommonPatch):
         ant2.transparency = 0.1
         p1 = self._app.modeler.create_rectangle(
             csPlane=self._app.PLANE.XY,
-            position=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             dimension_list=[inner_width, port_gap],
             name="port_lump_" + antenna_name,
         )
@@ -433,7 +433,7 @@ class BowTieRounded(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
             dimensions_list=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             matname=self.material,
@@ -467,7 +467,7 @@ class BowTieRounded(CommonPatch):
         ant2.transparency = 0.1
         p1 = self._app.modeler.create_rectangle(
             csPlane=self._app.PLANE.XY,
-            position=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             dimension_list=[inner_width, port_gap],
             name="port_lump_" + antenna_name,
         )
@@ -674,7 +674,7 @@ class BowTieSlot(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
             dimensions_list=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             matname=self.material,
@@ -686,7 +686,7 @@ class BowTieSlot(CommonPatch):
         # Slot
         slot = self._app.modeler.create_rectangle(
             csPlane=self._app.PLANE.XY,
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
             dimension_list=[sub_x, sub_y],
             name="ant_" + antenna_name,
         )
@@ -696,7 +696,7 @@ class BowTieSlot(CommonPatch):
         # Inner Slot
         islot = self._app.modeler.create_rectangle(
             csPlane=self._app.PLANE.XY,
-            position=["-" + inner_width + "/2", "-" + port_gap + "/2", 0.0],
+            origin=["-" + inner_width + "/2", "-" + port_gap + "/2", 0.0],
             dimension_list=[inner_width, port_gap],
             name="slot_" + antenna_name,
         )
@@ -728,7 +728,7 @@ class BowTieSlot(CommonPatch):
 
         feed = self._app.modeler.create_rectangle(
             csPlane=self._app.PLANE.XY,
-            position=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             dimension_list=["-{}/2+{}/2".format(sub_x, inner_width), "-{}".format(port_gap)],
             name="feed_" + antenna_name,
         )
@@ -738,7 +738,7 @@ class BowTieSlot(CommonPatch):
 
         feed1 = self._app.modeler.create_rectangle(
             csPlane=self._app.PLANE.XY,
-            position=["{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            origin=["{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             dimension_list=["{}/2-{}/2".format(sub_x, inner_width), "-{}".format(port_gap)],
             name="feed_" + antenna_name,
         )
@@ -750,7 +750,7 @@ class BowTieSlot(CommonPatch):
 
         p1 = self._app.modeler.create_rectangle(
             csPlane=self._app.PLANE.XY,
-            position=["{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            origin=["{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             dimension_list=["-{}*0.95".format(inner_width), "-{}".format(port_gap)],
             name="port_lump_" + antenna_name,
         )
@@ -760,7 +760,7 @@ class BowTieSlot(CommonPatch):
 
         ref = self._app.modeler.create_rectangle(
             csPlane=self._app.PLANE.XY,
-            position=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             dimension_list=["{}*0.05".format(inner_width), "-{}".format(port_gap)],
             name="gnd_" + antenna_name,
         )

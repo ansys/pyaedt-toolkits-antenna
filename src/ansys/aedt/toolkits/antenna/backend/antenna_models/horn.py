@@ -232,7 +232,7 @@ class Conical(CommonHorn):
         # Negative air
         neg_air = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
             height="-" + wg_length,
             matname="vacuum",
@@ -242,7 +242,7 @@ class Conical(CommonHorn):
         # Wall
         wall = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
             height="-" + wg_length,
             name="wg_outer_" + antenna_name,
@@ -256,7 +256,7 @@ class Conical(CommonHorn):
         # Input
         wg_in = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
             height="-" + wg_length,
             name="wg_inner_" + antenna_name,
@@ -267,7 +267,7 @@ class Conical(CommonHorn):
         # Cap
         cap = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "-" + wg_length],
+            origin=["0", "0", "-" + wg_length],
             radius=wg_radius + "+" + wall_thickness,
             height="-" + wall_thickness,
             name="port_cap_" + antenna_name,
@@ -278,7 +278,7 @@ class Conical(CommonHorn):
         # P1
         p1 = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "-" + wg_length],
+            origin=["0", "0", "-" + wg_length],
             radius=wg_radius,
             name="port_" + antenna_name,
         )
@@ -288,28 +288,28 @@ class Conical(CommonHorn):
         # Horn wall
         base = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
         )
         base.history().props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
         )
         base_wall.history().props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", horn_length],
+            origin=["0", "0", horn_length],
             radius=horn_radius,
         )
         horn_top.history().props["Coordinate System"] = coordinate_system
 
         horn_sheet = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", horn_length],
+            origin=["0", "0", horn_length],
             radius=horn_radius + "+" + wall_thickness,
         )
         horn_sheet.history().props["Coordinate System"] = coordinate_system
@@ -323,14 +323,14 @@ class Conical(CommonHorn):
 
         air_base = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
         )
         air_base.history().props["Coordinate System"] = coordinate_system
 
         air_top = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", horn_length],
+            origin=["0", "0", horn_length],
             radius=horn_radius,
         )
         air_top.history().props["Coordinate System"] = coordinate_system
@@ -536,7 +536,7 @@ class PyramidalRidged(CommonHorn):
         # Base of the horn
         # Air
         air = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -548,7 +548,7 @@ class PyramidalRidged(CommonHorn):
 
         # Wall
         wall = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "-" + wg_length,
@@ -569,7 +569,7 @@ class PyramidalRidged(CommonHorn):
         # Top of the horn
         # Input
         wg_in = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -583,7 +583,7 @@ class PyramidalRidged(CommonHorn):
 
         # Cap
         cap = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "-" + wg_length,
@@ -602,7 +602,7 @@ class PyramidalRidged(CommonHorn):
         # P1
         p1 = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -616,7 +616,7 @@ class PyramidalRidged(CommonHorn):
         # Horn wall
         base = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "0",
@@ -628,7 +628,7 @@ class PyramidalRidged(CommonHorn):
 
         base_wall = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "0",
@@ -643,7 +643,7 @@ class PyramidalRidged(CommonHorn):
 
         horn_top = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + aperture_width + "/2",
                 "-" + aperture_height + "/2",
                 flare_length,
@@ -655,7 +655,7 @@ class PyramidalRidged(CommonHorn):
 
         horn = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + aperture_width + "/2" + "-" + wall_thickness,
                 "-" + aperture_height + "/2" + "-" + wall_thickness,
                 flare_length,
@@ -956,7 +956,7 @@ class PyramidalRidged(CommonHorn):
         # Connectors of the ridge
         # Connector
         connector = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + ridge_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -974,7 +974,7 @@ class PyramidalRidged(CommonHorn):
 
         # Bottom connector
         bconnector = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + ridge_width + "/2",
                 wg_height + "/2",
                 "-" + wg_length,
@@ -1002,7 +1002,7 @@ class PyramidalRidged(CommonHorn):
         # Air base
         air_base = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "0",
@@ -1018,7 +1018,7 @@ class PyramidalRidged(CommonHorn):
         # Air top
         air_top = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + aperture_width + "/2",
                 "-" + aperture_height + "/2",
                 flare_length,
@@ -1299,7 +1299,7 @@ class Corrugated(CommonHorn):
         # Cap
         cap = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
             height="-" + wall_thickness,
             name="port_cap_" + antenna_name,
@@ -1310,7 +1310,7 @@ class Corrugated(CommonHorn):
         # P1
         p1 = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
             name="port_" + antenna_name,
         )
@@ -1484,7 +1484,7 @@ class Elliptical(CommonHorn):
         # Negative air
         neg_air = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
             height="-" + wg_length,
             matname="vacuum",
@@ -1494,7 +1494,7 @@ class Elliptical(CommonHorn):
         # Wall
         wall = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
             height="-" + wg_length,
             name="wg_outer_" + antenna_name,
@@ -1508,7 +1508,7 @@ class Elliptical(CommonHorn):
         # Input
         wg_in = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
             height="-" + wg_length,
             name="wg_inner_" + antenna_name,
@@ -1519,7 +1519,7 @@ class Elliptical(CommonHorn):
         # Cap
         cap = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "-" + wg_length],
+            origin=["0", "0", "-" + wg_length],
             radius=wg_radius + "+" + wall_thickness,
             height="-" + wall_thickness,
             name="port_cap_" + antenna_name,
@@ -1530,7 +1530,7 @@ class Elliptical(CommonHorn):
         # P1
         p1 = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "-" + wg_length],
+            origin=["0", "0", "-" + wg_length],
             radius=wg_radius,
             name="port_" + antenna_name,
         )
@@ -1540,21 +1540,21 @@ class Elliptical(CommonHorn):
         # Horn wall
         base = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
         )
         base.history().props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
         )
         base_wall.history().props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_ellipse(
             cs_plane=2,
-            position=["0", "0", horn_length],
+            origin=["0", "0", horn_length],
             major_radius=horn_radius,
             ratio=ellipse_ratio,
         )
@@ -1562,7 +1562,7 @@ class Elliptical(CommonHorn):
 
         horn_sheet = self._app.modeler.create_ellipse(
             cs_plane=2,
-            position=["0", "0", horn_length],
+            origin=["0", "0", horn_length],
             major_radius=horn_radius + "+" + wall_thickness,
             ratio=ellipse_ratio,
         )
@@ -1577,14 +1577,14 @@ class Elliptical(CommonHorn):
 
         air_base = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
         )
         air_base.history().props["Coordinate System"] = coordinate_system
 
         air_top = self._app.modeler.create_ellipse(
             cs_plane=2,
-            position=["0", "0", horn_length],
+            origin=["0", "0", horn_length],
             major_radius=horn_radius,
             ratio=ellipse_ratio,
         )
@@ -1800,7 +1800,7 @@ class EPlane(CommonHorn):
         # Base of the horn
         # Air
         air = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -1812,7 +1812,7 @@ class EPlane(CommonHorn):
 
         # Wall
         wall = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "-" + wg_length,
@@ -1833,7 +1833,7 @@ class EPlane(CommonHorn):
         # Top of the horn
         # Input
         wg_in = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -1847,7 +1847,7 @@ class EPlane(CommonHorn):
 
         # Cap
         cap = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "-" + wg_length,
@@ -1866,7 +1866,7 @@ class EPlane(CommonHorn):
         # P1
         p1 = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -1880,7 +1880,7 @@ class EPlane(CommonHorn):
         # Horn wall
         base = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "0",
@@ -1892,7 +1892,7 @@ class EPlane(CommonHorn):
 
         base_wall = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "0",
@@ -1907,7 +1907,7 @@ class EPlane(CommonHorn):
 
         horn_top = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + flare + "/2",
                 horn_length,
@@ -1919,7 +1919,7 @@ class EPlane(CommonHorn):
 
         horn = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + flare + "/2" + "-" + wall_thickness,
                 horn_length,
@@ -1945,7 +1945,7 @@ class EPlane(CommonHorn):
         # Air base
         air_base = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "0",
@@ -1961,7 +1961,7 @@ class EPlane(CommonHorn):
         # Air top
         air_top = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + flare + "/2",
                 horn_length,
@@ -2162,7 +2162,7 @@ class HPlane(CommonHorn):
         # Base of the horn
         # Air
         air = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -2174,7 +2174,7 @@ class HPlane(CommonHorn):
 
         # Wall
         wall = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "-" + wg_length,
@@ -2195,7 +2195,7 @@ class HPlane(CommonHorn):
         # Top of the horn
         # Input
         wg_in = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -2209,7 +2209,7 @@ class HPlane(CommonHorn):
 
         # Cap
         cap = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "-" + wg_length,
@@ -2228,7 +2228,7 @@ class HPlane(CommonHorn):
         # P1
         p1 = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -2242,7 +2242,7 @@ class HPlane(CommonHorn):
         # Horn wall
         base = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "0",
@@ -2254,7 +2254,7 @@ class HPlane(CommonHorn):
 
         base_wall = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "0",
@@ -2269,7 +2269,7 @@ class HPlane(CommonHorn):
 
         horn_top = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + flare + "/2",
                 "-" + wg_height + "/2",
                 horn_length,
@@ -2281,7 +2281,7 @@ class HPlane(CommonHorn):
 
         horn = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + flare + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 horn_length,
@@ -2307,7 +2307,7 @@ class HPlane(CommonHorn):
         # Air base
         air_base = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "0",
@@ -2323,7 +2323,7 @@ class HPlane(CommonHorn):
         # Air top
         air_top = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + flare + "/2",
                 "-" + wg_height + "/2",
                 horn_length,
@@ -2527,7 +2527,7 @@ class Pyramidal(CommonHorn):
         # Base of the horn
         # Air
         air = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -2539,7 +2539,7 @@ class Pyramidal(CommonHorn):
 
         # Wall
         wall = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "-" + wg_length,
@@ -2560,7 +2560,7 @@ class Pyramidal(CommonHorn):
         # Top of the horn
         # Input
         wg_in = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -2574,7 +2574,7 @@ class Pyramidal(CommonHorn):
 
         # Cap
         cap = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "-" + wg_length,
@@ -2593,7 +2593,7 @@ class Pyramidal(CommonHorn):
         # P1
         p1 = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "-" + wg_length,
@@ -2607,7 +2607,7 @@ class Pyramidal(CommonHorn):
         # Horn wall
         base = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "0",
@@ -2619,7 +2619,7 @@ class Pyramidal(CommonHorn):
 
         base_wall = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_height + "/2" + "-" + wall_thickness,
                 "0",
@@ -2634,7 +2634,7 @@ class Pyramidal(CommonHorn):
 
         horn_top = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + flare_a + "/2",
                 "-" + flare_b + "/2",
                 horn_length,
@@ -2646,7 +2646,7 @@ class Pyramidal(CommonHorn):
 
         horn = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + flare_a + "/2" + "-" + wall_thickness,
                 "-" + flare_b + "/2" + "-" + wall_thickness,
                 horn_length,
@@ -2672,7 +2672,7 @@ class Pyramidal(CommonHorn):
         # Air base
         air_base = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_height + "/2",
                 "0",
@@ -2688,7 +2688,7 @@ class Pyramidal(CommonHorn):
         # Air top
         air_top = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + flare_a + "/2",
                 "-" + flare_b + "/2",
                 horn_length,
@@ -2928,7 +2928,7 @@ class QuadRidged(CommonHorn):
         # Base of the horn
         # Air
         air = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_width + "/2",
                 "-" + wg_length,
@@ -2940,7 +2940,7 @@ class QuadRidged(CommonHorn):
 
         # Wall
         wall = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_length,
@@ -2961,7 +2961,7 @@ class QuadRidged(CommonHorn):
         # Top of the horn
         # Input
         wg_in = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_width + "/2",
                 "-" + wg_length,
@@ -2975,7 +2975,7 @@ class QuadRidged(CommonHorn):
 
         # Cap
         cap = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_length,
@@ -2994,7 +2994,7 @@ class QuadRidged(CommonHorn):
         # P1
         p1 = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_width + "/2",
                 "-" + wg_length,
@@ -3008,7 +3008,7 @@ class QuadRidged(CommonHorn):
         # Horn wall
         base = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_width + "/2",
                 "0",
@@ -3020,7 +3020,7 @@ class QuadRidged(CommonHorn):
 
         base_wall = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "-" + wg_width + "/2" + "-" + wall_thickness,
                 "0",
@@ -3035,7 +3035,7 @@ class QuadRidged(CommonHorn):
 
         horn_top = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + aperture_width + "/2",
                 "-" + aperture_width + "/2",
                 flare_length,
@@ -3047,7 +3047,7 @@ class QuadRidged(CommonHorn):
 
         horn = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + aperture_width + "/2" + "-" + wall_thickness,
                 "-" + aperture_width + "/2" + "-" + wall_thickness,
                 flare_length,
@@ -3156,7 +3156,7 @@ class QuadRidged(CommonHorn):
         # Connectors of the ridge
         # Connector
         connector1 = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + ridge_width + "/2",
                 "-" + wg_width + "/2",
                 "-" + wg_length,
@@ -3173,7 +3173,7 @@ class QuadRidged(CommonHorn):
         connector1.color = (132, 132, 193)
 
         connector2 = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + ridge_width + "/2",
                 wg_width + "/2",
                 "-" + wg_length,
@@ -3190,7 +3190,7 @@ class QuadRidged(CommonHorn):
         connector2.color = (132, 132, 193)
 
         connector3 = self._app.modeler.create_box(
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + ridge_width + "/2",
                 "-" + wg_length,
@@ -3207,7 +3207,7 @@ class QuadRidged(CommonHorn):
         connector3.color = (132, 132, 193)
 
         connector4 = self._app.modeler.create_box(
-            position=[
+            origin=[
                 wg_width + "/2",
                 "-" + ridge_width + "/2",
                 "-" + wg_length,
@@ -3248,7 +3248,7 @@ class QuadRidged(CommonHorn):
         # Air base
         air_base = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + wg_width + "/2",
                 "-" + wg_width + "/2",
                 "0",
@@ -3264,7 +3264,7 @@ class QuadRidged(CommonHorn):
         # Air top
         air_top = self._app.modeler.create_rectangle(
             csPlane=2,
-            position=[
+            origin=[
                 "-" + aperture_width + "/2",
                 "-" + aperture_width + "/2",
                 flare_length,
@@ -3451,7 +3451,7 @@ class Conical_Special(CommonHorn):
         # Negative air
         neg_air = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
             height="-" + wg_length,
             matname="vacuum",
@@ -3461,7 +3461,7 @@ class Conical_Special(CommonHorn):
         # Wall
         wall = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
             height="-" + wg_length,
             name="wg_outer_" + antenna_name,
@@ -3475,7 +3475,7 @@ class Conical_Special(CommonHorn):
         # Input
         wg_in = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
             height="-" + wg_length,
             name="wg_inner_" + antenna_name,
@@ -3486,7 +3486,7 @@ class Conical_Special(CommonHorn):
         # Cap
         cap = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=["0", "0", "-" + wg_length],
+            origin=["0", "0", "-" + wg_length],
             radius=wg_radius + "+" + wall_thickness,
             height="-" + wall_thickness,
             name="port_cap_" + antenna_name,
@@ -3497,7 +3497,7 @@ class Conical_Special(CommonHorn):
         # P1
         p1 = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "-" + wg_length],
+            origin=["0", "0", "-" + wg_length],
             radius=wg_radius,
             name="port_" + antenna_name,
         )
@@ -3507,28 +3507,28 @@ class Conical_Special(CommonHorn):
         # Horn wall
         base = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
         )
         base.history().props["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
         )
         base_wall.history().props["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", horn_length],
+            origin=["0", "0", horn_length],
             radius=horn_radius,
         )
         horn_top.history().props["Coordinate System"] = coordinate_system
 
         horn_sheet = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", horn_length],
+            origin=["0", "0", horn_length],
             radius=horn_radius + "+" + wall_thickness,
         )
         horn_sheet.history().props["Coordinate System"] = coordinate_system
@@ -3542,14 +3542,14 @@ class Conical_Special(CommonHorn):
 
         air_base = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", "0"],
+            origin=["0", "0", "0"],
             radius=wg_radius,
         )
         air_base.history().props["Coordinate System"] = coordinate_system
 
         air_top = self._app.modeler.create_circle(
             cs_plane=2,
-            position=["0", "0", horn_length],
+            origin=["0", "0", horn_length],
             radius=horn_radius,
         )
         air_top.history().props["Coordinate System"] = coordinate_system

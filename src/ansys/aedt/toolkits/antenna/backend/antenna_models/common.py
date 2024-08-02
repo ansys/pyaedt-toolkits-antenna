@@ -256,7 +256,7 @@ class CommonAntenna(object):
 
         if bottom_extend:
             lattice_box = self._app.modeler.create_box(
-                position=[
+                origin=[
                     str(bounding_box[0]) + self._app.modeler.model_units,
                     str(bounding_box[1]) + self._app.modeler.model_units,
                     str(bounding_box[2]) + self._app.modeler.model_units + "-" + hfss_parameter,
@@ -270,7 +270,7 @@ class CommonAntenna(object):
             )
         else:
             lattice_box = self._app.modeler.create_box(
-                position=[
+                origin=[
                     str(bounding_box[0]) + self._app.modeler.model_units,
                     str(bounding_box[1]) + self._app.modeler.model_units,
                     str(bounding_box[2]) + self._app.modeler.model_units,

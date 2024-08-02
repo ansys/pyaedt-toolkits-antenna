@@ -301,13 +301,14 @@ class ToolkitBackend(AEDTCommon):
             return
         return sol_data.primary_sweep_values, sol_data.data_db20()
 
-    def export_farfield(self, frequencies, setup=None, sphere=None, variations=None, encode=True):
+    def export_farfield(self, frequencies=None, setup=None, sphere=None, variations=None, encode=True):
         """Export far field data and then encode the file if the ``encode`` parameter is enabled.
 
         Parameters
         ----------
         frequencies : float, list
-            Frequency value or list of frequencies to compute far field data.
+            Frequency value or list of frequencies to compute far field data. The default is ``None,`` in which case
+            all available frequencies are computed.
         setup : str, optional
             Name of the setup to use. The default is ``None,`` in which case ``nominal_adaptive`` is used.
         sphere : str, optional

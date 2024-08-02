@@ -329,7 +329,7 @@ class AxialMode(CommonHelix):
 
         cutout = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[
+            origin=[
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pinD),
                 "-{}-{}/2".format(feed_pinL, wire_diameter),
@@ -342,7 +342,7 @@ class AxialMode(CommonHelix):
         # Negative air
         feed_pin = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[
+            origin=[
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pinD),
                 "-{}-{}/2".format(feed_pinL, wire_diameter),
@@ -356,7 +356,7 @@ class AxialMode(CommonHelix):
 
         feed_coax = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[
+            origin=[
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pinD),
                 "-{}-{}/2".format(feed_pinL, wire_diameter),
@@ -370,7 +370,7 @@ class AxialMode(CommonHelix):
 
         Coax = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[
+            origin=[
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pinD),
                 "-{}-{}/2".format(feed_pinL, wire_diameter),
@@ -385,7 +385,7 @@ class AxialMode(CommonHelix):
         # Cap
         cap = self._app.modeler.create_cylinder(
             cs_axis=2,
-            position=[
+            origin=[
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pinD),
                 "-{}-{}/2-{}".format(feed_pinL, wire_diameter, feeder_length),
@@ -400,7 +400,7 @@ class AxialMode(CommonHelix):
         # P1
         p1 = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[
+            origin=[
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pinD),
                 "-{}-{}/2-{}".format(feed_pinL, wire_diameter, feeder_length),

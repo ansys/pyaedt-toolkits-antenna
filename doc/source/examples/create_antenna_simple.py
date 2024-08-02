@@ -29,7 +29,7 @@ non_graphical = True
 # ## Create temporary directory
 
 temp_dir = tempfile.TemporaryDirectory(suffix="_ansys")
-project_name = pyaedt.generate_unique_project_name(rootname=temp_dir.name, project_name="bowtie_example")
+project_name = pyaedt.generate_unique_project_name(root_name=temp_dir.name, project_name="bowtie_example")
 
 # ## Create antenna object only for synthesis
 #
@@ -63,7 +63,7 @@ print(
 #
 # Create an empty HFSS design.
 
-app = pyaedt.Hfss(projectname=project_name, specified_version=aedt_version, non_graphical=non_graphical)
+app = pyaedt.Hfss(project=project_name, version=aedt_version, non_graphical=non_graphical)
 
 # ## Create antenna in HFSS
 #

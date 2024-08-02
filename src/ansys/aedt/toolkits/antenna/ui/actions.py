@@ -81,7 +81,7 @@ class Frontend(FrontendGeneric):
         design_selected = be_properties["active_design"]
         if project_selected and design_selected:
             if project_selected == "No Project":
-                project_selected = generate_unique_project_name(rootname=self.temp_folder)
+                project_selected = generate_unique_project_name(root_name=self.temp_folder)
                 be_properties["active_project"] = project_selected
 
             for project in be_properties["project_list"]:
