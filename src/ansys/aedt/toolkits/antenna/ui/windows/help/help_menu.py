@@ -9,15 +9,16 @@ from windows.help.help_page import Ui_help
 import tempfile
 from ansys.aedt.toolkits.antenna import __version__
 
-ABOUT_TEXT = f"""<h2>Antenna Toolkit {__version__}</h2>
-<p>Project using <a href='https://wiki.qt.io/Qt_for_Python'> PySide6</a>.</p>
-<p>If you have any questions or issues, please open an issue in <a href='https://github.com/ansys/pyaedt-toolkits-antenna/issues'>pyaedt-toolkits-antenna Issues</a> page.</p>
-<p>Alternatively, you can contact us at <a href='mailto:pyansys.core@ansys.com'>pyansys.core@ansys.com</a>.</p>
-<p>Your use of this software is governed by the MIT License. In addition, this package allows you to access a software that is licensed under separate terms ("Separately Licensed Software"). If you chose to install such Separately Licensed Software, you acknowledge that you are responsible for complying with any associated terms and conditions.</p>
-<p>Copyright 2023 - 2024 ANSYS, Inc. All rights reserved.</p>
-"""
 DOCUMENTATION_URL = "https://aedt.antenna.toolkit.docs.pyansys.com/"
 ISSUE_TRACKER_URL = "https://github.com/ansys/pyaedt-toolkits-antenna/issues"
+ABOUT_TEXT = f"""<h2>Antenna Toolkit {__version__}</h2>
+<p>Project using <a href='https://wiki.qt.io/Qt_for_Python'> PySide6</a>, Copyright 2024 The Qt Company Ltd.</p>
+<p>The graphical user interface (GUI) components are licensed under <a href='https://www.gnu.org/licenses/lgpl-3.0.en.html'>LGPL v3.0</a>.</p> 
+<p>Except for the GUI components, your use of this software is governed by the MIT License. In addition, this package allows you to access a software that is licensed under separate terms ("Separately Licensed Software"). If you choose to install such Separately Licensed Software, you acknowledge that you are responsible for complying with any associated terms and conditions.</p>
+<p>Copyright 2023 - 2024 ANSYS, Inc. All rights reserved.</p>
+<p>If you have any questions or issues, please open an issue in <a href='{ISSUE_TRACKER_URL}'>pyaedt-toolkits-antenna Issues</a> page.</p>
+<p>Alternatively, you can contact us at <a href='mailto:pyansys.core@ansys.com'>pyansys.core@ansys.com</a>.</p>
+"""
 
 
 class HelpMenu(object):
