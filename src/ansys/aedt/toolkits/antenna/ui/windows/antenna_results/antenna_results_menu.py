@@ -328,7 +328,7 @@ class AntennaResultsMenu(object):
                                                    theta=0,
                                                    title="Far Field Cut",
                                                    quantity_format="dB10",
-                                                   image_path=None,
+                                                   output_file=None,
                                                    show=False,
                                                    is_polar=False)
 
@@ -348,16 +348,16 @@ class AntennaResultsMenu(object):
     def phi_cut_combobox_clicked(self):
         if self.farfield_data:
             phi = self.phi_cut_combobox.currentText()
-            data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
-                                                  primary_sweep="theta",
-                                                  secondary_sweep_value=float(phi),
-                                                  phi=0,
-                                                  theta=0,
-                                                  title="Far Field Cut",
-                                                  quantity_format="dB10",
-                                                  image_path=None,
-                                                  show=False,
-                                                  is_polar=False)
+            data = self.farfield_data.plot_cut(quantity="RealizedGain",
+                                               primary_sweep="theta",
+                                               secondary_sweep_value=float(phi),
+                                               phi=0,
+                                               theta=0,
+                                               title="Far Field Cut",
+                                               quantity_format="dB10",
+                                               output_file=None,
+                                               show=False,
+                                               is_polar=False)
             overlap = self.phi_cut_overlap.isChecked()
             if not overlap:
                 self.farfield_2d_phi_graph.clear()
@@ -366,25 +366,28 @@ class AntennaResultsMenu(object):
     def theta_cut_combobox_clicked(self):
         if self.farfield_data:
             theta = self.theta_cut_combobox.currentText()
-            data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
-                                                  primary_sweep="phi",
-                                                  secondary_sweep_value=float(theta),
-                                                  phi=0,
-                                                  theta=0,
-                                                  title="Far Field Cut",
-                                                  quantity_format="dB10",
-                                                  image_path=None,
-                                                  show=False,
-                                                  is_polar=False)
+            data = self.farfield_data.plot_cut(quantity="RealizedGain",
+                                               primary_sweep="phi",
+                                               secondary_sweep_value=float(theta),
+                                               phi=0,
+                                               theta=0,
+                                               title="Far Field Cut",
+                                               quantity_format="dB10",
+                                               output_file=None,
+                                               show=False,
+                                               is_polar=False)
             overlap = self.theta_cut_overlap.isChecked()
             if not overlap:
                 self.farfield_2d_theta_graph.clear()
             self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta, "Theta", "Phi")
 
     def __plot_2d_cut(self, graph_obj, data, cut, cut_name, sweep):
+        lines = data.gca().get_lines()
+        x_data = lines[-1].get_xdata()
+        y_data = lines[-1].get_ydata()
         graph_obj.plot(
-            data[0][0],
-            data[0][1],
+            x_data,
+            y_data,
             pen=self.line_color
         )
         graph_obj.setTitle("Realized gain at {} {}".format(cut_name, cut))
