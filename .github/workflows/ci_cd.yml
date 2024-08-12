@@ -242,7 +242,7 @@ jobs:
           python -c "import sys; print(sys.executable)"
           python -m pip install --upgrade pip
           pip install --upgrade build wheel
-          pip install .[tests]
+          pip install --no-cache-dir .[tests]
           pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pytest-azurepipelines
 
       - name: Antenna models testing
