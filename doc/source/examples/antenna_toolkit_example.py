@@ -18,7 +18,7 @@ from ansys.aedt.toolkits.antenna.backend.models import properties
 #
 # Set AEDT version.
 
-aedt_version = "2024.1"
+aedt_version = "2024.2"
 
 # ## Set non-graphical mode
 #
