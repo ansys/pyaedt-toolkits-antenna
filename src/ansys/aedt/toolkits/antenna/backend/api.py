@@ -33,6 +33,7 @@ from ansys.aedt.toolkits.antenna.backend.models import properties
 from ansys.aedt.toolkits.common.backend.api import AEDTCommon
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
 import pyaedt
+from pyaedt.generic.touchstone_parser import find_touchstone_files
 
 from ansys.aedt.toolkits.antenna.backend import antenna_models
 
@@ -300,13 +301,14 @@ class ToolkitBackend(AEDTCommon):
             return
         return sol_data.primary_sweep_values, sol_data.data_db20()
 
-    def export_farfield(self, frequencies, setup=None, sphere=None, variations=None, encode=True):
+    def export_farfield(self, frequencies=None, setup=None, sphere=None, variations=None, encode=True):
         """Export far field data and then encode the file if the ``encode`` parameter is enabled.
 
         Parameters
         ----------
         frequencies : float, list
-            Frequency value or list of frequencies to compute far field data.
+            Frequency value or list of frequencies to compute far field data. The default is ``None,`` in which case
+            all available frequencies are computed.
         setup : str, optional
             Name of the setup to use. The default is ``None,`` in which case ``nominal_adaptive`` is used.
         sphere : str, optional
@@ -328,55 +330,49 @@ class ToolkitBackend(AEDTCommon):
         if self.aedtapp:
             self.aedtapp.save_project()
 
-            farfield_exporter = self.aedtapp.get_antenna_ffd_solution_data(
+            farfield_exporter = self.aedtapp.get_antenna_data(
                 frequencies=frequencies, setup=setup, sphere=sphere, variations=variations
             )
-            frequencies = farfield_exporter.frequencies
+
             if encode:
+                encoded_json_file = None
+                encoded_geometry_files = []
+                encoded_ffd_files = []
+                encoded_scattering_file = None
 
-                eep_files = farfield_exporter.eep_files
-                encoded_eep_files = []
-                encoded_eep_json_files = []
-                encoded_geometry_files = {}
-                encoded_ffd_files = {}
-                cont = 0
-                for eep_file in eep_files:
-                    eep_path = os.path.abspath(os.path.dirname(eep_file))
-                    serialized_file = self.serialize_obj_base64(eep_file)
-                    encoded_eep_files.append(serialized_file.decode("utf-8"))
-                    eep_json = os.path.abspath(os.path.join(eep_path, "eep.json"))
-                    if os.path.isfile(eep_json):
-                        serialized_file = self.serialize_obj_base64(eep_json)
-                        encoded_eep_json_files.append(serialized_file.decode("utf-8"))
-                    geometry_path = os.path.abspath(os.path.join(eep_path, "geometry"))
-                    if os.path.exists(geometry_path):
-                        encoded_geometry_files[cont] = []
-                        for root, _, files in os.walk(geometry_path):
-                            for file in files:
-                                if file.lower().endswith(".obj"):
-                                    geometry_file = os.path.abspath(os.path.join(root, file))
-                                    serialized_file = self.serialize_obj_base64(geometry_file)
-                                    encoded_geometry_files[cont].append(serialized_file.decode("utf-8"))
+                metadata_file = farfield_exporter.metadata_file
+                metadata_dir = os.path.dirname(metadata_file)
 
-                    encoded_ffd_files[cont] = []
-                    for root, _, files in os.walk(eep_path):
+                if os.path.isfile(metadata_file):
+                    serialized_file = self.serialize_obj_base64(metadata_file)
+                    encoded_json_file = serialized_file.decode("utf-8")
+
+                geometry_path = os.path.abspath(os.path.join(metadata_dir, "geometry"))
+                if os.path.exists(geometry_path):
+                    for root, _, files in os.walk(geometry_path):
+                        for file in files:
+                            if file.lower().endswith(".obj"):
+                                geometry_file = os.path.abspath(os.path.join(root, file))
+                                serialized_file = self.serialize_obj_base64(geometry_file)
+                                encoded_geometry_files.append(serialized_file.decode("utf-8"))
+
+                    for root, _, files in os.walk(metadata_dir):
                         for file in files:
                             if file.lower().endswith(".ffd"):
                                 ffd_file = os.path.abspath(os.path.join(root, file))
                                 serialized_file = self.serialize_obj_base64(ffd_file)
-                                encoded_ffd_files[cont].append(serialized_file.decode("utf-8"))
+                                encoded_ffd_files.append(serialized_file.decode("utf-8"))
 
-                    cont += 1
+                    sNp_files = find_touchstone_files(metadata_dir)
+
+                    if sNp_files:
+                        snP_file = list(sNp_files.keys())[0]
+                        serialized_file = self.serialize_obj_base64(sNp_files[snP_file])
+                        encoded_scattering_file = serialized_file.decode("utf-8")
 
                     self.release_aedt(False, False)
 
-                    return (
-                        encoded_eep_files,
-                        encoded_eep_json_files,
-                        encoded_geometry_files,
-                        encoded_ffd_files,
-                        frequencies,
-                    )
+                    return encoded_json_file, encoded_geometry_files, encoded_ffd_files, encoded_scattering_file
 
             self.release_aedt(False, False)
-            return farfield_exporter.eep_files, farfield_exporter.frequencies
+            return farfield_exporter.metadata_file, farfield_exporter.frequencies
