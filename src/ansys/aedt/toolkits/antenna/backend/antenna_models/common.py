@@ -256,31 +256,31 @@ class CommonAntenna(object):
 
         if bottom_extend:
             lattice_box = self._app.modeler.create_box(
-                position=[
+                origin=[
                     str(bounding_box[0]) + self._app.modeler.model_units,
                     str(bounding_box[1]) + self._app.modeler.model_units,
                     str(bounding_box[2]) + self._app.modeler.model_units + "-" + hfss_parameter,
                 ],
-                dimensions_list=[
+                sizes=[
                     str(bounding_dim[0]) + self._app.modeler.model_units,
                     str(bounding_dim[1]) + self._app.modeler.model_units,
                     str(bounding_dim[2]) + self._app.modeler.model_units + "+2*" + hfss_parameter,
                 ],
-                matname="vacuum",
+                material="vacuum",
             )
         else:
             lattice_box = self._app.modeler.create_box(
-                position=[
+                origin=[
                     str(bounding_box[0]) + self._app.modeler.model_units,
                     str(bounding_box[1]) + self._app.modeler.model_units,
                     str(bounding_box[2]) + self._app.modeler.model_units,
                 ],
-                dimensions_list=[
+                sizes=[
                     str(bounding_dim[0]) + self._app.modeler.model_units,
                     str(bounding_dim[1]) + self._app.modeler.model_units,
                     str(bounding_dim[2]) + self._app.modeler.model_units + "+" + hfss_parameter,
                 ],
-                matname="vacuum",
+                material="vacuum",
             )
 
         lattice1 = self._app.assign_lattice_pair(face_couple=[lattice_box.bottom_face_x.id, lattice_box.top_face_x.id])
@@ -334,26 +334,26 @@ class CommonAntenna(object):
             boundaries = [""]
 
         self._app.modeler.create_3dcomponent(
-            component_file=component_file,
-            component_name=component_name,
+            input_file=component_file,
+            name=component_name,
             variables_to_include=parameters,
-            object_list=list(self.object_list.keys()),
-            boundaries_list=boundaries,
-            excitation_list=list(self.excitations.keys()),
-            included_cs=[self.coordinate_system],
-            reference_cs=self.coordinate_system,
+            assignment=list(self.object_list.keys()),
+            boundaries=boundaries,
+            excitations=list(self.excitations.keys()),
+            coordinate_systems=[self.coordinate_system],
+            reference_coordinate_system=self.coordinate_system,
             component_outline="None",
         )
 
         if replace:
             user_defined_component = self._app.modeler.replace_3dcomponent(
-                component_name=component_name,
+                name=component_name,
                 variables_to_include=parameters,
-                object_list=list(self.object_list.keys()),
-                boundaries_list=boundaries,
-                excitation_list=list(self.excitations.keys()),
-                included_cs=[self.coordinate_system],
-                reference_cs=self.coordinate_system,
+                assignment=list(self.object_list.keys()),
+                boundaries=boundaries,
+                excitations=list(self.excitations.keys()),
+                coordinate_systems=[self.coordinate_system],
+                reference_coordinate_system=self.coordinate_system,
             )
             if self._app.modeler.oeditor.GetObjectsInGroup(self.name).count == 0:
                 self._app.modeler.oeditor.Delete(["NAME:Selections", "Selections:=", self.name])

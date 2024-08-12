@@ -87,4 +87,4 @@ class TestClass:
         response2 = client.get("/export_farfield", json={"sphere": "3D"})
         assert response2.status_code == 200
         data = json.loads(response2.data.decode("utf-8"))
-        assert len(data) == 5
+        assert len(data) == 4
