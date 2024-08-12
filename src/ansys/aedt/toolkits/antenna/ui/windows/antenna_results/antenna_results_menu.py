@@ -52,7 +52,7 @@ from windows.antenna_results.antenna_results_column import Ui_LeftColumn
 import os
 import sys
 
-from pyaedt.modules.solutions import FfdSolutionData
+from pyaedt.generic.farfield_visualization import FfdSolutionData
 
 
 class GetResultsThread(QThread):
@@ -308,29 +308,29 @@ class AntennaResultsMenu(object):
 
                 self.theta_cut_combobox.currentIndexChanged.connect(self.theta_cut_combobox_clicked)
 
-                data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
-                                                      primary_sweep="theta",
-                                                      secondary_sweep_value=phi[0],
-                                                      phi=0,
-                                                      theta=0,
-                                                      title="Far Field Cut",
-                                                      quantity_format="dB10",
-                                                      image_path=None,
-                                                      show=False,
-                                                      is_polar=False)
+                data = self.farfield_data.plot_cut(quantity="RealizedGain",
+                                                   primary_sweep="theta",
+                                                   secondary_sweep_value=phi[0],
+                                                   phi=0,
+                                                   theta=0,
+                                                   title="Far Field Cut",
+                                                   quantity_format="dB10",
+                                                   output_file=None,
+                                                   show=False,
+                                                   is_polar=False)
 
                 self.__plot_2d_cut(self.farfield_2d_phi_graph, data, phi[0], "Phi", "Theta")
 
-                data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
-                                                      primary_sweep="phi",
-                                                      secondary_sweep_value=theta[0],
-                                                      phi=0,
-                                                      theta=0,
-                                                      title="Far Field Cut",
-                                                      quantity_format="dB10",
-                                                      image_path=None,
-                                                      show=False,
-                                                      is_polar=False)
+                data = self.farfield_data.plot_cut(quantity="RealizedGain",
+                                                   primary_sweep="phi",
+                                                   secondary_sweep_value=theta[0],
+                                                   phi=0,
+                                                   theta=0,
+                                                   title="Far Field Cut",
+                                                   quantity_format="dB10",
+                                                   output_file=None,
+                                                   show=False,
+                                                   is_polar=False)
 
                 self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta[0], "Theta", "Phi")
 
@@ -339,7 +339,8 @@ class AntennaResultsMenu(object):
                 background_hex = background_hex.lstrip('#')
                 rgb_tuple = tuple(int(background_hex[i:i + 2], 16) for i in (0, 2, 4))
                 self.farfield_3d_plotter.clear()
-                self.farfield_data.polar_plot_3d_pyvista(pyvista_object=self.farfield_3d_plotter, background=rgb_tuple)
+                self.farfield_data.plot_3d(pyvista_object=self.farfield_3d_plotter,
+                                           background=rgb_tuple)
         except Exception as e:
             self.ui.update_logger("Far field results can not be obtained")
             self.ui.update_logger("An error occurred:{}".format(e))
@@ -347,16 +348,16 @@ class AntennaResultsMenu(object):
     def phi_cut_combobox_clicked(self):
         if self.farfield_data:
             phi = self.phi_cut_combobox.currentText()
-            data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
-                                                  primary_sweep="theta",
-                                                  secondary_sweep_value=float(phi),
-                                                  phi=0,
-                                                  theta=0,
-                                                  title="Far Field Cut",
-                                                  quantity_format="dB10",
-                                                  image_path=None,
-                                                  show=False,
-                                                  is_polar=False)
+            data = self.farfield_data.plot_cut(quantity="RealizedGain",
+                                               primary_sweep="theta",
+                                               secondary_sweep_value=float(phi),
+                                               phi=0,
+                                               theta=0,
+                                               title="Far Field Cut",
+                                               quantity_format="dB10",
+                                               output_file=None,
+                                               show=False,
+                                               is_polar=False)
             overlap = self.phi_cut_overlap.isChecked()
             if not overlap:
                 self.farfield_2d_phi_graph.clear()
@@ -365,25 +366,28 @@ class AntennaResultsMenu(object):
     def theta_cut_combobox_clicked(self):
         if self.farfield_data:
             theta = self.theta_cut_combobox.currentText()
-            data = self.farfield_data.plot_2d_cut(quantity="RealizedGain",
-                                                  primary_sweep="phi",
-                                                  secondary_sweep_value=float(theta),
-                                                  phi=0,
-                                                  theta=0,
-                                                  title="Far Field Cut",
-                                                  quantity_format="dB10",
-                                                  image_path=None,
-                                                  show=False,
-                                                  is_polar=False)
+            data = self.farfield_data.plot_cut(quantity="RealizedGain",
+                                               primary_sweep="phi",
+                                               secondary_sweep_value=float(theta),
+                                               phi=0,
+                                               theta=0,
+                                               title="Far Field Cut",
+                                               quantity_format="dB10",
+                                               output_file=None,
+                                               show=False,
+                                               is_polar=False)
             overlap = self.theta_cut_overlap.isChecked()
             if not overlap:
                 self.farfield_2d_theta_graph.clear()
             self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta, "Theta", "Phi")
 
     def __plot_2d_cut(self, graph_obj, data, cut, cut_name, sweep):
+        lines = data.gca().get_lines()
+        x_data = lines[-1].get_xdata()
+        y_data = lines[-1].get_ydata()
         graph_obj.plot(
-            data[0][0],
-            data[0][1],
+            x_data,
+            y_data,
             pen=self.line_color
         )
         graph_obj.setTitle("Realized gain at {} {}".format(cut_name, cut))

@@ -200,10 +200,10 @@ class BowTieNormal(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
-            dimensions_list=[sub_x, sub_y, sub_h],
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
+            sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
-            matname=self.material,
+            material=self.material,
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
@@ -225,9 +225,9 @@ class BowTieNormal(CommonPatch):
         ant2 = self._app.modeler[ant2_name]
         ant2.transparency = 0.1
         p1 = self._app.modeler.create_rectangle(
-            csPlane=self._app.PLANE.XY,
-            position=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
-            dimension_list=[inner_width, port_gap],
+            orientation=self._app.PLANE.XY,
+            origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            sizes=[inner_width, port_gap],
             name="port_lump_" + antenna_name,
         )
         p1.color = (128, 0, 0)
@@ -433,10 +433,10 @@ class BowTieRounded(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
-            dimensions_list=[sub_x, sub_y, sub_h],
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
+            sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
-            matname=self.material,
+            material=self.material,
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
@@ -466,9 +466,9 @@ class BowTieRounded(CommonPatch):
         ant2 = self._app.modeler[ant2_name]
         ant2.transparency = 0.1
         p1 = self._app.modeler.create_rectangle(
-            csPlane=self._app.PLANE.XY,
-            position=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
-            dimension_list=[inner_width, port_gap],
+            orientation=self._app.PLANE.XY,
+            origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            sizes=[inner_width, port_gap],
             name="port_lump_" + antenna_name,
         )
         p1.color = (128, 0, 0)
@@ -674,10 +674,10 @@ class BowTieSlot(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
-            dimensions_list=[sub_x, sub_y, sub_h],
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
+            sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
-            matname=self.material,
+            material=self.material,
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
@@ -685,9 +685,9 @@ class BowTieSlot(CommonPatch):
 
         # Slot
         slot = self._app.modeler.create_rectangle(
-            csPlane=self._app.PLANE.XY,
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
-            dimension_list=[sub_x, sub_y],
+            orientation=self._app.PLANE.XY,
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
+            sizes=[sub_x, sub_y],
             name="ant_" + antenna_name,
         )
         slot.color = (0, 128, 0)
@@ -695,9 +695,9 @@ class BowTieSlot(CommonPatch):
 
         # Inner Slot
         islot = self._app.modeler.create_rectangle(
-            csPlane=self._app.PLANE.XY,
-            position=["-" + inner_width + "/2", "-" + port_gap + "/2", 0.0],
-            dimension_list=[inner_width, port_gap],
+            orientation=self._app.PLANE.XY,
+            origin=["-" + inner_width + "/2", "-" + port_gap + "/2", 0.0],
+            sizes=[inner_width, port_gap],
             name="slot_" + antenna_name,
         )
         islot.color = (0, 128, 0)
@@ -727,9 +727,9 @@ class BowTieSlot(CommonPatch):
         )
 
         feed = self._app.modeler.create_rectangle(
-            csPlane=self._app.PLANE.XY,
-            position=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
-            dimension_list=["-{}/2+{}/2".format(sub_x, inner_width), "-{}".format(port_gap)],
+            orientation=self._app.PLANE.XY,
+            origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            sizes=["-{}/2+{}/2".format(sub_x, inner_width), "-{}".format(port_gap)],
             name="feed_" + antenna_name,
         )
         feed.color = (128, 0, 0)
@@ -737,9 +737,9 @@ class BowTieSlot(CommonPatch):
         self._app.modeler.move([feed.name], [0, feed_offset, 0])
 
         feed1 = self._app.modeler.create_rectangle(
-            csPlane=self._app.PLANE.XY,
-            position=["{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
-            dimension_list=["{}/2-{}/2".format(sub_x, inner_width), "-{}".format(port_gap)],
+            orientation=self._app.PLANE.XY,
+            origin=["{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            sizes=["{}/2-{}/2".format(sub_x, inner_width), "-{}".format(port_gap)],
             name="feed_" + antenna_name,
         )
         feed1.color = (128, 0, 0)
@@ -749,9 +749,9 @@ class BowTieSlot(CommonPatch):
         self._app.modeler.unite([slot.name, feed.name, feed1.name])
 
         p1 = self._app.modeler.create_rectangle(
-            csPlane=self._app.PLANE.XY,
-            position=["{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
-            dimension_list=["-{}*0.95".format(inner_width), "-{}".format(port_gap)],
+            orientation=self._app.PLANE.XY,
+            origin=["{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            sizes=["-{}*0.95".format(inner_width), "-{}".format(port_gap)],
             name="port_lump_" + antenna_name,
         )
         p1.color = (128, 0, 0)
@@ -759,9 +759,9 @@ class BowTieSlot(CommonPatch):
         self._app.modeler.move([p1.name], [0, feed_offset, 0])
 
         ref = self._app.modeler.create_rectangle(
-            csPlane=self._app.PLANE.XY,
-            position=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
-            dimension_list=["{}*0.05".format(inner_width), "-{}".format(port_gap)],
+            orientation=self._app.PLANE.XY,
+            origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
+            sizes=["{}*0.05".format(inner_width), "-{}".format(port_gap)],
             name="gnd_" + antenna_name,
         )
         ref.color = (128, 0, 0)
