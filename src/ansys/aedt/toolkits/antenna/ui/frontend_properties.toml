@@ -45,6 +45,14 @@ show_top= true
 is_active= false
 
 [[defaults.add_left_menus]]
+btn_icon= "help.svg"
+btn_id= "help_menu"
+btn_text= "Help"
+btn_tooltip= "Help"
+show_top= false
+is_active= false
+
+[[defaults.add_left_menus]]
 btn_icon= "icon_log.svg"
 btn_id= "progress_menu"
 btn_text= "Progress"
