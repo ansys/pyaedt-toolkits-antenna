@@ -323,10 +323,10 @@ class RectangularPatchProbe(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
-            dimensions_list=[sub_x, sub_y, sub_h],
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
+            sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
-            matname=self.material,
+            material=self.material,
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
@@ -334,9 +334,9 @@ class RectangularPatchProbe(CommonPatch):
 
         # Ground
         gnd = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=["-" + gnd_x + "/2", "-" + gnd_y + "/2", "0"],
-            dimension_list=[gnd_x, gnd_y],
+            orientation=2,
+            origin=["-" + gnd_x + "/2", "-" + gnd_y + "/2", "0"],
+            sizes=[gnd_x, gnd_y],
             name="gnd_" + antenna_name,
         )
         gnd.color = (255, 128, 65)
@@ -345,13 +345,13 @@ class RectangularPatchProbe(CommonPatch):
 
         # Antenna
         ant = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=[
+            orientation=2,
+            origin=[
                 "-" + patch_x + "/2",
                 "-" + patch_y + "/2",
                 sub_h,
             ],
-            dimension_list=[patch_x, patch_y],
+            sizes=[patch_x, patch_y],
             name="ant_" + antenna_name,
         )
         ant.color = (255, 128, 65)
@@ -360,7 +360,7 @@ class RectangularPatchProbe(CommonPatch):
 
         void = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[feed_x, feed_y, "0"],
+            origin=[feed_x, feed_y, "0"],
             radius=coax_outer_rad,
             name="void_" + antenna_name,
         )
@@ -368,52 +368,52 @@ class RectangularPatchProbe(CommonPatch):
         self._app.modeler.subtract(gnd, void, False)
 
         feed_pin = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x, feed_y, "0"],
+            orientation=2,
+            origin=[feed_x, feed_y, "0"],
             radius=coax_inner_rad,
             height=sub_h,
             name="feed_pin_" + antenna_name,
-            matname="pec",
+            material="pec",
         )
         feed_pin.color = (255, 128, 65)
         feed_pin.history().props["Coordinate System"] = coordinate_system
 
         feed_coax = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x, feed_y, "0"],
+            orientation=2,
+            origin=[feed_x, feed_y, "0"],
             radius=coax_inner_rad,
             height="-" + feed_length,
             name="feed_coax_" + antenna_name,
-            matname="pec",
+            material="pec",
         )
         feed_coax.color = (255, 128, 65)
         feed_coax.history().props["Coordinate System"] = coordinate_system
 
         coax = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x, feed_y, "0"],
+            orientation=2,
+            origin=[feed_x, feed_y, "0"],
             radius=coax_outer_rad,
             height="-" + feed_length,
             name="coax_" + antenna_name,
-            matname="Teflon (tm)",
+            material="Teflon (tm)",
         )
         coax.color = (128, 255, 255)
         coax.history().props["Coordinate System"] = coordinate_system
 
         port_cap = self._app.modeler.create_cylinder(
-            cs_axis=2,
-            position=[feed_x, feed_y, "-" + feed_length],
+            orientation=2,
+            origin=[feed_x, feed_y, "-" + feed_length],
             radius=coax_outer_rad,
             height="-" + sub_h + "/" + str(10),
             name="port_cap_" + antenna_name,
-            matname="pec",
+            material="pec",
         )
         port_cap.color = (132, 132, 193)
         port_cap.history().props["Coordinate System"] = coordinate_system
 
         p1 = self._app.modeler.create_circle(
             cs_plane=2,
-            position=[feed_x, feed_y, "-" + feed_length],
+            origin=[feed_x, feed_y, "-" + feed_length],
             radius=coax_outer_rad,
             name="port_" + antenna_name,
         )
@@ -663,10 +663,10 @@ class RectangularPatchInset(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
-            dimensions_list=[sub_x, sub_y, sub_h],
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
+            sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
-            matname=self.material,
+            material=self.material,
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
@@ -674,9 +674,9 @@ class RectangularPatchInset(CommonPatch):
 
         # Ground
         gnd = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
-            dimension_list=[sub_x, sub_y],
+            orientation=2,
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
+            sizes=[sub_x, sub_y],
             name="gnd_" + antenna_name,
         )
         gnd.color = (255, 128, 65)
@@ -685,13 +685,13 @@ class RectangularPatchInset(CommonPatch):
 
         # Antenna
         ant = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=[
+            orientation=2,
+            origin=[
                 "-" + patch_x + "/2",
                 "-" + patch_y + "/2",
                 sub_h,
             ],
-            dimension_list=[patch_x, patch_y],
+            sizes=[patch_x, patch_y],
             name="ant_" + antenna_name,
         )
         ant.color = (255, 128, 65)
@@ -699,13 +699,13 @@ class RectangularPatchInset(CommonPatch):
         ant.history().props["Coordinate System"] = coordinate_system
 
         cutout = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=[
+            orientation=2,
+            origin=[
                 "-" + feed_width + "/2" + "-" + inset_gap,
                 patch_y + "/2" + "-" + inset_distance,
                 sub_h,
             ],
-            dimension_list=[feed_width + "+2*" + inset_gap, feed_length],
+            sizes=[feed_width + "+2*" + inset_gap, feed_length],
             name="cutout_" + antenna_name,
         )
         cutout.color = (255, 128, 65)
@@ -714,13 +714,13 @@ class RectangularPatchInset(CommonPatch):
         self._app.modeler.subtract(ant, cutout, False)
 
         feed = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=[
+            orientation=2,
+            origin=[
                 "-" + feed_width + "/2",
                 patch_y + "/2" "-" + inset_distance,
                 sub_h,
             ],
-            dimension_list=[feed_width, feed_length + "+" + inset_distance],
+            sizes=[feed_width, feed_length + "+" + inset_distance],
             name="feed_" + antenna_name,
         )
         feed.color = (255, 128, 65)
@@ -729,13 +729,13 @@ class RectangularPatchInset(CommonPatch):
         self._app.modeler.unite([ant, feed])
 
         p1 = self._app.modeler.create_rectangle(
-            csPlane=1,
-            position=[
+            orientation=1,
+            origin=[
                 "-" + feed_width + "/2",
                 patch_y + "/2" + "+" + feed_length,
                 "0",
             ],
-            dimension_list=[sub_h, feed_width],
+            sizes=[sub_h, feed_width],
             name="port_lump_" + antenna_name,
         )
         p1.color = (255, 128, 65)
@@ -983,10 +983,10 @@ class RectangularPatchEdge(CommonPatch):
 
         # Substrate
         sub = self._app.modeler.create_box(
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
-            dimensions_list=[sub_x, sub_y, sub_h],
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
+            sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
-            matname=self.material,
+            material=self.material,
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
@@ -994,9 +994,9 @@ class RectangularPatchEdge(CommonPatch):
 
         # Ground
         gnd = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
-            dimension_list=[sub_x, sub_y],
+            orientation=2,
+            origin=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
+            sizes=[sub_x, sub_y],
             name="gnd_" + antenna_name,
         )
         gnd.color = (255, 128, 65)
@@ -1005,13 +1005,13 @@ class RectangularPatchEdge(CommonPatch):
 
         # Antenna
         ant = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=[
+            orientation=2,
+            origin=[
                 "-" + patch_x + "/2",
                 "-" + patch_y + "/2",
                 sub_h,
             ],
-            dimension_list=[patch_x, patch_y],
+            sizes=[patch_x, patch_y],
             name="ant_" + antenna_name,
         )
         ant.color = (255, 128, 65)
@@ -1019,26 +1019,26 @@ class RectangularPatchEdge(CommonPatch):
         ant.history().props["Coordinate System"] = coordinate_system
 
         edge_feed = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=[
+            orientation=2,
+            origin=[
                 "-" + edge_feed_width + "/2",
                 "0",
                 sub_h,
             ],
-            dimension_list=[edge_feed_width, patch_y + "/2" + "+" + edge_feed_length],
+            sizes=[edge_feed_width, patch_y + "/2" + "+" + edge_feed_length],
             name="cutout_" + antenna_name,
         )
         edge_feed.color = (255, 128, 65)
         edge_feed.history().props["Coordinate System"] = coordinate_system
 
         feed = self._app.modeler.create_rectangle(
-            csPlane=2,
-            position=[
+            orientation=2,
+            origin=[
                 "-" + feed_width + "/2",
                 patch_y + "/2" + "+" + edge_feed_length,
                 sub_h,
             ],
-            dimension_list=[feed_width, feed_length],
+            sizes=[feed_width, feed_length],
             name="feed_" + antenna_name,
         )
         feed.color = (255, 128, 65)
@@ -1047,13 +1047,13 @@ class RectangularPatchEdge(CommonPatch):
         self._app.modeler.unite([ant, edge_feed, feed])
 
         p1 = self._app.modeler.create_rectangle(
-            csPlane=1,
-            position=[
+            orientation=1,
+            origin=[
                 "-" + feed_width + "/2",
                 patch_y + "/2" + "+" + edge_feed_length + "+" + feed_length,
                 "0",
             ],
-            dimension_list=[sub_h, feed_width],
+            sizes=[sub_h, feed_width],
             name="port_lump_" + antenna_name,
         )
         p1.color = (255, 128, 65)
