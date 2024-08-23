@@ -28,8 +28,8 @@ import tempfile
 from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QLineEdit
-from pyaedt.generic.farfield_visualization import FfdSolutionData
-from pyaedt.generic.general_methods import read_json
+from ansys.aedt.core.generic.farfield_visualization import FfdSolutionData
+from ansys.aedt.core.generic.general_methods import read_json
 
 # isort: off
 
@@ -39,7 +39,7 @@ from ansys.aedt.toolkits.common.ui.actions_generic import FrontendGeneric
 
 # isort: on
 
-from pyaedt.generic.general_methods import generate_unique_project_name
+from ansys.aedt.core.generic.general_methods import generate_unique_project_name
 import requests
 
 number_pattern = re.compile(r"^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$")

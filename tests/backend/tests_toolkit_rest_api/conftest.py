@@ -45,7 +45,7 @@ import os
 import pytest
 import sys
 
-from pyaedt import generate_unique_project_name
+from ansys.aedt.core import generate_unique_project_name
 
 from tests.backend.conftest import read_local_config, setup_aedt_settings, DEFAULT_CONFIG, PROJECT_NAME
 

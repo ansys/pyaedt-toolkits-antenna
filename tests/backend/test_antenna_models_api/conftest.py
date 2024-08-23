@@ -40,10 +40,9 @@ An example of the contents of local_config.json:
 You can enable the API log file in the backend_properties.json.
 
 """
-import os.path
 
 import pytest
-from pyaedt import generate_unique_project_name
+from ansys.aedt.core import generate_unique_project_name
 from ansys.aedt.toolkits.common.backend.api import AEDTCommon
 from ansys.aedt.toolkits.common.backend.models import Properties
 from tests.backend.conftest import read_local_config, setup_aedt_settings, DEFAULT_CONFIG, PROJECT_NAME

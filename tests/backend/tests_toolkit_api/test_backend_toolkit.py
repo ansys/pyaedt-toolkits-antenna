@@ -20,18 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
 import pytest
-from pyaedt import is_linux
-
-from tests.backend.conftest import PROJECT_NAME
+from ansys.aedt.core import is_linux
 
 pytestmark = [pytest.mark.antenna_toolkit_api]
-
-from pyaedt.modeler.cad.object3d import Object3d
-from pyaedt.modeler.geometry_operators import GeometryOperators
-
-from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 
 class TestClass:

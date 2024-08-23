@@ -15,7 +15,7 @@ You must use these methods from PyAEDT as shown in this example:
 
 .. code:: python
 
-    from pyaedt import Hfss
+    from ansys.aedt.core import Hfss
 
     from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieNormal
 

@@ -20,7 +20,7 @@ You must use these methods from PyAEDT as shown in this example:
 
 .. code:: python
 
-    import pyaedt.Hfss
+    import ansys.aedt.core.Hfss
 
     from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
 
