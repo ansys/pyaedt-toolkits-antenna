@@ -23,9 +23,9 @@
 from collections import OrderedDict
 import math
 
+import ansys.aedt.core.generic.constants as constants
+from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
-import pyaedt.generic.constants as constants
-from pyaedt.generic.general_methods import pyaedt_function_handler
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 
@@ -164,8 +164,8 @@ class AxialMode(CommonHelix):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialMode
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = AxialMode(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()

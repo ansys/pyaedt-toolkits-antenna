@@ -23,9 +23,9 @@
 from collections import OrderedDict
 import math
 
+import ansys.aedt.core.generic.constants as constants
+from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
-import pyaedt.generic.constants as constants
-from pyaedt.generic.general_methods import pyaedt_function_handler
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 
@@ -157,7 +157,7 @@ class Archimedean(CommonConicalSpiral):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
+    >>> from ansys.aedt.core import Hfss
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Archimedean
     >>> hfss = Hfss()
     >>> antenna = Archimedean(hfss, start_frequency=20.0,
@@ -366,7 +366,7 @@ class Log(CommonConicalSpiral):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
+    >>> from ansys.aedt.core import Hfss
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log
     >>> hfss = Hfss()
     >>> antenna = Log(hfss, start_frequency=20.0,
@@ -563,7 +563,7 @@ class Sinuous(CommonConicalSpiral):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
+    >>> from ansys.aedt.core import Hfss
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous
     >>> hfss = Hfss()
     >>> antenna = Archimedean(hfss, start_frequency=20.0,

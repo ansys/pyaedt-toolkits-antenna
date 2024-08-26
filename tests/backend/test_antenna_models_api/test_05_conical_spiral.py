@@ -27,8 +27,7 @@ from tests.backend.conftest import PROJECT_NAME
 
 pytestmark = [pytest.mark.antenna_models_api]
 
-from pyaedt.modeler.cad.object3d import Object3d
-from pyaedt.modeler.geometry_operators import GeometryOperators
+from ansys.aedt.core.modeler.cad.object_3d import Object3d
 
 from ansys.aedt.toolkits.antenna.backend import antenna_models
 

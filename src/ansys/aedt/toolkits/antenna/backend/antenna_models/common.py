@@ -24,9 +24,9 @@ import copy
 import math
 import os
 
-import pyaedt.generic.constants as constants
-from pyaedt.generic.general_methods import generate_unique_name
-from pyaedt.generic.general_methods import pyaedt_function_handler
+import ansys.aedt.core.generic.constants as constants
+from ansys.aedt.core.generic.general_methods import generate_unique_name
+from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import InputParameters
 from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import Property
@@ -225,15 +225,15 @@ class CommonAntenna(object):
 
         Returns
         -------
-        :class:`pyaedt.modeler.object3d.Object3d`
+        :class:`ansys.aedt.core.modeler.object3d.Object3d`
             3D object.
 
         Examples
         --------
-        >>> from pyaedt import Hfss
-        >>> from ansys.aedt.toolkits.antenna.horn import ConicalHorn
+        >>> from ansys.aedt.core import Hfss
+        >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
         >>> hfss = Hfss()
-        >>> horn = hfss.add_from_toolkit(ConicalHorn, draw=True)
+        >>> horn = hfss.add_from_toolkit(Conical, draw=True)
         >>> horn = horn.create_lattice_pair(lattice_height="20mm")
         """
         if not lattice_height:
@@ -299,7 +299,7 @@ class CommonAntenna(object):
         Parameters
         ----------
         component_file : str, optional
-            Full path to the A3DCOMP file. The default is the ``pyaedt`` folder.
+            Full path to the A3DCOMP file. The default is the ``ansys.aedt.core`` folder.
         component_name : str, optional
             Name of the component. The default is the antenna name.
         replace : bool, optional
@@ -309,14 +309,14 @@ class CommonAntenna(object):
         -------
         str
             Path of the 3D component file or
-            :class:`pyaedt.modeler.components_3d.UserDefinedComponent`.
+            :class:`ansys.aedt.core.modeler.components_3d.UserDefinedComponent`.
 
         Examples
         --------
-        >>> from pyaedt import Hfss
-        >>> from ansys.aedt.toolkits.antenna.horn import ConicalHorn
+        >>> from ansys.aedt.core import Hfss
+        >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
         >>> hfss = Hfss()
-        >>> horn = hfss.add_from_toolkit(ConicalHorn, draw=True)
+        >>> horn = hfss.add_from_toolkit(Conical, draw=True)
         >>> horn = horn.create_3dcomponent()
         """
         if not component_file:
@@ -378,10 +378,10 @@ class CommonAntenna(object):
 
         Examples
         --------
-        >>> from pyaedt import Hfss
-        >>> from ansys.aedt.toolkits.antenna.horn import ConicalHorn
+        >>> from ansys.aedt.core import Hfss
+        >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
         >>> hfss = Hfss()
-        >>> horn = hfss.add_from_toolkit(ConicalHorn, draw=True)
+        >>> horn = hfss.add_from_toolkit(Conical, draw=True)
         >>> new_horn = horn.duplicate_along_line([10, 0, 0], 2)
         """
         new_objects = {}

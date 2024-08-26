@@ -35,7 +35,7 @@ This code shows how to synthesize and create a model of an antenna in HFSS:
 .. code:: python
 
     # Import HFSS
-    from pyaedt import Hfss
+    from ansys.aedt.core import Hfss
 
     # Import backend
     from ansys.aedt.toolkits.antenna.backend.models.horn import Conical

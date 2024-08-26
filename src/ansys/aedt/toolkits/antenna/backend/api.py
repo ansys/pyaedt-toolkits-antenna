@@ -30,10 +30,10 @@ from ansys.aedt.toolkits.antenna.backend.models import properties
 
 # isort: on
 
+from ansys.aedt.core import generate_unique_name
+from ansys.aedt.core.generic.touchstone_parser import find_touchstone_files
 from ansys.aedt.toolkits.common.backend.api import AEDTCommon
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
-import pyaedt
-from pyaedt.generic.touchstone_parser import find_touchstone_files
 
 from ansys.aedt.toolkits.antenna.backend import antenna_models
 
@@ -150,7 +150,7 @@ class ToolkitBackend(AEDTCommon):
         if not synth_only and not self.properties.antenna.is_created:
             if not self.oantenna.object_list:
                 if not self.oantenna.name:
-                    self.oantenna.name = pyaedt.generate_unique_name(self.antenna_type)
+                    self.oantenna.name = generate_unique_name(self.antenna_type)
                     self.set_properties({"name": self.oantenna.name})
                 self.oantenna.init_model()
                 self.oantenna.model_hfss()

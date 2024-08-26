@@ -6,10 +6,11 @@
 
 # ## Perform required imports
 
+import sys
 import tempfile
 
-import pyaedt
-from pyaedt.generic.farfield_visualization import FfdSolutionData
+from ansys.aedt.core import generate_unique_project_name
+from ansys.aedt.core.generic.farfield_visualization import FfdSolutionData
 
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
@@ -29,7 +30,7 @@ non_graphical = True
 # ## Create temporary directory
 
 temp_dir = tempfile.TemporaryDirectory(suffix="_ansys")
-project_name = pyaedt.generate_unique_project_name(root_name=temp_dir.name, project_name="antenna_toolkit")
+project_name = generate_unique_project_name(root_name=temp_dir.name, project_name="antenna_toolkit")
 
 # ## Set default properties
 
@@ -202,7 +203,7 @@ toolkit_api.release_aedt(True, True)
 
 # Plot exported files
 
-from pyaedt.generic.plot import ModelPlotter
+from ansys.aedt.core.generic.plot import ModelPlotter
 
 model = ModelPlotter()
 for file in files:

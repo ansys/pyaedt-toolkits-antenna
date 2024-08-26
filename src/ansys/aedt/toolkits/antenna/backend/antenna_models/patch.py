@@ -23,9 +23,9 @@
 from collections import OrderedDict
 import math
 
+import ansys.aedt.core.generic.constants as constants
+from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
-import pyaedt.generic.constants as constants
-from pyaedt.generic.general_methods import pyaedt_function_handler
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
@@ -149,8 +149,8 @@ class RectangularPatchProbe(CommonPatch):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = RectangularPatchProbe(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -487,8 +487,8 @@ class RectangularPatchInset(CommonPatch):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = RectangularPatchInset(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -801,8 +801,8 @@ class RectangularPatchEdge(CommonPatch):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = RectangularPatchEdge(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()

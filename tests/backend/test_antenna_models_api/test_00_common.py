@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
 import pytest
 
 from tests.backend.conftest import PROJECT_NAME
@@ -38,6 +37,7 @@ wg_standard = StandardWaveguide()
 
 class TestClass:
     """Class defining a workflow to test antenna models common."""
+
     def test_01_microstrip_calculator(self):
         w1 = tl_calc.microstrip_calculator(substrate_height=0.15, permittivity=4.4)
         assert w1[0] - 30.8173 < 1e-6
