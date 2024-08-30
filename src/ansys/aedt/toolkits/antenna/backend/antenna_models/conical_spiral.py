@@ -141,7 +141,7 @@ class Archimedean(CommonConicalSpiral):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -162,7 +162,7 @@ class Archimedean(CommonConicalSpiral):
     >>> hfss = Hfss()
     >>> antenna = Archimedean(hfss, start_frequency=20.0,
     ...                              stop_frequency=50.0, frequency_unit="GHz",
-    ...                              outer_boundary='Radiation', length_unit="cm",
+    ...                              outer_boundary='Radiation', length_unit="mm",
     ...                              antenna_name="Archimedean", origin=[1, 100, 50])
     >>> antenna.model_hfss()
     >>> antenna.setup_hfss()
@@ -350,7 +350,7 @@ class Log(CommonConicalSpiral):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna. The default is ``True``.
 
@@ -371,7 +371,7 @@ class Log(CommonConicalSpiral):
     >>> hfss = Hfss()
     >>> antenna = Log(hfss, start_frequency=20.0,
     ...                              stop_frequency=50.0, frequency_unit="GHz",
-    ...                              outer_boundary='Radiation', length_unit="cm",
+    ...                              outer_boundary='Radiation', length_unit="mm",
     ...                              antenna_name="Log", origin=[1, 100, 50])
     >>> antenna.model_hfss()
     >>> antenna.setup_hfss()
@@ -547,7 +547,7 @@ class Sinuous(CommonConicalSpiral):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 

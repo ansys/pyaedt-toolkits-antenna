@@ -35,7 +35,7 @@ class TestClass:
 
         aedt_common.properties.antenna.setup.create_setup = True
         aedt_common.properties.antenna.synthesis.outer_boundary = "Radiation"
-        aedt_common.properties.antenna.synthesis.length_unit = "cm"
+        aedt_common.properties.antenna.synthesis.length_unit = "mm"
 
         antenna_parameters_2 = aedt_common.get_antenna("RectangularPatchProbe")
 

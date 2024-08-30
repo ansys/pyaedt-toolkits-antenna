@@ -34,7 +34,7 @@ class TestClass:
     def test_01_get_antenna(self, client):
         new_properties = {
             "model": "RectangularPatchProbe",
-            "length_unit": "cm",
+            "length_unit": "mm",
             "create_setup": True,
             "outer_boundary": "Radiation",
             "synth_only": False,
