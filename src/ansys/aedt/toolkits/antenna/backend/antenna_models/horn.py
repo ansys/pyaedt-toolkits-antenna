@@ -105,7 +105,7 @@ class Conical(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -390,7 +390,7 @@ class PyramidalRidged(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -1078,7 +1078,7 @@ class Corrugated(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -1356,7 +1356,7 @@ class Elliptical(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -1643,7 +1643,7 @@ class EPlane(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -2019,7 +2019,7 @@ class HPlane(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -2381,7 +2381,7 @@ class Pyramidal(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -2746,7 +2746,7 @@ class QuadRidged(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -3324,7 +3324,7 @@ class Conical_Special(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 

@@ -147,7 +147,7 @@ class AxialMode(CommonHelix):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna. The default is ``True``.
 
@@ -180,7 +180,7 @@ class AxialMode(CommonHelix):
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
-        "length_unit": "cm",
+        "length_unit": "mm",
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",

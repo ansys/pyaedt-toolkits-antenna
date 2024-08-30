@@ -273,7 +273,7 @@ class Ui_AntennaSynthesis(object):
         self.sweep_label.setText(QCoreApplication.translate("AntennaSynthesis", u"Sweep Bandwidth %", None))
         self.slider_value.setText(QCoreApplication.translate("AntennaSynthesis", u"20", None))
         self.length_unit_label.setText(QCoreApplication.translate("AntennaSynthesis", u"Length Unit", None))
-        self.length_unit.setText(QCoreApplication.translate("AntennaSynthesis", u"cm", None))
+        self.length_unit.setText(QCoreApplication.translate("AntennaSynthesis", u"mm", None))
         self.length_unit.setPlaceholderText("")
         self.frequency_unit_label.setText(QCoreApplication.translate("AntennaSynthesis", u"Frequency Unit", None))
         self.frequency_unit.setText(QCoreApplication.translate("AntennaSynthesis", u"GHz", None))

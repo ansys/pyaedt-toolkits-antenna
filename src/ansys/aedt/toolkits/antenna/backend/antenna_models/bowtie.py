@@ -48,9 +48,9 @@ class BowTieNormal(CommonPatch):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     substrate_height : float, optional
-        Substrate height. The default is ``0.1575``.
+        Substrate height. The default is ``1.575``.
     parametrized : bool, optional
         Whether to create a parametrized antenna. The default is ``True``.
 
@@ -83,14 +83,14 @@ class BowTieNormal(CommonPatch):
     _default_input_parameters = {
         "name": None,
         "origin": [0, 0, 0],
-        "length_unit": "cm",
+        "length_unit": "mm",
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",
         "material": "FR4_epoxy",
         "material_properties": {"permittivity": 4.4},
         "outer_boundary": "",
-        "substrate_height": 0.1575,
+        "substrate_height": 1.575,
     }
 
     def __init__(self, *args, **kwargs):
@@ -276,9 +276,9 @@ class BowTieRounded(CommonPatch):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     substrate_height : float, optional
-        Substrate height. The default is ``0.1575``.
+        Substrate height. The default is ``1.575``.
     parametrized : bool, optional
         Whether to create a parametrized antenna. The default is ``True``.
 
@@ -311,7 +311,7 @@ class BowTieRounded(CommonPatch):
     _default_input_parameters = {
         "name": None,
         "origin": [0, 0, 0],
-        "length_unit": "cm",
+        "length_unit": "mm",
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",
@@ -517,7 +517,7 @@ class BowTieSlot(CommonPatch):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     substrate_height : float, optional
         Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
@@ -552,14 +552,14 @@ class BowTieSlot(CommonPatch):
     _default_input_parameters = {
         "name": None,
         "origin": [0, 0, 0],
-        "length_unit": "cm",
+        "length_unit": "mm",
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",
         "material": "FR4_epoxy",
         "material_properties": {"permittivity": 4.4},
         "outer_boundary": None,
-        "substrate_height": 0.1575,
+        "substrate_height": 1.575,
     }
 
     def __init__(self, *args, **kwargs):
