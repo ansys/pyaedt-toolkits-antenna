@@ -20,27 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
 import pytest
 import json
 
-from tests.backend.conftest import PROJECT_NAME
-
 pytestmark = [pytest.mark.antenna_toolkit_rest_api]
 
-from pyaedt import is_linux
-from pyaedt.modeler.cad.object3d import Object3d
-from pyaedt.modeler.geometry_operators import GeometryOperators
-
-from ansys.aedt.toolkits.antenna.backend import antenna_models
+from ansys.aedt.core import is_linux
 
 
 class TestClass:
     """Class defining a workflow to test rest api toolkit."""
+
     def test_01_get_antenna(self, client):
         new_properties = {
             "model": "RectangularPatchProbe",
-            "length_unit": "cm",
+            "length_unit": "mm",
             "create_setup": True,
             "outer_boundary": "Radiation",
             "synth_only": False,

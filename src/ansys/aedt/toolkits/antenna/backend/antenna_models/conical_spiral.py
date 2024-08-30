@@ -23,9 +23,9 @@
 from collections import OrderedDict
 import math
 
+import ansys.aedt.core.generic.constants as constants
+from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
-import pyaedt.generic.constants as constants
-from pyaedt.generic.general_methods import pyaedt_function_handler
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 
@@ -141,7 +141,7 @@ class Archimedean(CommonConicalSpiral):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -157,12 +157,12 @@ class Archimedean(CommonConicalSpiral):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
+    >>> from ansys.aedt.core import Hfss
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Archimedean
     >>> hfss = Hfss()
     >>> antenna = Archimedean(hfss, start_frequency=20.0,
     ...                              stop_frequency=50.0, frequency_unit="GHz",
-    ...                              outer_boundary='Radiation', length_unit="cm",
+    ...                              outer_boundary='Radiation', length_unit="mm",
     ...                              antenna_name="Archimedean", origin=[1, 100, 50])
     >>> antenna.model_hfss()
     >>> antenna.setup_hfss()
@@ -350,7 +350,7 @@ class Log(CommonConicalSpiral):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna. The default is ``True``.
 
@@ -366,12 +366,12 @@ class Log(CommonConicalSpiral):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
+    >>> from ansys.aedt.core import Hfss
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log
     >>> hfss = Hfss()
     >>> antenna = Log(hfss, start_frequency=20.0,
     ...                              stop_frequency=50.0, frequency_unit="GHz",
-    ...                              outer_boundary='Radiation', length_unit="cm",
+    ...                              outer_boundary='Radiation', length_unit="mm",
     ...                              antenna_name="Log", origin=[1, 100, 50])
     >>> antenna.model_hfss()
     >>> antenna.setup_hfss()
@@ -547,7 +547,7 @@ class Sinuous(CommonConicalSpiral):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -563,7 +563,7 @@ class Sinuous(CommonConicalSpiral):
 
     Examples
     --------
-    >>> from pyaedt import Hfss
+    >>> from ansys.aedt.core import Hfss
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous
     >>> hfss = Hfss()
     >>> antenna = Archimedean(hfss, start_frequency=20.0,

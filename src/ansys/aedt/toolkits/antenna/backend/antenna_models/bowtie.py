@@ -23,8 +23,8 @@
 from collections import OrderedDict
 import math
 
-import pyaedt.generic.constants as constants
-from pyaedt.generic.general_methods import pyaedt_function_handler
+import ansys.aedt.core.generic.constants as constants
+from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import CommonPatch
@@ -48,9 +48,9 @@ class BowTieNormal(CommonPatch):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     substrate_height : float, optional
-        Substrate height. The default is ``0.1575``.
+        Substrate height. The default is ``1.575``.
     parametrized : bool, optional
         Whether to create a parametrized antenna. The default is ``True``.
 
@@ -67,8 +67,8 @@ class BowTieNormal(CommonPatch):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieNormal
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = BowTieNormal(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -83,14 +83,14 @@ class BowTieNormal(CommonPatch):
     _default_input_parameters = {
         "name": None,
         "origin": [0, 0, 0],
-        "length_unit": "cm",
+        "length_unit": "mm",
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",
         "material": "FR4_epoxy",
         "material_properties": {"permittivity": 4.4},
         "outer_boundary": "",
-        "substrate_height": 0.1575,
+        "substrate_height": 1.575,
     }
 
     def __init__(self, *args, **kwargs):
@@ -276,9 +276,9 @@ class BowTieRounded(CommonPatch):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     substrate_height : float, optional
-        Substrate height. The default is ``0.1575``.
+        Substrate height. The default is ``1.575``.
     parametrized : bool, optional
         Whether to create a parametrized antenna. The default is ``True``.
 
@@ -295,8 +295,8 @@ class BowTieRounded(CommonPatch):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = BowTieRounded(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -311,7 +311,7 @@ class BowTieRounded(CommonPatch):
     _default_input_parameters = {
         "name": None,
         "origin": [0, 0, 0],
-        "length_unit": "cm",
+        "length_unit": "mm",
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",
@@ -517,7 +517,7 @@ class BowTieSlot(CommonPatch):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     substrate_height : float, optional
         Substrate height. The default is ``0.1575``.
     parametrized : bool, optional
@@ -536,8 +536,8 @@ class BowTieSlot(CommonPatch):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieSlot
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = BowTieSlot(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -552,14 +552,14 @@ class BowTieSlot(CommonPatch):
     _default_input_parameters = {
         "name": None,
         "origin": [0, 0, 0],
-        "length_unit": "cm",
+        "length_unit": "mm",
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",
         "material": "FR4_epoxy",
         "material_properties": {"permittivity": 4.4},
         "outer_boundary": None,
-        "substrate_height": 0.1575,
+        "substrate_height": 1.575,
     }
 
     def __init__(self, *args, **kwargs):

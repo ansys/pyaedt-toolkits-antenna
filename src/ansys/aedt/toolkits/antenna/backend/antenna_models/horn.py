@@ -22,9 +22,9 @@
 
 from collections import OrderedDict
 
+import ansys.aedt.core.generic.constants as constants
+from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
-import pyaedt.generic.constants as constants
-from pyaedt.generic.general_methods import pyaedt_function_handler
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import StandardWaveguide
@@ -105,7 +105,7 @@ class Conical(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -122,10 +122,10 @@ class Conical(CommonHorn):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
-    >>> import pyaedt
+    >>> import ansys.aedt.core
     >>> oantenna1 = Conical(None)
     >>> oantenna1.frequency = 12.0
-    >>> app = pyaedt.Hfss()
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = Conical(app)
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()
@@ -390,7 +390,7 @@ class PyramidalRidged(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -407,8 +407,8 @@ class PyramidalRidged(CommonHorn):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRidged
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = PyramidalRidged(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -1078,7 +1078,7 @@ class Corrugated(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -1095,8 +1095,8 @@ class Corrugated(CommonHorn):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Corrugated
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = Corrugated(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -1356,7 +1356,7 @@ class Elliptical(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -1373,8 +1373,8 @@ class Elliptical(CommonHorn):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRidged
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = Elliptical(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -1643,7 +1643,7 @@ class EPlane(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -1660,8 +1660,8 @@ class EPlane(CommonHorn):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import EPlane
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = EPlane(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -2019,7 +2019,7 @@ class HPlane(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -2036,8 +2036,8 @@ class HPlane(CommonHorn):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import HPlane
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = HPlane(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -2381,7 +2381,7 @@ class Pyramidal(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -2398,8 +2398,8 @@ class Pyramidal(CommonHorn):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Pyramidal
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = Pyramidal(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -2746,7 +2746,7 @@ class QuadRidged(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -2768,8 +2768,8 @@ class QuadRidged(CommonHorn):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = QuadRidged(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -3324,7 +3324,7 @@ class Conical_Special(CommonHorn):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna.  The default is ``True``.
 
@@ -3341,10 +3341,10 @@ class Conical_Special(CommonHorn):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
-    >>> import pyaedt
+    >>> import ansys.aedt.core
     >>> oantenna1 = Conical()
     >>> oantenna1.frequency = 12.0
-    >>> app = pyaedt.Hfss()
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = Conical(app)
     >>> oantenna1.model_hfss()
     >>> oantenna1.setup_hfss()

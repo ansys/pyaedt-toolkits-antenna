@@ -41,11 +41,10 @@ import json
 import logging
 from logging import Logger
 import os
-import pathlib
 import shutil
 from typing import Optional
 
-from pyaedt import settings
+from ansys.aedt.core import settings
 import pytest
 
 DEFAULT_CONFIG = {

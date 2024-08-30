@@ -43,7 +43,7 @@ You can enable the API log file in the backend_properties.json.
 import os.path
 
 import pytest
-from pyaedt import generate_unique_project_name
+from ansys.aedt.core import generate_unique_project_name
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
 from tests.backend.conftest import read_local_config, setup_aedt_settings, DEFAULT_CONFIG, PROJECT_NAME

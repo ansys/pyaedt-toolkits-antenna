@@ -23,9 +23,9 @@
 from collections import OrderedDict
 import math
 
+import ansys.aedt.core.generic.constants as constants
+from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
-import pyaedt.generic.constants as constants
-from pyaedt.generic.general_methods import pyaedt_function_handler
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 
@@ -147,7 +147,7 @@ class AxialMode(CommonHelix):
         Boundary type to use. The default is ``None``. Options are ``"FEBI"``, ``"PML"``,
         ``"Radiation"``, and ``None``.
     length_unit : str, optional
-        Length units. The default is ``"cm"``.
+        Length units. The default is ``"mm"``.
     parametrized : bool, optional
         Whether to create a parametrized antenna. The default is ``True``.
 
@@ -164,8 +164,8 @@ class AxialMode(CommonHelix):
     Examples
     --------
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialMode
-    >>> import pyaedt
-    >>> app = pyaedt.Hfss()
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
     >>> oantenna1 = AxialMode(app)
     >>> oantenna1.frequency = 12.0
     >>> oantenna1.model_hfss()
@@ -180,7 +180,7 @@ class AxialMode(CommonHelix):
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
-        "length_unit": "cm",
+        "length_unit": "mm",
         "coordinate_system": "Global",
         "frequency": 10.0,
         "frequency_unit": "GHz",

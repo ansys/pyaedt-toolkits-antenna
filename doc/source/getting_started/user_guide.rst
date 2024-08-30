@@ -144,7 +144,7 @@ and toolkit level.
    .. code:: python
 
        # Import required modules
-       from pyaedt import Hfss
+       from ansys.aedt.core import Hfss
        from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTie
 
        # Open AEDT and create an HFSS design
