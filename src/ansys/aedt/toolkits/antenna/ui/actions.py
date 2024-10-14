@@ -28,8 +28,8 @@ import tempfile
 from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QLineEdit
-from ansys.aedt.core.generic.farfield_visualization import FfdSolutionData
 from ansys.aedt.core.generic.general_methods import read_json
+from ansys.aedt.core.visualization.advanced.farfield_visualization import FfdSolutionData
 
 # isort: off
 
