@@ -1,0 +1,6 @@
+User-agent: *
+
+Disallow: /version/0.2
+Disallow: /version/0.1
+
+Sitemap: https://aedt.antenna.toolkit.docs.pyansys.com/sitemap.xml
