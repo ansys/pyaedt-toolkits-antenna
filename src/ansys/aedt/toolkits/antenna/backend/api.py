@@ -31,7 +31,7 @@ from ansys.aedt.toolkits.antenna.backend.models import properties
 # isort: on
 
 from ansys.aedt.core import generate_unique_name
-from ansys.aedt.core.generic.touchstone_parser import find_touchstone_files
+from ansys.aedt.core.visualization.advanced.touchstone_parser import find_touchstone_files
 from ansys.aedt.toolkits.common.backend.api import AEDTCommon
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
 
