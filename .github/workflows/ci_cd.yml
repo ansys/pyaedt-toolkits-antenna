@@ -19,9 +19,7 @@ env:
   LIBRARY_NAME: 'ansys-aedt-toolkits-antenna'
   LIBRARY_NAMESPACE: 'ansys.aedt.toolkits.antenna'
   ANSYSLMD_LICENSE_FILE: ${{ format('1055@{0}', secrets.LICENSE_SERVER) }}
-  MEILISEARCH_API_KEY: ${{ secrets.MEILISEARCH_API_KEY }}
-  MEILISEARCH_HOST_URL: ${{ vars.MEILISEARCH_HOST_URL }}
-  MEILISEARCH_PUBLIC_API_KEY: ${{ secrets.MEILISEARCH_PUBLIC_API_KEY }}
+  ON_CI: True
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -53,79 +51,14 @@ jobs:
     needs: [ doc-style ]
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-
-      - name: "Set up Python"
-        uses: ansys/actions/_setup-python@main
+      - name: Build documentation
+        uses: ansys/actions/doc-build@v8
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          use-cache: false
+          use-python-cache: false
+          add-pdf-html-docs-as-assets: true
+          check-links: true
 
-      - name: 'Create virtual env'
-        run: |
-          python -m venv .venv
-
-      - name: "Update pip"
-        run: |
-          . .venv\Scripts\Activate.ps1
-          python -m pip install pip -U
-          python -m pip install wheel setuptools -U
-          python -c "import sys; print(sys.executable)"
-
-      - name: Install antenna toolkit with doc dependencies
-        run: |
-          . .venv\Scripts\Activate.ps1
-          pip install .
-          pip install .[doc]
-
-      - name: Uninstall conflicting CI packages
-        run: |
-          .venv\Scripts\Activate.ps1
-          pip uninstall vtk pypandoc -y
-
-      - name: Install CI dependencies (e.g. vtk-osmesa)
-        run: |
-          .venv\Scripts\Activate.ps1
-          pip uninstall --yes pypandoc vtk
-          pip install --extra-index-url https://wheels.vtk.org vtk-osmesa==9.2.20230527.dev0
-          pip install pypandoc-binary
-
-      - name: Retrieve antenna toolkit version
-        run: |
-          . .venv\Scripts\Activate.ps1
-          echo "Antenna Toolkit version is: $(python -c "from ansys.aedt.toolkits.antenna import __version__; print(); print(__version__)")"
-
-      - name: Build the documentation (HTML)
-        run: |
-          .\.venv\Scripts\Activate.ps1
-          cd doc
-          .\make.bat html
-
-      - name: Build the documentation (PDF)
-        run: |
-          .\.venv\Scripts\Activate.ps1
-          cd doc
-          .\make.bat pdf
-
-      - name: Add assets to HTML docs
-        run: |
-          zip -r documentation-html.zip .\doc\_build\html
-          mv documentation-html.zip .\doc\_build\html\_static\assets\download\
-          cp doc/_build/latex/ansys-aedt-toolkits-antenna.pdf .\doc\_build\html\_static\assets\download\
-
-      - name: Upload HTML Documentation artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: documentation-html
-          path: doc/_build/html
-          retention-days: 1
-
-      - name: Upload PDF Documentation artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: documentation-pdf
-          path: doc/_build/latex/*.pdf
-          retention-days: 7
 
   smoke-tests:
     name: "Build and Smoke tests"
