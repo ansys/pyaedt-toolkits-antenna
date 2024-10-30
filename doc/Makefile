@@ -14,23 +14,32 @@ help:
 
 .PHONY: help Makefile
 
-clean:
+.install-deps:
+	@pip freeze | grep -q "vtk-osmesa" && is_vtk_osmesa_installed="yes" || is_vtk_osmesa_installed="no"
+	@if [ "${ON_CI}" = "True" ] && [ "$$is_vtk_osmesa_installed" != "yes" ]; then \
+		@echo "Removing vtk to avoid conflicts with vtk-osmesa needed for CI/CD"; \
+		pip uninstall --yes vtk; \
+		@echo "Installing vtk-osmesa"; \
+		pip install --extra-index-url https://wheels.vtk.org vtk-osmesa; \
+	fi
+
+# Catch-all target: route all unknown targets to Sphinx using the new
+# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
+%: .install-deps Makefile
+	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+clean: .install-deps
 	rm -rf $(BUILDDIR)/*
 	rm -rf examples/
 	find . -type d -name "_autosummary" -exec rm -rf {} +
 
-# Catch-all target: route all unknown targets to Sphinx using the new
-# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-%: Makefile
-	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-
 # build html docs in parallel using all available CPUs
 # WARNING: this is a resource hog
-html:
+html: .install-deps
 	$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O) -j auto
 
 # Build pdf docs.
-pdf:
+pdf: .install-deps
 	@$(SPHINXBUILD) -M latex "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 	cd $(BUILDDIR)/latex && latexmk -r latexmkrc -pdf *.tex -interaction=nonstopmode || true
 	(test -f $(BUILDDIR)/latex/ansys-aedt-toolkits-antenna.pdf && echo pdf exists) || exit 1
