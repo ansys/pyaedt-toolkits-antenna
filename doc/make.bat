@@ -10,6 +10,18 @@ if "%SPHINXBUILD%" == "" (
 set SOURCEDIR=source
 set BUILDDIR=_build
 
+REM This LOCs are used to uninstall and install specific package(s) during CI/CD
+for /f %%i in ('pip freeze ^| findstr /c:"vtk-osmesa"') do set is_vtk_osmesa_installed=%%i
+if NOT "%is_vtk_osmesa_installed%" == "vtk-osmesa" if "%ON_CI%" == "true" (
+	@ECHO ON
+	echo "Removing vtk to avoid conflicts with vtk-osmesa"
+	@ECHO OFF
+	pip uninstall --yes vtk
+	@ECHO ON
+	echo "Installing vtk-osmesa"
+	@ECHO OFF
+	pip install --extra-index-url https://wheels.vtk.org vtk-osmesa)
+
 if "%1" == "" goto help
 if "%1" == "clean" goto clean
 if "%1" == "pdf" goto pdf
