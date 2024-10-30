@@ -379,7 +379,7 @@ class AntennaResultsMenu(object):
             self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta, "Theta", "Phi")
 
     def __plot_2d_cut(self, graph_obj, data, cut, cut_name, sweep):
-        lines = data.gca().get_lines()
+        lines = data.ax.get_lines()
         x_data = lines[-1].get_xdata()
         y_data = lines[-1].get_ydata()
         graph_obj.plot(
