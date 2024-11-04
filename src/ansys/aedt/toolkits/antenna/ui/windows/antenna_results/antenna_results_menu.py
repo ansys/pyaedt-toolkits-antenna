@@ -379,20 +379,22 @@ class AntennaResultsMenu(object):
             self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta, "Theta", "Phi")
 
     def __plot_2d_cut(self, graph_obj, data, cut, cut_name, sweep):
-        lines = data.ax.get_lines()
-        x_data = lines[-1].get_xdata()
-        y_data = lines[-1].get_ydata()
-        graph_obj.plot(
-            x_data,
-            y_data,
-            pen=self.line_color
-        )
-        graph_obj.setTitle("Realized gain at {} {}".format(cut_name, cut))
-        graph_obj.setLabel(
-            "left",
-            "Realized Gain",
-        )
-        graph_obj.setLabel(
-            "bottom",
-            sweep,
-        )
+        if data:
+            trace_name = data.trace_names[0]
+            cartesian_data = data.traces[trace_name].cartesian_data
+            x_data = cartesian_data[0]
+            y_data = cartesian_data[1]
+            graph_obj.plot(
+                x_data,
+                y_data,
+                pen=self.line_color
+            )
+            graph_obj.setTitle("Realized gain at {} {}".format(cut_name, cut))
+            graph_obj.setLabel(
+                "left",
+                "Realized Gain",
+            )
+            graph_obj.setLabel(
+                "bottom",
+                sweep,
+            )
