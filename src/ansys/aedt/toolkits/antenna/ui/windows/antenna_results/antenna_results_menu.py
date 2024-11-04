@@ -315,8 +315,8 @@ class AntennaResultsMenu(object):
                                                    output_file=None,
                                                    show=False,
                                                    is_polar=False)
-
-                self.__plot_2d_cut(self.farfield_2d_phi_graph, data, phi[0], "Phi", "Theta")
+                if data:
+                    self.__plot_2d_cut(self.farfield_2d_phi_graph, data, phi[0], "Phi", "Theta")
 
                 data = self.farfield_data.plot_cut(quantity="RealizedGain",
                                                    primary_sweep="phi",
@@ -328,8 +328,8 @@ class AntennaResultsMenu(object):
                                                    output_file=None,
                                                    show=False,
                                                    is_polar=False)
-
-                self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta[0], "Theta", "Phi")
+                if data:
+                    self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta[0], "Theta", "Phi")
 
                 # 3D Plot
                 background_hex = self.main_window.ui.themes["app_color"]["bg_one"]
@@ -358,7 +358,8 @@ class AntennaResultsMenu(object):
             overlap = self.phi_cut_overlap.isChecked()
             if not overlap:
                 self.farfield_2d_phi_graph.clear()
-            self.__plot_2d_cut(self.farfield_2d_phi_graph, data, phi, "Phi", "Theta")
+            if data:
+                self.__plot_2d_cut(self.farfield_2d_phi_graph, data, phi, "Phi", "Theta")
 
     def theta_cut_combobox_clicked(self):
         if self.farfield_data:
@@ -376,12 +377,14 @@ class AntennaResultsMenu(object):
             overlap = self.theta_cut_overlap.isChecked()
             if not overlap:
                 self.farfield_2d_theta_graph.clear()
-            self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta, "Theta", "Phi")
+            if data:
+                self.__plot_2d_cut(self.farfield_2d_theta_graph, data, theta, "Theta", "Phi")
 
     def __plot_2d_cut(self, graph_obj, data, cut, cut_name, sweep):
-        lines = data.ax.get_lines()
-        x_data = lines[-1].get_xdata()
-        y_data = lines[-1].get_ydata()
+        trace_name = data.trace_names[0]
+        cartesian_data = data.traces[trace_name].cartesian_data
+        x_data = cartesian_data[0]
+        y_data = cartesian_data[1]
         graph_obj.plot(
             x_data,
             y_data,
