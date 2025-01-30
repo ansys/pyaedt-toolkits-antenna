@@ -61,7 +61,7 @@ src_paths = ["doc", "src", "tests"]
 source = ["ansys.toolkits.antenna"]
 omit = [
     # Omit UI testing
-    "src/ansys/aedt/toolkits/antenna/ui/*,
+    "src/ansys/aedt/toolkits/antenna/ui/*",
 ]
 
 [tool.coverage.report]
