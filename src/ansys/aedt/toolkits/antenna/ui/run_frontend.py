@@ -30,6 +30,10 @@ from ansys.aedt.toolkits.antenna.ui.models import properties
 
 # isort: on
 
+# PySide6 Widgets
+from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QMainWindow
+
 # Toolkit frontend API
 from actions import Frontend
 from ansys.aedt.toolkits.common.ui.common_windows.home_menu import HomeMenu
@@ -39,13 +43,7 @@ from ansys.aedt.toolkits.common.ui.common_windows.settings_column import Setting
 from ansys.aedt.toolkits.common.ui.logger_handler import logger
 
 # Common windows
-from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import (
-    MainWindowLayout,
-)
-
-# PySide6 Widgets
-from PySide6.QtWidgets import QApplication
-from PySide6.QtWidgets import QMainWindow
+from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
 
 # New windows
 from windows.antenna_catalog.antenna_catalog_menu import AntennaCatalogMenu
