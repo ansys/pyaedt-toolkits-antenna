@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from collections import OrderedDict
 import math
+from collections import OrderedDict
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler

@@ -21,10 +21,10 @@
 # SOFTWARE.
 
 """Sphinx documentation configuration file."""
-from datetime import datetime
 import os
 import pathlib
 import sys
+from datetime import datetime
 
 from ansys_sphinx_theme import ansys_favicon
 from ansys_sphinx_theme import ansys_logo_white
