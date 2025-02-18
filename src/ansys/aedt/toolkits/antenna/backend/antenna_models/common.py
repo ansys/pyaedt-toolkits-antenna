@@ -171,7 +171,7 @@ class CommonAntenna(object):
     def coordinate_system(self, value):
         self._input_parameters.coordinate_system = value
         for antenna_obj in self.object_list:
-            self.object_list[antenna_obj].history().props[
+            self.object_list[antenna_obj].history().properties[
                 "Coordinate System"
             ] = self._input_parameters.coordinate_system
 
