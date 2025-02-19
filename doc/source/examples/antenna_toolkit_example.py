@@ -10,7 +10,7 @@ import sys
 import tempfile
 
 from ansys.aedt.core import generate_unique_project_name
-from ansys.aedt.core.generic.farfield_visualization import FfdSolutionData
+from ansys.aedt.core.visualization.advanced.farfield_visualization import FfdSolutionData
 
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
@@ -203,7 +203,7 @@ toolkit_api.release_aedt(True, True)
 
 # Plot exported files
 
-from ansys.aedt.core.generic.plot import ModelPlotter
+from ansys.aedt.core.visualization.plot.pyvista import ModelPlotter
 
 model = ModelPlotter()
 for file in files:
