@@ -49,7 +49,7 @@ jobs:
     name: "Build documentation"
     runs-on: [self-hosted, pyaedt, toolkits, Windows]
     needs: [ doc-style ]
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - name: Build documentation
         uses: ansys/actions/doc-build@v8
@@ -153,7 +153,7 @@ jobs:
     runs-on: [self-hosted, pyaedt, toolkits, Linux]
     needs: [ smoke-tests ]
     env:
-      ANSYSEM_ROOT242: '/ansys_inc/AnsysEM/v242/Linux64'
+      ANSYSEM_ROOT242: '/opt/AnsysEM/v242/Linux64'
       ANS_NODEPCHECK: '1'
     steps:
       - uses: actions/checkout@v4
@@ -199,6 +199,7 @@ jobs:
           export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT242 }}/common/mono/Linux64/lib64:${{ env.ANSYSEM_ROOT242 }}/Delcross:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_rest_api
+
 
   build-library:
     name: "Build library artifacts"
