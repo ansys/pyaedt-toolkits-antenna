@@ -82,12 +82,19 @@ class ApplicationWindow(QMainWindow, Frontend):
         self.ui = MainWindowLayout(self)
         self.ui.setup()
 
+        # Home menu
+        self.home_menu = HomeMenu(self)
+        self.home_menu.setup()
+        self.ui.left_menu.clicked.connect(self.home_menu_clicked)
+
         # Settings menu
         self.settings_menu = SettingsMenu(self)
         self.settings_menu.setup()
+        self.ui.title_bar.clicked.connect(self.settings_menu_clicked)
 
         # Check backend connection
         success = self.check_connection()
+        self.backend_connected = False
 
         # Populate settings column
         if not success:
@@ -98,6 +105,7 @@ class ApplicationWindow(QMainWindow, Frontend):
             self.settings_menu.aedt_version.addItem("Backend OFF")
             self.settings_menu.aedt_session.addItem("Backend OFF")
         else:
+            self.backend_connected = True
             # Get default properties
             be_properties = self.get_properties()
             # Get AEDT installed versions
@@ -116,9 +124,6 @@ class ApplicationWindow(QMainWindow, Frontend):
                 self.settings_menu.aedt_version.setCurrentText(be_properties.get("aedt_version"))
 
         # Custom toolkit setup starts here
-        # Home menu
-        self.home_menu = HomeMenu(self)
-        self.home_menu.setup()
 
         # Modeler menu
         self.antenna_catalog_menu = AntennaCatalogMenu(self)
@@ -140,13 +145,71 @@ class ApplicationWindow(QMainWindow, Frontend):
         self.help_menu.setup()
         self.ui.left_menu.clicked.connect(self.help_menu_clicked)
 
+        # Close column
+        self.ui.title_bar.clicked.connect(self.close_menu_clicked)
+        self.ui.left_menu.clicked.connect(self.progress_menu_clicked)
+        self.ui.left_column.clicked.connect(self.close_menu_clicked)
+
         # Home page as first page
         self.ui.set_page(self.ui.load_pages.home_page)
+
+    def home_menu_clicked(self):
+        selected_menu = self.ui.get_selected_menu()
+        menu_name = selected_menu.objectName()
+        self.ui.left_menu.select_only_one(selected_menu.objectName())
+        if menu_name == "home_menu":
+            selected_menu.set_active(True)
+            self.ui.set_page(self.ui.load_pages.home_page)
+
+            is_left_visible = self.ui.is_left_column_visible()
+
+            self.ui.set_left_column_menu(
+                menu=self.ui.left_column.menus.menu_home,
+                title="Home",
+                icon_path=self.ui.images_load.icon_path("icon_home.svg"),
+            )
+
+            if not is_left_visible:
+                self.ui.toggle_left_column()
+
+    def settings_menu_clicked(self):
+        selected_menu = self.ui.get_selected_menu()
+        menu_name = selected_menu.objectName()
+        is_right_visible = self.ui.is_right_column_visible()
+        is_left_visible = self.ui.is_left_column_visible()
+
+        if menu_name == "top_settings" and not is_right_visible:
+            self.ui.app.settings_menu.show_widgets()
+            if is_left_visible:
+                self.ui.toggle_left_column()
+                self.ui.left_menu.deselect_all()
+            self.ui.toggle_right_column()
+            self.ui.set_right_column_menu(title="Settings")
+
+    def progress_menu_clicked(self):
+        selected_menu = self.ui.get_selected_menu()
+        menu_name = selected_menu.objectName()
+        self.ui.left_menu.select_only_one(selected_menu.objectName())
+        if menu_name == "progress_menu":
+            is_progress_visible = self.ui.is_progress_visible()
+            if is_progress_visible:
+                selected_menu.set_active(False)
+            self.ui.toggle_progress()
+
+    def close_menu_clicked(self):
+        selected_menu = self.ui.get_selected_menu()
+        menu_name = selected_menu.objectName()
+        if menu_name != "top_settings" and self.ui.is_left_column_visible():
+            selected_menu.set_active(False)
+            self.ui.toggle_left_column()
+            self.ui.left_menu.deselect_all()
+        if menu_name == "top_settings" and self.ui.is_right_column_visible():
+            self.ui.toggle_right_column()
 
     def antenna_catalog_menu_clicked(self):
         selected_menu = self.ui.get_selected_menu()
         menu_name = selected_menu.objectName()
-
+        self.ui.left_menu.select_only_one(selected_menu.objectName())
         if menu_name == "antenna_catalog_menu":
             selected_menu.set_active(True)
 
@@ -164,7 +227,7 @@ class ApplicationWindow(QMainWindow, Frontend):
     def antenna_synthesis_menu_clicked(self):
         selected_menu = self.ui.get_selected_menu()
         menu_name = selected_menu.objectName()
-
+        self.ui.left_menu.select_only_one(selected_menu.objectName())
         if menu_name == "antenna_synthesis_menu":
             selected_menu.set_active(True)
             self.ui.set_page(self.antenna_synthesis_menu.antenna_synthesis_menu_widget)
@@ -172,7 +235,7 @@ class ApplicationWindow(QMainWindow, Frontend):
     def antenna_results_menu_clicked(self):
         selected_menu = self.ui.get_selected_menu()
         menu_name = selected_menu.objectName()
-
+        self.ui.left_menu.select_only_one(selected_menu.objectName())
         if menu_name == "antenna_results_menu":
             selected_menu.set_active(True)
             self.ui.set_page(self.antenna_results_menu.antenna_results_menu_widget)
