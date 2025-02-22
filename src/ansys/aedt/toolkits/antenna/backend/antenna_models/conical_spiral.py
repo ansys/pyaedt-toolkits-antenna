@@ -309,7 +309,7 @@ class Archimedean(CommonConicalSpiral):
         )
         for part in obj_udm.parts:
             comp = obj_udm.parts[part]
-            comp.history().props["Coordinate System"] = coordinate_system
+            comp.history().properties["Coordinate System"] = coordinate_system
             if "AntennaArm" in comp.name:
                 comp.name = "ant_" + comp.name + antenna_name
             else:
@@ -506,7 +506,7 @@ class Log(CommonConicalSpiral):
         )
         for part in obj_udm.parts:
             comp = obj_udm.parts[part]
-            comp.history().props["Coordinate System"] = coordinate_system
+            comp.history().properties["Coordinate System"] = coordinate_system
             if "AntennaArm" in comp.name:
                 comp.name = "ant_" + comp.name + antenna_name
             else:
@@ -725,7 +725,7 @@ class Sinuous(CommonConicalSpiral):
         gnd_cont = 1
         for part in obj_udm.parts:
             comp = obj_udm.parts[part]
-            comp.history().props["Coordinate System"] = coordinate_system
+            comp.history().properties["Coordinate System"] = coordinate_system
             if "AntennaArm" in comp.name:
                 comp.name = "ant_" + comp.name + antenna_name
             elif "Port" in comp.name:
