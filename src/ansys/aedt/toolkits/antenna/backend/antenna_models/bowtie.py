@@ -207,7 +207,7 @@ class BowTieNormal(CommonPatch):
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
-        sub.history().props["Coordinate System"] = coordinate_system
+        sub.history().properties["Coordinate System"] = coordinate_system
         array_points = [["{}/2".format(inner_width), "{}/2".format(port_gap), 0]]
         array_points.append(["-{}/2".format(inner_width), "{}/2".format(port_gap), 0])
         array_points.append(["-{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0])
@@ -216,7 +216,7 @@ class BowTieNormal(CommonPatch):
         ant = self._app.modeler.create_polyline(array_points, cover_surface=True, name="ant_arm")
         ant.color = (255, 128, 65)
         ant.transparency = 0.1
-        ant.history().props["Coordinate System"] = coordinate_system
+        ant.history().properties["Coordinate System"] = coordinate_system
         ant2_name = ant.duplicate_around_axis(
             self._app.AXIS.Z,
             180,
@@ -231,7 +231,7 @@ class BowTieNormal(CommonPatch):
             name="port_lump_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history().props["Coordinate System"] = coordinate_system
+        p1.history().properties["Coordinate System"] = coordinate_system
 
         self._app.modeler.move([p1.name, ant2_name, ant.name], [0, 0, sub_h])
 
@@ -440,7 +440,7 @@ class BowTieRounded(CommonPatch):
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
-        sub.history().props["Coordinate System"] = coordinate_system
+        sub.history().properties["Coordinate System"] = coordinate_system
         array_points = [["{}/2".format(inner_width), "{}/2".format(port_gap), 0]]
         array_points.append(["-{}/2".format(inner_width), "{}/2".format(port_gap), 0])
         array_points.append(["-{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0])
@@ -457,7 +457,7 @@ class BowTieRounded(CommonPatch):
         ant.unite(round)
         ant.color = (255, 128, 65)
         ant.transparency = 0.1
-        ant.history().props["Coordinate System"] = coordinate_system
+        ant.history().properties["Coordinate System"] = coordinate_system
         ant2_name = ant.duplicate_around_axis(
             self._app.AXIS.Z,
             180,
@@ -472,7 +472,7 @@ class BowTieRounded(CommonPatch):
             name="port_lump_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history().props["Coordinate System"] = coordinate_system
+        p1.history().properties["Coordinate System"] = coordinate_system
 
         self._app.modeler.move([p1.name, ant2_name, ant.name], [0, 0, sub_h])
 
@@ -681,7 +681,7 @@ class BowTieSlot(CommonPatch):
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
-        sub.history().props["Coordinate System"] = coordinate_system
+        sub.history().properties["Coordinate System"] = coordinate_system
 
         # Slot
         slot = self._app.modeler.create_rectangle(
@@ -691,7 +691,7 @@ class BowTieSlot(CommonPatch):
             name="ant_" + antenna_name,
         )
         slot.color = (0, 128, 0)
-        slot.history().props["Coordinate System"] = coordinate_system
+        slot.history().properties["Coordinate System"] = coordinate_system
 
         # Inner Slot
         islot = self._app.modeler.create_rectangle(
@@ -701,7 +701,7 @@ class BowTieSlot(CommonPatch):
             name="slot_" + antenna_name,
         )
         islot.color = (0, 128, 0)
-        islot.history().props["Coordinate System"] = coordinate_system
+        islot.history().properties["Coordinate System"] = coordinate_system
 
         array_points = [["-{}/2".format(inner_width), "{}/2".format(port_gap), "0"]]
         array_points.append(["{}/2".format(inner_width), "{}/2".format(port_gap), "0"])
@@ -733,7 +733,7 @@ class BowTieSlot(CommonPatch):
             name="feed_" + antenna_name,
         )
         feed.color = (128, 0, 0)
-        feed.history().props["Coordinate System"] = coordinate_system
+        feed.history().properties["Coordinate System"] = coordinate_system
         self._app.modeler.move([feed.name], [0, feed_offset, 0])
 
         feed1 = self._app.modeler.create_rectangle(
@@ -743,7 +743,7 @@ class BowTieSlot(CommonPatch):
             name="feed_" + antenna_name,
         )
         feed1.color = (128, 0, 0)
-        feed1.history().props["Coordinate System"] = coordinate_system
+        feed1.history().properties["Coordinate System"] = coordinate_system
         self._app.modeler.move([feed1.name], [0, feed_offset, 0])
 
         self._app.modeler.unite([slot.name, feed.name, feed1.name])
@@ -755,7 +755,7 @@ class BowTieSlot(CommonPatch):
             name="port_lump_" + antenna_name,
         )
         p1.color = (128, 0, 0)
-        p1.history().props["Coordinate System"] = coordinate_system
+        p1.history().properties["Coordinate System"] = coordinate_system
         self._app.modeler.move([p1.name], [0, feed_offset, 0])
 
         ref = self._app.modeler.create_rectangle(
@@ -765,7 +765,7 @@ class BowTieSlot(CommonPatch):
             name="gnd_" + antenna_name,
         )
         ref.color = (128, 0, 0)
-        ref.history().props["Coordinate System"] = coordinate_system
+        ref.history().properties["Coordinate System"] = coordinate_system
         self._app.modeler.move([ref.name], [0, feed_offset, 0])
 
         slot.color = (255, 128, 65)
