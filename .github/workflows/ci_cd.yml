@@ -74,6 +74,7 @@ jobs:
           library-name: ${{ env.LIBRARY_NAME }}
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
+          whitelist-license-check: 'jeepney'
 
   tests_windows:
     name: "Windows Tests"
