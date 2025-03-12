@@ -272,7 +272,7 @@ class ToolkitBackend(AEDTCommon):
 
         self.aedtapp.save_project()
 
-        self.aedtapp.analyze(num_cores=num_cores)
+        self.aedtapp.analyze(cores=num_cores)
 
         gc.collect()
         self.release_aedt(False, False)

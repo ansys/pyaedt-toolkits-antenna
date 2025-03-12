@@ -116,9 +116,9 @@ def export_farfield():
     }
 
     props = toolkit_api.get_properties()
-    default_values["frequencies"] = (
+    default_values["frequencies"] = [
         str(props["antenna"]["synthesis"]["frequency"]) + props["antenna"]["synthesis"]["frequency_unit"]
-    )
+    ]
 
     # Extract values from the request body
     params = {key: body.get(key, default_values[key]) for key in default_values}
