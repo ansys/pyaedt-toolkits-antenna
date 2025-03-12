@@ -82,12 +82,8 @@ def client(logger, common_temp_dir):
     is_aedt_launched = aedt_common.wait_to_be_idle()
 
     aedt_common.active_project = generate_unique_project_name(common_temp_dir, project_name="Test_Antenna")
-    aedt_common.connect_aedt()
-    aedt_common.desktop.odesktop.NewProject(aedt_common.active_project)
-    aedt_common.connect_design()
-    aedt_common.aedtapp.design_name = "antenna_test"
-    aedt_common.save_project()
-    aedt_common.release_aedt(False, False)
+    properties.active_project = aedt_common.active_project
+    aedt_common.connect_design("HFSS")
 
     if not is_aedt_launched:
         logger.error("AEDT is not launched")
