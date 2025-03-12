@@ -153,7 +153,7 @@ jobs:
     runs-on: [self-hosted, pyaedt, toolkits, Linux]
     needs: [ smoke-tests ]
     env:
-      ANSYSEM_ROOT242: '/opt/AnsysEM/v242/Linux64'
+      ANSYSEM_ROOT251: '/opt/AnsysEM/v251/AnsysEM'
       ANS_NODEPCHECK: '1'
     steps:
       - uses: actions/checkout@v4
