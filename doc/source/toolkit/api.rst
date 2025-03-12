@@ -27,7 +27,7 @@ You can use the Toolkit API as shown in this example:
     from ansys.aedt.toolkits.template.backend.api import ToolkitBackend
 
     # Initialize generic service
-    toolkit_api = Toolkit()
+    toolkit_api = ToolkitBackend()
 
     # Load default properties from a JSON file
     properties = toolkit_api.get_properties()
