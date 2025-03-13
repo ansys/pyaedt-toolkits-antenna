@@ -19,7 +19,7 @@ from ansys.aedt.toolkits.antenna.backend.models import properties
 #
 # Set AEDT version.
 
-aedt_version = "2024.2"
+aedt_version = "2025.1"
 
 # ## Set non-graphical mode
 #
@@ -184,7 +184,7 @@ scattering_data = toolkit_api.scattering_results()
 
 # ## Get farfield results
 
-frequency_str = str(properties.antenna.synthesis.frequency) + properties.antenna.synthesis.frequency_unit
+frequency_str = [str(properties.antenna.synthesis.frequency) + properties.antenna.synthesis.frequency_unit]
 farfield_metadata, farfield_frequency = toolkit_api.export_farfield(
     frequencies=frequency_str, sphere="3D", encode=False
 )

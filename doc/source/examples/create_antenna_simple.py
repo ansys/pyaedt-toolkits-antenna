@@ -18,7 +18,7 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRoun
 #
 # Set AEDT version.
 
-aedt_version = "2024.2"
+aedt_version = "2025.1"
 
 # ## Set non-graphical mode
 #
