@@ -25,7 +25,7 @@ import math
 import os
 
 import ansys.aedt.core.generic.constants as constants
-from ansys.aedt.core.generic.general_methods import generate_unique_name
+from ansys.aedt.core.generic.file_utils import generate_unique_name
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import InputParameters
