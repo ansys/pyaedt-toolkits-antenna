@@ -24,18 +24,22 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    'ansys-aedt-toolkits-common[all]'
+    "ansys-aedt-toolkits-common[all]",
+    "pyaedt[all]==0.15.3"
 ]
 
 [project.optional-dependencies]
 all = [
-    'ansys-aedt-toolkits-common[all]'
+    "ansys-aedt-toolkits-common[all]",
+    "pyaedt[all]==0.15.3"
 ]
 tests = [
-    'ansys-aedt-toolkits-common[tests]'
+    "ansys-aedt-toolkits-common[tests]",
+    "pyaedt[all]==0.15.3"
 ]
 doc = [
-    'ansys-aedt-toolkits-common[doc]'
+    "ansys-aedt-toolkits-common[doc]",
+    "pyaedt[all]==0.15.3"
 ]
 
 [tool.flit.module]
