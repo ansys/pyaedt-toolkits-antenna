@@ -1,0 +1,22 @@
+ignore:
+  - "src/ansys/aedt/toolkits/antenna/ui"
+  - "src/ansys/aedt/toolkits/antenna/run_toolkit.py"
+
+comment:
+  layout: "diff"
+  behavior: default
+
+coverage:
+  status:
+    project: false
+    patch:
+      default:
+        # basic
+        target: 85%
+        if_not_found: success
+        if_ci_failed: error
+        if_no_uploads: error
+
+codecov:
+  notify:
+    wait_for_ci: yes
