@@ -36,6 +36,63 @@ jobs:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
 
+  build-application-windows:
+    name: "Build Application"
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Install Dependencies
+        run: pip install .[freeze]
+
+      - name: Extract version
+        run: |
+          python cx/extract_version.py || echo "Failed to extract version"
+          cat VERSION || echo "VERSION file not created"
+
+      - name: Verify VERSION file
+        shell: pwsh
+        run: |
+          if (!(Test-Path -Path "VERSION")) {
+            Write-Error "VERSION file is missing"
+            exit 1
+          }
+
+      - name: Freeze application
+        run: python cx/setup_cx.py build
+
+      - name: Install NSIS
+        run: choco install nsis -y
+
+      - name: Debug build directory
+        run: Get-ChildItem -Path build -Recurse | ForEach-Object { $_.FullName }
+
+      - name: Print NSIS version
+        run: makensis -VERSION
+
+      - name: Run NSIS
+        shell: pwsh
+        if: always()
+        run: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference = "Stop"
+          if (!(Test-Path -Path "setup.nsi")) {
+            Write-Error "setup.nsi not found"
+          }
+          makensis setup.nsi
+
+      - name: List output
+        run: ls -R dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Antenna-Toolkit-windows
+          path: dist/*.exe
+
   doc-style:
     name: "Documentation style"
     runs-on: ubuntu-latest
@@ -199,6 +256,7 @@ jobs:
           export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT242 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_rest_api
+
 
 
   build-library:
