@@ -1,5 +1,5 @@
-AEDT Antenna Toolkit documentation |version|
-============================================
+Antenna toolkit documentation |version|
+=======================================
 
 **Useful links**:
 :ref:`Installation <installation>` |
