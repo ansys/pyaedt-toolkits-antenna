@@ -71,3 +71,21 @@ setup(
     options={"build_exe": build_options},
     executables=executables,
 )
+
+if sys.platform != "win32":
+    from glob import glob
+
+    print("Post-build: Copying cx_Freeze output to dist/ (Linux)")
+    build_exe_path = None
+    for path in glob(os.path.join(build_dir, "exe.*")):
+        if os.path.isdir(path):
+            build_exe_path = path
+            break
+
+    if build_exe_path:
+        shutil.rmtree(dist_dir, ignore_errors=True)
+        shutil.copytree(build_exe_path, dist_dir)
+        print(f"Copied build output to: {dist_dir}")
+    else:
+        print("ERROR: cx_Freeze output not found.")
+        sys.exit(1)
