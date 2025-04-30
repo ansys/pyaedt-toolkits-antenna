@@ -18,9 +18,9 @@ random_guid = "{70a724f2-2396-4264-94ce-5edff0d7fbc1}"
 build_dir = "build"
 dist_dir = "dist"
 exe_name = f"AntennaToolkit.exe"
-icon_path = r"cx\splash_icon.ico"
-logo_path = r"cx\antenna.png"
-run_script = r"src\ansys\aedt\toolkits\antenna\run_toolkit.py"
+icon_path = os.path.join("cx", "splash_icon.ico")
+logo_path = os.path.join("cx", "antenna.png")
+run_script = os.path.join("src", "ansys", "aedt", "toolkits", "antenna", "run_toolkit.py")
 nsi_script = "setup.nsi"
 license_file = "LICENSE"
 
