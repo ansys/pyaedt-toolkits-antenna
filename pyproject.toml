@@ -24,22 +24,18 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "ansys-aedt-toolkits-common[all]",
-    "pyaedt[all]==0.15.3"
+    "ansys-aedt-toolkits-common[all]"
 ]
 
 [project.optional-dependencies]
 all = [
-    "ansys-aedt-toolkits-common[all]",
-    "pyaedt[all]==0.15.3"
+    "ansys-aedt-toolkits-common[all]"
 ]
 tests = [
-    "ansys-aedt-toolkits-common[tests]",
-    "pyaedt[all]==0.15.3"
+    "ansys-aedt-toolkits-common[tests]"
 ]
 doc = [
-    "ansys-aedt-toolkits-common[doc]",
-    "pyaedt[all]==0.15.3"
+    "ansys-aedt-toolkits-common[doc]"
 ]
 freeze = [
     "cx_Freeze"

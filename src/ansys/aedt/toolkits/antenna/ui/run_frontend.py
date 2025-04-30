@@ -33,9 +33,6 @@ from ansys.aedt.toolkits.antenna.ui.models import properties
 # PySide6 Widgets
 from PySide6.QtWidgets import QApplication
 from PySide6.QtWidgets import QMainWindow
-
-# Toolkit frontend API
-from actions import Frontend
 from ansys.aedt.toolkits.common.ui.common_windows.home_menu import HomeMenu
 from ansys.aedt.toolkits.common.ui.common_windows.settings_column import SettingsMenu
 
@@ -45,14 +42,14 @@ from ansys.aedt.toolkits.common.ui.logger_handler import logger
 # Common windows
 from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
 
+# Toolkit frontend API
+from ansys.aedt.toolkits.antenna.ui.actions import Frontend
+
 # New windows
-from windows.antenna_catalog.antenna_catalog_menu import AntennaCatalogMenu
-from windows.antenna_results.antenna_results_menu import AntennaResultsMenu
-from windows.antenna_synthesis.antenna_synthesis_menu import AntennaSynthesisMenu
-from windows.help.help_menu import HelpMenu
-
-# Windows
-
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_menu import AntennaCatalogMenu
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_menu import AntennaResultsMenu
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_synthesis.antenna_synthesis_menu import AntennaSynthesisMenu
+from ansys.aedt.toolkits.antenna.ui.windows.help.help_menu import HelpMenu
 
 # Backend URL and port
 if len(sys.argv) == 3:
@@ -65,7 +62,10 @@ port = properties.backend_port
 os.environ["QT_API"] = "pyside6"
 os.environ["QT_FONT_DPI"] = "96"
 
-if properties.high_resolution or os.environ.get("AEDT_TOOLKIT_HIGH_RESOLUTION") == "True":
+properties.high_resolution = (
+    os.getenv("AEDT_TOOLKIT_HIGH_RESOLUTION", "false").lower() in ("true", "1", "t") or properties.high_resolution
+)
+if properties.high_resolution:
     os.environ["QT_SCALE_FACTOR"] = "2"
 
 
@@ -258,7 +258,6 @@ class ApplicationWindow(QMainWindow, Frontend):
             selected_menu.set_active(True)
             self.ui.set_page(self.help_menu.help_menu_widget)
 
-            # TODO: Update path once help menu is released
             self.ui.set_left_column_menu(
                 menu=self.help_menu.help_column_widget,
                 title="Help",
@@ -273,12 +272,19 @@ class ApplicationWindow(QMainWindow, Frontend):
         if self.antenna_catalog_menu.grid_item:
             for item in self.antenna_catalog_menu.grid_item:
                 item.plotter.close()
-        # Remove Antenna
         event.accept()
 
 
-if __name__ == "__main__":
+def run_frontend(backend_url="", backend_port=0):
+    if backend_url:
+        properties.backend_url = backend_url
+    if backend_port:
+        properties.backend_port = backend_port
     app = QApplication(sys.argv)
     window = ApplicationWindow()
     window.show()
     sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    run_frontend()
