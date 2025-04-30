@@ -17,8 +17,9 @@ random_guid = "{70a724f2-2396-4264-94ce-5edff0d7fbc1}"
 # Requisites and directories
 build_dir = "build"
 dist_dir = "dist"
-exe_name = f"RCSExplorer.exe"
+exe_name = f"AntennaToolkit.exe"
 icon_path = r"cx\splash_icon.ico"
+logo_path = r"cx\antenna.png"
 run_script = r"src\ansys\aedt\toolkits\antenna\run_toolkit.py"
 nsi_script = "setup.nsi"
 license_file = "LICENSE"
@@ -39,7 +40,7 @@ packages = [
     "pyedb",
     "matplotlib",
     "ansys.aedt.toolkits.common",
-    "ansys.aedt.toolkits.rcs_explorer",
+    "ansys.aedt.toolkits.antenna",
     "fileinput",
 ]
 
@@ -48,7 +49,7 @@ build_options = {
     "includes": ["numpy", "numpy.f2py", "fileinput"],
     "excludes": ["tkinter*", "*sphinx*", "pyvista*", "vtk*", "sci*"],
     "include_msvcr": False,
-    "include_files": [(numpy_dir, "lib/numpy"), icon_path],
+    "include_files": [(numpy_dir, "lib/numpy"), icon_path, logo_path],
 }
 
 base = "Win32GUI" if sys.platform == "win32" else None

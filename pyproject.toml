@@ -9,8 +9,6 @@ dynamic = ["version"]
 description = "Toolkit to design antennas with Ansys AEDT."
 readme = "README.rst"
 requires-python = ">=3.10"
-license = "MIT"
-license-files = ["LICENSE"]
 authors = [
     {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
 ]
@@ -26,6 +24,9 @@ classifiers = [
 dependencies = [
     "ansys-aedt-toolkits-common[all]"
 ]
+
+[project.license]
+file = "LICENSE"
 
 [project.optional-dependencies]
 all = [
