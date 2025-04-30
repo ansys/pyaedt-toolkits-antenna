@@ -131,7 +131,32 @@ jobs:
           fi
 
       - name: Freeze application
-        run: python cx/setup_cx.py build
+        run: |
+          python cx/setup_cx.py build
+          echo "Listing contents of the build directory:"
+          ls -R build/
+
+      - name: Check if the build output exists
+        run: |
+          echo "Checking for cx_Freeze build output"
+          if [ ! -d "build/exe.*" ]; then
+            echo "ERROR: cx_Freeze output not found in build/exe.*"
+            exit 1
+          else
+            echo "Build output found in build/exe.*"
+          fi
+
+      - name: Copy build output to dist/
+        run: |
+          echo "Post-build: Copying cx_Freeze output to dist/ (Linux)"
+          build_exe_path=$(find build -type d -name "exe.*" | head -n 1)
+          if [ -z "$build_exe_path" ]; then
+            echo "ERROR: cx_Freeze output not found."
+            exit 1
+          fi
+          rm -rf dist
+          cp -r "$build_exe_path" dist/
+          echo "Copied build output to dist/"
 
       - name: Prepare Package Directory
         run: |
