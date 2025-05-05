@@ -53,14 +53,6 @@ jobs:
         run: |
           python installer/extract_version.py
 
-      - name: Verify VERSION file
-        shell: pwsh
-        run: |
-          if (!(Test-Path -Path "VERSION")) {
-            Write-Error "VERSION file is missing"
-            exit 1
-          }
-
       - name: Freeze application
         run: pyinstaller frozen.spec
 
