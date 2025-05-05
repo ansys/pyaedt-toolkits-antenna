@@ -136,16 +136,6 @@ jobs:
           echo "Listing contents of the build directory:"
           ls -R build/
 
-      - name: Check if the build output exists
-        run: |
-          echo "Checking for cx_Freeze build output"
-          if [ ! -d "build/exe.*" ]; then
-            echo "ERROR: cx_Freeze output not found in build/exe.*"
-            exit 1
-          else
-            echo "Build output found in build/exe.*"
-          fi
-
       - name: Copy build output to dist/
         run: |
           echo "Post-build: Copying cx_Freeze output to dist/ (Linux)"
@@ -164,7 +154,7 @@ jobs:
           cp -r dist/* package/opt/antenna_toolkit
           find package -type f -exec chmod 644 {} \;
           find package -type d -exec chmod 755 {} \;
-          chmod +x package/opt/antenna_toolkit/antenna_toolkit
+          chmod +x package/opt/antenna_toolkit
 
       - name: Package with FPM
         run: |

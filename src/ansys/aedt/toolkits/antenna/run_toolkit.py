@@ -25,7 +25,6 @@ import importlib
 import multiprocessing
 import os
 import sys
-import threading
 import time
 
 from ansys.aedt.toolkits.common.utils import check_backend_communication
