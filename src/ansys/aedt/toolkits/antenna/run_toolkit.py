@@ -91,8 +91,6 @@ if __name__ == "__main__":
     port = frontend_properties.backend_port
     url_call = f"http://{url}:{port}"
     python_path = sys.executable
-    splash_thread = threading.Thread(target=show_splash_screen)
-    splash_thread.start()
 
     def terminate_processes():
         print("Terminating backend and frontend processes...")
@@ -124,7 +122,10 @@ if __name__ == "__main__":
 
     # Connect to AEDT session if necessary
     process_desktop_properties(is_linux, url_call)
-    splash_thread.join()
+
+    if not is_linux:
+        show_splash_screen()
+
     # Launch frontend process
     frontend_process = multiprocessing.Process(target=start_frontend, args=(url, port))
     frontend_process.start()
