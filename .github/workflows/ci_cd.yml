@@ -51,8 +51,7 @@ jobs:
 
       - name: Extract version
         run: |
-          python installer/extract_version.py || echo "Failed to extract version"
-          cat VERSION || echo "VERSION file not created"
+          python installer/extract_version.py
 
       - name: Verify VERSION file
         shell: pwsh
@@ -146,15 +145,8 @@ jobs:
       - name: Extract version
         run: |
           set -e
-          python cx/extract_version.py
+          python installer/extract_version.py
           cat VERSION
-
-      - name: Verify VERSION file
-        run: |
-          if [ ! -f VERSION ]; then
-            echo "VERSION file missing"
-            exit 1
-          fi
 
       - name: Freeze application
         env:
@@ -174,7 +166,7 @@ jobs:
           find package/share -type f -exec chmod 644 -- {} +
           chmod +x package/opt/antenna_toolkit/antenna_toolkit
           chmod +x package/opt/antenna_toolkit/_internal/assets/uninstaller_ubuntu.sh
-          version=v`cat ./src/ansys/tools/installer/VERSION`
+          version=v`cat ./installer/VERSION`
           echo "APPLICATION_VERSION=$version" >> $GITHUB_ENV
           fpm -v $version --fpm-options-file install/linux/debian/fpm-options-debian
 

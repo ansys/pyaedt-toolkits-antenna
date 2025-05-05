@@ -36,9 +36,6 @@ added_files = [
 # Missing metadata
 added_files += copy_metadata('ansys-tools-visualization_interface')
 
-if is_linux and os.getenv("ADD_PYTHON_BINARIES","true") == "true":
-    added_files +=[(os.path.join(ASSETS_PATH, 'python-asset'), 'assets')]
-
 if is_linux:
     added_files +=[(os.path.join(ASSETS_PATH, 'scripts'), 'assets')]
 
