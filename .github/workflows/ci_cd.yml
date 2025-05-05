@@ -87,7 +87,7 @@ jobs:
   build-application-linux-debian:
     strategy:
       matrix:
-        os: [ "24.04", "22.04", "20.04" ]
+        os: [ "24.04", "22.04"]
       fail-fast: false
     name: "Build Application Linux - Ubuntu ${{ matrix.os }}"
     runs-on: ubuntu-${{ matrix.os }}
@@ -138,7 +138,6 @@ jobs:
         run: |
           set -e
           python installer/extract_version.py
-          cat VERSION
 
       - name: Freeze application
         env:
