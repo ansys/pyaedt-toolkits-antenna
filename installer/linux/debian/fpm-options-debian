@@ -8,7 +8,6 @@
 -t deb
 -n "antenna_toolkit"
 -p antenna_toolkit.deb
--n "antenna_toolkit"
 --description "Ansys Antenna Toolkit."
 --url "https://aedt.antenna.toolkit.docs.pyansys.com/"
 --maintainer "ANSYS, Inc. <pyansys.core@ansys.com>"

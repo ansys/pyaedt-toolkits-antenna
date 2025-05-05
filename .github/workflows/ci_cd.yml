@@ -159,6 +159,7 @@ jobs:
           chmod +x package/opt/antenna_toolkit/_internal/assets/uninstaller_ubuntu.sh
           version=v`cat ./installer/VERSION`
           echo "APPLICATION_VERSION=$version" >> $GITHUB_ENV
+          set -x  # Debug mode
           fpm -v $version --fpm-options-file installer/linux/debian/fpm-options-debian
 
           - name: Create zip file
