@@ -93,89 +93,89 @@ jobs:
           name: Antenna-Toolkit-windows
           path: dist/*.exe
 
-  build-application-linux-debian:
-    strategy:
-      matrix:
-        os: [ "24.04", "22.04" ]
-      fail-fast: false
-    name: "Build Application Linux - Ubuntu ${{ matrix.os }}"
-    runs-on: ubuntu-${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-
-      - name: Install System Dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y python3-dev python3-pip build-essential libx11-dev libxcb1-dev libx11-xcb-dev \
-            libxrender-dev libxext-dev libfreetype6-dev libfontconfig1-dev libxkbcommon-dev \
-            libxkbcommon-x11-dev libgl1-mesa-dev
-
-      - name: Install Python Dependencies
-        run: pip install .[freeze]
-
-      - name: Extract version
-        run: |
-          set -e
-          python cx/extract_version.py
-          cat VERSION
-
-      - name: Verify VERSION file
-        run: |
-          if [ ! -f VERSION ]; then
-            echo "VERSION file missing"
-            exit 1
-          fi
-
-      - name: Freeze application
-        run: |
-          python cx/setup_cx.py build
-          echo "Listing contents of the build directory:"
-          ls -R build/
-
-      - name: Copy build output to dist/
-        run: |
-          echo "Post-build: Copying cx_Freeze output to dist/ (Linux)"
-          build_exe_path=$(find build -type d -name "exe.*" | head -n 1)
-          if [ -z "$build_exe_path" ]; then
-            echo "ERROR: cx_Freeze output not found."
-            exit 1
-          fi
-          rm -rf dist
-          cp -r "$build_exe_path" dist/
-          echo "Copied build output to dist/"
-
-      - name: Prepare Package Directory
-        run: |
-          mkdir -p package/opt/antenna_toolkit
-          cp -r dist/* package/opt/antenna_toolkit
-          find package -type f -exec chmod 644 {} \;
-          find package -type d -exec chmod 755 {} \;
-          chmod +x package/opt/antenna_toolkit
-
-      - name: Package with FPM
-        run: |
-          sudo apt install -y ruby ruby-dev
-          sudo gem install --no-document fpm
-          VERSION=v$(cat VERSION)
-          fpm -s dir -t deb -n antenna-toolkit -v $VERSION -C package \
-              --prefix=/ \
-              --description "Antenna Toolkit for Linux" \
-              --license MIT
-
-      - name: Create ZIP Package
-        run: |
-          VERSION=$(cat VERSION)
-          os_version=${{ matrix.os }}
-          zip -r Antenna-Toolkit_linux_${os_version}_${VERSION}.zip *.deb
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Antenna-Toolkit-linux-${{ matrix.os }}
-          path: Antenna-Toolkit_linux_${{ matrix.os }}_*.zip
+#  build-application-linux-debian:
+#    strategy:
+#      matrix:
+#        os: [ "24.04", "22.04" ]
+#      fail-fast: false
+#    name: "Build Application Linux - Ubuntu ${{ matrix.os }}"
+#    runs-on: ubuntu-${{ matrix.os }}
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - uses: actions/setup-python@v5
+#        with:
+#          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+#
+#      - name: Install System Dependencies
+#        run: |
+#          sudo apt update
+#          sudo apt install -y python3-dev python3-pip build-essential libx11-dev libxcb1-dev libx11-xcb-dev \
+#            libxrender-dev libxext-dev libfreetype6-dev libfontconfig1-dev libxkbcommon-dev \
+#            libxkbcommon-x11-dev libgl1-mesa-dev
+#
+#      - name: Install Python Dependencies
+#        run: pip install .[freeze]
+#
+#      - name: Extract version
+#        run: |
+#          set -e
+#          python cx/extract_version.py
+#          cat VERSION
+#
+#      - name: Verify VERSION file
+#        run: |
+#          if [ ! -f VERSION ]; then
+#            echo "VERSION file missing"
+#            exit 1
+#          fi
+#
+#      - name: Freeze application
+#        run: |
+#          python cx/setup_cx.py build
+#          echo "Listing contents of the build directory:"
+#          ls -R build/
+#
+#      - name: Copy build output to dist/
+#        run: |
+#          echo "Post-build: Copying cx_Freeze output to dist/ (Linux)"
+#          build_exe_path=$(find build -type d -name "exe.*" | head -n 1)
+#          if [ -z "$build_exe_path" ]; then
+#            echo "ERROR: cx_Freeze output not found."
+#            exit 1
+#          fi
+#          rm -rf dist
+#          cp -r "$build_exe_path" dist/
+#          echo "Copied build output to dist/"
+#
+#      - name: Prepare Package Directory
+#        run: |
+#          mkdir -p package/opt/antenna_toolkit
+#          cp -r dist/* package/opt/antenna_toolkit
+#          find package -type f -exec chmod 644 {} \;
+#          find package -type d -exec chmod 755 {} \;
+#          chmod +x package/opt/antenna_toolkit
+#
+#      - name: Package with FPM
+#        run: |
+#          sudo apt install -y ruby ruby-dev
+#          sudo gem install --no-document fpm
+#          VERSION=v$(cat VERSION)
+#          fpm -s dir -t deb -n antenna-toolkit -v $VERSION -C package \
+#              --prefix=/ \
+#              --description "Antenna Toolkit for Linux" \
+#              --license MIT
+#
+#      - name: Create ZIP Package
+#        run: |
+#          VERSION=$(cat VERSION)
+#          os_version=${{ matrix.os }}
+#          zip -r Antenna-Toolkit_linux_${os_version}_${VERSION}.zip *.deb
+#
+#      - uses: actions/upload-artifact@v4
+#        with:
+#          name: Antenna-Toolkit-linux-${{ matrix.os }}
+#          path: Antenna-Toolkit_linux_${{ matrix.os }}_*.zip
 
   doc-style:
     name: "Documentation style"
