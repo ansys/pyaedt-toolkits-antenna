@@ -166,16 +166,17 @@ jobs:
               cp installer/linux/debian/installer.sh installer.sh
               cp installer/linux/debian/postInstallScript.sh postInstallScript.sh
               chmod +x installer.sh postInstallScript.sh antenna_toolkit.deb
-              ls -l
-              os_version_processed=`echo ${{ matrix.os }} | sed 's/\./_/g'`
-              echo "OS_VERSION_PROCESSED=$os_version_processed" >> $GITHUB_ENV
-              zip -r Ansys-Antenna-Toolkit_linux_${os_version_processed}_${{ env.APPLICATION_VERSION }}.zip  antenna_toolkit.deb installer.sh postInstallScript.sh
-
+              version=$(cat ./installer/VERSION)
+              os_version_processed=$(echo "${{ matrix.os }}" | sed 's/\./_/g')
+              zip_name="Ansys-Antenna-Toolkit_linux_${os_version_processed}_v${version}.zip"
+              echo "OS_VERSION_PROCESSED=${os_version_processed}" >> $GITHUB_ENV
+              echo "APPLICATION_VERSION=v${version}" >> $GITHUB_ENV
+              zip -r $zip_name antenna_toolkit.deb installer.sh postInstallScript.sh
+          
           - uses: actions/upload-artifact@v4
             with:
-              name: Antenna-Toolkit-ubuntu_${{ matrix.os }}
-              path: |
-                Ansys-Antenna-Toolkit_linux_${{ env.OS_VERSION_PROCESSED }}_${{ env.APPLICATION_VERSION }}.zip
+               name: Antenna-Toolkit-ubuntu_${{ matrix.os }}
+               path: Ansys-Antenna-Toolkit_linux_${{ env.OS_VERSION_PROCESSED }}_${{ env.APPLICATION_VERSION }}.zip
 
   doc-style:
     name: "Documentation style"
