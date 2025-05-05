@@ -38,7 +38,7 @@ doc = [
     "ansys-aedt-toolkits-common[doc]"
 ]
 freeze = [
-    "cx_Freeze"
+    "pyinstaller"
 ]
 
 [tool.flit.module]

@@ -3,7 +3,7 @@
 ; Set the name, version, and output path of the installer
 !define LICENSE_FILE "LICENSE"
 !define PRODUCT_NAME "Antenna Toolkit"
-!define /file PRODUCT_VERSION "VERSION"
+!define /file PRODUCT_VERSION "installer\VERSION"
 !define OUTFILE_NAME "Antenna-Toolkit-v${PRODUCT_VERSION}.exe"
 
 Name "${PRODUCT_NAME}"
@@ -25,10 +25,10 @@ VIProductVersion "${PRODUCT_VERSION}"
 !include "uninstall.nsi"
 
 Function CreateDesktopShortCut
-  CreateShortCut "$desktop\${PRODUCT_NAME}.lnk" "$INSTDIR\AntennaToolkit.exe"
+  CreateShortCut "$desktop\${PRODUCT_NAME}.lnk" "$INSTDIR\Antenna Toolkit.exe"
 FunctionEnd
 
-!define MUI_FINISHPAGE_RUN "$INSTDIR\AntennaToolkit.exe"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\Antenna Toolkit.exe"
 !define MUI_FINISHPAGE_SHOWREADME
 !define MUI_FINISHPAGE_SHOWREADME_TEXT "Create Desktop Shortcut"
 !define MUI_FINISHPAGE_SHOWREADME_FUNCTION "CreateDesktopShortCut"
@@ -42,27 +42,57 @@ Function un.onInit
   !insertmacro MULTIUSER_UNINIT
 FunctionEnd
 
-Section "MainApp" SEC01
-  SetOutPath "$PROGRAMFILES64\${PRODUCT_NAME}"
-  File /r "build\exe.win-amd64-3.10\*"
 
+; Define the installer sections
+Section "${PRODUCT_NAME}" SEC01
+  ; Set the installation directory to the program files directory
+  SetOutPath "$PROGRAMFILES64\ANSYS Inc\${PRODUCT_NAME}"
+
+  ; Copy the files from the dist\antenna_toolkit directory
+  ; File /r /oname=ignore "dist\antenna_toolkit\*"
+  File /r "dist\antenna_toolkit\*"
+
+  ; Create the start menu directory
   CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
-  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\AntennaToolkit.exe"
 
-  WriteUninstaller "$INSTDIR\uninstall.exe"
+  ; Create the start menu shortcut
+  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\${PRODUCT_NAME}.exe"
+
+  ; Add the program to the installed programs list
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayName" "${PRODUCT_NAME}"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayIcon" "$\"$INSTDIR\Ansys Python Manager.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "Publisher" "ANSYS Inc"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "Version" "${PRODUCT_VERSION}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayVersion" "${PRODUCT_VERSION}"
+
+  WriteUninstaller "$INSTDIR\uninstall.exe"
+
 SectionEnd
 
-Icon "cx\splash_icon.ico"
-InstallDir "$PROGRAMFILES64\${PRODUCT_NAME}"
+; Define the uninstaller section
+Section "Uninstall" SEC02
 
+  Delete "$PROGRAMFILES64\${PRODUCT_NAME}\*.*"
+  RMDir "$PROGRAMFILES64\${PRODUCT_NAME}"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+  Delete "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk"
+  RMDir "$SMPROGRAMS\${PRODUCT_NAME}"
+  Delete "$desktop\${PRODUCT_NAME}.lnk"
+SectionEnd
+
+Icon "dist\antenna_toolkit\_internal\assets\splash_icon.ico"
+InstallDir "$PROGRAMFILES64\ANSYS Inc\${PRODUCT_NAME}"
+
+; Define the custom functions for the MUI2 OneClick plugin
 InstProgressFlags smooth
 Function oneclickpre
-  !insertmacro MUI_HEADER_TEXT "Installing ${PRODUCT_NAME}" "Please wait while installation completes."
+  !insertmacro MUI_HEADER_TEXT "Installing ${PRODUCT_NAME}" "Please wait while the installation completes."
+  ; !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
   HideWindow
 FunctionEnd
 
+; Call the MUI2 OneClick plugin
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
 !insertmacro MUI_LANGUAGE English

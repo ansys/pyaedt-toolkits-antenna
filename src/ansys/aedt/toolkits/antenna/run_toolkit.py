@@ -106,6 +106,11 @@ if __name__ == "__main__":
     if is_server_running(server=url, port=port):
         raise Exception(f"A process is already running at: {url_call}")
 
+    if not is_linux:
+        # Launch splash
+        splash_process = multiprocessing.Process(target=show_splash_screen)
+        splash_process.start()
+
     # Launch backend process
     backend_process = multiprocessing.Process(target=start_backend, args=(new_port,))
     backend_process.start()
@@ -123,7 +128,7 @@ if __name__ == "__main__":
     process_desktop_properties(is_linux, url_call)
 
     if not is_linux:
-        show_splash_screen()
+        splash_process.join()
 
     # Launch frontend process
     frontend_process = multiprocessing.Process(target=start_frontend, args=(url, port))

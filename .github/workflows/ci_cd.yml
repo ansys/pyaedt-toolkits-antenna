@@ -51,7 +51,7 @@ jobs:
 
       - name: Extract version
         run: |
-          python cx/extract_version.py || echo "Failed to extract version"
+          python installer/extract_version.py || echo "Failed to extract version"
           cat VERSION || echo "VERSION file not created"
 
       - name: Verify VERSION file
@@ -63,7 +63,7 @@ jobs:
           }
 
       - name: Freeze application
-        run: python cx/setup_cx.py build
+        run: pyinstaller frozen.spec
 
       - name: Install NSIS
         run: choco install nsis -y
