@@ -3,6 +3,14 @@
 Installation
 ============
 
+Visit the `Releases
+<https://github.com/ansys/pyaedt-toolkits-antenna/releases>`__ page and pull
+down the latest installer.
+
+
+For developers
+^^^^^^^^^^^^^^
+
 The AEDT Antenna Toolkit can be installed like any other open source package.
 
 You can either install both the backend and user interface (UI) methods or install only the backend methods.

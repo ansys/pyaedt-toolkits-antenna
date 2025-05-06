@@ -1,0 +1,2 @@
+envsubst < ${HOME}/.local/share/applications/antenna_toolkit_prebuild.desktop > ${HOME}/.local/share/applications/antenna_toolkit_prebuild.desktop
+rm -rf ${HOME}/.local/share/applications/antenna_toolkit_prebuild.desktop

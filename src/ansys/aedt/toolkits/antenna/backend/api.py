@@ -22,10 +22,12 @@
 
 import gc
 import os.path
+from pathlib import Path
 import re
+import sys
 
 # isort: off
-
+sys.path.append(str(Path(__file__).parent))
 from ansys.aedt.toolkits.antenna.backend.models import properties
 
 # isort: on

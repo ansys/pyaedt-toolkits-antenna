@@ -44,8 +44,8 @@ import pyvista as pv
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
 
-from windows.antenna_catalog.antenna_catalog_page import Ui_AntennaCatalog
-from windows.antenna_catalog.antenna_catalog_column import Ui_LeftColumn
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_page import Ui_AntennaCatalog
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_column import Ui_LeftColumn
 
 import os
 import sys

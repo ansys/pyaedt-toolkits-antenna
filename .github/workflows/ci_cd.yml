@@ -36,6 +36,150 @@ jobs:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
 
+  build-application-windows:
+    name: "Build Windows Application"
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Install Dependencies
+        run: pip install .[freeze]
+
+      - name: Extract version
+        run: |
+          python installer/extract_version.py
+
+      - name: Freeze application
+        run: pyinstaller frozen.spec
+
+      - name: Install NSIS
+        run: choco install nsis -y
+
+      - name: Debug build directory
+        run: Get-ChildItem -Path build -Recurse | ForEach-Object { $_.FullName }
+
+      - name: Print NSIS version
+        run: makensis -VERSION
+
+      - name: Run NSIS
+        shell: pwsh
+        if: always()
+        run: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference = "Stop"
+          if (!(Test-Path -Path "setup.nsi")) {
+            Write-Error "setup.nsi not found"
+          }
+          makensis setup.nsi
+
+      - name: List output
+        run: ls -R dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Antenna-Toolkit-windows
+          path: dist/*.exe
+
+  build-application-linux-debian:
+    strategy:
+      matrix:
+        os: [ "24.04", "22.04"]
+      fail-fast: false
+    name: "Build Application Linux - Ubuntu ${{ matrix.os }}"
+    runs-on: ubuntu-${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Install Linux Dependencies
+        run: |
+          sudo apt update
+          sudo apt install aptitude -y;
+          sudo aptitude install libfontconfig1-dev \
+            libfreetype6-dev \
+            libx11-dev \
+            libx11-xcb-dev \
+            libxext-dev \
+            libxfixes-dev \
+            libxi-dev \
+            libxrender-dev \
+            libxcb1-dev \
+            libxcb-glx0-dev \
+            libxcb-keysyms1-dev \
+            libxcb-image0-dev \
+            libxcb-shm0-dev \
+            libxcb-icccm4-dev \
+            libxcb-sync-dev \
+            libxcb-xfixes0-dev \
+            libxcb-shape0-dev \
+            libxcb-randr0-dev \
+            libxcb-render-util0-dev \
+            libxcb-cursor-dev \
+            libxcb-util-dev \
+            libxcb-xkb-dev \
+            libxcb-xinerama0-dev \
+            libxkbcommon-dev \
+            libxkbcommon-x11-dev \
+            -y
+          sudo apt install ruby -y
+          sudo gem install fpm
+
+      - name: Install Python Dependencies
+        run: pip install .[freeze]
+
+      - name: Extract version
+        run: |
+          set -e
+          python installer/extract_version.py
+
+      - name: Freeze application
+        env:
+          ADD_PYTHON_BINARIES: true
+        run: pyinstaller frozen.spec
+
+      - name: Setup and Copy Linux files for packaging
+        run: |
+          mkdir -p package/opt
+          mkdir -p package/share/applications
+          mkdir -p package/share/icons
+          cp -r dist/antenna_toolkit package/opt/antenna_toolkit
+          cp installer/assets/splash_icon.svg package/share/icons/splash_icon.svg
+          cp installer/linux/debian/antenna_toolkit_prebuild.desktop package/share/applications
+          find package/opt/antenna_toolkit -type f -exec chmod 644 -- {} +
+          find package/opt/antenna_toolkit -type d -exec chmod 755 -- {} +
+          find package/share -type f -exec chmod 644 -- {} +
+          chmod +x package/opt/antenna_toolkit/antenna_toolkit
+          chmod +x package/opt/antenna_toolkit/_internal/assets/uninstaller_ubuntu.sh
+          version=v`cat ./installer/VERSION`
+          echo "APPLICATION_VERSION=$version" >> $GITHUB_ENV
+          set -x  # Debug mode
+          fpm -v $version --fpm-options-file installer/linux/debian/fpm-options-debian
+
+      - name: Create zip file
+        run: |
+          cp installer/linux/debian/installer.sh installer.sh
+          cp installer/linux/debian/postInstallScript.sh postInstallScript.sh
+          chmod +x installer.sh postInstallScript.sh antenna_toolkit.deb
+          version=$(cat ./installer/VERSION)
+          os_version_processed=$(echo "${{ matrix.os }}" | sed 's/\./_/g')
+          zip_name="Ansys-Antenna-Toolkit_linux_${os_version_processed}_v${version}.zip"
+          echo "OS_VERSION_PROCESSED=${os_version_processed}" >> $GITHUB_ENV
+          echo "APPLICATION_VERSION=v${version}" >> $GITHUB_ENV
+          zip -r $zip_name antenna_toolkit.deb installer.sh postInstallScript.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+           name: Antenna-Toolkit-ubuntu_${{ matrix.os }}
+           path: Ansys-Antenna-Toolkit_linux_${{ env.OS_VERSION_PROCESSED }}_${{ env.APPLICATION_VERSION }}.zip
+
+
   doc-style:
     name: "Documentation style"
     runs-on: ubuntu-latest
@@ -199,6 +343,7 @@ jobs:
           export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT242 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_rest_api
+
 
 
   build-library:

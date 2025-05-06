@@ -43,7 +43,7 @@ from PySide6.QtWidgets import QTableWidgetItem
 
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
-from windows.antenna_synthesis.antenna_synthesis_page import Ui_AntennaSynthesis
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_synthesis.antenna_synthesis_page import Ui_AntennaSynthesis
 
 
 class GenerateAntennaThread(QThread):
