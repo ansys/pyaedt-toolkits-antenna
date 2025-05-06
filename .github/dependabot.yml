@@ -1,20 +1,46 @@
 version: 2
+enable-beta-ecosystems: true
 updates:
-  - package-ecosystem: "pip"
-    directory: "/"
+  - package-ecosystem: "pip" # See documentation for possible values
+    directory: "/" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
+      time: "06:00"
+      timezone: "Europe/Paris"
+    cooldown:
+      default-days: 7
+      include:
+        - "*"  # Include all dependencies in cooldown
+      exclude:
+        - "ansys-sphinx-theme"
+        - "ansys-tools-visualization-interface"
+        - "ansys-pythonnet"
+    reviewers:
+      - "MaxJPRey"
+      - "SMoraisAnsys"
+    assignees:
+      - "pyansys-ci-bot"
     labels:
       - "maintenance"
       - "dependencies"
     commit-message:
-      prefix: "MAINT"
+      prefix: "BUILD(pip)"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
+      time: "06:00"
+      timezone: "Europe/Paris"
+    reviewers:
+      - "MaxJPRey"
+      - "SMoraisAnsys"
+    assignees:
+      - "pyansys-ci-bot"
     labels:
       - "maintenance"
+      - "dependencies"
     commit-message:
-      prefix: "MAINT"
+      prefix: "BUILD(actions)"
