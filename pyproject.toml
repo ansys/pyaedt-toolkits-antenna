@@ -81,7 +81,7 @@ markers = [
 ]
 
 [tool.towncrier]
-package = "ansys.aedt.core"
+package = "ansys.aedt.toolkits.antenna"
 directory = "doc/changelog.d"
 filename = "doc/source/changelog.rst"
 start_string = ".. towncrier release notes start\n"
