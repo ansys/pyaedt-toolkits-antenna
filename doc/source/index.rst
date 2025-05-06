@@ -6,7 +6,7 @@ Antenna toolkit documentation |version|
 `Source repository <https://github.com/ansys/pyaedt-toolkits-antenna>`_ |
 `Issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_
 
-The AEDT Antenna Toolkit is a Python interface for accelerating antenna design 
+The AEDT Antenna Toolkit is a Python interface for accelerating antenna design
 using `Ansys Electronics Desktop <https://www.ansys.com/products/electronics>`_
 (AEDT). You can launch this toolkit from AEDT or launch it directly
 from a Python console.

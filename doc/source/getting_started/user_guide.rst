@@ -167,7 +167,7 @@ and toolkit level.
 
 #. To create an antenna from the toolkit level, use the :class:`Toolkit <ansys.aedt.toolkits.antenna.backend.api.Toolkit>`
    class.
-   
+
    This code shows how to use the :class:`Toolkit <ansys.aedt.toolkits.antenna.backend.api.Toolkit>`
    class to get available antennas and their properties, open AEDT, update antenna properties,
    and create a bowtie antenna:

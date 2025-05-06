@@ -27,9 +27,71 @@ concurrency:
 
 jobs:
 
+  update-changelog:
+    name: "Update CHANGELOG (on release)"
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: ansys/actions/doc-deploy-changelog@v9
+        with:
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
+
+  # NOTE: We do not allow dependabot to trigger the CI/CD pipeline automatically.
+  # This is to mitigate supply chain attacks, where a malicious dependency update
+  # could execute arbitrary code in our build environment.
+  # Dependabot PRs must be reviewed carefully and approved manually before
+  # running the CI.
+  block-dependabot:
+    name: "Block dependabot (on dependabot PR)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exit if dependabot triggered the workflow
+        if: github.triggering_actor == 'dependabot[bot]'
+        run: |
+          echo "::warning::Dependabot is not allowed to trigger this workflow. Please review carefully the changes before running the workflow manually."
+          exit 1
+
+  # NOTE: We do not allow pyansys-ci-bot to trigger the CI/CD pipeline automatically
+  # on dependabot's PR. This is to mitigate supply chain attacks, where a malicious
+  # dependency update could execute arbitrary code in our build environment.
+  # Dependabot PRs must be reviewed carefully and approved manually before
+  # running the CI.
+  block-pyansys-ci-bot:
+    name: "Block PyAnsys-CI-bot (on dependabot PR)"
+    needs: block-dependabot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exit if pyansys-ci-bot triggered the workflow on dependabot's PR
+        if: github.triggering_actor == 'pyansys-ci-bot' && startsWith(github.head_ref, 'dependabot')
+        run: |
+          echo "::warning::PyAnsys CI bot is not allowed to trigger this workflow in dependabot's PR. Please review carefully the changes before running the workflow manually."
+          exit 1
+
+  pr-title:
+    name: Check the title of the PR (if needed)
+    runs-on: ubuntu-latest
+    needs: [block-pyansys-ci-bot]
+    steps:
+      - name: Check the title of the pull request
+        if: github.event_name == 'pull_request'
+        uses: ansys/actions/check-pr-title@v9
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          use-upper-case: true
+      - name: Check the title of the pull request
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: echo "::notice::Skipping PR title check for non-PR events"
+
   code-style:
     name: "Code style"
     runs-on: ubuntu-latest
+    needs: [pr-title]
     steps:
       - uses: ansys/actions/code-style@v9
         with:
@@ -39,6 +101,7 @@ jobs:
   build-application-windows:
     name: "Build Windows Application"
     runs-on: windows-latest
+    needs: [code-style]
     steps:
       - uses: actions/checkout@v4
 
@@ -91,6 +154,7 @@ jobs:
       fail-fast: false
     name: "Build Application Linux - Ubuntu ${{ matrix.os }}"
     runs-on: ubuntu-${{ matrix.os }}
+    needs: [code-style]
     steps:
       - uses: actions/checkout@v4
 
@@ -179,10 +243,10 @@ jobs:
            name: Antenna-Toolkit-ubuntu_${{ matrix.os }}
            path: Ansys-Antenna-Toolkit_linux_${{ env.OS_VERSION_PROCESSED }}_${{ env.APPLICATION_VERSION }}.zip
 
-
   doc-style:
     name: "Documentation style"
     runs-on: ubuntu-latest
+    needs: [pr-title]
     steps:
       - uses: ansys/actions/doc-style@v9
         with:
@@ -346,6 +410,7 @@ jobs:
 
 
 
+
   build-library:
     name: "Build library artifacts"
     runs-on: ubuntu-latest
@@ -367,11 +432,19 @@ jobs:
       id-token: write
       contents: write
     steps:
-      - name: "Release to the public PyPI repository"
-        uses: ansys/actions/release-pypi-public@v9
+      - name: Download the library artifacts from build-library step
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          library-name: ${{ env.LIBRARY_NAME }}
-          use-trusted-publisher: true
+          name: ${{ env.LIBRARY_NAME }}-artifacts
+          path: ${{ env.LIBRARY_NAME }}-artifacts
+
+      - name: Release to PyPI using trusted publisher
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
+        with:
+          repository-url: "https://upload.pypi.org/legacy/"
+          print-hash: true
+          packages-dir: ${{ env.LIBRARY_NAME }}-artifacts
+          skip-existing: false
 
       - name: "Release to GitHub"
         uses: ansys/actions/release-github@v9
