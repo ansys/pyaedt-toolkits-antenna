@@ -411,6 +411,7 @@ jobs:
 
 
 
+
   build-library:
     name: "Build library artifacts"
     runs-on: ubuntu-latest
@@ -424,7 +425,7 @@ jobs:
   release:
     name: "Release"
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-    needs: build-library
+    needs: [build-library, build-application-windows, build-application-linux-debian]
     runs-on: ubuntu-latest
     # Specifying a GitHub environment is optional, but strongly encouraged
     environment: release
@@ -445,6 +446,32 @@ jobs:
           print-hash: true
           packages-dir: ${{ env.LIBRARY_NAME }}-artifacts
           skip-existing: false
+
+      - name: Download Windows EXE
+        uses: actions/download-artifact@v4
+        with:
+          name: Antenna-Toolkit-windows
+          path: installer
+
+      - name: Download Ubuntu 22.04 ZIP
+        uses: actions/download-artifact@v4
+        with:
+          name: Antenna-Toolkit-ubuntu_22.04
+          path: installer
+
+      - name: Download Ubuntu 24.04 ZIP
+        uses: actions/download-artifact@v4
+        with:
+          name: Antenna-Toolkit-ubuntu_24.04
+          path: installer
+
+      - name: Upload all assets to GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            installer/*.exe
+            installer/*.zip
+          generate_release_notes: true
 
       - name: "Release to GitHub"
         uses: ansys/actions/release-github@v9
