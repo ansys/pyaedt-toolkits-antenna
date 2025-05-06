@@ -473,11 +473,6 @@ jobs:
             installer/*.zip
           generate_release_notes: true
 
-      - name: "Release to GitHub"
-        uses: ansys/actions/release-github@v9
-        with:
-          library-name: ${{ env.LIBRARY_NAME }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   doc-deploy-dev:
     name: "Deploy development documentation"
