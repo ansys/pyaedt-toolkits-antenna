@@ -17,8 +17,7 @@ updates:
         - "ansys-tools-visualization-interface"
         - "ansys-pythonnet"
     reviewers:
-      - "MaxJPRey"
-      - "SMoraisAnsys"
+      - "Samuelopez-ansys"
     assignees:
       - "pyansys-ci-bot"
     labels:
