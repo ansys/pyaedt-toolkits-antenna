@@ -447,23 +447,6 @@ jobs:
           packages-dir: ${{ env.LIBRARY_NAME }}-artifacts
           skip-existing: false
 
-      - name: Download Windows EXE
-        uses: actions/download-artifact@v4
-        with:
-          name: Antenna-Toolkit-windows
-          path: installer
-
-      - name: Download Ubuntu 22.04 ZIP
-        uses: actions/download-artifact@v4
-        with:
-          name: Antenna-Toolkit-ubuntu_22.04
-          path: installer
-
-      - name: Download Ubuntu 24.04 ZIP
-        uses: actions/download-artifact@v4
-        with:
-          name: Antenna-Toolkit-ubuntu_24.04
-          path: installer
 
       - name: Release to GitHub
         uses: ansys/actions/release-github@v9
