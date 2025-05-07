@@ -455,9 +455,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: false
           additional-artifacts: |
-            installer/Antenna-Toolkit-windows.exe
-            installer/Antenna-Toolkit-ubuntu_22.04.zip
-            installer/Antenna-Toolkit-ubuntu_24.04.zip
+            Antenna-Toolkit-windows.exe
+            Antenna-Toolkit-ubuntu_22.04.zip
+            Antenna-Toolkit-ubuntu_24.04.zip
 
 
   doc-deploy-dev:
