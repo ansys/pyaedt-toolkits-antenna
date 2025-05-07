@@ -56,6 +56,7 @@ from a Python console.
    toolkit/index
    examples/index
    contributing
+   changelog
 
 
 Indices and tables
