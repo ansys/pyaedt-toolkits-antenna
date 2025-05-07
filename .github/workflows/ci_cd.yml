@@ -468,7 +468,7 @@ jobs:
       - name: Release to GitHub
         uses: ansys/actions/release-github@v9
         with:
-          library-name: ${{ env.PACKAGE_NAME }}
+          library-name: ${{ env.LIBRARY_NAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: false
           add-artifact-attestation-notes: true
