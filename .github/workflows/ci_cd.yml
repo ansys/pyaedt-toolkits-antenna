@@ -100,7 +100,7 @@ jobs:
           use-python-cache: false
 
   build-application-windows:
-    name: "Build Windows Application"
+    name: "Build Application - Windows"
     runs-on: windows-latest
     needs: [code-style]
     steps:
@@ -153,7 +153,7 @@ jobs:
       matrix:
         os: [ "24.04", "22.04"]
       fail-fast: false
-    name: "Build Application Linux - Ubuntu ${{ matrix.os }}"
+    name: "Build Application - Ubuntu ${{ matrix.os }}"
     runs-on: ubuntu-${{ matrix.os }}
     needs: [code-style]
     steps:
@@ -450,7 +450,7 @@ jobs:
           library-name: ${{ env.LIBRARY_NAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: false
-          additional-artifacts: "Antenna-Toolkit-windows.exe Antenna-Toolkit-ubuntu_22.04.zip Antenna-Toolkit-ubuntu_24.04.zip"
+          additional-artifacts: "Antenna-Toolkit-windows.zip Antenna-Toolkit-ubuntu_22.04.zip Antenna-Toolkit-ubuntu_24.04.zip"
 
   doc-deploy-dev:
     name: "Deploy development documentation"
