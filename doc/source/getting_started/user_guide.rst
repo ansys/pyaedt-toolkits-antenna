@@ -19,7 +19,7 @@ Install toolkit in AEDT and launch the Antenna wizard
 You can install the AEDT Antenna Toolkit directly in AEDT using the base
 interpreter from the AEDT installation.
 
-#. From `Install from a Python file <https://aedt.docs.pyansys.com/version/stable/Getting_started/Installation.html#install-from-a-python-file>`_,
+#. From `Install from a Python file <https://aedt.docs.pyansys.com/version/stable/Getting_started/Installation.html>`_,
    follow the steps to install PyAEDT inside AEDT.
 
 #. In AEDT, select **Tools > Toolkit > PyAEDT > Console** to load the PyAEDT console:
