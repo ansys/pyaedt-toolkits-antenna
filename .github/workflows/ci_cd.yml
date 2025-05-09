@@ -450,7 +450,7 @@ jobs:
           library-name: ${{ env.LIBRARY_NAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: false
-          additional-artifacts: "Antenna-Toolkit-windows.zip Antenna-Toolkit-ubuntu_22.04.zip Antenna-Toolkit-ubuntu_24.04.zip"
+          additional-artifacts: "Antenna-Toolkit-windows Antenna-Toolkit-ubuntu_22.04 Antenna-Toolkit-ubuntu_24.04"
 
   doc-deploy-dev:
     name: "Deploy development documentation"
