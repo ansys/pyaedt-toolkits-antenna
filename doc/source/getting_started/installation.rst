@@ -57,12 +57,14 @@ Installing the ``Antenna Toolkit``
            **wget, gnome, libffi-dev, libssl-dev, libsqlite3-dev, libxcb-xinerama0 and build-essential** packages with **sudo** privileges
 
            .. code:: shell
+
              sudo apt-get update -y
              sudo apt-get install wget gnome libffi-dev libssl-dev libsqlite3-dev libxcb-xinerama0 build-essential -y
 
         #. Install **zlib** package
 
            .. code:: shell
+
              wget https://zlib.net/current/zlib.tar.gz
              tar xvzf zlib.tar.gz
              cd zlib-*
@@ -79,8 +81,10 @@ Installing the ``Antenna Toolkit``
         #. Execute the below command on the terminal
 
            .. code:: shell
+
              unzip Antenna-Toolkit-Installer-ubuntu_*.zip
              ./installer.sh
+
         #. Search for the ``Antenna Toolkit`` and run it.
 
         The ``Antenna Toolkit`` window should appear at this stage.
@@ -101,12 +105,14 @@ methods or install only the backend methods.
 To install both the backend and UI methods, run this command:
 
 .. code:: bash
+
     pip install ansys-aedt-toolkits-antenna[all]
 
 If you only need the common API, install only the backend methods with this
 command:
 
 .. code:: bash
+
     pip install ansys-aedt-toolkits-antenna
 
 
@@ -116,15 +122,17 @@ For developers
 You can be up and running with four lines of code:
 
 .. code:: bash
+
    git clone https://github.com/ansys/pyaedt-toolkits-antenna
    cd pyaedt-toolkits-radar
-   python -m pip install -U pip uv
-   uv venv
-   uv pip install -e .
+   pip install -e .
+
 Now you can run it with:
 
 .. code:: bash
-   uv run run_toolkit
+
+   run_toolkit
+
 **Details**
 
 Installing Pytools installer in developer mode allows you to modify the source
@@ -136,42 +144,50 @@ guide`_. You need to follow these steps:
 #. Start by cloning this repository:
 
    .. code:: bash
+
       git clone https://github.com/ansys/pyaedt-toolkits-antenna
+
 #. Create a fresh-clean Python environment and activate it. Refer to the
    official `venv`_ documentation if you require further information:
 
    .. code:: bash
+
       # Create a virtual environment
-      python -m uv venv .venv
+      python -m venv .venv
       # Activate it in a POSIX system
       source .venv/bin/activate
       # Activate it in Windows CMD environment
       .venv\Scripts\activate.bat
       # Activate it in Windows Powershell
       .venv\Scripts\Activate.ps1
-#. Make sure you have the latest version of `pip`_:
 
-   .. code:: bash
-      python -m pip install -U pip uv
 #. Install the project in editable mode:
 
    .. code:: bash
-      python -m uv pip install -e .[tests,doc]
+
+      python -m pip install -e .[tests,doc]
+
 #. Finally, verify your development installation by running:
 
    .. code:: bash
-      uv run pytest tests -v
+
+      pytest tests -v
+
 Style and testing
 -----------------
+
 This project uses `pre-commit <https://pre-commit.com/>`_. Install with:
 
 .. code::
-   uv pip install pre-commit
-   uv run pre-commit install
+
+   pip install pre-commit
+   run pre-commit install
+
 This now runs ``pre-commit`` for each commit to ensure you follow project
 style guidelines. For example:
 
 .. code::
+
    git commit -am 'fix style'
    isort....................................................................Passed
    black....................................................................Passed
@@ -187,15 +203,20 @@ style guidelines. For example:
 If you need to run it again on all files and not just staged files, run:
 
 .. code::
-   uv run pre-commit run --all-files
+
+   run pre-commit run --all-files
+
 Local build
 -----------
+
 This application can be deployed as a 'frozen' application using `pyinstaller
 <https://pypi.org/project/pyinstaller/>`_ with:
 
 .. code::
-   uv pip install -e .[freeze]
-   uv run pyinstaller frozen.spec
+
+   pip install -e .[freeze]
+   run pyinstaller frozen.spec
+
 This generates application files at ``dist/ansys_python_manager`` and you
 can run it locally by executing ``Ansys Python Manager.exe``.
 
@@ -206,10 +227,12 @@ For building documentation, you can either run the usual rules provided in the
 `Sphinx`_ Makefile:
 
 .. code:: bash
-    uv pip install -e .[doc]
-    uv run make -C doc/ html
+
+    pip install -e .[doc]
+    doc/make.bat html
     # subsequently open the documentation with (under Linux):
     <your_browser_name> doc/html/index.html
+
 .. LINKS AND REFERENCES
 .. _PyAnsys Developer's guide: https://dev.docs.pyansys.com/
 .. _Sphinx: https://www.sphinx-doc.org/en/master/
