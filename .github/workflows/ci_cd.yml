@@ -453,7 +453,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: false
           additional-artifacts: "ansys-aedt-toolkits-antenna-installer-windows ansys-aedt-toolkits-antenna-installer-ubuntu-22.04 ansys-aedt-toolkits-antenna-installer-ubuntu-24.04"
-          
+
   doc-deploy-dev:
     name: "Deploy development documentation"
     runs-on: ubuntu-latest
