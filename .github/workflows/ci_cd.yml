@@ -438,7 +438,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: false
 
-
       - name: "Download all artifacts that got generated in the CI/CD"
         uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
