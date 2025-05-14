@@ -3,10 +3,24 @@
 Installation
 ============
 
-Visit the `Releases
-<https://github.com/ansys/pyaedt-toolkits-antenna/releases>`__ page and pull
-down the latest installer.
+For users
+^^^^^^^^^
 
+If you are looking for a stable version of the AEDT Antenna Toolkit, we recommend using the
+installer available in:
+
+`Download stable version |release| <|github_release_url|>`_
+
+If you prefer the latest development version, you can download the automatically generated
+files from the continuous integration (CI) workflow. These artifacts are available from the
+latest runs on the `main` branch:
+
+`View CI artifacts from main branch <https://github.com/ansys/pyaedt-toolkits-antenna/actions/workflows/ci_cd.yml?query=branch%3Amain>`_
+
+.. warning::
+
+   CI artifacts are generated from the latest commits on the `main` branch and may contain experimental or unstable features.
+   They are ideal for advanced users who want to try out the latest developments and provide early feedback.
 
 For developers
 ^^^^^^^^^^^^^^

@@ -145,7 +145,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Antenna-Toolkit-windows
+          name: ansys-aedt-toolkits-antenna-installer-windows
           path: dist/*.exe
 
   build-application-linux-debian:
@@ -234,15 +234,15 @@ jobs:
           chmod +x installer.sh postInstallScript.sh antenna_toolkit.deb
           version=$(cat ./installer/VERSION)
           os_version_processed=$(echo "${{ matrix.os }}" | sed 's/\./_/g')
-          zip_name="Ansys-Antenna-Toolkit_linux_${os_version_processed}_v${version}.zip"
+          zip_name="ansys-aedt-toolkits-antenna-installer-ubuntu-${os_version_processed}-v${version}.zip"
           echo "OS_VERSION_PROCESSED=${os_version_processed}" >> $GITHUB_ENV
           echo "APPLICATION_VERSION=v${version}" >> $GITHUB_ENV
           zip -r $zip_name antenna_toolkit.deb installer.sh postInstallScript.sh
 
       - uses: actions/upload-artifact@v4
         with:
-           name: Antenna-Toolkit-ubuntu_${{ matrix.os }}
-           path: Ansys-Antenna-Toolkit_linux_${{ env.OS_VERSION_PROCESSED }}_${{ env.APPLICATION_VERSION }}.zip
+          name: ansys-aedt-toolkits-antenna-installer-ubuntu-${{ matrix.os }}
+          path: ansys-aedt-toolkits-antenna-installer-ubuntu-${{ env.OS_VERSION_PROCESSED }}-${{ env.APPLICATION_VERSION }}.zip
 
   doc-style:
     name: "Documentation style"
@@ -452,8 +452,8 @@ jobs:
           library-name: ${{ env.LIBRARY_NAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: false
-          additional-artifacts: "Antenna-Toolkit-windows Antenna-Toolkit-ubuntu_22.04 Antenna-Toolkit-ubuntu_24.04"
-
+          additional-artifacts: "ansys-aedt-toolkits-antenna-installer-windows ansys-aedt-toolkits-antenna-installer-ubuntu-22.04 ansys-aedt-toolkits-antenna-installer-ubuntu-24.04"
+          
   doc-deploy-dev:
     name: "Deploy development documentation"
     runs-on: ubuntu-latest

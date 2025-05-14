@@ -171,6 +171,12 @@ linkcheck_ignore = [
     "https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/src/ansys/aedt/toolkits/antenna/ui/" "actions.py#L143",
 ]
 
+# Add 
+
+rst_epilog = f"""
+.. |github_release_url| replace:: https://github.com/ansys/pyaedt-toolkits-antenna/releases/tag/v{release}
+"""
+
 # static path
 html_static_path = ["_static"]
 
