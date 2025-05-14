@@ -49,6 +49,18 @@ On the `Antenna Toolkit Issues <https://github.com/ansys/pyaedt-toolkits-antenna
 page, you can create issues to report bugs and request new features. On the `Discussions <https://discuss.ansys.com/>`_
 page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback.
 
+Distributing
+~~~~~~~~~~~~
+This project is vectored to be an open-source project. For the time being, feel
+free to distribute it internally, but direct users to visit the `Releases
+<https://github.com/ansys/pyaedt-toolkits-antenna/releases>`__ page
+
+Security
+~~~~~~~~
+The versions that are still supported for security updates can be found at
+the `Security guidelines <https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/SECURITY.md>`_
+site. Information on how to report vulnerabilities is also found.
+
 License
 ~~~~~~~
 The Antenna Toolkit is licensed under the `MIT license <https://opensource.org/license/mit/>`_.

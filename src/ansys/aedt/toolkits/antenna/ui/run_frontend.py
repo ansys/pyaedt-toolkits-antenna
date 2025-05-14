@@ -25,6 +25,7 @@ import os
 import sys
 
 # isort: off
+from ansys.aedt.toolkits.antenna import __version__
 
 # Default user interface properties
 from ansys.aedt.toolkits.antenna.ui.models import properties
@@ -68,6 +69,8 @@ properties.high_resolution = (
 )
 if properties.high_resolution:
     os.environ["QT_SCALE_FACTOR"] = "2"
+
+properties.version = __version__
 
 
 class ApplicationWindow(QMainWindow, Frontend):
