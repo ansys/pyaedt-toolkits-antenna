@@ -200,6 +200,7 @@ style guidelines. For example:
    check yaml...............................................................Passed
    trim trailing whitespace.................................................Passed
    Validate GitHub Workflows................................................Passed
+
 If you need to run it again on all files and not just staged files, run:
 
 .. code::
