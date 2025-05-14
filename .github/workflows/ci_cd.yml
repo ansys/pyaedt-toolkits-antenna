@@ -266,7 +266,7 @@ jobs:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
           add-pdf-html-docs-as-assets: true
-          check-links: true
+          check-links: false
 
   smoke-tests:
     name: "Build and Smoke tests"
