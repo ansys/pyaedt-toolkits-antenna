@@ -30,18 +30,18 @@ Installing the ``Antenna Toolkit``
 
 .. tab-set::
 
-    .. tab-item:: Windows
+  .. tab-item:: Windows
 
-        First step is installing the ``Antenna Toolkit``. In order to do so, follow the next steps.
+    First step is installing the ``Antenna Toolkit``. In order to do so, follow the next steps.
 
-        #. Download the necessary installer from the `latest available release <https://github.com/ansys/pyaedt-toolkits-antenna/releases/latest>`_.
-           The file should be named ``Antenna-Toolkit-Installer.exe``.
+    #. Download the necessary installer from the `latest available release <https://github.com/ansys/pyaedt-toolkits-antenna/releases/latest>`_.
+       The file should be named ``Antenna-Toolkit-Installer.exe``.
 
-        #. Execute the installer.
+    #. Execute the installer.
 
-        #. Search for the ``Antenna Toolkit`` and run it.
+    #. Search for the ``Antenna Toolkit`` and run it.
 
-        The ``Antenna Toolkit`` window should appear at this stage.
+    The ``Antenna Toolkit`` window should appear at this stage.
 
   .. tab-item:: Linux
 
@@ -70,6 +70,7 @@ Installing the ``Antenna Toolkit``
              ./configure
              make
              sudo make install
+
         To install the ``Antenna Toolkit``, follow below steps.
 
         #. Download the necessary installer from the `latest available release <https://github.com/ansys/pyaedt-toolkits-antenna/releases/latest>`_.
