@@ -171,13 +171,14 @@ linkcheck_ignore = [
     "https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/src/ansys/aedt/toolkits/antenna/ui/" "actions.py#L143",
 ]
 
-# Add
-
+# Add replace in RST files
+github_releases_dl_url = "https://github.com/ansys/pyaedt-toolkits-antenna/releases/download"
+installer = "Antenna-Toolkit-Installer"
 rst_epilog = f"""
 .. |github_release_url| replace:: https://github.com/ansys/pyaedt-toolkits-antenna/releases/tag/v{release}
-.. |github_windows_installer| replace:: https://github.com/ansys/pyaedt-toolkits-antenna/releases/download/v{release}/Antenna-Toolkit-Installer.exe
-.. |github_ubuntu_22_installer| replace:: https://github.com/ansys/pyaedt-toolkits-antenna/releases/download/v{release}/Antenna-Toolkit-Installer-ubuntu_22_04.zip
-.. |github_ubuntu_24_installer| replace:: https://github.com/ansys/pyaedt-toolkits-antenna/releases/download/v{release}/Antenna-Toolkit-Installer-ubuntu_24_04.zip
+.. |github_windows_installer| replace:: {github_releases_dl_url}/v{release}/{installer}.exe
+.. |github_ubuntu_22_installer| replace:: {github_releases_dl_url}/v{release}/{installer}-ubuntu_22_04.zip
+.. |github_ubuntu_24_installer| replace:: {github_releases_dl_url}/v{release}/{installer}-ubuntu_24_04.zip
 """
 # static path
 html_static_path = ["_static"]
