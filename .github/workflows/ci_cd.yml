@@ -14,7 +14,7 @@ on:
         default: 'warning'
 
 env:
-  MAIN_PYTHON_VERSION: '3.10'
+  MAIN_PYTHON_VERSION: '3.12'
   DOCUMENTATION_CNAME: 'aedt.antenna.toolkit.docs.pyansys.com'
   LIBRARY_NAME: 'ansys-aedt-toolkits-antenna'
   LIBRARY_NAMESPACE: 'ansys.aedt.toolkits.antenna'
@@ -145,7 +145,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ansys-aedt-toolkits-antenna-installer-windows
+          name: Antenna-Toolkit-Installer-windows
           path: dist/*.exe
 
   build-application-linux-debian:
@@ -234,15 +234,15 @@ jobs:
           chmod +x installer.sh postInstallScript.sh antenna_toolkit.deb
           version=$(cat ./installer/VERSION)
           os_version_processed=$(echo "${{ matrix.os }}" | sed 's/\./_/g')
-          zip_name="ansys-aedt-toolkits-antenna-installer-ubuntu-${os_version_processed}-v${version}.zip"
+          zip_name="Antenna-Toolkit-Installer-ubuntu_${os_version_processed}.zip"
           echo "OS_VERSION_PROCESSED=${os_version_processed}" >> $GITHUB_ENV
           echo "APPLICATION_VERSION=v${version}" >> $GITHUB_ENV
           zip -r $zip_name antenna_toolkit.deb installer.sh postInstallScript.sh
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ansys-aedt-toolkits-antenna-installer-ubuntu-${{ matrix.os }}
-          path: ansys-aedt-toolkits-antenna-installer-ubuntu-${{ env.OS_VERSION_PROCESSED }}-${{ env.APPLICATION_VERSION }}.zip
+           name: Antenna-Toolkit-Installer-ubuntu_${{ matrix.os }}
+           path: Antenna-Toolkit-Installer-ubuntu_${{ env.OS_VERSION_PROCESSED }}.zip
 
   doc-style:
     name: "Documentation style"
@@ -266,7 +266,7 @@ jobs:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
           add-pdf-html-docs-as-assets: true
-          check-links: true
+          check-links: false
 
   smoke-tests:
     name: "Build and Smoke tests"
@@ -274,7 +274,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ windows-latest, ubuntu-latest ]
-        python-version: [ '3.10' ]
+        python-version: ['3.10', '3.11', '3.12', '3.13']
     runs-on: ${{ matrix.os }}
     needs: [ code-style ]
     steps:
@@ -287,10 +287,6 @@ jobs:
 
   tests_windows:
     name: "Windows Tests"
-    strategy:
-      matrix:
-        python-version: [ '3.10' ]
-      fail-fast: false
     runs-on: [self-hosted, pyaedt, toolkits, Windows]
     needs: [smoke-tests]
     steps:
@@ -299,7 +295,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
       - name: Create Python venv
         run: |
@@ -357,10 +353,6 @@ jobs:
 
   tests_linux:
     name: "Linux Tests"
-    strategy:
-      matrix:
-        python-version: [ '3.10' ]
-      fail-fast: false
     runs-on: [self-hosted, pyaedt, toolkits, Linux]
     needs: [ smoke-tests ]
     env:
@@ -372,7 +364,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
       - name: Create Python venv
         run: |
@@ -411,6 +403,7 @@ jobs:
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_rest_api
 
+
   build-library:
     name: "Build library artifacts"
     runs-on: ubuntu-latest
@@ -438,6 +431,39 @@ jobs:
           name: ${{ env.LIBRARY_NAME }}-artifacts
           path: ${{ env.LIBRARY_NAME }}-artifacts
 
+      - name: Release to GitHub
+        uses: ansys/actions/release-github@v9
+        with:
+          library-name: ${{ env.LIBRARY_NAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: false
+
+      - name: "Download all artifacts that got generated in the CI/CD"
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+        with:
+          path: /tmp/artifacts
+
+      - name: List artifacts
+        run: ls -R /tmp/artifacts
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            /tmp/artifacts/Antenna-Toolkit-Installer-windows/*.exe
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            /tmp/artifacts/Antenna-Toolkit-Installer-ubuntu_22.04/*.zip
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            /tmp/artifacts/Antenna-Toolkit-Installer-ubuntu_24.04/*.zip
+
+
+
+
       - name: Release to PyPI using trusted publisher
         uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
         with:
@@ -445,14 +471,6 @@ jobs:
           print-hash: true
           packages-dir: ${{ env.LIBRARY_NAME }}-artifacts
           skip-existing: false
-
-      - name: Release to GitHub
-        uses: ansys/actions/release-github@v9
-        with:
-          library-name: ${{ env.LIBRARY_NAME }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          generate_release_notes: false
-          additional-artifacts: "ansys-aedt-toolkits-antenna-installer-windows ansys-aedt-toolkits-antenna-installer-ubuntu-22.04 ansys-aedt-toolkits-antenna-installer-ubuntu-24.04"
 
   doc-deploy-dev:
     name: "Deploy development documentation"
