@@ -175,20 +175,11 @@ linkcheck_ignore = [
 
 rst_epilog = f"""
 .. |github_release_url| replace:: https://github.com/ansys/pyaedt-toolkits-antenna/releases/tag/v{release}
-"""
-rst_windows_installer = f"""
 .. |github_windows_installer| replace:: https://github.com/ansys/pyaedt-toolkits-antenna/releases/download/v{release}/
 Antenna-Toolkit-Installer.exe
+.. |github_ubuntu_22_installer| replace:: https://github.com/ansys/pyaedt-toolkits-antenna/releases/download/v{release}/Antenna-Toolkit-Installer-ubuntu_22_04.zip
+.. |github_ubuntu_24_installer| replace:: https://github.com/ansys/pyaedt-toolkits-antenna/releases/download/v{release}/Antenna-Toolkit-Installer-ubuntu_24_04.zip
 """
-rst_ubuntu_22_installer = f"""
-.. |github_ubuntu_22_installer| replace:: https://github.com/ansys/pyaedt-toolkits-antenna/releases/download/v{release}/
-Antenna-Toolkit-Installer-ubuntu_22_04.zip
-"""
-rst_ubuntu_24_installer = f"""
-.. |github_ubuntu_24_installer| replace:: https://github.com/ansys/pyaedt-toolkits-antenna/releases/download/v{release}/
-Antenna-Toolkit-Installer-ubuntu_24_04.zip
-"""
-
 # static path
 html_static_path = ["_static"]
 
