@@ -6,7 +6,7 @@ Installation
 For users
 ^^^^^^^^^
 
-If you are looking for a stable version of the AEDT Antenna Toolkit, we recommend using the
+If you are looking for a stable version of the AEDT Antenna Toolkit, it is recommended to use the
 installer available in:
 
 `Download stable version |release| <|github_release_url|>`_
