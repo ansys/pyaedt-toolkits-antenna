@@ -124,7 +124,7 @@ You can be up and running with four lines of code:
 .. code:: bash
 
    git clone https://github.com/ansys/pyaedt-toolkits-antenna
-   cd pyaedt-toolkits-radar
+   cd pyaedt-toolkits-antenna
    pip install -e .
 
 Now you can run it with:
