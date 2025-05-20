@@ -9,6 +9,41 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.8.0 <https://github.com/ansys/pyaedt-toolkits-antenna/releases/tag/v0.8.0>`_ - May 20, 2025
+==============================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Dependencies
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Bump actions/download-artifact from 4.1.9 to 4.3.0
+          - `#330 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/330>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update v0.8.dev0
+          - `#320 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/320>`_
+
+        * - update CHANGELOG for v0.7.1
+          - `#325 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/325>`_
+
+        * - Fix codecov job
+          - `#327 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/327>`_
+
+        * - Update CICD to Python 3.12
+          - `#328 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/328>`_
+
+
 `0.7.1 <https://github.com/ansys/pyaedt-toolkits-antenna/releases/tag/v0.7.1>`_ - May 08, 2025
 ==============================================================================================
 
