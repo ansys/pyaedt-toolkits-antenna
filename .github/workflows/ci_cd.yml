@@ -431,6 +431,14 @@ jobs:
           name: ${{ env.LIBRARY_NAME }}-artifacts
           path: ${{ env.LIBRARY_NAME }}-artifacts
 
+      - name: Release to PyPI using trusted publisher
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
+        with:
+          repository-url: "https://upload.pypi.org/legacy/"
+          print-hash: true
+          packages-dir: ${{ env.LIBRARY_NAME }}-artifacts
+          skip-existing: false
+
       - name: Release to GitHub
         uses: ansys/actions/release-github@v9
         with:
@@ -460,17 +468,6 @@ jobs:
         with:
           files: |
             /tmp/artifacts/Antenna-Toolkit-Installer-ubuntu_24.04/*.zip
-
-
-
-
-      - name: Release to PyPI using trusted publisher
-        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
-        with:
-          repository-url: "https://upload.pypi.org/legacy/"
-          print-hash: true
-          packages-dir: ${{ env.LIBRARY_NAME }}-artifacts
-          skip-existing: false
 
   doc-deploy-dev:
     name: "Deploy development documentation"
