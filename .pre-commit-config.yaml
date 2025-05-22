@@ -8,6 +8,7 @@ exclude: |
     (?x)(
         src/ansys/aedt/toolkits/antenna/ui/windows/.* |
         tests/.* |
+        doc/source/conf.py |
         README.rst
     )
 

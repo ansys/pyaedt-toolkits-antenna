@@ -12,13 +12,13 @@ The following installers are available for different operating systems:
    :header-rows: 1
    :widths: 60 40
 
-   * - `Installer Link <https://github.com/ansys/pyaedt-toolkits-antenna/releases/latest>`_
+   * - `Installer Link <|github_release_url|>`_
      - Operating System
-   * - `Download <https://github.com/ansys/pyaedt-toolkits-antenna/releases/latest/download/Antenna-Toolkit-Installer-windows.exe>`_
+   * - `Download <|github_windows_installer|>`_
      - Windows
-   * - `Download <https://github.com/ansys/pyaedt-toolkits-antenna/releases/latest/download/Antenna-Toolkit-Installer-ubuntu_22_04.zip>`_
+   * - `Download <|github_ubuntu_22_installer|>`_
      - Ubuntu 22.04
-   * - `Download <https://github.com/ansys/pyaedt-toolkits-antenna/releases/latest/download/Antenna-Toolkit-Installer-ubuntu_24_04.zip>`_
+   * - `Download <|github_ubuntu_24_installer|>`_
      - Ubuntu 24.04
 
 Visit the `Releases
@@ -124,7 +124,7 @@ You can be up and running with four lines of code:
 .. code:: bash
 
    git clone https://github.com/ansys/pyaedt-toolkits-antenna
-   cd pyaedt-toolkits-radar
+   cd pyaedt-toolkits-antenna
    pip install -e .
 
 Now you can run it with:
