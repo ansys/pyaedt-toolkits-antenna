@@ -210,7 +210,7 @@ If you need to run it again on all files and not just staged files, run:
 Local build
 -----------
 
-This application can be deployed as a 'frozen' application using `pyinstaller
+This app can be deployed as a 'frozen' app using `pyinstaller
 <https://pypi.org/project/pyinstaller/>`_ with:
 
 .. code::
@@ -218,8 +218,12 @@ This application can be deployed as a 'frozen' application using `pyinstaller
    pip install -e .[freeze]
    run pyinstaller frozen.spec
 
-This generates application files at ``dist/ansys_python_manager`` and you
-can run it locally by executing ``Ansys Python Manager.exe``.
+This generates app files at ``dist/antenna_toolkit`` and you
+can run it locally by executing ``Antenna Toolkit.exe``.
+For more information on how to create a standalone executable, refer to this section:
+`How to distribute
+<https://aedt.common.toolkit.docs.pyansys.com/version/stable/distributing.html>`_.
+
 
 
 Documentation
