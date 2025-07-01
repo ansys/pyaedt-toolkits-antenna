@@ -45,6 +45,9 @@ import requests
 
 number_pattern = re.compile(r"^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$")
 
+"""Default timeout for requests in seconds."""
+DEFAULT_REQUESTS_TIMEOUT = 20
+
 
 class Frontend(FrontendGeneric):
     def __init__(self):
@@ -56,7 +59,7 @@ class Frontend(FrontendGeneric):
         if not self.__update_antenna_properties():
             return False
 
-        response = requests.post(self.url + "/create_antenna")
+        response = requests.post(self.url + "/create_antenna", timeout=DEFAULT_REQUESTS_TIMEOUT)
         if response.ok:
             msg = "{} synthesis".format(self.properties.antenna.antenna_selected)
             self.ui.update_logger(msg)
@@ -120,7 +123,7 @@ class Frontend(FrontendGeneric):
             logger.debug(msg)
             return False
 
-        response = requests.post(self.url + "/create_antenna")
+        response = requests.post(self.url + "/create_antenna", timeout=DEFAULT_REQUESTS_TIMEOUT)
         if response.ok:
             msg = "{} antenna created".format(self.properties.antenna.antenna_selected)
             self.ui.update_logger(msg)
@@ -134,7 +137,9 @@ class Frontend(FrontendGeneric):
 
     def update_antenna_parameter(self, key, value):
         """Update antenna parameter."""
-        response = requests.patch(self.url + "/hfss_parameters", json={"key": key, "value": value})
+        response = requests.patch(
+            self.url + "/hfss_parameters", json={"key": key, "value": value}, timeout=DEFAULT_REQUESTS_TIMEOUT
+        )
         if response.ok:
             msg = "{} updated in design".format(key)
             self.ui.update_logger(msg)
@@ -149,7 +154,7 @@ class Frontend(FrontendGeneric):
 
     def analyze_design(self):
         """Analyze design."""
-        response = requests.post(self.url + "/analyze")
+        response = requests.post(self.url + "/analyze", timeout=DEFAULT_REQUESTS_TIMEOUT)
 
         if response.ok:
             msg = "Antenna solved"
@@ -167,12 +172,16 @@ class Frontend(FrontendGeneric):
         """Get farfield data."""
         farfield_data = None
         if self.properties.backend_url in ["127.0.0.1", "localhost"]:
-            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": False})
+            response = requests.get(
+                self.url + "/export_farfield", json={"sphere": "3D", "encode": False}, timeout=DEFAULT_REQUESTS_TIMEOUT
+            )
             if response.ok:
                 data = response.json()
                 farfield_data = FfdSolutionData(data[0], data[1])
         else:
-            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": True})
+            response = requests.get(
+                self.url + "/export_farfield", json={"sphere": "3D", "encode": True}, timeout=DEFAULT_REQUESTS_TIMEOUT
+            )
             if response.ok:
                 data = response.json()
 
@@ -231,7 +240,7 @@ class Frontend(FrontendGeneric):
 
     def scattering_results(self):
         """Get farfield 2D results."""
-        response = requests.get(self.url + "/scattering_results")
+        response = requests.get(self.url + "/scattering_results", timeout=DEFAULT_REQUESTS_TIMEOUT)
 
         if response.ok:
             msg = "Scattering results extracted"
