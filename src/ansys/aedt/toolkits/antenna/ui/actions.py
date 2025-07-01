@@ -172,16 +172,12 @@ class Frontend(FrontendGeneric):
         """Get farfield data."""
         farfield_data = None
         if self.properties.backend_url in ["127.0.0.1", "localhost"]:
-            response = requests.get(
-                self.url + "/export_farfield", json={"sphere": "3D", "encode": False}, timeout=DEFAULT_REQUESTS_TIMEOUT
-            )
+            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": False}, timeout=500)
             if response.ok:
                 data = response.json()
                 farfield_data = FfdSolutionData(data[0], data[1])
         else:
-            response = requests.get(
-                self.url + "/export_farfield", json={"sphere": "3D", "encode": True}, timeout=DEFAULT_REQUESTS_TIMEOUT
-            )
+            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": True}, timeout=500)
             if response.ok:
                 data = response.json()
 
@@ -240,7 +236,7 @@ class Frontend(FrontendGeneric):
 
     def scattering_results(self):
         """Get farfield 2D results."""
-        response = requests.get(self.url + "/scattering_results", timeout=DEFAULT_REQUESTS_TIMEOUT)
+        response = requests.get(self.url + "/scattering_results", timeout=500)
 
         if response.ok:
             msg = "Scattering results extracted"
