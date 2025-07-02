@@ -279,15 +279,23 @@ class ApplicationWindow(QMainWindow, Frontend):
         event.accept()
 
 
-def run_frontend(backend_url="", backend_port=0):
+def run_frontend(backend_url="", backend_port=0, app=None):
     if backend_url:
         properties.backend_url = backend_url
     if backend_port:
         properties.backend_port = backend_port
-    app = QApplication(sys.argv)
+
+    run_separately = False
+
+    if not app:
+        run_separately = True
+        app = QApplication(sys.argv)
+
     window = ApplicationWindow()
     window.show()
-    sys.exit(app.exec())
+    app.processEvents()
+    if run_separately:
+        sys.exit(app.exec())
 
 
 if __name__ == "__main__":

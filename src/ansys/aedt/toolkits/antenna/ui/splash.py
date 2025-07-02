@@ -3,6 +3,7 @@
 # Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -21,20 +22,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 import os.path
-import sys
 
 from PySide6.QtCore import QTimer
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QApplication
 from PySide6.QtWidgets import QSplashScreen
 
 from ansys.aedt.toolkits.antenna.ui.models import properties
 
 
-def show_splash_screen():
-    app = QApplication(sys.argv)
+def show_splash_screen(app):
+    """
+    Show the splash screen for the application.
+    This function creates a splash screen with a specified image and dimensions.
+    It displays the splash screen for a certain duration before closing it.
+    The splash screen is shown on top of the main application window.
+    """
     if properties.high_resolution:
         splash_dim = 800
     else:
@@ -46,8 +51,9 @@ def show_splash_screen():
     splash.show()
 
     # Close the splash screen after a delay (e.g., 3000 milliseconds)
-    QTimer.singleShot(8000, splash.close)
+    QTimer.singleShot(7000, splash.close)
 
     # Start the main application after the splash screen
-    QTimer.singleShot(8000, app.quit)
-    app.exec()
+    QTimer.singleShot(7000, splash.close)
+    app.processEvents()
+    return splash
