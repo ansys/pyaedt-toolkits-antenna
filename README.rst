@@ -33,7 +33,7 @@ based on `Pyside6 <https://doc.qt.io/qtforpython-6/quickstart.html>`_.
 
 Requirements
 ~~~~~~~~~~~~
-In addition to the runtime dependencies listed in the `Getting started <https://aedt.antenna.toolkit.docs.pyansys.com/version/stable/getting-started.html>`_,
+In addition to the runtime dependencies listed in the `Getting started <https://aedt.antenna.toolkit.docs.pyansys.com/version/stable/getting_started/index.html>`_,
 the Antenna Toolkit requires AEDT 2025 R1 or later.
 
 Documentation and issues
