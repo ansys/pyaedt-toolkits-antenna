@@ -46,7 +46,7 @@ import requests
 number_pattern = re.compile(r"^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$")
 
 """Default timeout for requests in seconds."""
-DEFAULT_REQUESTS_TIMEOUT = 20
+DEFAULT_REQUESTS_TIMEOUT = 120
 
 
 class Frontend(FrontendGeneric):
@@ -154,7 +154,7 @@ class Frontend(FrontendGeneric):
 
     def analyze_design(self):
         """Analyze design."""
-        response = requests.post(self.url + "/analyze", timeout=DEFAULT_REQUESTS_TIMEOUT)
+        response = requests.post(self.url + "/analyze")  # nosec B113
 
         if response.ok:
             msg = "Antenna solved"
@@ -172,12 +172,12 @@ class Frontend(FrontendGeneric):
         """Get farfield data."""
         farfield_data = None
         if self.properties.backend_url in ["127.0.0.1", "localhost"]:
-            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": False}, timeout=500)
+            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": False})  # nosec B113
             if response.ok:
                 data = response.json()
                 farfield_data = FfdSolutionData(data[0], data[1])
         else:
-            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": True}, timeout=500)
+            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": True})  # nosec B113
             if response.ok:
                 data = response.json()
 
