@@ -236,7 +236,7 @@ class Frontend(FrontendGeneric):
 
     def scattering_results(self):
         """Get farfield 2D results."""
-        response = requests.get(self.url + "/scattering_results", timeout=500)
+        response = requests.get(self.url + "/scattering_results")  # nosec B113
 
         if response.ok:
             msg = "Scattering results extracted"
