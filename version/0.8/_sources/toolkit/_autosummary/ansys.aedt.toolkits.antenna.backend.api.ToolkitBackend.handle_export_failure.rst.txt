@@ -1,0 +1,6 @@
+handle\_export\_failure
+=======================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.api
+
+.. automethod:: ToolkitBackend.handle_export_failure
