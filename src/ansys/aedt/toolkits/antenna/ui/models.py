@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +37,8 @@ from ansys.aedt.toolkits.common.ui.models import general_settings
 from pydantic import BaseModel
 from pydantic import Field
 
+import ansys.aedt.toolkits.antenna
+
 
 class AntennaProperties(BaseModel):
     """Stores toolkit properties."""
@@ -59,8 +62,18 @@ class Properties(FrontendProperties, UIProperties, validate_assignment=True):
 
 
 frontend_properties = {}
-if os.path.isfile(os.path.join(os.path.dirname(__file__), "frontend_properties.toml")):
-    with open(os.path.join(os.path.dirname(__file__), "frontend_properties.toml"), mode="rb") as file_handler:
+
+installation_folder = os.path.dirname(ansys.aedt.toolkits.antenna.__file__)
+
+if "PYAEDT_TOOLKIT_CONFIG_DIR" in os.environ:
+    local_dir = os.path.abspath(os.environ["PYAEDT_TOOLKIT_CONFIG_DIR"])
+    frontend_config = os.path.join(local_dir, "frontend_properties.toml")
+    if os.path.isfile(frontend_config):
+        with open(frontend_config, mode="rb") as file_handler:
+            frontend_properties = tomllib.load(file_handler)
+
+if not frontend_properties and os.path.isfile(os.path.join(installation_folder, "ui/frontend_properties.toml")):
+    with open(os.path.join(installation_folder, "ui/frontend_properties.toml"), mode="rb") as file_handler:
         frontend_properties = tomllib.load(file_handler)
 
 toolkit_property = {}

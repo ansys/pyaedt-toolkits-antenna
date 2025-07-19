@@ -1,7 +1,7 @@
 Antenna Toolkit
 ===============
 
-|pyansys| |PythonVersion| |GH-CI| |MIT| |coverage| |black|
+|pyansys| |PythonVersion| |GH-CI| |MIT| |coverage| |black| |deepwiki|
 
 .. |pyansys| image:: https://img.shields.io/badge/Py-Ansys-ffc107.svg?labelColor=black&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAABDklEQVQ4jWNgoDfg5mD8vE7q/3bpVyskbW0sMRUwofHD7Dh5OBkZGBgW7/3W2tZpa2tLQEOyOzeEsfumlK2tbVpaGj4N6jIs1lpsDAwMJ278sveMY2BgCA0NFRISwqkhyQ1q/Nyd3zg4OBgYGNjZ2ePi4rB5loGBhZnhxTLJ/9ulv26Q4uVk1NXV/f///////69du4Zdg78lx//t0v+3S88rFISInD59GqIH2esIJ8G9O2/XVwhjzpw5EAam1xkkBJn/bJX+v1365hxxuCAfH9+3b9/+////48cPuNehNsS7cDEzMTAwMMzb+Q2u4dOnT2vWrMHu9ZtzxP9vl/69RVpCkBlZ3N7enoDXBwEAAA+YYitOilMVAAAAAElFTkSuQmCC
    :target: https://docs.pyansys.com/
@@ -23,6 +23,9 @@ Antenna Toolkit
   :target: https://github.com/psf/black
   :alt: black
 
+.. |deepwiki| image:: https://deepwiki.com/badge.svg
+   :target: https://deepwiki.com/ansys/pyaedt-toolkits-antenna
+   
 .. reuse_start
 
 The Antenna Toolkit is a Python interface for accelerating antenna design
@@ -33,9 +36,8 @@ based on `Pyside6 <https://doc.qt.io/qtforpython-6/quickstart.html>`_.
 
 Requirements
 ~~~~~~~~~~~~
-In addition to the runtime dependencies listed in the `Getting started <https://aedt.antenna.toolkit.docs.pyansys.com/version/stable/getting-started.html>`_,
-the Antenna Toolkit requires AEDT 2023 R1 or later. This toolkit also supports the
-AEDT Student Version for 2023 R1 or later.
+In addition to the runtime dependencies listed in the `Getting started <https://aedt.antenna.toolkit.docs.pyansys.com/version/stable/getting_started/index.html>`_,
+the Antenna Toolkit requires AEDT 2025 R1 or later.
 
 Documentation and issues
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,6 +51,18 @@ development version or previously released versions.
 On the `Antenna Toolkit Issues <https://github.com/ansys/pyaedt-toolkits-antenna/issues>`_
 page, you can create issues to report bugs and request new features. On the `Discussions <https://discuss.ansys.com/>`_
 page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback.
+
+Distributing
+~~~~~~~~~~~~
+This project is vectored to be an open-source project. For the time being, feel
+free to distribute it internally, but direct users to visit the `Releases
+<https://github.com/ansys/pyaedt-toolkits-antenna/releases>`__ page
+
+Security
+~~~~~~~~
+The versions that are still supported for security updates can be found at
+the `Security guidelines <https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/SECURITY.md>`_
+site. Information on how to report vulnerabilities is also found.
 
 License
 ~~~~~~~

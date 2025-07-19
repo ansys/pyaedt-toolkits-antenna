@@ -3,8 +3,8 @@ from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QGridLayout
 from PySide6.QtWidgets import QWidget
 
-from windows.help.help_column import Ui_LeftColumn
-from windows.help.help_page import Ui_help
+from ansys.aedt.toolkits.antenna.ui.windows.help.help_column import Ui_LeftColumn
+from ansys.aedt.toolkits.antenna.ui.windows.help.help_page import Ui_help
 
 import tempfile
 from ansys.aedt.toolkits.antenna import __version__

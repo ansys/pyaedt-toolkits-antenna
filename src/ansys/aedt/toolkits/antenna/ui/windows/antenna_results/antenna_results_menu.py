@@ -46,8 +46,8 @@ import pyqtgraph as pg
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
 
-from windows.antenna_results.antenna_results_page import Ui_AntennaResults
-from windows.antenna_results.antenna_results_column import Ui_LeftColumn
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_page import Ui_AntennaResults
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_column import Ui_LeftColumn
 
 import os
 

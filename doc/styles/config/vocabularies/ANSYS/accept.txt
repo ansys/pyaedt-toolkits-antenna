@@ -7,17 +7,27 @@ Api.py
 application
 [Bb]owtie
 CPython
+datas
 docstring
 GitHub
 HFSS
+html
+[Mm]akefile
+Powershell
 Properties.json
 PyAEDT
 PyAEDT Common Toolkit
 pyaedt
+pytest
+[Pp]yinstaller
+[Pp]ytools
 REST API
 Rest_api.py
+run_toolkit
 toolkit's
 toolkits
 toml
 url
+uv
+venv
 walkthrough

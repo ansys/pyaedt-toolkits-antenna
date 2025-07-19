@@ -1,0 +1,20 @@
+[Desktop Entry]
+
+# The type of the thing this desktop file refers to (e.g. can be Link)
+Type=Application
+
+# The application name.
+Name=Antenna Toolkit
+
+# Tooltip comment to show in menus.
+Comment=Ansys Antenna Toolkit.
+
+# The path (folder) in which the executable is run
+Path=${HOME}/.local/opt/antenna_toolkit
+
+# The executable (can include arguments)
+Exec=${HOME}/.local/opt/antenna_toolkit/antenna_toolkit
+
+# The icon for the entry, using the name from `hicolor/scalable` without the extension.
+# You can also use a full path to a file in /opt.
+Icon=${HOME}/.local/share/icons/splash_icon.svg
