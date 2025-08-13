@@ -364,7 +364,7 @@ jobs:
 
   tests_linux:
     name: "Linux Tests"
-    runs-on: [self-hosted, pyaedt, toolkits, Linux]
+    runs-on: [self-hosted, Linux, pyaedt-toolkit]
     needs: [ smoke-tests ]
     env:
       ANSYSEM_ROOT252: '/usr/ansys_inc/v252/AnsysEM'
