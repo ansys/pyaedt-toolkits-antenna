@@ -35,7 +35,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: ansys/actions/doc-deploy-changelog@8d3e4946f36c2a7d447b92e34b1022a5c9dc77a7 # v10.0.12
+      - uses: ansys/actions/doc-deploy-changelog@1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
         with:
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
@@ -91,7 +91,7 @@ jobs:
     steps:
       - name: Check the title of the pull request
         if: github.event_name == 'pull_request'
-        uses: ansys/actions/check-pr-title@8d3e4946f36c2a7d447b92e34b1022a5c9dc77a7 # v10.0.12
+        uses: ansys/actions/check-pr-title@1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           use-upper-case: true
@@ -105,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [pr-title]
     steps:
-      - uses: ansys/actions/code-style@54d45960ae9d009b2a3f26dfa687f611a85c6da3 # v10.0.11
+      - uses: ansys/actions/code-style@1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
@@ -260,7 +260,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [pr-title]
     steps:
-      - uses: ansys/actions/doc-style@54d45960ae9d009b2a3f26dfa687f611a85c6da3 # v10.0.11
+      - uses: ansys/actions/doc-style@1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           vale-version: "3.4.1"
@@ -272,7 +272,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Build documentation
-        uses: ansys/actions/doc-build@54d45960ae9d009b2a3f26dfa687f611a85c6da3 # v10.0.11
+        uses: ansys/actions/doc-build1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
@@ -289,7 +289,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [ code-style ]
     steps:
-      - uses: ansys/actions/build-wheelhouse@54d45960ae9d009b2a3f26dfa687f611a85c6da3 # v10.0.11
+      - uses: ansys/actions/build-wheelhouse@1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           operating-system: ${{ matrix.os }}
@@ -420,7 +420,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ doc-build, tests_windows, tests_linux ]
     steps:
-      - uses: ansys/actions/build-library@54d45960ae9d009b2a3f26dfa687f611a85c6da3 # v10.0.11
+      - uses: ansys/actions/build-library@1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
@@ -451,7 +451,7 @@ jobs:
           skip-existing: false
 
       - name: Release to GitHub
-        uses: ansys/actions/release-github@54d45960ae9d009b2a3f26dfa687f611a85c6da3 # v10.0.11
+        uses: ansys/actions/release-github@1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -487,7 +487,7 @@ jobs:
     needs: build-library
     if: github.event_name == 'push'
     steps:
-      - uses: ansys/actions/doc-deploy-dev@54d45960ae9d009b2a3f26dfa687f611a85c6da3 # v10.0.11
+      - uses: ansys/actions/doc-deploy-dev@1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -500,7 +500,7 @@ jobs:
     needs: release
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
     steps:
-      - uses: ansys/actions/doc-deploy-stable@8d3e4946f36c2a7d447b92e34b1022a5c9dc77a7 # v10.0.12
+      - uses: ansys/actions/doc-deploy-stable@1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
