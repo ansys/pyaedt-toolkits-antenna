@@ -298,7 +298,7 @@ jobs:
 
   tests_windows:
     name: "Windows Tests"
-    runs-on: [self-hosted, pyaedt, toolkits, Windows]
+    runs-on: [self-hosted, Windows, pyaedt-toolkit]
     needs: [smoke-tests]
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -367,7 +367,7 @@ jobs:
     runs-on: [self-hosted, pyaedt, toolkits, Linux]
     needs: [ smoke-tests ]
     env:
-      ANSYSEM_ROOT251: '/opt/AnsysEM/v251/AnsysEM'
+      ANSYSEM_ROOT252: '/usr/ansys_inc/v252/AnsysEM'
       ANS_NODEPCHECK: '1'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -395,7 +395,7 @@ jobs:
       - name: Antenna models testing
         timeout-minutes: 5
         run: |
-          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT251 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT252 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_models_common_api
           pytest -v -m antenna_models_api
@@ -403,14 +403,14 @@ jobs:
       - name: Toolkit API testing
         timeout-minutes: 30
         run: |
-          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT251 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT252 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_api
 
       - name: Toolkit REST API testing
         timeout-minutes: 30
         run: |
-          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT251 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT252 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_rest_api
 
