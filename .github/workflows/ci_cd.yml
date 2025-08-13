@@ -272,7 +272,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Build documentation
-        uses: ansys/actions/doc-build1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
+        uses: ansys/actions/doc-build@1096998b81f7ebdea116b683e11f3a8bda759ca6 # v10.0.14
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
