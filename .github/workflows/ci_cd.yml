@@ -104,7 +104,7 @@ jobs:
     runs-on: windows-latest
     needs: [code-style]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-python@v5
         with:
@@ -157,7 +157,7 @@ jobs:
     runs-on: ubuntu-${{ matrix.os }}
     needs: [code-style]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-python@v5
         with:
@@ -290,7 +290,7 @@ jobs:
     runs-on: [self-hosted, pyaedt, toolkits, Windows]
     needs: [smoke-tests]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -359,7 +359,7 @@ jobs:
       ANSYSEM_ROOT251: '/opt/AnsysEM/v251/AnsysEM'
       ANS_NODEPCHECK: '1'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
         uses: actions/setup-python@v5
