@@ -48,7 +48,7 @@ from ansys.aedt.core import settings
 import pytest
 
 DEFAULT_CONFIG = {
-    "desktop_version": "2025.1",
+    "desktop_version": "2025.2",
     "non_graphical": True,
     "use_grpc": True,
     "debug": False
