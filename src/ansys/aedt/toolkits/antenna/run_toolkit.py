@@ -39,6 +39,8 @@ ui = None
 
 from ansys.aedt.toolkits.antenna.backend.models import properties as backend_properties
 from ansys.aedt.toolkits.antenna.ui.models import properties as frontend_properties
+from ansys.aedt.toolkits.antenna.ui.run_frontend import run_frontend
+from ansys.aedt.toolkits.antenna.ui.splash import show_splash_screen
 
 
 def start_backend(pp):
@@ -50,9 +52,6 @@ def start_backend(pp):
 
 
 def show_splash_and_start_frontend(qt_app, url_backend):
-    from ansys.aedt.toolkits.antenna.ui.run_frontend import run_frontend
-    from ansys.aedt.toolkits.antenna.ui.splash import show_splash_screen
-
     splash = show_splash_screen(qt_app)  # Should return the splash widget
 
     def check_backend():

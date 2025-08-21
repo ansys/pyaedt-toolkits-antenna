@@ -317,7 +317,7 @@ class AxialMode(CommonHelix):
         udm.material_name = "pec"
         self._app.modeler.split(udm, "XY", "PositiveOnly")
         gnd = self._app.modeler.create_rectangle(
-            constants.Plane.XY,
+            constants.PLANE.XY,
             [
                 "-{}/2".format(groundx),
                 "-{}/2".format(groundy),
