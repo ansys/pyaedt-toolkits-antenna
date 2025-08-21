@@ -337,7 +337,8 @@ class AntennaResultsMenu(object):
                 rgb_tuple = tuple(int(background_hex[i:i + 2], 16) for i in (0, 2, 4))
                 self.farfield_3d_plotter.clear()
                 self.farfield_data.plot_3d(pyvista_object=self.farfield_3d_plotter,
-                                           background=rgb_tuple)
+                                           background=rgb_tuple, show=False)
+                self.farfield_data.show()
         except Exception as e:
             self.ui.update_logger("Far field results can not be obtained")
             self.ui.update_logger("An error occurred:{}".format(e))
