@@ -86,7 +86,7 @@ oantenna1.name = "MyAmazingAntenna"
 #
 # Create antenna object, change origin parameter in the antenna definition, create antenna, and set up in HFSS.
 
-oantenna2 = BowTieRounded(app, origin=[2, 5, 0], name="MyAntenna")
+oantenna2 = BowTieRounded(app, origin=[20, 5, 0], name="MyAntenna")
 oantenna2.model_hfss()
 oantenna2.setup_hfss()
 

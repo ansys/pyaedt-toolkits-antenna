@@ -217,15 +217,19 @@ model = ModelPlotter()
 for file in files:
     model.add_object(file[0], file[1], file[2])
 
-model.plot(show=True)
+model.plot()
 
 # ## Load far field
 
 farfield_data = FfdSolutionData(farfield_metadata)
 
-# ## Plot far field
+# ## Plot far field 3D
 
-data = farfield_data.plot_3d(show=True)
+data = farfield_data.plot_3d()
+
+# ## Plot far field cut
+
+farfield_data.plot_cut(primary_sweep="theta")
 
 # ## Clean temporary directory
 
