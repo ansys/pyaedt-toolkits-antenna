@@ -27,6 +27,10 @@ aedt_version = "2025.2"
 
 non_graphical = True
 
+# ## Set number of cores
+
+num_cores = 4
+
 # ## Create temporary directory
 
 temp_dir = tempfile.TemporaryDirectory(suffix="_ansys")
@@ -173,6 +177,10 @@ toolkit_api.release_aedt(False, False)
 # Move antenna X position to origin
 
 toolkit_api.update_hfss_parameters("pos_x", "0")
+
+# ## Modify number of cores
+
+properties.antenna.setup.num_cores = num_cores
 
 # ## Analyze design in batch mode
 
