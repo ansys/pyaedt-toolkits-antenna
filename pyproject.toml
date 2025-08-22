@@ -35,7 +35,8 @@ tests = [
     "ansys-aedt-toolkits-common[tests]"
 ]
 doc = [
-    "ansys-aedt-toolkits-common[doc]"
+    "ansys-aedt-toolkits-common[doc]",
+    "ipywidgets"
 ]
 freeze = [
     "pyinstaller"

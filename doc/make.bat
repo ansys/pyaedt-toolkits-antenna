@@ -20,8 +20,19 @@ if NOT "%is_vtk_osmesa_installed%" == "vtk-osmesa" if "%ON_CI%" == "true" (
 	@ECHO ON
 	echo "Installing vtk-osmesa"
 	@ECHO OFF
-	pip install --extra-index-url https://wheels.vtk.org vtk-osmesa
+	pip install --extra-index-url https://wheels.vtk.org vtk-osmesa==9.3.1
 	)
+for /f %%i in ('pip freeze ^| findstr /c:"pypandoc_binary"') do set is_pypandoc_binary_installed=%%i
+if NOT "%is_pypandoc_binary_installed%" == "pypandoc_binary" if "%ON_CI%" == "true" (
+	@ECHO ON
+	echo "Removing pypandoc to avoid conflicts with pypandoc-binary"
+	@ECHO OFF
+	pip uninstall --yes pypandoc
+	@ECHO ON
+	echo "Installing pypandoc-binary"
+	@ECHO OFF
+	pip install pypandoc-binary==1.13)
+REM End of CICD dedicated setup
 
 if "%1" == "" goto help
 if "%1" == "clean" goto clean
