@@ -73,11 +73,11 @@ def setup(app):
 
 print(__version__)
 # Project information
-project = "ansys-aedt-toolkits-antenna"
+project = "pyaedt-toolkits-antenna"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS, Inc."
 release = version = __version__
-cname = os.getenv("DOCUMENTATION_CNAME", "nocname.com")
+cname = os.getenv("DOCUMENTATION_CNAME", "aedt.antenna.toolkit.docs.pyansys.com")
 switcher_version = get_version_match(__version__)
 print(copyright)
 
