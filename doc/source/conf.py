@@ -21,9 +21,11 @@
 # SOFTWARE.
 
 """Sphinx documentation configuration file."""
+"""Sphinx documentation configuration file."""
+
 from datetime import datetime
 import os
-import pathlib
+from pathlib import Path
 import sys
 
 from ansys_sphinx_theme import ansys_favicon
@@ -35,19 +37,22 @@ from ansys_sphinx_theme import pyansys_logo_black
 from ansys_sphinx_theme import watermark
 from sphinx.util import logging
 
-root_path = str(pathlib.Path(__file__).parent.parent.parent)
+root_path = str(Path(__file__).parent.parent.parent)
+src_path = Path(root_path) / "src"
+sys.path.insert(0, str(root_path))
+sys.path.insert(0, str(src_path))
+print("root_path:", root_path)
+print("src_path:", str(src_path))
 
 try:
     from ansys.aedt.toolkits.antenna import __version__
 except ImportError:
     sys.path.append(root_path)
-    src_path = os.path.join(root_path, "src")
-    sys.path.append(src_path)
+
+    sys.path.append(str(src_path))
     from ansys.aedt.toolkits.antenna import __version__
 
 logger = logging.getLogger(__name__)
-path = pathlib.Path(os.path.join(root_path, "examples"))
-EXAMPLES_DIRECTORY = path.resolve()
 
 # Sphinx event hooks
 

@@ -35,8 +35,22 @@ tests = [
     "ansys-aedt-toolkits-common[tests]"
 ]
 doc = [
-    "ansys-aedt-toolkits-common[doc]",
-    "ipywidgets"
+    "pyaedt[all]>=0.15.2",
+    "recommonmark>=0.7.0,<0.8",
+    "pyside6==6.9.0",
+    "ansys-sphinx-theme==1.5.3",
+    "numpydoc>=1.5.0,<1.10",
+    "Sphinx>=7.1.0,<8.3",
+    "sphinx-copybutton>=0.5.0,<0.6",
+    "sphinx-autobuild==2021.3.14; python_version == '3.8'",
+    "sphinx-autobuild==2024.10.3; python_version > '3.8'",
+    "nbsphinx>=0.9.0,<0.10",
+    "sphinx_design",
+    "jupytext",
+    "ipython>=8.13.0,<9.1",
+    "jupyterlab>=4.0.0,<4.5",
+    "pypandoc>=1.10.0,<1.16",
+    "ipywidgets",
 ]
 freeze = [
     "pyinstaller"
