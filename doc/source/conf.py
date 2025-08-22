@@ -208,7 +208,7 @@ nbsphinx_allow_errors = True
 # Sphinx gallery customization
 
 nbsphinx_thumbnails = {
-    "create_antenna_simple.py": "_static/bowtie_example.png",
+    "examples/create_antenna_simple": "_static/bowtie_example.png",
 }
 
 nbsphinx_custom_formats = {
