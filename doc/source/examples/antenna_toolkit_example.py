@@ -209,7 +209,7 @@ model = ModelPlotter()
 for file in files:
     model.add_object(file[0], file[1], file[2])
 
-model.plot(show=False)
+model.plot(show=True)
 
 # ## Load far field
 
@@ -217,7 +217,7 @@ farfield_data = FfdSolutionData(farfield_metadata)
 
 # ## Plot far field
 
-data = farfield_data.plot_3d(show=False)
+data = farfield_data.plot_3d(show=True)
 
 # ## Clean temporary directory
 
