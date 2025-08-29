@@ -28,11 +28,15 @@ import os
 import sys
 import time
 
-from ansys.aedt.toolkits.common.utils import check_backend_communication
+from ansys.aedt.toolkits.common.utils import (
+    check_backend_communication,
+)
 from ansys.aedt.toolkits.common.utils import clean_python_processes
 from ansys.aedt.toolkits.common.utils import find_free_port
 from ansys.aedt.toolkits.common.utils import is_server_running
-from ansys.aedt.toolkits.common.utils import process_desktop_properties
+from ansys.aedt.toolkits.common.utils import (
+    process_desktop_properties,
+)
 from ansys.aedt.toolkits.common.utils import wait_for_server
 
 backend = None
@@ -42,19 +46,27 @@ ui = None
 def get_backend():
     global backend
     if backend is None:
-        backend = importlib.import_module("ansys.aedt.toolkits.antenna.backend.run_backend")
+        backend = importlib.import_module(
+            "ansys.aedt.toolkits.antenna.backend.run_backend"
+        )
     return backend
 
 
 def get_ui():
     global ui
     if ui is None:
-        ui = importlib.import_module("ansys.aedt.toolkits.antenna.ui.run_frontend")
+        ui = importlib.import_module(
+            "ansys.aedt.toolkits.antenna.ui.run_frontend"
+        )
     return ui
 
 
-from ansys.aedt.toolkits.antenna.backend.models import properties as backend_properties
-from ansys.aedt.toolkits.antenna.ui.models import properties as frontend_properties
+from ansys.aedt.toolkits.antenna.backend.models import (
+    properties as backend_properties,
+)
+from ansys.aedt.toolkits.antenna.ui.models import (
+    properties as frontend_properties,
+)
 from ansys.aedt.toolkits.antenna.ui.splash import show_splash_screen
 
 # # Set environment variables
@@ -77,13 +89,17 @@ def start_frontend(backend_url, backend_port):
     ui_imported.run_frontend(backend_url, backend_port)
 
 
-if __name__ == "__main__":
+def main():
     multiprocessing.freeze_support()
 
     is_linux = os.name == "posix"
-    new_port = find_free_port(backend_properties.url, backend_properties.port)
+    new_port = find_free_port(
+        backend_properties.url, backend_properties.port
+    )
     if not new_port:
-        raise Exception(f"No free ports available in {backend_properties.url}")
+        raise Exception(
+            f"No free ports available in {backend_properties.url}"
+        )
 
     backend_properties.port = new_port
     frontend_properties.backend_port = new_port
@@ -105,15 +121,21 @@ if __name__ == "__main__":
 
     # Check if backend is already running
     if is_server_running(server=url, port=port):
-        raise Exception(f"A process is already running at: {url_call}")
+        raise Exception(
+            f"A process is already running at: {url_call}"
+        )
 
     if not is_linux:
         # Launch splash
-        splash_process = multiprocessing.Process(target=show_splash_screen)
+        splash_process = multiprocessing.Process(
+            target=show_splash_screen
+        )
         splash_process.start()
 
     # Launch backend process
-    backend_process = multiprocessing.Process(target=start_backend, args=(new_port,))
+    backend_process = multiprocessing.Process(
+        target=start_backend, args=(new_port,)
+    )
     backend_process.start()
 
     # Wait for backend to start
@@ -132,14 +154,22 @@ if __name__ == "__main__":
         splash_process.join()
 
     # Launch frontend process
-    frontend_process = multiprocessing.Process(target=start_frontend, args=(url, port))
+    frontend_process = multiprocessing.Process(
+        target=start_frontend, args=(url, port)
+    )
     frontend_process.start()
 
     # Wait for backend confirmation
     if not wait_for_server(server=url, port=port):
-        raise Exception(f"Backend did not start properly at {url_call}")
+        raise Exception(
+            f"Backend did not start properly at {url_call}"
+        )
 
     # Keep frontend running
     frontend_process.join()
 
     terminate_processes()
+
+
+if __name__ == "__main__":
+    main()
