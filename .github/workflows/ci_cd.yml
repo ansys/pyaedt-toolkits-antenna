@@ -117,7 +117,12 @@ jobs:
         run: |
           python installer/extract_version.py
 
-      - name: Freeze application
+      - name: Build wheel
+        run: |
+          pip install build
+          python -m build --wheel
+
+      - name: Freeze application with PyInstaller
         run: pyinstaller frozen.spec
 
       - name: Install NSIS
@@ -139,6 +144,31 @@ jobs:
             Write-Error "setup.nsi not found"
           }
           makensis setup.nsi
+
+      - name: Install 7zip
+        run: choco install 7zip -y
+
+      - name: Download and setup pyapp
+        shell: pwsh
+        run: |
+          Invoke-WebRequest https://github.com/ofek/pyapp/releases/latest/download/source.zip -OutFile pyapp-source.zip
+          7z x pyapp-source.zip
+          $pyappDir = Get-ChildItem -Directory -Name "pyapp-v*" | Select-Object -First 1
+          Rename-Item $pyappDir pyapp-latest
+
+      - name: Build pyapp executable
+        shell: pwsh
+        run: |
+          Set-Location pyapp-latest
+          $wheelFile = Get-ChildItem -Path "../dist" -Name "*.whl" | Select-Object -First 1
+          $Env:PYAPP_PROJECT_NAME="antenna_toolkit"
+          $Env:PYAPP_PROJECT_PATH="../dist/$wheelFile"
+          $Env:PYAPP_EXEC_SPEC="ansys.aedt.toolkits.antenna.run_toolkit:main"
+          $Env:PYAPP_DISTRIBUTION_EMBED="0"
+          $Env:PYAPP_UV_ENABLED="1"
+          $Env:PYAPP_IS_GUI="1"
+          cargo build --release
+          Copy-Item "target/release/pyapp.exe" "../dist/antenna_toolkit_pyapp.exe"
 
       - name: List output
         run: ls -R dist
