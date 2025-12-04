@@ -53,7 +53,7 @@ jobs:
     name: "Block dependabot (on dependabot PR)"
     runs-on: ubuntu-latest
     steps:
-      - name: Exit if dependabot triggered the workflow
+      - name: Exit if dependabot triggered the workflow # zizmor: ignore[bot-conditions] : Standard fix prevents any PR from dependabot to be possibly merged.
         if: github.triggering_actor == 'dependabot[bot]'
         run: |
           echo "::warning::Dependabot is not allowed to trigger this workflow. Please review carefully the changes before running the workflow manually."
