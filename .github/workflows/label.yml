@@ -78,6 +78,7 @@ jobs:
         labels: testing
 
   commenter:
+    name: Suggest labels if none assigned
     runs-on: ubuntu-latest
     steps:
     - name: Suggest to add labels
@@ -94,7 +95,6 @@ jobs:
           - [good first issue](https://github.com/ansys/pyaedt-toolkits-antenna.git/pulls?q=label%3Agood+first+issue)
           - [maintenance](https://github.com/ansys/pyaedt-toolkits-antenna.git/pulls?q=label%3Amaintenance+)
           - [release](https://github.com/ansys/pyaedt-toolkits-antenna.git/pulls?q=label%3Arelease+)
-
 
   changelog-fragment:
     name: "Create changelog fragment"
