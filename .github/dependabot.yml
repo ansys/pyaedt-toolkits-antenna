@@ -33,6 +33,10 @@ updates:
       day: "saturday"
       time: "06:00"
       timezone: "Europe/Paris"
+    cooldown:
+      default-days: 7
+      include:
+        - "*"  # Include all dependencies in cooldown
     reviewers:
       - "Samuelopez-ansys"
     assignees:
