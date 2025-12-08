@@ -382,7 +382,6 @@ jobs:
     runs-on: [self-hosted, pyaedt, toolkits, Linux]
     needs: [ smoke-tests ]
     env:
-      ANSYSEM_ROOT251: '/opt/AnsysEM/v251/AnsysEM'
       ANS_NODEPCHECK: '1'
     steps:
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
@@ -410,30 +409,21 @@ jobs:
           pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pytest-azurepipelines
 
       - name: Antenna models testing
-        env:
-          ANSYSEM: ${{ env.ANSYSEM_ROOT251 }}
         timeout-minutes: 5
         run: |
-          export LD_LIBRARY_PATH=${ANSYSEM}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_models_common_api
           pytest -v -m antenna_models_api
 
       - name: Toolkit API testing
-        env:
-          ANSYSEM: ${{ env.ANSYSEM_ROOT251 }}
         timeout-minutes: 30
         run: |
-          export LD_LIBRARY_PATH=${ANSYSEM}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_api
 
       - name: Toolkit REST API testing
-        env:
-          ANSYSEM: ${{ env.ANSYSEM_ROOT251 }}
         timeout-minutes: 30
         run: |
-          export LD_LIBRARY_PATH=${ANSYSEM}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_rest_api
 
