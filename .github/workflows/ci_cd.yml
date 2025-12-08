@@ -65,7 +65,7 @@ jobs:
     name: "Block dependabot (on dependabot PR)"
     runs-on: ubuntu-latest
     steps:
-      - name: Exit if dependabot triggered the workflow # zizmor: ignore[bot-conditions] safe ignore because we exit if dependabot is the triggering action
+      - name: Exit if dependabot triggered the workflow # zizmor: ignore[bot-conditions] safe ignore because we exit if dependabot is triggering the action
         if: github.triggering_actor == 'dependabot[bot]'
         run: |
           echo "::warning::Dependabot is not allowed to trigger this workflow. Please review carefully the changes before running the workflow manually."
@@ -382,6 +382,7 @@ jobs:
     runs-on: [self-hosted, pyaedt, toolkits, Linux]
     needs: [ smoke-tests ]
     env:
+      ANSYSEM_ROOT251: '/opt/AnsysEM/v251/AnsysEM'
       ANS_NODEPCHECK: '1'
     steps:
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
