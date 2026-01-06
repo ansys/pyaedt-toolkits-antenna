@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -136,7 +136,9 @@ class Frontend(FrontendGeneric):
 
     def update_antenna_parameter(self, key, value):
         """Update antenna parameter."""
-        response = requests.patch(self.url + "/hfss_parameters", json={"key": key, "value": value}, timeout=DEFAULT_REQUESTS_TIMEOUT)
+        response = requests.patch(
+            self.url + "/hfss_parameters", json={"key": key, "value": value}, timeout=DEFAULT_REQUESTS_TIMEOUT
+        )
         if response.ok:
             msg = "{} updated in design".format(key)
             self.ui.update_logger(msg)
@@ -169,12 +171,16 @@ class Frontend(FrontendGeneric):
         """Get farfield data."""
         farfield_data = None
         if self.properties.backend_url in ["127.0.0.1", "localhost"]:
-            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": False}, timeout=DEFAULT_REQUESTS_TIMEOUT)
+            response = requests.get(
+                self.url + "/export_farfield", json={"sphere": "3D", "encode": False}, timeout=DEFAULT_REQUESTS_TIMEOUT
+            )
             if response.ok:
                 data = response.json()
                 farfield_data = FfdSolutionData(data[0], data[1])
         else:
-            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": True}, timeout=DEFAULT_REQUESTS_TIMEOUT)
+            response = requests.get(
+                self.url + "/export_farfield", json={"sphere": "3D", "encode": True}, timeout=DEFAULT_REQUESTS_TIMEOUT
+            )
             if response.ok:
                 data = response.json()
 
