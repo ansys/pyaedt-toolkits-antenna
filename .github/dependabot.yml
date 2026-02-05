@@ -27,6 +27,8 @@ updates:
       prefix: "BUILD(pip)"
 
   - package-ecosystem: "github-actions"
+    cooldown:
+      default-days: 10 # Fallback cooldown if no specific rule applies
     directory: "/"
     schedule:
       interval: "weekly"
