@@ -1,10 +1,7 @@
-ignore:
-  - "src/ansys/aedt/toolkits/antenna/ui"
-  - "src/ansys/aedt/toolkits/antenna/run_toolkit.py"
-
 comment:
   layout: "diff"
   behavior: default
+  require_changes: true  # Avoid coverage comment if no files are changed.
 
 coverage:
   status:
