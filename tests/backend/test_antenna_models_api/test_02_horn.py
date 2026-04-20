@@ -33,18 +33,19 @@ pytestmark = [pytest.mark.antenna_models_api]
 class TestClass:
     """Class defining a workflow to test antenna models horn."""
 
-    def test_01a_conical(self, aedt_common):
+    # Conical
+
+    def test_conical(self, toolkit):
         antenna_module = getattr(antenna_models, "Conical")
         ohorn0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert ohorn0.synthesis_parameters
 
-        aedt_common.connect_design()
-        aedt_common.aedtapp.design_name = "conical_horn"
-        aedt_common.aedtapp.solution_type = "Modal"
-        aedt_common.save_project(release_aedt=False)
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Modal"
 
         antenna_module = getattr(antenna_models, "Conical")
-        ohorn1 = antenna_module(aedt_common.aedtapp, frequency=1.0, length_unit=aedt_common.aedtapp.modeler.model_units)
+        ohorn1 = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
         ohorn1.init_model()
         ohorn1.model_hfss()
         ohorn1.setup_hfss()
@@ -61,10 +62,9 @@ class TestClass:
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         antenna_module = getattr(antenna_models, "Conical")
-        ohorn2 = antenna_module(aedt_common.aedtapp, name=ohorn1.name)
+        ohorn2 = antenna_module(toolkit.aedtapp, name=ohorn1.name)
 
         assert ohorn1.name != ohorn2.name
-        aedt_common.release_aedt(False, False)
 
     def test_01b_conical_duplicate_along_line(self, aedt_common):
         aedt_common.connect_design()

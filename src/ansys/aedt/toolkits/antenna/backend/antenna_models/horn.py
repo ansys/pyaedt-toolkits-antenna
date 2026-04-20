@@ -278,7 +278,7 @@ class Conical(CommonHorn):
 
         # P1
         p1 = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "-" + wg_length],
             radius=wg_radius,
             name="port_" + antenna_name,
@@ -288,28 +288,28 @@ class Conical(CommonHorn):
 
         # Horn wall
         base = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "0"],
             radius=wg_radius,
         )
         base.history().properties["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
         )
         base_wall.history().properties["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", horn_length],
             radius=horn_radius,
         )
         horn_top.history().properties["Coordinate System"] = coordinate_system
 
         horn_sheet = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", horn_length],
             radius=horn_radius + "+" + wall_thickness,
         )
@@ -323,14 +323,14 @@ class Conical(CommonHorn):
         self._app.modeler.unite([horn_sheet.name, wall.name])
 
         air_base = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "0"],
             radius=wg_radius,
         )
         air_base.history().properties["Coordinate System"] = coordinate_system
 
         air_top = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", horn_length],
             radius=horn_radius,
         )
@@ -1314,7 +1314,7 @@ class Corrugated(CommonHorn):
 
         # P1
         p1 = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "0"],
             radius=wg_radius,
             name="port_" + antenna_name,
@@ -1536,7 +1536,7 @@ class Elliptical(CommonHorn):
 
         # P1
         p1 = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "-" + wg_length],
             radius=wg_radius,
             name="port_" + antenna_name,
@@ -1546,21 +1546,21 @@ class Elliptical(CommonHorn):
 
         # Horn wall
         base = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "0"],
             radius=wg_radius,
         )
         base.history().properties["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
         )
         base_wall.history().properties["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_ellipse(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", horn_length],
             major_radius=horn_radius,
             ratio=ellipse_ratio,
@@ -1568,7 +1568,7 @@ class Elliptical(CommonHorn):
         horn_top.history().properties["Coordinate System"] = coordinate_system
 
         horn_sheet = self._app.modeler.create_ellipse(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", horn_length],
             major_radius=horn_radius + "+" + wall_thickness,
             ratio=ellipse_ratio,
@@ -1583,14 +1583,14 @@ class Elliptical(CommonHorn):
         self._app.modeler.unite([horn_sheet.name, wall.name])
 
         air_base = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "0"],
             radius=wg_radius,
         )
         air_base.history().properties["Coordinate System"] = coordinate_system
 
         air_top = self._app.modeler.create_ellipse(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", horn_length],
             major_radius=horn_radius,
             ratio=ellipse_ratio,
@@ -3516,7 +3516,7 @@ class ConicalSpecial(CommonHorn):
 
         # P1
         p1 = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "-" + wg_length],
             radius=wg_radius,
             name="port_" + antenna_name,
@@ -3526,28 +3526,28 @@ class ConicalSpecial(CommonHorn):
 
         # Horn wall
         base = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "0"],
             radius=wg_radius,
         )
         base.history().properties["Coordinate System"] = coordinate_system
 
         base_wall = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "0"],
             radius=wg_radius + "+" + wall_thickness,
         )
         base_wall.history().properties["Coordinate System"] = coordinate_system
 
         horn_top = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", horn_length],
             radius=horn_radius,
         )
         horn_top.history().properties["Coordinate System"] = coordinate_system
 
         horn_sheet = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", horn_length],
             radius=horn_radius + "+" + wall_thickness,
         )
@@ -3561,14 +3561,14 @@ class ConicalSpecial(CommonHorn):
         self._app.modeler.unite([horn_sheet.name, wall.name])
 
         air_base = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", "0"],
             radius=wg_radius,
         )
         air_base.history().properties["Coordinate System"] = coordinate_system
 
         air_top = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=["0", "0", horn_length],
             radius=horn_radius,
         )
