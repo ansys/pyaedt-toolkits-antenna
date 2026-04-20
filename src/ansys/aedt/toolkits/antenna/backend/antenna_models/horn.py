@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,10 +25,9 @@ from collections import OrderedDict
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
-from ansys.aedt.toolkits.common.backend.logger_handler import logger
-
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import StandardWaveguide
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
 
 
 class CommonHorn(CommonAntenna):
@@ -165,9 +164,9 @@ class Conical(CommonHorn):
             Analytical parameters.
         """
         parameters = {}
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
         wavelength_in = constants.unit_converter(wavelength, "Length", "meter", "in")
 
         wg_radius_in = 0.5 * wavelength_in
@@ -191,9 +190,9 @@ class Conical(CommonHorn):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -201,7 +200,8 @@ class Conical(CommonHorn):
     def model_hfss(self):
         """Draw a conical horn antenna.
 
-        Once the antenna is created, this method is not used anymore."""
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             logger.debug("This antenna already exists")
             return False
@@ -252,7 +252,7 @@ class Conical(CommonHorn):
         wall.history().properties["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(tool_list=[neg_air.name], blank_list=[wall.name], keep_originals=False)
+        _ = self._app.modeler.subtract(tool_list=[neg_air.name], blank_list=[wall.name], keep_originals=False)
 
         # Input
         wg_in = self._app.modeler.create_cylinder(
@@ -451,10 +451,11 @@ class PyramidalRidged(CommonHorn):
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
-        scale = lambda x: (1.0 / freq_ghz) * x
+        def scale(x):
+            return (1.0 / freq_ghz) * x
 
-        def scale_value(value, round_val=3, doScale=True):
-            if doScale:
+        def scale_value(value, round_val=3, do_scale=True):
+            if do_scale:
                 value = scale(value)
             return round(value, round_val)
 
@@ -491,16 +492,18 @@ class PyramidalRidged(CommonHorn):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
     @pyaedt_function_handler()
     def model_hfss(self):
         """Draw conical horn antenna.
-        Once the antenna is created, this method is not used anymore."""
+
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
             return False
@@ -565,7 +568,7 @@ class PyramidalRidged(CommonHorn):
         wall.history().properties["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
+        _ = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
 
         # Top of the horn
         # Input
@@ -1164,9 +1167,9 @@ class Corrugated(CommonHorn):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -1174,7 +1177,8 @@ class Corrugated(CommonHorn):
     def model_hfss(self):
         """Draw a conical horn antenna.
 
-        Once the antenna is created, this method is not used anymore."""
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             logger.debug("This antenna already exists")
             return False
@@ -1215,48 +1219,48 @@ class Corrugated(CommonHorn):
         antenna_name = self.name
         coordinate_system = self.coordinate_system
 
-        l = self._app.variable_manager[wg_length].numeric_value
+        l_wg = self._app.variable_manager[wg_length].numeric_value
         n = notches_value
-        Ka = "tan(" + flare_angle + ")"
+        ka = "tan(" + flare_angle + ")"
 
         # Based on inputs calculate minimum feed length for geometry to work,
         # and loop until user inputs value above minimum required.
         pts = []
-        zStart = "0.0"
+        z_start = "0.0"
 
         pts.append([wg_radius, "0.0", "0.0"])
 
-        if l > 0.0:
-            zStart = wg_length
-            pts.append([wg_radius, 0, zStart])
+        if l_wg > 0.0:
+            z_start = wg_length
+            pts.append([wg_radius, 0, z_start])
 
         count = 1
-        N = 1
+        n = 1
 
         while count <= n:
-            # Create constants K1 through K3, used in coordinate calculations.
-            K1 = str((N - 1)) + "*" + "(" + notch_width + "+" + tooth_width + ")"
-            K2 = "(" + str(N) + "*" + notch_width + ")+(" + str(N - 1) + ")*" + tooth_width
-            K3 = str(N) + "*" + "(" + notch_width + "+" + tooth_width + ")"
-            xdel1 = "(" + K1 + ")*" + Ka
-            xdel2 = "(" + K2 + ")*" + Ka
-            xdel3 = "(" + K3 + ")*" + Ka
-            c1 = K1
-            c2 = K2
-            c3 = K3
+            # Create constants k_1 through k_3, used in coordinate calculations.
+            k_1 = str((n - 1)) + "*" + "(" + notch_width + "+" + tooth_width + ")"
+            k_2 = "(" + str(n) + "*" + notch_width + ")+(" + str(n - 1) + ")*" + tooth_width
+            k_3 = str(n) + "*" + "(" + notch_width + "+" + tooth_width + ")"
+            xdel1 = "(" + k_1 + ")*" + ka
+            xdel2 = "(" + k_2 + ")*" + ka
+            xdel3 = "(" + k_3 + ")*" + ka
+            c1 = k_1
+            c2 = k_2
+            c3 = k_3
             del1 = xdel1
             del2 = xdel2
             del3 = xdel3
 
             # Create individual components of necessary points
             c1x = wg_radius + "+" + notch_depth + "+" + del1
-            c1z = zStart + "+" + c1
+            c1z = z_start + "+" + c1
             c2x = wg_radius + "+" + notch_depth + "+" + del2
-            c2z = zStart + "+" + c2
+            c2z = z_start + "+" + c2
             c3x = wg_radius + "+" + del2
-            c3z = zStart + "+" + c2
+            c3z = z_start + "+" + c2
             c4x = wg_radius + "+" + del3
-            c4z = zStart + "+" + c3
+            c4z = z_start + "+" + c3
 
             # Begin drawing corrugations
             pts.append([c1x, 0, c1z])
@@ -1267,7 +1271,7 @@ class Corrugated(CommonHorn):
             count2 = count + 1
             count = count2
 
-            N = count
+            n = count
 
         # Draw end of horn and exterior outline.
         # This calculation is what required the minimum feed length test,
@@ -1279,7 +1283,7 @@ class Corrugated(CommonHorn):
         out1 = endx
         out2 = wg_radius + "+" + wall_thickness
         out3 = c4z
-        zpart = out3 + "-" + "(((" + out1 + ")-(" + out2 + ")) /(" + Ka + "))"
+        zpart = out3 + "-" + "(((" + out1 + ")-(" + out2 + ")) /(" + ka + "))"
         finx = out2
         finz = zpart
         pts.append([finx, 0, finz])
@@ -1415,9 +1419,9 @@ class Elliptical(CommonHorn):
             Analytical parameters.
         """
         parameters = {}
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
         wavelength_in = constants.unit_converter(wavelength, "Length", "meter", "in")
 
         wg_radius_in = 0.5 * wavelength_in
@@ -1443,16 +1447,18 @@ class Elliptical(CommonHorn):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
     @pyaedt_function_handler()
     def model_hfss(self):
         """Draw elliptical horn antenna.
-        Once the antenna is created, this method is not used anymore."""
+
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
             return False
@@ -1504,7 +1510,7 @@ class Elliptical(CommonHorn):
         wall.history().properties["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(tool_list=[neg_air.name], blank_list=[wall.name], keep_originals=False)
+        _ = self._app.modeler.subtract(tool_list=[neg_air.name], blank_list=[wall.name], keep_originals=False)
 
         # Input
         wg_in = self._app.modeler.create_cylinder(
@@ -1719,10 +1725,11 @@ class EPlane(CommonHorn):
             self._app.logger.warning("Material not found. Create the material before assigning it.")
             return parameters
 
-        scale = lambda x: (10.0 / freq_ghz) * x
+        def scale(x):
+            return (10.0 / freq_ghz) * x
 
-        def scale_value(value, round_val=3, doScale=True):
-            if doScale:
+        def scale_value(value, round_val=3, do_scale=True):
+            if do_scale:
                 value = scale(value)
             return round(value, round_val)
 
@@ -1759,16 +1766,18 @@ class EPlane(CommonHorn):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
     @pyaedt_function_handler()
     def model_hfss(self):
         """Draw E plane horn antenna.
-        Once the antenna is created, this method is not used anymore."""
+
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
             return False
@@ -1829,7 +1838,7 @@ class EPlane(CommonHorn):
         wall.history().properties["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
+        _ = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
 
         # Top of the horn
         # Input
@@ -1936,9 +1945,9 @@ class EPlane(CommonHorn):
         self._app.modeler.connect([horn, base_wall])
         self._app.modeler.connect([base, horn_top])
 
-        new_wall = self._app.modeler.subtract(tool_list=[base.name], blank_list=[horn.name], keep_originals=False)
+        _ = self._app.modeler.subtract(tool_list=[base.name], blank_list=[horn.name], keep_originals=False)
 
-        new_horn = self._app.modeler.unite([horn.name, wall.name])
+        _ = self._app.modeler.unite([horn.name, wall.name])
 
         horn.color = (132, 132, 193)
         horn.material_name = self.material
@@ -2080,10 +2089,11 @@ class HPlane(CommonHorn):
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
-        scale = lambda x: (10.0 / freq_ghz) * x
+        def scale(x):
+            return (10.0 / freq_ghz) * x
 
-        def scale_value(value, round_val=3, doScale=True):
-            if doScale:
+        def scale_value(value, round_val=3, do_scale=True):
+            if do_scale:
                 value = scale(value)
             return round(value, round_val)
 
@@ -2120,16 +2130,18 @@ class HPlane(CommonHorn):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
     @pyaedt_function_handler()
     def model_hfss(self):
         """Draw H plane horn antenna.
-        Once the antenna is created, this method is not used anymore."""
+
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
             return False
@@ -2191,7 +2203,7 @@ class HPlane(CommonHorn):
         wall.history().properties["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
+        _ = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
 
         # Top of the horn
         # Input
@@ -2298,9 +2310,9 @@ class HPlane(CommonHorn):
         self._app.modeler.connect([horn, base_wall])
         self._app.modeler.connect([base, horn_top])
 
-        new_wall = self._app.modeler.subtract(tool_list=[base.name], blank_list=[horn.name], keep_originals=False)
+        _ = self._app.modeler.subtract(tool_list=[base.name], blank_list=[horn.name], keep_originals=False)
 
-        new_horn = self._app.modeler.unite([horn.name, wall.name])
+        _ = self._app.modeler.unite([horn.name, wall.name])
 
         horn.color = (132, 132, 193)
         horn.material_name = self.material
@@ -2442,10 +2454,11 @@ class Pyramidal(CommonHorn):
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
-        scale = lambda x: (10.0 / freq_ghz) * x
+        def scale(x):
+            return (10.0 / freq_ghz) * x
 
-        def scale_value(value, round_val=3, doScale=True):
-            if doScale:
+        def scale_value(value, round_val=3, do_scale=True):
+            if do_scale:
                 value = scale(value)
             return round(value, round_val)
 
@@ -2485,16 +2498,18 @@ class Pyramidal(CommonHorn):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
     @pyaedt_function_handler()
     def model_hfss(self):
         """Draw pyramidal horn antenna.
-        Once the antenna is created, this method is not used anymore."""
+
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
             return False
@@ -2556,7 +2571,7 @@ class Pyramidal(CommonHorn):
         wall.history().properties["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
+        _ = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
 
         # Top of the horn
         # Input
@@ -2663,9 +2678,9 @@ class Pyramidal(CommonHorn):
         self._app.modeler.connect([horn, base_wall])
         self._app.modeler.connect([base, horn_top])
 
-        new_wall = self._app.modeler.subtract(tool_list=[base.name], blank_list=[horn.name], keep_originals=False)
+        _ = self._app.modeler.subtract(tool_list=[base.name], blank_list=[horn.name], keep_originals=False)
 
-        new_horn = self._app.modeler.unite([horn.name, wall.name])
+        _ = self._app.modeler.unite([horn.name, wall.name])
 
         horn.color = (132, 132, 193)
         horn.material_name = self.material
@@ -2812,10 +2827,11 @@ class QuadRidged(CommonHorn):
         parameters = {}
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
 
-        scale = lambda x: (5.0 / freq_ghz) * x
+        def scale(x):
+            return (5.0 / freq_ghz) * x
 
-        def scale_value(value, round_val=3, doScale=True):
-            if doScale:
+        def scale_value(value, round_val=3, do_scale=True):
+            if do_scale:
                 value = scale(value)
             return round(value, round_val)
 
@@ -2875,16 +2891,18 @@ class QuadRidged(CommonHorn):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
     @pyaedt_function_handler()
     def model_hfss(self):
         """Draw conical horn antenna.
-        Once the antenna is created, this method is not used anymore."""
+
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
             return False
@@ -2957,7 +2975,7 @@ class QuadRidged(CommonHorn):
         wall.history().properties["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
+        _ = self._app.modeler.subtract(tool_list=[air.name], blank_list=[wall.name], keep_originals=False)
 
         # Top of the horn
         # Input
@@ -3307,7 +3325,7 @@ class QuadRidged(CommonHorn):
         pass
 
 
-class Conical_Special(CommonHorn):
+class ConicalSpecial(CommonHorn):
     """Manages a conical horn antenna.
 
     This class is accessible through the app hfss object [1]_.
@@ -3384,9 +3402,9 @@ class Conical_Special(CommonHorn):
             Analytical parameters.
         """
         parameters = {}
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
         wavelength_in = constants.unit_converter(wavelength, "Length", "meter", "in")
 
         wg_radius_in = 0.5 * wavelength_in
@@ -3410,9 +3428,9 @@ class Conical_Special(CommonHorn):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -3420,7 +3438,8 @@ class Conical_Special(CommonHorn):
     def model_hfss(self):
         """Draw a conical horn antenna.
 
-        Once the antenna is created, this method is not used anymore."""
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             logger.debug("This antenna already exists")
             return False
@@ -3471,7 +3490,7 @@ class Conical_Special(CommonHorn):
         wall.history().properties["Coordinate System"] = coordinate_system
 
         # Subtract
-        new_wall = self._app.modeler.subtract(tool_list=[neg_air.name], blank_list=[wall.name], keep_originals=False)
+        _ = self._app.modeler.subtract(tool_list=[neg_air.name], blank_list=[wall.name], keep_originals=False)
 
         # Input
         wg_in = self._app.modeler.create_cylinder(
