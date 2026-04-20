@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +22,7 @@
 # SOFTWARE.
 
 """Sphinx documentation configuration file."""
+
 """Sphinx documentation configuration file."""
 
 from datetime import datetime
@@ -174,8 +176,8 @@ numpydoc_validation_checks = {
 
 # Removing check on repo lines of code as using line numbers as anchor is not working
 linkcheck_ignore = [
-    "https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/src/ansys/aedt/toolkits/antenna/ui/" "actions.py#L165",
-    "https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/src/ansys/aedt/toolkits/antenna/ui/" "actions.py#L143",
+    "https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/src/ansys/aedt/toolkits/antenna/ui/actions.py#L165",
+    "https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/src/ansys/aedt/toolkits/antenna/ui/actions.py#L143",
 ]
 
 # static path
