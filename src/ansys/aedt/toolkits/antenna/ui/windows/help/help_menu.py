@@ -1,13 +1,15 @@
-from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtWidgets import QLabel
+import tempfile
+
+from PySide6 import QtCore
+from PySide6 import QtGui
+from PySide6 import QtWidgets
 from PySide6.QtWidgets import QGridLayout
+from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QWidget
 
+from ansys.aedt.toolkits.antenna import __version__
 from ansys.aedt.toolkits.antenna.ui.windows.help.help_column import Ui_LeftColumn
 from ansys.aedt.toolkits.antenna.ui.windows.help.help_page import Ui_help
-
-import tempfile
-from ansys.aedt.toolkits.antenna import __version__
 
 DOCUMENTATION_URL = "https://aedt.antenna.toolkit.docs.pyansys.com/"
 ISSUE_TRACKER_URL = "https://github.com/ansys/pyaedt-toolkits-antenna/issues"
@@ -113,7 +115,6 @@ class HelpMenu(object):
 
     def about_button_clicked(self):
         """Display the PyAEDT Antenna Toolkit 'About' information."""
-
         mbox = QtWidgets.QMessageBox.about(self.main_window, "About", ABOUT_TEXT)
 
     def visit_website(self):

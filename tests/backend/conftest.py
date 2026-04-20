@@ -1,3 +1,27 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2024 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -18,17 +42,16 @@
 # SOFTWARE.
 
 """
-REST API Test Configuration Module
-----------------------------------
+Test Configuration Module.
 
-Description
-===========
+-----------------------------
+
 This module contains the configuration and fixture for the pytest-based tests for the REST API.
 
 The default configuration can be changed by placing a file called local_config.json in the same
 directory as this module. An example of the contents of local_config.json
 {
-  "desktop_version": "2025.1",
+  "desktop_version": "2026.1",
   "non_graphical": false,
   "use_grpc": true
 }
@@ -40,35 +63,31 @@ You can enable the API log file in the backend_properties.json.
 import json
 import logging
 from logging import Logger
-import os
+from pathlib import Path
 import shutil
 from typing import Optional
 
-from ansys.aedt.core import settings
 import pytest
 
-DEFAULT_CONFIG = {
-    "desktop_version": "2025.2",
-    "non_graphical": True,
-    "use_grpc": True,
-    "debug": False
-}
+from ansys.aedt.core import settings
+
+DEFAULT_CONFIG = {"desktop_version": "2026.1", "non_graphical": True, "use_grpc": True, "debug": False}
 LOCAL_CFG_FILE = "local_config.json"
 PROJECT_NAME = "Test"
 
 
 def read_local_config() -> dict:
     """Read local configuration from JSON file.
-    
+
     Returns
     -------
     Dict
         Empty dictionary if no local JSON file is found, else the file content.
     """
     res = {}
-    local_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), LOCAL_CFG_FILE)
-    if os.path.exists(local_path):
-        with open(local_path) as f:
+    local_path = Path(__file__).resolve().parent / LOCAL_CFG_FILE
+    if local_path.exists():
+        with local_path.open() as f:
             local_config = json.load(f)
         res.update(local_config)
     return res
@@ -76,7 +95,7 @@ def read_local_config() -> dict:
 
 def setup_aedt_settings(config: Optional[dict] = None):
     """Set up AEDT settings.
-    
+
     If no configuration is provided, use default configuration.
     """
     # Common expected behavior
@@ -117,7 +136,6 @@ def common_temp_dir(tmp_path_factory, request):
 @pytest.fixture(scope="session", autouse=True)
 def logger(request, common_temp_dir) -> Logger:
     """Logger fixture."""
-
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     formatter = logging.Formatter("%(levelname)s - %(message)s")

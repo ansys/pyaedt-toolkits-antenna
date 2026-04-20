@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +22,9 @@
 # SOFTWARE.
 
 """
-API Test Configuration Module
------------------------------
+Toolkit API Test Configuration Module.
+
+-------------------------------------
 
 Description
 ===========
@@ -40,13 +42,15 @@ An example of the contents of local_config.json:
 You can enable the API log file in the backend_properties.json.
 
 """
-import os.path
 
 import pytest
+
 from ansys.aedt.core import generate_unique_project_name
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
-from tests.backend.conftest import read_local_config, setup_aedt_settings, DEFAULT_CONFIG, PROJECT_NAME
+from tests.backend.conftest import DEFAULT_CONFIG
+from tests.backend.conftest import read_local_config
+from tests.backend.conftest import setup_aedt_settings
 
 # Setup config
 config = DEFAULT_CONFIG.copy()

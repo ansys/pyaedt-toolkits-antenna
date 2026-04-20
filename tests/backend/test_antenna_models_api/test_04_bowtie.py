@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +23,15 @@
 
 import pytest
 
-pytestmark = [pytest.mark.antenna_models_api]
-
 from ansys.aedt.core.modeler.cad.object_3d import Object3d
-
 from ansys.aedt.toolkits.antenna.backend import antenna_models
+
+pytestmark = [pytest.mark.antenna_models_api]
 
 
 class TestClass:
     """Class defining a workflow to test antenna models bowtie."""
+
     def test_01_bowtie(self, aedt_common):
         antenna_module = getattr(antenna_models, "BowTieNormal")
         oantenna0 = antenna_module(None, frequency=1.0, length_unit="mm")
@@ -50,10 +51,7 @@ class TestClass:
         for comp in oantenna1.object_list.values():
             assert isinstance(comp, Object3d)
 
-        oantenna2 = antenna_module(aedt_common.aedtapp,
-                                   frequency=1.0,
-                                   outer_boundary="Radiation",
-                                   length_unit="mm")
+        oantenna2 = antenna_module(aedt_common.aedtapp, frequency=1.0, outer_boundary="Radiation", length_unit="mm")
 
         assert oantenna1.name != oantenna2.name
         aedt_common.release_aedt(False, False)
@@ -77,10 +75,7 @@ class TestClass:
         for comp in oantenna1.object_list.values():
             assert isinstance(comp, Object3d)
 
-        oantenna2 = antenna_module(aedt_common.aedtapp,
-                                   frequency=1.0,
-                                   length_unit="mm",
-                                   outer_boundary="Radiation")
+        oantenna2 = antenna_module(aedt_common.aedtapp, frequency=1.0, length_unit="mm", outer_boundary="Radiation")
 
         assert oantenna1.name != oantenna2.name
         aedt_common.release_aedt(False, False)

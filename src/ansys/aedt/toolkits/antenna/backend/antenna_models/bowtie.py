@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +26,6 @@ import math
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
-
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import CommonPatch
 
@@ -110,9 +109,9 @@ class BowTieNormal(CommonPatch):
             Analytical parameters.
         """
         parameters = {}
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
 
         if self._app and (
             self.material in self._app.materials.mat_names_aedt
@@ -128,14 +127,14 @@ class BowTieNormal(CommonPatch):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(permittivity)
+        sub_permittivity = float(permittivity)
 
         sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         tl = TransmissionLine()
-        eff_Permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, subPermittivity)
+        eff_permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, sub_permittivity)
 
-        eff_wl_meters = wavelength / math.sqrt(eff_Permittivity)
+        eff_wl_meters = wavelength / math.sqrt(eff_permittivity)
         eff_wl_working_units = constants.unit_converter(eff_wl_meters, output_units=self.length_unit)
         correction_factor = 0.65
         arm_length = correction_factor * math.sqrt(
@@ -158,9 +157,9 @@ class BowTieNormal(CommonPatch):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -338,9 +337,9 @@ class BowTieRounded(CommonPatch):
             Analytical parameters.
         """
         parameters = {}
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
 
         if self._app and (
             self.material in self._app.materials.mat_names_aedt
@@ -356,14 +355,14 @@ class BowTieRounded(CommonPatch):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(permittivity)
+        sub_permittivity = float(permittivity)
 
         sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         tl = TransmissionLine()
-        eff_Permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, subPermittivity)
+        eff_permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, sub_permittivity)
 
-        eff_wl_meters = wavelength / math.sqrt(eff_Permittivity)
+        eff_wl_meters = wavelength / math.sqrt(eff_permittivity)
         eff_wl_working_units = constants.unit_converter(eff_wl_meters, output_units=self.length_unit)
         correction_factor = 0.58
         arm_length = round(
@@ -390,9 +389,9 @@ class BowTieRounded(CommonPatch):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -579,9 +578,9 @@ class BowTieSlot(CommonPatch):
             Analytical parameters.
         """
         parameters = {}
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
 
         if self._app and (
             self.material in self._app.materials.mat_names_aedt
@@ -597,14 +596,14 @@ class BowTieSlot(CommonPatch):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(permittivity)
+        sub_permittivity = float(permittivity)
 
         sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         tl = TransmissionLine()
-        eff_Permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, subPermittivity)
+        eff_permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, sub_permittivity)
 
-        eff_wl_meters = wavelength / math.sqrt(eff_Permittivity)
+        eff_wl_meters = wavelength / math.sqrt(eff_permittivity)
         eff_wl_working_units = constants.unit_converter(eff_wl_meters, output_units=self.length_unit)
         correction_factor = 1.275
         arm_length = round(
@@ -631,9 +630,9 @@ class BowTieSlot(CommonPatch):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -721,7 +720,7 @@ class BowTieSlot(CommonPatch):
         )[0]
         arm1 = self._app.modeler[ant2_name]
 
-        ant = self._app.modeler.subtract(
+        _ = self._app.modeler.subtract(
             tool_list=[arm1.name, arm.name, islot.name],
             blank_list=[slot.name],
             keep_originals=False,

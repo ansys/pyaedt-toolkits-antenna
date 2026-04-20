@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +23,11 @@
 
 import pytest
 
-pytestmark = [pytest.mark.antenna_models_api]
-
 from ansys.aedt.core.modeler.cad.object_3d import Object3d
 from ansys.aedt.core.modeler.geometry_operators import GeometryOperators
-
 from ansys.aedt.toolkits.antenna.backend import antenna_models
+
+pytestmark = [pytest.mark.antenna_models_api]
 
 
 class TestClass:
@@ -44,9 +44,7 @@ class TestClass:
         aedt_common.save_project(release_aedt=False)
 
         antenna_module = getattr(antenna_models, "Conical")
-        ohorn1 = antenna_module(aedt_common.aedtapp,
-                                frequency=1.0,
-                                length_unit=aedt_common.aedtapp.modeler.model_units)
+        ohorn1 = antenna_module(aedt_common.aedtapp, frequency=1.0, length_unit=aedt_common.aedtapp.modeler.model_units)
         ohorn1.init_model()
         ohorn1.model_hfss()
         ohorn1.setup_hfss()
@@ -75,7 +73,7 @@ class TestClass:
             aedt_common.aedtapp,
             frequency=1.0,
             length_unit=aedt_common.aedtapp.modeler.model_units,
-            origin=[500, 20, 50]
+            origin=[500, 20, 50],
         )
         ohorn.init_model()
         ohorn.model_hfss()
@@ -92,7 +90,7 @@ class TestClass:
             aedt_common.aedtapp,
             frequency=1.0,
             length_unit=aedt_common.aedtapp.modeler.model_units,
-            origin=[500, 500, 0]
+            origin=[500, 500, 0],
         )
         ohorn.init_model()
         ohorn.model_hfss()
@@ -109,7 +107,7 @@ class TestClass:
             aedt_common.aedtapp,
             frequency=1.0,
             length_unit=aedt_common.aedtapp.modeler.model_units,
-            origin=[500, 500, 0]
+            origin=[500, 500, 0],
         )
         ohorn1.init_model()
         ohorn1.model_hfss()
@@ -124,7 +122,7 @@ class TestClass:
             aedt_common.aedtapp,
             frequency=1.0,
             length_unit=aedt_common.aedtapp.modeler.model_units,
-            origin=[1500, 500, 0]
+            origin=[1500, 500, 0],
         )
         ohorn2.init_model()
         ohorn2.model_hfss()
@@ -138,7 +136,7 @@ class TestClass:
             aedt_common.aedtapp,
             frequency=1.0,
             length_unit=aedt_common.aedtapp.modeler.model_units,
-            origin=[1500, 1500, 0]
+            origin=[1500, 1500, 0],
         )
         ohorn3.init_model()
         ohorn3.model_hfss()
@@ -173,10 +171,7 @@ class TestClass:
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         ohorn2 = antenna_module(
-            aedt_common.aedtapp,
-            frequency=10.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units, 
-            name=ohorn1.name
+            aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units, name=ohorn1.name
         )
         assert ohorn1.name != ohorn2.name
         aedt_common.release_aedt(False, False)
@@ -190,7 +185,9 @@ class TestClass:
         aedt_common.connect_design()
         aedt_common.aedtapp.solution_type = "Modal"
 
-        ohorn1 = antenna_module(aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units)
+        ohorn1 = antenna_module(
+            aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units
+        )
         ohorn1.init_model()
         ohorn1.model_hfss()
         ohorn1.setup_hfss()
@@ -206,10 +203,7 @@ class TestClass:
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         ohorn2 = antenna_module(
-            aedt_common.aedtapp,
-            frequency=10.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units,
-            name=ohorn1.name
+            aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units, name=ohorn1.name
         )
 
         assert ohorn1.name != ohorn2.name
@@ -224,9 +218,9 @@ class TestClass:
         aedt_common.connect_design()
         aedt_common.aedtapp.solution_type = "Modal"
 
-        ohorn1 = antenna_module(aedt_common.aedtapp,
-                                frequency=10.0,
-                                length_unit=aedt_common.aedtapp.modeler.model_units)
+        ohorn1 = antenna_module(
+            aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units
+        )
         ohorn1.init_model()
         ohorn1.model_hfss()
         ohorn1.setup_hfss()
@@ -242,10 +236,7 @@ class TestClass:
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         ohorn2 = antenna_module(
-            aedt_common.aedtapp,
-            frequency=10.0,
-            name=ohorn1.name,
-            length_unit=aedt_common.aedtapp.modeler.model_units
+            aedt_common.aedtapp, frequency=10.0, name=ohorn1.name, length_unit=aedt_common.aedtapp.modeler.model_units
         )
 
         assert ohorn1.name != ohorn2.name
@@ -260,9 +251,9 @@ class TestClass:
         aedt_common.connect_design()
         aedt_common.aedtapp.solution_type = "Modal"
 
-        ohorn1 = antenna_module(aedt_common.aedtapp,
-                                frequency=10.0,
-                                length_unit=aedt_common.aedtapp.modeler.model_units)
+        ohorn1 = antenna_module(
+            aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units
+        )
         ohorn1.init_model()
         ohorn1.model_hfss()
         ohorn1.setup_hfss()
@@ -279,10 +270,7 @@ class TestClass:
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
 
         ohorn2 = antenna_module(
-            aedt_common.aedtapp,
-            frequency=10.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units,
-            name=ohorn1.name
+            aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units, name=ohorn1.name
         )
         assert ohorn1.name != ohorn2.name
         aedt_common.release_aedt(False, False)
@@ -296,9 +284,9 @@ class TestClass:
         aedt_common.connect_design()
         aedt_common.aedtapp.solution_type = "Modal"
 
-        ohorn1 = antenna_module(aedt_common.aedtapp,
-                                frequency=10.0,
-                                length_unit=aedt_common.aedtapp.modeler.model_units)
+        ohorn1 = antenna_module(
+            aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units
+        )
         ohorn1.init_model()
         ohorn1.model_hfss()
         ohorn1.setup_hfss()
@@ -314,10 +302,7 @@ class TestClass:
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         ohorn2 = antenna_module(
-            aedt_common.aedtapp,
-            frequency=10.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units,
-            name=ohorn1.name
+            aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units, name=ohorn1.name
         )
 
         assert ohorn1.name != ohorn2.name
@@ -332,9 +317,9 @@ class TestClass:
         aedt_common.connect_design()
         aedt_common.aedtapp.solution_type = "Modal"
 
-        ohorn1 = antenna_module(aedt_common.aedtapp,
-                                frequency=10.0,
-                                length_unit=aedt_common.aedtapp.modeler.model_units)
+        ohorn1 = antenna_module(
+            aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units
+        )
         ohorn1.init_model()
         ohorn1.model_hfss()
         ohorn1.setup_hfss()
@@ -350,9 +335,7 @@ class TestClass:
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         ohorn2 = antenna_module(
-            aedt_common.aedtapp,
-            frequency=10.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units, name=ohorn1.name
+            aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units, name=ohorn1.name
         )
 
         assert ohorn1.name != ohorn2.name
@@ -367,9 +350,9 @@ class TestClass:
         aedt_common.connect_design()
         aedt_common.aedtapp.solution_type = "Modal"
 
-        ohorn1 = antenna_module(aedt_common.aedtapp,
-                                frequency=10.0,
-                                length_unit=aedt_common.aedtapp.modeler.model_units)
+        ohorn1 = antenna_module(
+            aedt_common.aedtapp, frequency=10.0, length_unit=aedt_common.aedtapp.modeler.model_units
+        )
         ohorn1.init_model()
         ohorn1.model_hfss()
         ohorn1.setup_hfss()
@@ -384,9 +367,7 @@ class TestClass:
         face_center_new = list(ohorn1.object_list.values())[0].faces[0].center
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
-        ohorn2 = antenna_module(aedt_common.aedtapp,
-                                frequency=10.0,
-                                name=ohorn1.name)
+        ohorn2 = antenna_module(aedt_common.aedtapp, frequency=10.0, name=ohorn1.name)
 
         assert ohorn1.name != ohorn2.name
         aedt_common.release_aedt(False, False)

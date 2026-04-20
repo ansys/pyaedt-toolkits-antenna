@@ -20,14 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-import sys
 import base64
-from PySide6.QtCore import QThread
+import os
+
 from PySide6.QtCore import Qt
+from PySide6.QtCore import QThread
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QCheckBox
-from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QFrame
 from PySide6.QtWidgets import QGridLayout
 from PySide6.QtWidgets import QHBoxLayout
@@ -37,12 +36,12 @@ from PySide6.QtWidgets import QScrollArea
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtWidgets import QSlider
 from PySide6.QtWidgets import QTableWidget
+from PySide6.QtWidgets import QTableWidgetItem
 from PySide6.QtWidgets import QVBoxLayout
 from PySide6.QtWidgets import QWidget
-from PySide6.QtWidgets import QTableWidgetItem
-
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
+
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_synthesis.antenna_synthesis_page import Ui_AntennaSynthesis
 
 

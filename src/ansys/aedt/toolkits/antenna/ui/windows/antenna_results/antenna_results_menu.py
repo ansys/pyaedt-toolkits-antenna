@@ -20,36 +20,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from PySide6.QtCore import QThread
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QComboBox
-from PySide6.QtWidgets import QLabel
-from PySide6.QtWidgets import QLineEdit
-from PySide6.QtWidgets import QVBoxLayout
-from PySide6.QtWidgets import QHBoxLayout
-from PySide6.QtWidgets import QGridLayout
-from PySide6.QtWidgets import QWidget
-from PySide6.QtWidgets import QScrollArea
-from PySide6.QtWidgets import QSizePolicy
-from PySide6.QtWidgets import QSpacerItem
-from PySide6.QtWidgets import QCheckBox
-from PySide6.QtGui import QPixmap
-from PySide6.QtGui import QFont
-from PySide6.QtCore import Signal
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame
-
-from pyvistaqt import BackgroundPlotter
-import pyvista as pv
-import pyqtgraph as pg
+import os
 
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
+import pyqtgraph as pg
+from PySide6.QtCore import Qt
+from PySide6.QtCore import QThread
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import QCheckBox
+from PySide6.QtWidgets import QFrame
+from PySide6.QtWidgets import QHBoxLayout
+from PySide6.QtWidgets import QLabel
+from PySide6.QtWidgets import QLineEdit
+from PySide6.QtWidgets import QSizePolicy
+from PySide6.QtWidgets import QSpacerItem
+from PySide6.QtWidgets import QVBoxLayout
+from PySide6.QtWidgets import QWidget
+import pyvista as pv
+from pyvistaqt import BackgroundPlotter
 
-from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_page import Ui_AntennaResults
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_column import Ui_LeftColumn
-
-import os
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_page import Ui_AntennaResults
 
 
 class GetResultsThread(QThread):

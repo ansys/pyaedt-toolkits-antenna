@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -23,10 +23,10 @@
 # SOFTWARE.
 
 
-import os.path
+from pathlib import Path
 
-from PySide6.QtCore import QTimer
 from PySide6.QtCore import Qt
+from PySide6.QtCore import QTimer
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QSplashScreen
 
@@ -36,15 +36,16 @@ from ansys.aedt.toolkits.antenna.ui.models import properties
 def show_splash_screen(app):
     """
     Show the splash screen for the application.
-    This function creates a splash screen with a specified image and dimensions.
-    It displays the splash screen for a certain duration before closing it.
-    The splash screen is shown on top of the main application window.
+
+    Creates a splash screen with a specified image and dimensions,
+    displaying it for a certain duration before closing. The splash
+    screen appears on top of the main application window.
     """
     if properties.high_resolution:
         splash_dim = 800
-    else:
+    else:  # pragma: no cover
         splash_dim = 600
-    splash_pix = QPixmap(os.path.join(os.path.dirname(__file__), "splash.png"))
+    splash_pix = QPixmap(Path(__file__).parent / "splash.png")
     scaled_pix = splash_pix.scaled(splash_dim, splash_dim, Qt.KeepAspectRatio, Qt.SmoothTransformation)
     splash = QSplashScreen(scaled_pix, Qt.WindowStaysOnTopHint)
     splash.setWindowFlag(Qt.FramelessWindowHint)

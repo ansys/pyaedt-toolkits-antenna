@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +21,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
 import pytest
 
-from tests.backend.conftest import PROJECT_NAME
+from ansys.aedt.core.modeler.cad.object_3d import Object3d
+from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 pytestmark = [pytest.mark.antenna_models_api]
-
-from ansys.aedt.core.modeler.cad.object_3d import Object3d
-
-from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 
 class TestClass:
     """Class defining a workflow to test antenna models spiral."""
-    def test_01_archimidean(self,aedt_common):
+
+    def test_01_archimidean(self, aedt_common):
         antenna_module = getattr(antenna_models, "Archimedean")
         oantenna = antenna_module(None, start_frequency=2.0, stop_frequency=10.0, length_unit="mm")
         assert oantenna.synthesis_parameters
@@ -47,7 +45,7 @@ class TestClass:
             aedt_common.aedtapp,
             start_frequency=4.0,
             stop_frequency=10.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units
+            length_unit=aedt_common.aedtapp.modeler.model_units,
         )
         oantenna.init_model()
         oantenna.model_hfss()
@@ -62,7 +60,7 @@ class TestClass:
             aedt_common.aedtapp,
             start_frequency=4.0,
             stop_frequency=10.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units
+            length_unit=aedt_common.aedtapp.modeler.model_units,
         )
         assert oantenna.name != oantenna2.name
         aedt_common.release_aedt(False, False)
@@ -80,7 +78,7 @@ class TestClass:
             aedt_common.aedtapp,
             start_frequency=4.0,
             stop_frequency=10.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units
+            length_unit=aedt_common.aedtapp.modeler.model_units,
         )
         oantenna.init_model()
         oantenna.model_hfss()
@@ -95,7 +93,7 @@ class TestClass:
             aedt_common.aedtapp,
             start_frequency=4.0,
             stop_frequency=10.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units
+            length_unit=aedt_common.aedtapp.modeler.model_units,
         )
         assert oantenna.name != oantenna2.name
         aedt_common.release_aedt(False, False)
@@ -113,7 +111,7 @@ class TestClass:
             aedt_common.aedtapp,
             start_frequency=4.0,
             stop_frequency=10.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units
+            length_unit=aedt_common.aedtapp.modeler.model_units,
         )
         oantenna.init_model()
         oantenna.model_hfss()
@@ -128,7 +126,7 @@ class TestClass:
             aedt_common.aedtapp,
             start_frequency=4.0,
             stop_frequency=10.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units
+            length_unit=aedt_common.aedtapp.modeler.model_units,
         )
         assert oantenna.name != oantenna2.name
         aedt_common.release_aedt(False, False)

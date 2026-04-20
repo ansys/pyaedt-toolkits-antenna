@@ -21,34 +21,31 @@
 # SOFTWARE.
 
 from functools import partial
-
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QComboBox
-from PySide6.QtWidgets import QLabel
-from PySide6.QtWidgets import QLineEdit
-from PySide6.QtWidgets import QVBoxLayout
-from PySide6.QtWidgets import QHBoxLayout
-from PySide6.QtWidgets import QGridLayout
-from PySide6.QtWidgets import QWidget
-from PySide6.QtWidgets import QScrollArea
-from PySide6.QtWidgets import QSizePolicy
-from PySide6.QtWidgets import QSpacerItem
-from PySide6.QtGui import QPixmap
-from PySide6.QtGui import QFont
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame
-
-from pyvistaqt import BackgroundPlotter
-import pyvista as pv
+import os
+import sys
 
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
+from PySide6.QtCore import Qt
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QFont
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QComboBox
+from PySide6.QtWidgets import QFrame
+from PySide6.QtWidgets import QGridLayout
+from PySide6.QtWidgets import QHBoxLayout
+from PySide6.QtWidgets import QLabel
+from PySide6.QtWidgets import QLineEdit
+from PySide6.QtWidgets import QScrollArea
+from PySide6.QtWidgets import QSizePolicy
+from PySide6.QtWidgets import QSpacerItem
+from PySide6.QtWidgets import QVBoxLayout
+from PySide6.QtWidgets import QWidget
+import pyvista as pv
+from pyvistaqt import BackgroundPlotter
 
-from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_page import Ui_AntennaCatalog
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_column import Ui_LeftColumn
-
-import os
-import sys
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_page import Ui_AntennaCatalog
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -63,6 +60,7 @@ if os.path.isfile(os.path.join(os.path.dirname(__file__), "antenna_catalog.toml"
 
 class AntennaItem(QWidget):
     """Antenna item."""
+
     antenna_item_signal = Signal(int)
 
     def __init__(self, index, antenna_info, app_color):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,14 +35,6 @@ from ansys.aedt.toolkits.antenna.ui.models import properties
 # PySide6 Widgets
 from PySide6.QtWidgets import QApplication
 from PySide6.QtWidgets import QMainWindow
-from ansys.aedt.toolkits.common.ui.common_windows.home_menu import HomeMenu
-from ansys.aedt.toolkits.common.ui.common_windows.settings_column import SettingsMenu
-
-# Import general common frontend modules
-from ansys.aedt.toolkits.common.ui.logger_handler import logger
-
-# Common windows
-from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
 
 # Toolkit frontend API
 from ansys.aedt.toolkits.antenna.ui.actions import Frontend
@@ -52,6 +44,14 @@ from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_menu
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_menu import AntennaResultsMenu
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_synthesis.antenna_synthesis_menu import AntennaSynthesisMenu
 from ansys.aedt.toolkits.antenna.ui.windows.help.help_menu import HelpMenu
+from ansys.aedt.toolkits.common.ui.common_windows.home_menu import HomeMenu
+from ansys.aedt.toolkits.common.ui.common_windows.settings_column import SettingsMenu
+
+# Import general common frontend modules
+from ansys.aedt.toolkits.common.ui.logger_handler import logger
+
+# Common windows
+from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
 
 # Backend URL and port
 if len(sys.argv) == 3:
@@ -272,7 +272,7 @@ class ApplicationWindow(QMainWindow, Frontend):
             if not is_left_visible:
                 self.ui.toggle_left_column()
 
-    def closeEvent(self, event):
+    def closeEvent(self, event):  # noqa: N802
         if self.antenna_catalog_menu.grid_item:
             for item in self.antenna_catalog_menu.grid_item:
                 item.plotter.close()
