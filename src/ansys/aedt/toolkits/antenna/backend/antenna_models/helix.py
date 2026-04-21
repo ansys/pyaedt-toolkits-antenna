@@ -307,12 +307,18 @@ class AxialMode(CommonHelix):
         mypair = ["RightHanded", self.direction]
         my_udm_pairs.append(mypair)
         udm = self._app.modeler.create_udp(
-            udp_dll_name="SegmentedHelix/PolygonHelix.dll",
-            udp_parameters_list=my_udm_pairs,
-            upd_library="syslib",
+            dll="SegmentedHelix/PolygonHelix.dll",
+            parameters=my_udm_pairs,
+            library="syslib",
             name="helix",
         )
-        udm.history().properties["Coordinate System"] = coordinate_system
+        # Set coordinate system of udm
+        udm_obj = self._app.oeditor.GetChildObject(udm.name)
+        udm_operations = udm_obj.GetChildNames()
+        if "CreateUserDefinedPart:1" in udm_operations:
+            create_udm = udm_obj.GetChildObject("CreateUserDefinedPart:1")
+            create_udm.SetPropValue("Coordinate System", coordinate_system)
+
         udm.material_name = "pec"
         self._app.modeler.split(udm, "XY", "PositiveOnly")
         gnd = self._app.modeler.create_rectangle(
@@ -324,8 +330,8 @@ class AxialMode(CommonHelix):
             ],
             [groundx, groundy],
             name="gnd_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
-        gnd.history().properties["Coordinate System"] = coordinate_system
 
         cutout = self._app.modeler.create_circle(
             orientation=2,
@@ -335,8 +341,8 @@ class AxialMode(CommonHelix):
                 "-{}-{}/2".format(feed_pinl, wire_diameter),
             ],
             radius=coax_outer_radius,
+            new_properties={"Coordinate System": coordinate_system},
         )
-        cutout.history().properties["Coordinate System"] = coordinate_system
         gnd.subtract(cutout, keep_originals=False)
 
         # Negative air
@@ -351,8 +357,8 @@ class AxialMode(CommonHelix):
             height=feed_pinl + "+" + wire_diameter + "/2",
             name="Feed_{}".format(antenna_name),
             material="pec",
+            new_properties={"Coordinate System": coordinate_system},
         )
-        feed_pin.history().properties["Coordinate System"] = coordinate_system
 
         feed_coax = self._app.modeler.create_cylinder(
             orientation=2,
@@ -365,8 +371,8 @@ class AxialMode(CommonHelix):
             height="-{}".format(feeder_length),
             name="Feed1_{}".format(antenna_name),
             material="pec",
+            new_properties={"Coordinate System": coordinate_system},
         )
-        feed_coax.history().properties["Coordinate System"] = coordinate_system
 
         coax = self._app.modeler.create_cylinder(
             orientation=2,
@@ -379,8 +385,8 @@ class AxialMode(CommonHelix):
             height="-{}".format(feeder_length),
             name="coax_{}".format(antenna_name),
             material="Teflon (tm)",
+            new_properties={"Coordinate System": coordinate_system},
         )
-        coax.history().properties["Coordinate System"] = coordinate_system
 
         # Cap
         cap = self._app.modeler.create_cylinder(
@@ -394,8 +400,8 @@ class AxialMode(CommonHelix):
             height="-{}/2".format(feed_pinl),
             name="port_cap_" + antenna_name,
             material="pec",
+            new_properties={"Coordinate System": coordinate_system},
         )
-        cap.history().properties["Coordinate System"] = coordinate_system
 
         # P1
         p1 = self._app.modeler.create_circle(
@@ -407,9 +413,9 @@ class AxialMode(CommonHelix):
             ],
             radius=coax_outer_radius,
             name="port_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         p1.color = (128, 0, 0)
-        p1.history().properties["Coordinate System"] = coordinate_system
 
         udm.group_name = antenna_name
         feed_coax.group_name = antenna_name
@@ -425,6 +431,7 @@ class AxialMode(CommonHelix):
         self.object_list[cap.name] = cap
         self.object_list[gnd.name] = gnd
         self.object_list[p1.name] = p1
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):

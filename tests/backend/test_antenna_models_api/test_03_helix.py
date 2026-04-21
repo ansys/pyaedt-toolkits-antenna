@@ -23,28 +23,24 @@
 
 import pytest
 
-pytestmark = [pytest.mark.antenna_models_api]
-
 from ansys.aedt.core.modeler.cad.object_3d import Object3d
 from ansys.aedt.toolkits.antenna.backend import antenna_models
+
+pytestmark = [pytest.mark.antenna_models_api]
 
 
 class TestClass:
     """Class defining a workflow to test antenna models helix."""
 
-    def test_01_helix_axial(self, aedt_common):
+    def test_helix_axial(self, toolkit):
         antenna_module = getattr(antenna_models, "AxialMode")
         oantenna = antenna_module(None, frequency=1.0, length_unit="mm")
         assert oantenna.synthesis_parameters
 
-        aedt_common.connect_design()
-        aedt_common.aedtapp.design_name = "helix_axial_antenna"
-        aedt_common.aedtapp.solution_type = "Modal"
-        aedt_common.save_project(release_aedt=False)
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Modal"
 
-        oantenna = antenna_module(
-            aedt_common.aedtapp, frequency=1.0, length_unit=aedt_common.aedtapp.modeler.model_units
-        )
+        oantenna = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
         oantenna.init_model()
         oantenna.model_hfss()
         oantenna.setup_hfss()
@@ -55,9 +51,9 @@ class TestClass:
             assert isinstance(comp, Object3d)
 
         oantenna2 = antenna_module(
-            aedt_common.aedtapp,
+            toolkit.aedtapp,
             frequency=1.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units,
+            length_unit=toolkit.aedtapp.modeler.model_units,
             outer_boundary="Radiation",
         )
 
