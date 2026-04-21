@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +26,6 @@ import pytest
 pytestmark = [pytest.mark.antenna_models_api]
 
 from ansys.aedt.core.modeler.cad.object_3d import Object3d
-
 from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 
@@ -42,9 +42,9 @@ class TestClass:
         aedt_common.aedtapp.solution_type = "Modal"
         aedt_common.save_project(release_aedt=False)
 
-        oantenna = antenna_module(aedt_common.aedtapp,
-                                  frequency=1.0,
-                                  length_unit=aedt_common.aedtapp.modeler.model_units)
+        oantenna = antenna_module(
+            aedt_common.aedtapp, frequency=1.0, length_unit=aedt_common.aedtapp.modeler.model_units
+        )
         oantenna.init_model()
         oantenna.model_hfss()
         oantenna.setup_hfss()
@@ -58,7 +58,7 @@ class TestClass:
             aedt_common.aedtapp,
             frequency=1.0,
             length_unit=aedt_common.aedtapp.modeler.model_units,
-            outer_boundary="Radiation"
+            outer_boundary="Radiation",
         )
 
         assert oantenna.name != oantenna2.name
