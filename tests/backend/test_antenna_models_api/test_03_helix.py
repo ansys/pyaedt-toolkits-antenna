@@ -40,7 +40,11 @@ class TestClass:
         toolkit.connect_design("HFSS")
         toolkit.aedtapp.solution_type = "Modal"
 
+        cs = toolkit.aedtapp.modeler.create_coordinate_system(origin=[10, 20, 30])
+
         oantenna = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
+        oantenna.coordinate_system = cs.name
+
         oantenna.init_model()
         oantenna.model_hfss()
         oantenna.setup_hfss()

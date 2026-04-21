@@ -288,6 +288,8 @@ class Archimedean(CommonConicalSpiral):
         antenna_name = self.name
         coordinate_system = self.coordinate_system
 
+        self._app.modeler.set_working_coordinate_system(coordinate_system)
+
         my_udm_pairs = []
         mypair = ["NumberOfPoints", points]
         my_udm_pairs.append(mypair)
@@ -308,14 +310,14 @@ class Archimedean(CommonConicalSpiral):
         mypair = ["Port_Extension", port_extension]
         my_udm_pairs.append(mypair)
         obj_udm = self._app.modeler.create_udm(
-            udmfullname="HFSS/Antenna Toolkit/Spiral/Archimedean.py",
-            udm_params_list=my_udm_pairs,
-            udm_library="syslib",
+            udm_full_name="HFSS/Antenna Toolkit/Spiral/Archimedean.py",
+            parameters=my_udm_pairs,
+            library="syslib",
             name="archimidean",
         )
         for part in obj_udm.parts:
             comp = obj_udm.parts[part]
-            comp.history().properties["Coordinate System"] = coordinate_system
+
             if "AntennaArm" in comp.name:
                 comp.name = "ant_" + comp.name + antenna_name
             else:
@@ -326,6 +328,7 @@ class Archimedean(CommonConicalSpiral):
         obj_udm.move([pos_x, pos_y, pos_z])
 
         obj_udm.group_name = antenna_name
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -495,6 +498,8 @@ class Log(CommonConicalSpiral):
         antenna_name = self.name
         coordinate_system = self.coordinate_system
 
+        self._app.modeler.set_working_coordinate_system(coordinate_system)
+
         my_udm_pairs = []
         mypair = ["NumberOfPoints", points]
         my_udm_pairs.append(mypair)
@@ -511,14 +516,14 @@ class Log(CommonConicalSpiral):
         mypair = ["ExpansionCoefficient", expansion_coefficient]
         my_udm_pairs.append(mypair)
         obj_udm = self._app.modeler.create_udm(
-            udmfullname="HFSS/Antenna Toolkit/Spiral/Log.py",
-            udm_params_list=my_udm_pairs,
-            udm_library="syslib",
+            udm_full_name="HFSS/Antenna Toolkit/Spiral/Log.py",
+            parameters=my_udm_pairs,
+            library="syslib",
             name="log",
         )
         for part in obj_udm.parts:
             comp = obj_udm.parts[part]
-            comp.history().properties["Coordinate System"] = coordinate_system
+
             if "AntennaArm" in comp.name:
                 comp.name = "ant_" + comp.name + antenna_name
             else:
@@ -529,6 +534,7 @@ class Log(CommonConicalSpiral):
         obj_udm.move([pos_x, pos_y, pos_z])
 
         obj_udm.group_name = antenna_name
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -714,6 +720,8 @@ class Sinuous(CommonConicalSpiral):
         antenna_name = self.name
         coordinate_system = self.coordinate_system
 
+        self._app.modeler.set_working_coordinate_system(coordinate_system)
+
         my_udm_pairs = []
         mypair = ["NumberOfPoints", points]
         my_udm_pairs.append(mypair)
@@ -734,16 +742,16 @@ class Sinuous(CommonConicalSpiral):
         mypair = ["Port_Extension", port_extension]
         my_udm_pairs.append(mypair)
         obj_udm = self._app.modeler.create_udm(
-            udmfullname="HFSS/Antenna Toolkit/Spiral/Sinuous.py",
-            udm_params_list=my_udm_pairs,
-            udm_library="syslib",
+            udm_full_name="HFSS/Antenna Toolkit/Spiral/Sinuous.py",
+            parameters=my_udm_pairs,
+            library="syslib",
             name="log",
         )
         port_cont = 1
         gnd_cont = 1
         for part in obj_udm.parts:
             comp = obj_udm.parts[part]
-            comp.history().properties["Coordinate System"] = coordinate_system
+
             if "AntennaArm" in comp.name:
                 comp.name = "ant_" + comp.name + antenna_name
             elif "Port" in comp.name:
@@ -758,6 +766,7 @@ class Sinuous(CommonConicalSpiral):
         obj_udm.move([pos_x, pos_y, pos_z])
 
         obj_udm.group_name = antenna_name
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
