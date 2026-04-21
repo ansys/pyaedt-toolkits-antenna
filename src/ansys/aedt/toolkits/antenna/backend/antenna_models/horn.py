@@ -1249,13 +1249,13 @@ class Corrugated(CommonHorn):
             pts.append([wg_radius, 0, z_start])
 
         count = 1
-        n = 1
+        n_counter = 1
 
         while count <= n:
             # Create constants k_1 through k_3, used in coordinate calculations.
-            k_1 = str((n - 1)) + "*" + "(" + notch_width + "+" + tooth_width + ")"
-            k_2 = "(" + str(n) + "*" + notch_width + ")+(" + str(n - 1) + ")*" + tooth_width
-            k_3 = str(n) + "*" + "(" + notch_width + "+" + tooth_width + ")"
+            k_1 = str((n_counter - 1)) + "*" + "(" + notch_width + "+" + tooth_width + ")"
+            k_2 = "(" + str(n_counter) + "*" + notch_width + ")+(" + str(n_counter - 1) + ")*" + tooth_width
+            k_3 = str(n_counter) + "*" + "(" + notch_width + "+" + tooth_width + ")"
             xdel1 = "(" + k_1 + ")*" + ka
             xdel2 = "(" + k_2 + ")*" + ka
             xdel3 = "(" + k_3 + ")*" + ka
@@ -1285,7 +1285,7 @@ class Corrugated(CommonHorn):
             count2 = count + 1
             count = count2
 
-            n = count
+            n_counter = count
 
         # Draw end of horn and exterior outline.
         # This calculation is what required the minimum feed length test,
@@ -1352,6 +1352,7 @@ class Corrugated(CommonHorn):
         horn.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -1641,6 +1642,7 @@ class Elliptical(CommonHorn):
         horn_sheet.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -2020,6 +2022,7 @@ class EPlane(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -2754,6 +2757,7 @@ class Pyramidal(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -3651,6 +3655,7 @@ class ConicalSpecial(CommonHorn):
         horn_sheet.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
