@@ -938,23 +938,37 @@ class PyramidalRidged(CommonHorn):
             return position
 
         ridge = self._app.modeler.create_polyline(
-            position_list=ridge_position(),
+            points=ridge_position(),
             cover_surface=True,
             name="right_ridge" + antenna_name,
             material=self.material,
         )
+
+        # Set coordinate system of polyline
+        ridge_obj = self._app.oeditor.GetChildObject(ridge.name)
+        ridge_operations = ridge_obj.GetChildNames()
+        if "CreatePolyline:1" in ridge_operations:
+            create_polyline = ridge_obj.GetChildObject("CreatePolyline:1")
+            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+
         ridge = self._app.modeler.thicken_sheet(ridge, ridge_width, True)
-        ridge.history().properties["Coordinate System"] = coordinate_system
         ridge.color = (132, 132, 193)
 
         mridge = self._app.modeler.create_polyline(
-            position_list=ridge_position("-"),
+            points=ridge_position("-"),
             cover_surface=True,
             name="left_ridge" + antenna_name,
             material=self.material,
         )
+
+        # Set coordinate system of polyline
+        ridge_obj = self._app.oeditor.GetChildObject(mridge.name)
+        ridge_operations = ridge_obj.GetChildNames()
+        if "CreatePolyline:1" in ridge_operations:
+            create_polyline = ridge_obj.GetChildObject("CreatePolyline:1")
+            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+
         mridge = self._app.modeler.thicken_sheet(mridge, ridge_width, True)
-        mridge.history().properties["Coordinate System"] = coordinate_system
         mridge.color = (132, 132, 193)
 
         # Connectors of the ridge
@@ -1292,13 +1306,20 @@ class Corrugated(CommonHorn):
         pts.append([pts[0][0], pts[0][1], pts[0][2]])
 
         horn = self._app.modeler.create_polyline(
-            position_list=pts,
+            points=pts,
             cover_surface=True,
             name="horn" + antenna_name,
             material=self.material,
         )
+
+        # Set coordinate system of polyline
+        horn_obj = self._app.oeditor.GetChildObject(horn.name)
+        horn_operations = horn_obj.GetChildNames()
+        if "CreatePolyline:1" in horn_operations:
+            create_polyline = horn_obj.GetChildObject("CreatePolyline:1")
+            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+
         horn = horn.sweep_around_axis(2)
-        horn.history().properties["Coordinate System"] = coordinate_system
         horn.color = (132, 132, 193)
 
         # Cap
@@ -3134,43 +3155,71 @@ class QuadRidged(CommonHorn):
         position_ridge_4.append(["-" + y, x, z])
 
         ridge1 = self._app.modeler.create_polyline(
-            position_list=position_ridge_1,
+            points=position_ridge_1,
             cover_surface=True,
             name="ridge_1" + antenna_name,
             material=self.material,
         )
+
+        # Set coordinate system of polyline
+        ridge1_obj = self._app.oeditor.GetChildObject(ridge1.name)
+        ridge1_operations = ridge1_obj.GetChildNames()
+        if "CreatePolyline:1" in ridge1_operations:
+            create_polyline = ridge1_obj.GetChildObject("CreatePolyline:1")
+            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+
         ridge1 = self._app.modeler.thicken_sheet(ridge1, ridge_width, True)
-        ridge1.history().properties["Coordinate System"] = coordinate_system
         ridge1.color = (132, 132, 193)
 
         ridge2 = self._app.modeler.create_polyline(
-            position_list=position_ridge_2,
+            points=position_ridge_2,
             cover_surface=True,
             name="ridge_2" + antenna_name,
             material=self.material,
         )
+
+        # Set coordinate system of polyline
+        ridge2_obj = self._app.oeditor.GetChildObject(ridge2.name)
+        ridge2_operations = ridge2_obj.GetChildNames()
+        if "CreatePolyline:1" in ridge2_operations:
+            create_polyline = ridge2_obj.GetChildObject("CreatePolyline:1")
+            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+
         ridge2 = self._app.modeler.thicken_sheet(ridge2, ridge_width, True)
-        ridge2.history().properties["Coordinate System"] = coordinate_system
         ridge2.color = (132, 132, 193)
 
         ridge3 = self._app.modeler.create_polyline(
-            position_list=position_ridge_3,
+            points=position_ridge_3,
             cover_surface=True,
             name="ridge_3" + antenna_name,
             material=self.material,
         )
+
+        # Set coordinate system of polyline
+        ridge3_obj = self._app.oeditor.GetChildObject(ridge3.name)
+        ridge3_operations = ridge3_obj.GetChildNames()
+        if "CreatePolyline:1" in ridge3_operations:
+            create_polyline = ridge3_obj.GetChildObject("CreatePolyline:1")
+            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+
         ridge3 = self._app.modeler.thicken_sheet(ridge3, ridge_width, True)
-        ridge3.history().properties["Coordinate System"] = coordinate_system
         ridge3.color = (132, 132, 193)
 
         ridge4 = self._app.modeler.create_polyline(
-            position_list=position_ridge_4,
+            points=position_ridge_4,
             cover_surface=True,
             name="ridge_4" + antenna_name,
             material=self.material,
         )
+
+        # Set coordinate system of polyline
+        ridge4_obj = self._app.oeditor.GetChildObject(ridge4.name)
+        ridge4_operations = ridge4_obj.GetChildNames()
+        if "CreatePolyline:1" in ridge4_operations:
+            create_polyline = ridge4_obj.GetChildObject("CreatePolyline:1")
+            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+
         ridge4 = self._app.modeler.thicken_sheet(ridge4, ridge_width, True)
-        ridge4.history().properties["Coordinate System"] = coordinate_system
         ridge4.color = (132, 132, 193)
 
         # Connectors of the ridge
