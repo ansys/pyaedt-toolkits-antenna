@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2024 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -35,6 +35,7 @@ import tempfile
 
 from ansys.aedt.core import generate_unique_project_name
 from ansys.aedt.core.visualization.advanced.farfield_visualization import FfdSolutionData
+from ansys.aedt.core.visualization.plot.pyvista import ModelPlotter
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
 
@@ -233,8 +234,6 @@ toolkit_api.release_aedt(True, True)
 # ## Plot results
 
 # Plot exported files
-
-from ansys.aedt.core.visualization.plot.pyvista import ModelPlotter
 
 model = ModelPlotter()
 for file in files:
