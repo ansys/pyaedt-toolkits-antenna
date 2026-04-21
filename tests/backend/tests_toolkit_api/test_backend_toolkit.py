@@ -23,8 +23,6 @@
 
 import pytest
 
-from ansys.aedt.core import is_linux
-
 pytestmark = [pytest.mark.antenna_toolkit_api]
 
 
@@ -63,9 +61,8 @@ class TestClass:
 
         assert not aedt_common.update_hfss_parameters("hola", "0.03")
 
-    @pytest.mark.skipif(is_linux, reason="Crashes on Linux")
     def test_03_analyze(self, aedt_common):
-        aedt_common.properties.antenna.setup.num_cores = 2
+        aedt_common.properties.antenna.setup.num_cores = 4
         aedt_common.connect_design()
         aedt_common.aedtapp.setups[0].props["MaxDeltaS"] = 1
         aedt_common.aedtapp.setups[0].props["MaximumPasses"] = 1
@@ -74,15 +71,12 @@ class TestClass:
 
         assert aedt_common.analyze()
 
-    @pytest.mark.skipif(is_linux, reason="Crashes on Linux")
     def test_04_scattering_results(self, aedt_common):
         sweep, data = aedt_common.scattering_results()
 
         assert len(sweep) == len(data)
 
-    @pytest.mark.skipif(is_linux, reason="Crashes on Linux")
     def test_05_export_farfield(self, aedt_common):
-        """Get aedt model."""
         frequency = (
             str(aedt_common.properties.antenna.synthesis.frequency)
             + aedt_common.properties.antenna.synthesis.frequency_unit

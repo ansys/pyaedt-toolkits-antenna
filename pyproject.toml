@@ -43,7 +43,7 @@ freeze = [
 name = "ansys.aedt.toolkits.antenna"
 
 [project.urls]
-Source = "https://github.com/ansys/pyaedt-toolkits-antenna.git"
+Source = "https://github.com/ansys/pyaedt-toolkits-antenna"
 Issues = "https://github.com/ansys/pyaedt-toolkits-antenna/issues"
 Discussions = "https://github.com/ansys/pyaedt-toolkits-antenna/discussions"
 Documentation = "https://aedt.antenna.toolkit.docs.pyansys.com"

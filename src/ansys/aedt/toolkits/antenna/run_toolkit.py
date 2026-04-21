@@ -31,9 +31,6 @@ from PySide6.QtWidgets import QApplication
 
 from ansys.aedt.toolkits.antenna.backend.models import properties as backend_properties
 from ansys.aedt.toolkits.antenna.ui.models import properties as frontend_properties
-from ansys.aedt.toolkits.antenna.ui.run_frontend import run_frontend
-from ansys.aedt.toolkits.antenna.ui.splash import show_splash_screen
-from ansys.aedt.toolkits.common.utils import check_backend_communication
 from ansys.aedt.toolkits.common.utils import clean_python_processes
 from ansys.aedt.toolkits.common.utils import find_free_port
 from ansys.aedt.toolkits.common.utils import is_server_running
@@ -41,6 +38,8 @@ from ansys.aedt.toolkits.common.utils import process_desktop_properties
 
 backend = None
 ui = None
+url = None
+port = None
 
 
 def start_backend(pp):
@@ -52,25 +51,39 @@ def start_backend(pp):
 
 
 def show_splash_and_start_frontend(qt_app, url_backend):
+    from ansys.aedt.toolkits.antenna.ui.splash import show_splash_screen
+    from ansys.aedt.toolkits.common.utils import check_backend_communication
+
     splash = show_splash_screen(qt_app)  # Should return the splash widget
 
     def check_backend():
         if check_backend_communication(url_backend):
+            # Import here to avoid circular imports and speed up initial loading
+            from ansys.aedt.toolkits.antenna.ui.run_frontend import run_frontend
+
             splash.close()
             run_frontend(url, port, qt_app)
-        else:
-            QTimer.singleShot(500, check_backend)  # Check again in 0.5s
+        else:  # pragma: no cover
+            # Check again in 0.5s
+            QTimer.singleShot(500, check_backend)
 
     check_backend()
 
 
-if __name__ == "__main__":
+def terminate_processes():
+    print("Terminating backend and frontend processes...")
+    backend_process.terminate()
+    backend_process.join()
+    print("Processes are terminated.")
+
+
+if __name__ == "__main__":  # pragma: no cover
     multiprocessing.freeze_support()
 
     is_linux = os.name == "posix"
     new_port = find_free_port(backend_properties.url, backend_properties.port)
     if not new_port:
-        raise Exception(f"No free ports available in {backend_properties.url}")
+        raise Exception(f"No free ports available in {backend_properties.url}.")
 
     backend_properties.port = new_port
     frontend_properties.backend_port = new_port
@@ -80,13 +93,7 @@ if __name__ == "__main__":
     python_path = sys.executable
     splash_thread = None
 
-    def terminate_processes():
-        print("Terminating backend and frontend processes...")
-        backend_process.terminate()
-        backend_process.join()
-        print("Processes terminated.")
-
-    # Clean python processes when script ends
+    # Clean Python processes when script ends
     atexit.register(clean_python_processes, url, port)
 
     # Check if backend is already running

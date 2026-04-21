@@ -299,7 +299,7 @@ class ToolkitBackend(AEDTCommon):
 
         if not sol_data:  # pragma: no cover
             return
-        return sol_data.primary_sweep_values, sol_data.data_db20()
+        return sol_data.get_expression_data(formula="dB20")
 
     def export_farfield(self, frequencies=None, setup=None, sphere=None, variations=None, encode=True):
         """Export far field data and then encode the file if the ``encode`` parameter is enabled.
@@ -361,7 +361,7 @@ class ToolkitBackend(AEDTCommon):
 
                     if snp_file:
                         snp_file = list(snp_file.keys())[0]
-                        serialized_file = self.serialize_obj_base64(snp_file[snp_file])
+                        serialized_file = self.serialize_obj_base64(snp_file)
                         encoded_scattering_file = serialized_file.decode("utf-8")
 
                     self.release_aedt(False, False)

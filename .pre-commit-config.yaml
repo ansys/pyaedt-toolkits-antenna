@@ -58,4 +58,4 @@ repos:
       args:
       - --custom_license=MIT
       - --custom_template=mit_license.jinja2
-      - --start_year=2024
+      - --start_year=2023
