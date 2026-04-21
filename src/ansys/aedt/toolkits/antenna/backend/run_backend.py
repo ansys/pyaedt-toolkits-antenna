@@ -96,7 +96,7 @@ def scattering_results():
 
     response = toolkit_api.scattering_results()
     if response:
-        return jsonify(response), 200
+        return jsonify((list(response[0]), list(response[1]))), 200
     else:  # pragma: no cover
         return jsonify("Fail to get results"), 500
 
