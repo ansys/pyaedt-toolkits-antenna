@@ -39,3 +39,7 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged a
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge as RectangularPatchEdge
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset as RectangularPatchInset
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe as RectangularPatchProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotCavityBackedArray as SlotCavityBackedArray
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotGap as SlotGap
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotMicrostrip as SlotMicrostrip
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotTBar as SlotTBar

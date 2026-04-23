@@ -39,7 +39,7 @@ models =[]
 models =[]
 
 [Slot]
-models =[]
+models = ["SlotCavityBackedArray", "SlotGap", "SlotMicrostrip", "SlotTBar"]
 
 [Vivaldi]
 models =[]
