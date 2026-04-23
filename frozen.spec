@@ -34,7 +34,7 @@ added_files = [
 ]
 
 # Missing metadata
-added_files += copy_metadata('ansys-aedt-toolkits-radar_explorer')
+added_files += copy_metadata('ansys-aedt-toolkits-antenna')
 added_files += copy_metadata('ansys-tools-visualization_interface')
 added_files += collect_data_files('rfc3987_syntax', includes=['**/*'])
 
@@ -58,8 +58,8 @@ pyaedt_hidden = collect_submodules('pyaedt') \
              + collect_submodules('ansys.aedt.core')
 
 hidden = [
-    'ansys.aedt.toolkits.radar_explorer.backend.run_backend',
-    'ansys.aedt.toolkits.radar_explorer.ui.run_frontend',
+    'ansys.aedt.toolkits.antenna.backend.run_backend',
+    'ansys.aedt.toolkits.antenna.ui.run_frontend',
 ]
 
 # --- Matplotlib ---
