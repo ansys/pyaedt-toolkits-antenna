@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 import base64
-import os
+from pathlib import Path
 
 from PySide6.QtCore import Qt
 from PySide6.QtCore import QThread
@@ -344,11 +344,11 @@ class AntennaSynthesisMenu(object):
                     encoded_data_bytes = bytes(encoded_data, "utf-8")
                     decoded_data = base64.b64decode(encoded_data_bytes)
                     # Create obj file locally
-                    file_path = os.path.join(self.main_window.temp_folder, element + ".obj")
-                    with open(file_path, "wb") as f:
+                    file_path = Path(self.main_window.temp_folder) / f"{element}.obj"
+                    with file_path.open("wb") as f:
                         f.write(decoded_data)
                     # Create PyVista object
-                    if not os.path.exists(file_path):
+                    if not file_path.exists():
                         break
                     color = self.model_info[element][1]
                     opacity = self.model_info[element][2]

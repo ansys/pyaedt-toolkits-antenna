@@ -77,7 +77,7 @@ You can install the AEDT Antenna Toolkit in a specific Python environment from t
 
    .. code:: bash
 
-       python -m pip install pyaedt-toolkits-antenna[all]
+       python -m pip install pyaedt-toolkits-antenna
 
 #. Launch the Antenna Toolkit Wizard:
 

@@ -23,8 +23,6 @@
 
 """Sphinx documentation configuration file."""
 
-"""Sphinx documentation configuration file."""
-
 from datetime import datetime
 import os
 from pathlib import Path
@@ -47,12 +45,12 @@ print("root_path:", root_path)
 print("src_path:", str(src_path))
 
 try:
-    from ansys.aedt.toolkits.antenna import __version__
+    from ansys.aedt.toolkits.antenna import __version__  # noqa: E402
 except ImportError:
     sys.path.append(root_path)
 
     sys.path.append(str(src_path))
-    from ansys.aedt.toolkits.antenna import __version__
+    from ansys.aedt.toolkits.antenna import __version__  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -60,12 +58,12 @@ logger = logging.getLogger(__name__)
 
 
 def check_pandoc_installed(app):
-    """Ensure that pandoc is installed"""
+    """Ensure that pandoc is installed."""
     import pypandoc
 
     try:
         pandoc_path = pypandoc.get_pandoc_path()
-        pandoc_dir = os.path.dirname(pandoc_path)
+        pandoc_dir = str(Path(pandoc_path).parent)
         if pandoc_dir not in os.environ["PATH"].split(os.pathsep):
             logger.info("Pandoc directory is not in $PATH.")
             os.environ["PATH"] += os.pathsep + pandoc_dir

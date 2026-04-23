@@ -25,6 +25,7 @@ from collections import OrderedDict
 import math
 
 import ansys.aedt.core.generic.constants as constants
+from ansys.aedt.core.generic.constants import Plane
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
@@ -322,7 +323,7 @@ class AxialMode(CommonHelix):
         udm.material_name = "pec"
         self._app.modeler.split(udm, "XY", "PositiveOnly")
         gnd = self._app.modeler.create_rectangle(
-            constants.PLANE.XY,
+            Plane.XY,
             [
                 "-{}/2".format(groundx),
                 "-{}/2".format(groundy),

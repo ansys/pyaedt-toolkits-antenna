@@ -34,8 +34,8 @@ added_files = [
 ]
 
 # Missing metadata
-added_files += copy_metadata('ansys-aedt-toolkits-radar_explorer')
-added_files += copy_metadata('ansys-tools-visualization_interface')
+added_files += copy_metadata('ansys-aedt-toolkits-antenna')
+added_files += copy_metadata('ansys-tools-visualization-interface')
 added_files += collect_data_files('rfc3987_syntax', includes=['**/*'])
 
 if is_linux:
@@ -58,8 +58,8 @@ pyaedt_hidden = collect_submodules('pyaedt') \
              + collect_submodules('ansys.aedt.core')
 
 hidden = [
-    'ansys.aedt.toolkits.radar_explorer.backend.run_backend',
-    'ansys.aedt.toolkits.radar_explorer.ui.run_frontend',
+    'ansys.aedt.toolkits.antenna.backend.run_backend',
+    'ansys.aedt.toolkits.antenna.ui.run_frontend',
 ]
 
 # --- Matplotlib ---
@@ -93,7 +93,6 @@ a = Analysis([main_py],
              datas=added_files + all_datas,
              hiddenimports=all_hidden,
              hookspath=['installer/hooks'],
-             runtime_hooks=['installer/hooks/rthook_mpl.py'],
              excludes=[],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
