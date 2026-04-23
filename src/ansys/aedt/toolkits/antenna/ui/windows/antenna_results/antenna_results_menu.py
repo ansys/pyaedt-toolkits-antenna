@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
@@ -121,8 +121,6 @@ class AntennaResultsMenu(object):
         # Modify theme
         app_color = self.main_window.ui.themes["app_color"]
         text_font_size = self.main_window.properties.font["text_size"]
-        title_font_size = self.main_window.properties.font["title_size"]
-
         # Column
 
         layout_row_obj = QVBoxLayout()
@@ -231,7 +229,7 @@ class AntennaResultsMenu(object):
         # 3D
         self.farfield_3d_plotter = BackgroundPlotter(show=False)
         self.farfield_3d_plotter.set_background(color=self.main_window.ui.themes["app_color"]["bg_one"])
-        logo_path = os.path.join(os.path.dirname(__file__), "ANSYS_logo.obj")
+        logo_path = Path(__file__).parent / "ANSYS_logo.obj"
         cad_mesh = pv.read(logo_path)
         self.cad_actor = self.farfield_3d_plotter.add_mesh(cad_mesh)
         self.farfield_3d_plotter.view_xy()

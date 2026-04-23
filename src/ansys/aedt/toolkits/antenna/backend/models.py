@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 import sys
 
 if sys.version_info >= (3, 11):
@@ -91,8 +91,9 @@ class Properties(BackendProperties, CommonProperties, validate_assignment=True):
 
 
 backend_properties = {}
-if os.path.isfile(os.path.join(os.path.dirname(__file__), "backend_properties.toml")):
-    with open(os.path.join(os.path.dirname(__file__), "backend_properties.toml"), mode="rb") as file_handler:
+backend_properties_file = Path(__file__).parent / "backend_properties.toml"
+if backend_properties_file.is_file():
+    with backend_properties_file.open(mode="rb") as file_handler:
         backend_properties = tomllib.load(file_handler)
 
 toolkit_property = {}
