@@ -48,6 +48,12 @@ class TestClass:
 
         aedt_common.release_aedt(False, False)
 
+    def test_01b_get_reflector(self, aedt_common):
+        antenna_parameters = aedt_common.get_antenna("Parabolic", synth_only=True)
+
+        assert antenna_parameters
+        assert "focal_length" in antenna_parameters
+
     def test_02_update_parameters(self, aedt_common):
         parameter_list = list(aedt_common.properties.antenna.parameters.keys())
 

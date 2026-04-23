@@ -36,7 +36,7 @@ models =[]
 models =[]
 
 [Reflector]
-models =[]
+models = ["Cassegrain", "Gregorian", "Parabolic", "SplashPlate"]
 
 [Slot]
 models =[]

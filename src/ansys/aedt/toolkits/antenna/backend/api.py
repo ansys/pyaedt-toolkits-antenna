@@ -122,7 +122,7 @@ class ToolkitBackend(AEDTCommon):
         )
 
         # Update antenna properties
-        for antenna_prop in self.properties.antenna.synthesis.model_fields:
+        for antenna_prop in self.properties.antenna.synthesis.__class__.model_fields:
             if (
                 antenna_prop == "frequency"
                 and "start_frequency" in self.oantenna.__dir__()

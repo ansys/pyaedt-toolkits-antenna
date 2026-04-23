@@ -56,6 +56,22 @@ class Synthesis(BaseModel, validate_assignment=True):
     start_frequency: float = 0.0
     stop_frequency: float = 0.0
     substrate_height: float = 0.1
+    feed_type: str = ""
+    feed_location: float = 0.0
+    major_radius: float = 0.0
+    minor_radius: float = 0.0
+    focal_length: float = 0.0
+    offset: float = 0.0
+    swing_angle: float = 0.0
+    diameter_primary: float = 0.0
+    eccentricity: float = 0.0
+    interfocal_distance: float = 0.0
+    primary_diameter: float = 0.0
+    primary_focal: float = 0.0
+    sub_diameter: float = 0.0
+    sub_focal: float = 0.0
+    sub_thickness: float = 0.0
+    sub_height: float = 0.0
 
 
 class Setup(BaseModel, validate_assignment=True):

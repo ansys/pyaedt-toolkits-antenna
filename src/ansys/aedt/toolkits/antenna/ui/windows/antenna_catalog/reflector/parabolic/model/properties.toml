@@ -1,0 +1,21 @@
+name = "Parabolic"
+
+[object_1]
+name = "reflector"
+color = [255, 128, 65]
+opacity = 0.25
+
+[object_2]
+name = "feed"
+color = [230, 230, 230]
+opacity = 0.8
+
+[object_3]
+name = "port"
+color = [128, 0, 0]
+opacity = 0.2
+
+[object_4]
+name = "port_cap"
+color = [132, 132, 192]
+opacity = 0.8

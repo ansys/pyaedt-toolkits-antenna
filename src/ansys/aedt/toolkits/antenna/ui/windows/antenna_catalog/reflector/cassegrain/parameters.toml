@@ -1,0 +1,13 @@
+Name = "Cassegrain"
+Frequency = 10.0
+Feed_Type = ["Pyramidal", "Conical", "Elliptical", "CircularWG_Choke"]
+Swing_Angle = 0.0
+Diameter_Primary = 70.0
+Focal_Length = 50.0
+Eccentricity = 2.0
+Interfocal_Distance = 25.0
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"
