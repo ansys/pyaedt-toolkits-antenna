@@ -42,7 +42,7 @@ models =[]
 models =[]
 
 [Vivaldi]
-models =[]
+models = ["Vivaldi", "VivaldiStepped"]
 
 [YagiUda]
 models =[]

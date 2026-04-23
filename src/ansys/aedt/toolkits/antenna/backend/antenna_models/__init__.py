@@ -39,3 +39,5 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged a
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge as RectangularPatchEdge
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset as RectangularPatchInset
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe as RectangularPatchProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import Vivaldi as Vivaldi
+from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import VivaldiStepped as VivaldiStepped
