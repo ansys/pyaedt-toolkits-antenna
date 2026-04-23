@@ -322,7 +322,7 @@ jobs:
     permissions:
       contents: read
     env:
-      ANSYSEM_ROOT252: '/usr/ansys_inc/v252/AnsysEM'
+      ANSYSEM_ROOT261: '/usr/ansys_inc/v261/AnsysEM'
       ANS_NODEPCHECK: '1'
     steps:
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
@@ -350,7 +350,7 @@ jobs:
       - name: Antenna models testing
         timeout-minutes: 5
         run: |
-          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT252 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT261 }}:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_models_common_api
           pytest -v -m antenna_models_api
@@ -358,14 +358,14 @@ jobs:
       - name: Toolkit API testing
         timeout-minutes: 30
         run: |
-          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT252 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT261 }}:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_api
 
       - name: Toolkit REST API testing
         timeout-minutes: 30
         run: |
-          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT252 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
+          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT261 }}:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_rest_api
 
