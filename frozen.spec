@@ -35,7 +35,7 @@ added_files = [
 
 # Missing metadata
 added_files += copy_metadata('ansys-aedt-toolkits-antenna')
-added_files += copy_metadata('ansys-tools-visualization_interface')
+added_files += copy_metadata('ansys-tools-visualization-interface')
 added_files += collect_data_files('rfc3987_syntax', includes=['**/*'])
 
 if is_linux:
@@ -78,7 +78,7 @@ all_hidden = (pyaedt_hidden + mpl_hidden + pv_hidden + vtk_hidden + imageio_hidd
 
 # Add manual hidden imports for PyVista and visualization
 all_hidden += [
-    'ansys.tools.visualization_interface',
+    'ansys.tools.visualization-interface',
     'pyvista.plotting',
     'pyvista.core',
     'scipy',
