@@ -24,7 +24,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-    "ansys-aedt-toolkits-common==0.16.1",
+    "ansys-aedt-toolkits-common[all]==0.16.1",
 ]
 
 [project.optional-dependencies]
@@ -37,9 +37,6 @@ doc = [
 ]
 freeze = [
     "pyinstaller"
-]
-all = [
-    "ansys-aedt-toolkits-common[all]==0.16.1",
 ]
 
 [tool.flit.module]

@@ -78,7 +78,7 @@ all_hidden = (pyaedt_hidden + mpl_hidden + pv_hidden + vtk_hidden + imageio_hidd
 
 # Add manual hidden imports for PyVista and visualization
 all_hidden += [
-    'ansys.tools.visualization-interface',
+    'ansys.tools.visualization_interface',
     'pyvista.plotting',
     'pyvista.core',
     'scipy',

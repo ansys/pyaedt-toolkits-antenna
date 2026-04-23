@@ -106,7 +106,7 @@ To install both the backend and UI methods, run this command:
 
 .. code:: bash
 
-    pip install ansys-aedt-toolkits-antenna[all]
+    pip install ansys-aedt-toolkits-antenna
 
 If you only need the common API, install only the backend methods with this
 command:
