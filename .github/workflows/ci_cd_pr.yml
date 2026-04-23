@@ -159,8 +159,10 @@ jobs:
       - name: Debug build directory
         run: Get-ChildItem -Path build -Recurse | ForEach-Object { $_.FullName }
 
-      - name: Print NSIS version
-        run: makensis -VERSION
+      - name: Check NSIS version
+        shell: pwsh
+        run: |
+          & "C:\Program Files (x86)\NSIS\makensis.exe" /VERSION
 
       - name: Run NSIS
         shell: pwsh
@@ -171,7 +173,7 @@ jobs:
           if (!(Test-Path -Path "setup.nsi")) {
             Write-Error "setup.nsi not found"
           }
-          makensis setup.nsi
+          & "C:\Program Files (x86)\NSIS\makensis.exe" setup.nsi
 
       - name: List output
         run: ls -R dist
