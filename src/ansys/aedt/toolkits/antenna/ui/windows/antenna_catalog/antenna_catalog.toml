@@ -4,6 +4,9 @@ models = ["BowTieNormal", "BowTieRounded", "BowTieSlot"]
 [ConicalSpiral]
 models = ["Archimedean", "Log", "Sinuous"]
 
+[Custom]
+models = ["GPSPatchCeramic"]
+
 [Helix]
 models = ["AxialMode"]
 

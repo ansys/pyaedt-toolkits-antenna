@@ -27,6 +27,7 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieSlot
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Archimedean as Archimedean
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log as Log
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous as Sinuous
+from ansys.aedt.toolkits.antenna.backend.antenna_models.custom import GPSPatchCeramic as GPSPatchCeramic
 from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialMode as AxialMode
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical as Conical
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Corrugated as Corrugated

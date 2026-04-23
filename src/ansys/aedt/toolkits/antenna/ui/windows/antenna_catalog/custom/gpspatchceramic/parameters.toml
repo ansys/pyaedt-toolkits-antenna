@@ -1,0 +1,9 @@
+Name = "GPSPatchCeramic"
+Frequency = 1.575
+Substrate_Material = ["Ceramic"]
+Substrate_Height = 2.0
+Boundary_Condition = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"
