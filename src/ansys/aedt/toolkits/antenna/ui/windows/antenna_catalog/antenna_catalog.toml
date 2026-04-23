@@ -24,7 +24,7 @@ models =[]
 models = []
 
 [Misc]
-models =[]
+models = ["Bicone", "Discone"]
 
 [Monopole]
 models =[]

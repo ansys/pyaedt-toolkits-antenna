@@ -87,3 +87,12 @@ class TestClass:
         farfield_data = aedt_common.export_farfield(frequencies=[frequency], encode=False, sphere="3D")
         assert isinstance(farfield_data, tuple)
         assert len(farfield_data) == 2
+
+    def test_06_get_misc_antenna(self, aedt_common):
+        aedt_common.oantenna = None
+        aedt_common.properties.antenna.is_created = False
+        antenna_parameters = aedt_common.get_antenna("Bicone", synth_only=True)
+
+        assert antenna_parameters
+        assert "Bicone" in aedt_common.available_antennas
+        assert "Discone" in aedt_common.available_antennas

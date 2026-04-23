@@ -36,6 +36,8 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import HPlane as HP
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Pyramidal as Pyramidal
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRidged as PyramidalRidged
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged as QuadRidged
+from ansys.aedt.toolkits.antenna.backend.antenna_models.misc import Bicone as Bicone
+from ansys.aedt.toolkits.antenna.backend.antenna_models.misc import Discone as Discone
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge as RectangularPatchEdge
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset as RectangularPatchInset
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe as RectangularPatchProbe
