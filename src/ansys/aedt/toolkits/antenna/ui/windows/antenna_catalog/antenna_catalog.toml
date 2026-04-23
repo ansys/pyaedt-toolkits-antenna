@@ -17,6 +17,10 @@ models = ["Conical", "Corrugated",
 models =["RectangularPatchEdge", "RectangularPatchInset",
     "RectangularPatchProbe"]
 
+[Waveguide]
+models = ["CircularWaveguide", "RectangularWaveguide",
+    "RectangularWaveguideSlotArray"]
+
 [Dipole]
 models =[]
 

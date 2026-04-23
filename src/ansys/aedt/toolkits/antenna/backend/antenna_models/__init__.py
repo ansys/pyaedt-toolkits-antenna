@@ -39,3 +39,8 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged a
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge as RectangularPatchEdge
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset as RectangularPatchInset
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe as RectangularPatchProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import CircularWaveguide as CircularWaveguide
+from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import RectangularWaveguide as RectangularWaveguide
+from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import (
+    RectangularWaveguideSlotArray as RectangularWaveguideSlotArray,
+)

@@ -33,6 +33,10 @@ class TestClass:
         antenna_parameters_1 = aedt_common.get_antenna("RectangularPatchProbe", synth_only=True)
 
         assert antenna_parameters_1
+        assert "CircularWaveguide" in aedt_common.available_antennas
+        assert aedt_common.get_antenna("CircularWaveguide", synth_only=True)
+        assert aedt_common.get_antenna("RectangularWaveguide", synth_only=True)
+        assert aedt_common.get_antenna("RectangularWaveguideSlotArray", synth_only=True)
 
         aedt_common.properties.antenna.setup.create_setup = True
         aedt_common.properties.antenna.synthesis.outer_boundary = "Radiation"
