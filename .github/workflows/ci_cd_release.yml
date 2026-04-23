@@ -106,7 +106,7 @@ jobs:
           library-name: ${{ env.LIBRARY_NAME }}
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          whitelist-license-check: 'jeepney'
+          whitelist-license-check: 'fpdf2 PySide6 PySide6_Addons PySide6_Essentials shiboken6'
 
   build-application-windows:
     name: "Build Application - Windows"
