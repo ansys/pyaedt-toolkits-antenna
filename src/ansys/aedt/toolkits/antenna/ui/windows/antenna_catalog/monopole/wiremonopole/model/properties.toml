@@ -1,0 +1,16 @@
+name = "Wire Monopole"
+
+[object_1]
+name = "wire_WireMonopole"
+color = [255, 128, 65]
+opacity = 0.1
+
+[object_2]
+name = "ground_WireMonopole"
+color = [255, 128, 65]
+opacity = 0.1
+
+[object_3]
+name = "port_lump_WireMonopole"
+color = [128, 0, 0]
+opacity = 0.2

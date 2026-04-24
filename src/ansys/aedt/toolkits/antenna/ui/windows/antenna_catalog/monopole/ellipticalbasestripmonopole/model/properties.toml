@@ -1,0 +1,16 @@
+name = "Elliptical Base Strip Monopole"
+
+[object_1]
+name = "antenna_EllipticalBaseStripMonopole"
+color = [255, 128, 65]
+opacity = 0.1
+
+[object_2]
+name = "ground_EllipticalBaseStripMonopole"
+color = [255, 128, 65]
+opacity = 0.1
+
+[object_3]
+name = "port_lump_EllipticalBaseStripMonopole"
+color = [128, 0, 0]
+opacity = 0.2

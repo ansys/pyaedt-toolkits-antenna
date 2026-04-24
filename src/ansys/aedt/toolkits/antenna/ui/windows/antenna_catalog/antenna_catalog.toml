@@ -27,7 +27,7 @@ models = []
 models =[]
 
 [Monopole]
-models =[]
+models = ["BladeAntenna", "CircularDiscMonopole", "EllipticalBaseStripMonopole", "VerticalTrapezoidalMonopole", "WireMonopole", "WireMonopoleInfGnd"]
 
 [PIFA]
 models =[]

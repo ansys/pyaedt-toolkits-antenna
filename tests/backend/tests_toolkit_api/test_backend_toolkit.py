@@ -25,6 +25,15 @@ import pytest
 
 pytestmark = [pytest.mark.antenna_toolkit_api]
 
+MONOPOLE_MODELS = [
+    "BladeAntenna",
+    "CircularDiscMonopole",
+    "EllipticalBaseStripMonopole",
+    "VerticalTrapezoidalMonopole",
+    "WireMonopole",
+    "WireMonopoleInfGnd",
+]
+
 
 class TestClass:
     """Class defining a workflow to test antenna toolkit."""
@@ -33,6 +42,9 @@ class TestClass:
         antenna_parameters_1 = aedt_common.get_antenna("RectangularPatchProbe", synth_only=True)
 
         assert antenna_parameters_1
+        assert set(MONOPOLE_MODELS).issubset(aedt_common.available_antennas)
+        for monopole_model in MONOPOLE_MODELS:
+            assert aedt_common.get_antenna(monopole_model, synth_only=True)
 
         aedt_common.properties.antenna.setup.create_setup = True
         aedt_common.properties.antenna.synthesis.outer_boundary = "Radiation"

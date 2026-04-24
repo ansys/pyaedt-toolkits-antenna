@@ -1,0 +1,16 @@
+name = "Wire Monopole Infinite Ground"
+
+[object_1]
+name = "wire_WireMonopoleInfGnd"
+color = [255, 128, 65]
+opacity = 0.1
+
+[object_2]
+name = "reference_WireMonopoleInfGnd"
+color = [132, 132, 192]
+opacity = 0.5
+
+[object_3]
+name = "port_lump_WireMonopoleInfGnd"
+color = [128, 0, 0]
+opacity = 0.2
