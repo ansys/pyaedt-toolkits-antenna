@@ -33,6 +33,14 @@ class TestClass:
         antenna_parameters_1 = aedt_common.get_antenna("RectangularPatchProbe", synth_only=True)
 
         assert antenna_parameters_1
+        for antenna_name in [
+            "EllipticalEdge",
+            "EllipticalInset",
+            "EllipticalProbe",
+            "MbyNPatchArray",
+            "SeqRotated2Patch",
+        ]:
+            assert aedt_common.get_antenna(antenna_name, synth_only=True)
 
         aedt_common.properties.antenna.setup.create_setup = True
         aedt_common.properties.antenna.synthesis.outer_boundary = "Radiation"

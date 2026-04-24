@@ -1,0 +1,41 @@
+name = "M by N Patch Array"
+
+[object_1]
+name = "sub_Patch"
+color = [0, 128, 0]
+opacity = 0.2
+
+[object_2]
+name = "gnd_Patch"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "ant_Patch_0_0"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_4]
+name = "ant_Patch_0_1"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_5]
+name = "ant_Patch_0_2"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_6]
+name = "ant_Patch_1_0"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_7]
+name = "ant_Patch_1_1"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_8]
+name = "ant_Patch_1_2"
+color = [255, 128, 65]
+opacity = 0.9

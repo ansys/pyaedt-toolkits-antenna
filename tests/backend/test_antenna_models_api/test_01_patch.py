@@ -33,6 +33,20 @@ pytestmark = [pytest.mark.antenna_models_api]
 class TestClass:
     """Class defining a workflow to test antenna models patch."""
 
+    def test_additional_patch_synthesis_models(self):
+        expected_parameters = {
+            "EllipticalEdge": "edge_feed_width",
+            "EllipticalInset": "inset_gap",
+            "EllipticalProbe": "coax_inner_rad",
+            "MbyNPatchArray": "patch_count_x",
+            "SeqRotated2Patch": "patch_diameter",
+        }
+
+        for antenna_name, parameter_name in expected_parameters.items():
+            antenna_module = getattr(antenna_models, antenna_name)
+            antenna = antenna_module(None, frequency=1.0, length_unit="mm")
+            assert getattr(antenna.synthesis_parameters, parameter_name).value
+
     # Patch Probe tests
 
     def test_rectangular_patch_probe_model_hfss_terminal(self, toolkit):
@@ -464,3 +478,79 @@ class TestClass:
         opatch3.create_lattice_pair(lattice_height="20mm", bottom_extend=True)
 
         assert len(opatch3.boundaries) == 4
+
+    def test_elliptical_patch_probe_model_hfss_terminal(self, toolkit):
+        antenna_module = getattr(antenna_models, "EllipticalProbe")
+        opatch0 = antenna_module(None, frequency=1.0, length_unit="mm")
+        assert opatch0.synthesis_parameters.coax_inner_rad.value
+
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
+        opatch1 = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
+        opatch1.init_model()
+        opatch1.model_hfss()
+        opatch1.setup_hfss()
+
+        assert opatch1.object_list
+        assert len(opatch1.excitations) == 1
+        for comp in opatch1.object_list.values():
+            assert isinstance(comp, Object3d)
+
+    def test_elliptical_patch_edge_model_hfss_terminal(self, toolkit):
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
+        antenna_module = getattr(antenna_models, "EllipticalEdge")
+        opatch = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
+        opatch.init_model()
+        opatch.model_hfss()
+        opatch.setup_hfss()
+
+        assert opatch.object_list
+        assert len(opatch.excitations) == 1
+        for comp in opatch.object_list.values():
+            assert isinstance(comp, Object3d)
+
+    def test_elliptical_patch_inset_model_hfss_terminal(self, toolkit):
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
+        antenna_module = getattr(antenna_models, "EllipticalInset")
+        opatch = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
+        opatch.init_model()
+        opatch.model_hfss()
+        opatch.setup_hfss()
+
+        assert opatch.object_list
+        assert len(opatch.excitations) == 1
+        for comp in opatch.object_list.values():
+            assert isinstance(comp, Object3d)
+
+    def test_m_by_n_patch_array_model_hfss_terminal(self, toolkit):
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
+        antenna_module = getattr(antenna_models, "MbyNPatchArray")
+        opatch = antenna_module(toolkit.aedtapp, frequency=1.0, number_of_patches_x=2, number_of_patches_y=3)
+        opatch.init_model()
+        opatch.model_hfss()
+        opatch.setup_hfss()
+
+        patch_objects = [name for name in opatch.object_list if name.startswith(f"ant_{opatch.name}_")]
+        assert len(patch_objects) == 6
+        assert len(opatch.excitations) == 6
+
+    def test_seq_rotated_patch_model_hfss_terminal(self, toolkit):
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
+        antenna_module = getattr(antenna_models, "SeqRotated2Patch")
+        opatch = antenna_module(toolkit.aedtapp, frequency=5.0)
+        opatch.init_model()
+        opatch.model_hfss()
+        opatch.setup_hfss()
+
+        patch_objects = [name for name in opatch.object_list if name.startswith(f"ant_{opatch.name}_")]
+        assert len(patch_objects) == 4
+        assert len(opatch.excitations) == 4

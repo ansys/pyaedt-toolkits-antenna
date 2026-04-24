@@ -1,0 +1,31 @@
+name = "Sequential Rotated 2 Patch"
+
+[object_1]
+name = "sub_Patch"
+color = [0, 128, 0]
+opacity = 0.2
+
+[object_2]
+name = "gnd_Patch"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "ant_Patch_0"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_4]
+name = "ant_Patch_1"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_5]
+name = "ant_Patch_2"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_6]
+name = "ant_Patch_3"
+color = [255, 128, 65]
+opacity = 0.9

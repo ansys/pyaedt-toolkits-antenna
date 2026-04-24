@@ -36,6 +36,11 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import HPlane as HP
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Pyramidal as Pyramidal
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRidged as PyramidalRidged
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged as QuadRidged
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import EllipticalEdge as EllipticalEdge
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import EllipticalInset as EllipticalInset
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import EllipticalProbe as EllipticalProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import MbyNPatchArray as MbyNPatchArray
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge as RectangularPatchEdge
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset as RectangularPatchInset
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe as RectangularPatchProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import SeqRotated2Patch as SeqRotated2Patch

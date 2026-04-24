@@ -14,8 +14,10 @@ models = ["Conical", "Corrugated",
     "PyramidalRidged", "QuadRidged"]
 
 [Patch]
-models =["RectangularPatchEdge", "RectangularPatchInset",
-    "RectangularPatchProbe"]
+models =["EllipticalEdge", "EllipticalInset",
+    "EllipticalProbe", "MbyNPatchArray",
+    "RectangularPatchEdge", "RectangularPatchInset",
+    "RectangularPatchProbe", "SeqRotated2Patch"]
 
 [Dipole]
 models =[]
