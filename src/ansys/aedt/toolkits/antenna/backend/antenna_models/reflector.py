@@ -115,13 +115,29 @@ class CommonReflector(CommonAntenna):
         self._app.modeler.sweep_around_axis(polyline, "Y")
         return self._app.modeler[name]
 
-    def _add_primary_reflector(self, radius, focal_length, name, offset=0.0, samples=24):
+    def _trim_with_aperture(self, reflector_name, major_radius, focal_length, offset=0.0, minor_radius=None):
+        if not minor_radius:
+            minor_radius = major_radius
+
+        aperture = self._app.modeler.create_ellipse(
+            orientation="ZX",
+            origin=[0.0, 50.0 * focal_length, offset],
+            major_radius=major_radius,
+            ratio=minor_radius / major_radius,
+            name=f"aperture_{reflector_name}",
+        )
+        self._app.modeler.sweep_along_vector(aperture, [0.0, -100.0 * focal_length, 0.0])
+        self._app.modeler.intersect([reflector_name, aperture.name], keep_originals=False)
+        return self._app.modeler[reflector_name]
+
+    def _add_primary_reflector(self, major_radius, focal_length, name, offset=0.0, minor_radius=None, samples=24):
         points = []
         for index in range(samples + 1):
-            radial_value = radius * index / samples
+            radial_value = major_radius * index / samples
             axial_value = (radial_value**2) / (4.0 * focal_length) - focal_length
             points.append([0.0, axial_value, offset + radial_value])
         reflector = self._add_profile(name, points)
+        reflector = self._trim_with_aperture(reflector.name, major_radius, focal_length, offset, minor_radius)
         self.object_list[reflector.name] = reflector
         return reflector
 
@@ -348,10 +364,11 @@ class Parabolic(CommonReflector):
         self._app.solution_type = "Modal"
         self.set_variables_in_hfss()
         reflector = self._add_primary_reflector(
-            radius=max(self.major_radius, self.minor_radius),
+            major_radius=self.major_radius,
             focal_length=self.focal_length,
             name=f"reflector_{self.name}",
             offset=self.offset,
+            minor_radius=self.minor_radius,
         )
         self._move_to_origin([reflector.name])
         feed_angle = self._feed_rotation(self.offset, self.focal_length, self.feed_location)
@@ -493,7 +510,7 @@ class Cassegrain(CommonDualReflector):
         self.set_variables_in_hfss()
         parameters = self.synthesis()
         primary = self._add_primary_reflector(
-            radius=self.diameter_primary / 2.0,
+            major_radius=self.diameter_primary / 2.0,
             focal_length=self.focal_length,
             name=f"reflector_{self.name}",
             offset=parameters["offset_primary"],
@@ -539,7 +556,7 @@ class Gregorian(CommonDualReflector):
         self.set_variables_in_hfss()
         parameters = self.synthesis()
         primary = self._add_primary_reflector(
-            radius=self.diameter_primary / 2.0,
+            major_radius=self.diameter_primary / 2.0,
             focal_length=self.focal_length,
             name=f"reflector_{self.name}",
             offset=parameters["offset_primary"],
@@ -652,7 +669,7 @@ class SplashPlate(CommonReflector):
         self._app.solution_type = "Modal"
         self.set_variables_in_hfss()
         reflector = self._add_primary_reflector(
-            radius=self.primary_diameter / 2.0,
+            major_radius=self.primary_diameter / 2.0,
             focal_length=self.primary_focal,
             name=f"reflector_{self.name}",
             offset=0.0,
@@ -674,8 +691,9 @@ class SplashPlate(CommonReflector):
             name=f"splash_plate_cone_{self.name}",
             material=self.material,
         )
+        self._app.modeler.unite([splash_plate.name, splash_cone.name])
+        splash_plate = self._app.modeler[splash_plate.name]
         self.object_list[splash_plate.name] = splash_plate
-        self.object_list[splash_cone.name] = splash_cone
-        self._move_to_origin([reflector.name, splash_plate.name, splash_cone.name])
+        self._move_to_origin([reflector.name, splash_plate.name])
         self._create_feed(0.0, self.origin)
         return True
