@@ -37,5 +37,15 @@ def test_slot_catalog_assets():
     for model in slot_models:
         antenna_path = CATALOG_DIR / "slot" / model.lower()
         assert (antenna_path / "parameters.toml").is_file()
-        assert (antenna_path / "model" / "properties.toml").is_file()
+        properties_path = antenna_path / "model" / "properties.toml"
+        assert properties_path.is_file()
         assert any(path.suffix.lower() in {".jpg", ".jpeg", ".png"} for path in antenna_path.iterdir())
+
+        with properties_path.open("rb") as file_handler:
+            model_properties = tomllib.load(file_handler)
+
+        object_entries = {key: value for key, value in model_properties.items() if key.startswith("object_")}
+        assert object_entries
+
+        obj_files = {path.stem for path in (antenna_path / "model").glob("*.obj")}
+        assert obj_files == {entry["name"] for entry in object_entries.values()}
