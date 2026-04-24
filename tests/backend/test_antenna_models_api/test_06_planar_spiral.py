@@ -32,7 +32,6 @@ else:
     import tomli as tomllib
 
 from ansys.aedt.core.modeler.cad.object_3d import Object3d
-
 from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 pytestmark = [pytest.mark.antenna_models_api]

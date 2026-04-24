@@ -26,11 +26,10 @@ import math
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
-from ansys.aedt.toolkits.common.backend.logger_handler import logger
-
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Archimedean as ConicalArchimedean
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log as ConicalLog
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous as ConicalSinuous
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
 
 
 def _ordered_parameters(parameters):
