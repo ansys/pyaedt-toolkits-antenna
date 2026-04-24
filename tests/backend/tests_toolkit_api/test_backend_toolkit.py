@@ -33,6 +33,10 @@ class TestClass:
         antenna_parameters_1 = aedt_common.get_antenna("RectangularPatchProbe", synth_only=True)
 
         assert antenna_parameters_1
+        assert aedt_common.get_antenna("QuasiYagi", synth_only=True)
+        assert aedt_common.get_antenna("WireYagiUda", synth_only=True)
+        assert "QuasiYagi" in aedt_common.available_antennas
+        assert "WireYagiUda" in aedt_common.available_antennas
 
         aedt_common.properties.antenna.setup.create_setup = True
         aedt_common.properties.antenna.synthesis.outer_boundary = "Radiation"

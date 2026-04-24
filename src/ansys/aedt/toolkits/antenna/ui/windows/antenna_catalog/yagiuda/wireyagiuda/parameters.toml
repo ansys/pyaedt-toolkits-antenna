@@ -1,0 +1,9 @@
+Name = "Wire_Yagi_Uda"
+Frequency = 1.0
+Gain = 9.26
+Material = ["pec"]
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"

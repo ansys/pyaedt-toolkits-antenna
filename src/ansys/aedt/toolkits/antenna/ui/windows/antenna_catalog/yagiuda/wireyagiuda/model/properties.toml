@@ -1,0 +1,26 @@
+name = "Wire Yagi-Uda"
+
+[object_1]
+name = "ant_reflector_WireYagiUda"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_2]
+name = "ant_driven_top_WireYagiUda"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "ant_driven_bottom_WireYagiUda"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_4]
+name = "ant_director_01_WireYagiUda"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_5]
+name = "port_lump_WireYagiUda"
+color = [128, 0, 0]
+opacity = 0.2

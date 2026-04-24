@@ -23,6 +23,7 @@
 
 import copy
 import math
+import re
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.file_utils import generate_unique_name
@@ -454,12 +455,13 @@ class CommonAntenna(object):
         """Create HFSS design variables."""
         if not not_used:
             not_used = []
+        no_unit_re = re.compile("|".join(["ratio", "coefficient", "points", "number"]))
         for p in self.synthesis_parameters.__dict__.values():
             if isinstance(p, Property) and p.hfss_variable not in not_used:
                 properties.antenna.parameters_hfss[p.name] = p.hfss_variable
                 if "angle" in p.hfss_variable:
                     self._app[p.hfss_variable] = str(p.value) + "deg"
-                elif "ratio" in p.hfss_variable:
+                elif no_unit_re.search(p.hfss_variable):
                     self._app[p.hfss_variable] = str(p.value)
                 else:
                     self._app[p.hfss_variable] = str(p.value) + self.length_unit
