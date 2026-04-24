@@ -1,0 +1,66 @@
+name = "Quadrifilar open"
+
+[object_1]
+name = "gnd"
+color = [230, 230, 230]
+opacity = 0.2
+
+[object_2]
+name = "helix_1"
+color = [230, 230, 230]
+opacity = 0.2
+
+[object_3]
+name = "helix_2"
+color = [230, 230, 230]
+opacity = 0.2
+
+[object_4]
+name = "helix_3"
+color = [230, 230, 230]
+opacity = 0.2
+
+[object_5]
+name = "helix_4"
+color = [230, 230, 230]
+opacity = 0.2
+
+[object_6]
+name = "feed_1"
+color = [247, 242, 232]
+opacity = 0.8
+
+[object_7]
+name = "feed_2"
+color = [247, 242, 232]
+opacity = 0.8
+
+[object_8]
+name = "feed_3"
+color = [247, 242, 232]
+opacity = 0.8
+
+[object_9]
+name = "feed_4"
+color = [247, 242, 232]
+opacity = 0.8
+
+[object_10]
+name = "port_1"
+color = [128, 0, 0]
+opacity = 0.2
+
+[object_11]
+name = "port_2"
+color = [128, 0, 0]
+opacity = 0.2
+
+[object_12]
+name = "port_3"
+color = [128, 0, 0]
+opacity = 0.2
+
+[object_13]
+name = "port_4"
+color = [128, 0, 0]
+opacity = 0.2

@@ -5,7 +5,7 @@ models = ["BowTieNormal", "BowTieRounded", "BowTieSlot"]
 models = ["Archimedean", "Log", "Sinuous"]
 
 [Helix]
-models = ["AxialMode"]
+models = ["AxialMode", "AxialModeTaper", "NormalMode", "QuadrifilarOpen", "QuadrifilarShort"]
 
 [Horn]
 models = ["Conical", "Corrugated",

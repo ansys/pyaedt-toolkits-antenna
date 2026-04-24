@@ -1,0 +1,9 @@
+Name = "Normal_Mode"
+Frequency = 10.0
+Feeder_Length = 1.5
+Direction = [0, 1]
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"

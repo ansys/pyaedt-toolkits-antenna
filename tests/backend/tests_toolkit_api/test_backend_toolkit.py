@@ -31,8 +31,10 @@ class TestClass:
 
     def test_01_get_antenna(self, aedt_common):
         antenna_parameters_1 = aedt_common.get_antenna("RectangularPatchProbe", synth_only=True)
+        antenna_parameters_helix = aedt_common.get_antenna("NormalMode", synth_only=True)
 
         assert antenna_parameters_1
+        assert antenna_parameters_helix
 
         aedt_common.properties.antenna.setup.create_setup = True
         aedt_common.properties.antenna.synthesis.outer_boundary = "Radiation"

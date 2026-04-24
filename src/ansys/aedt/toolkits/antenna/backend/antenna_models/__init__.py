@@ -28,6 +28,10 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Ar
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log as Log
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous as Sinuous
 from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialMode as AxialMode
+from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialModeTaper as AxialModeTaper
+from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import NormalMode as NormalMode
+from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import QuadrifilarOpen as QuadrifilarOpen
+from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import QuadrifilarShort as QuadrifilarShort
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical as Conical
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Corrugated as Corrugated
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Elliptical as Elliptical
