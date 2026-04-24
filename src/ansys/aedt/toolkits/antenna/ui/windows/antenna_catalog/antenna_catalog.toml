@@ -18,7 +18,7 @@ models =["RectangularPatchEdge", "RectangularPatchInset",
     "RectangularPatchProbe"]
 
 [Dipole]
-models =[]
+models = ["PlanarDipole", "WireDipole"]
 
 [LogPeriodic]
 models = []
