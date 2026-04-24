@@ -360,8 +360,8 @@ class ToolkitBackend(AEDTCommon):
                     snp_file = find_touchstone_files(str(metadata_dir))
 
                     if snp_file:
-                        snp_file = list(snp_file.keys())[0]
-                        serialized_file = self.serialize_obj_base64(snp_file)
+                        snp_file_key = list(snp_file.keys())[0]
+                        serialized_file = self.serialize_obj_base64(snp_file[snp_file_key])
                         encoded_scattering_file = serialized_file.decode("utf-8")
 
                     self.release_aedt(False, False)
