@@ -1,0 +1,41 @@
+name = "Planar Inverted-F"
+
+[object_1]
+name = "sub_PlanarInvertedF"
+color = [0, 128, 0]
+opacity = 0.2
+
+[object_2]
+name = "gnd_PlanarInvertedF"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "ant_feed_PlanarInvertedF"
+color = [255, 128, 65]
+opacity = 0.2
+
+[object_4]
+name = "ant_short_arm_PlanarInvertedF"
+color = [255, 128, 65]
+opacity = 0.2
+
+[object_5]
+name = "ant_short_wall_PlanarInvertedF"
+color = [255, 128, 65]
+opacity = 0.2
+
+[object_6]
+name = "ant_top_PlanarInvertedF"
+color = [255, 128, 65]
+opacity = 0.2
+
+[object_7]
+name = "ant_microstrip_PlanarInvertedF"
+color = [255, 128, 65]
+opacity = 0.2
+
+[object_8]
+name = "port_lump_PlanarInvertedF"
+color = [255, 128, 65]
+opacity = 0.2

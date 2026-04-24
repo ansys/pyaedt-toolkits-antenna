@@ -39,3 +39,6 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged a
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge as RectangularPatchEdge
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset as RectangularPatchInset
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe as RectangularPatchProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import PlanarInvertedF as PlanarInvertedF
+from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import ShortingPin as ShortingPin
+from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import ShortingPlate as ShortingPlate

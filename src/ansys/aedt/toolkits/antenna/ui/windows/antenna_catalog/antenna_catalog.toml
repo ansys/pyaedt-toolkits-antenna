@@ -30,7 +30,7 @@ models =[]
 models =[]
 
 [PIFA]
-models =[]
+models = ["PlanarInvertedF", "ShortingPin", "ShortingPlate"]
 
 [PlanarSpiral]
 models =[]
