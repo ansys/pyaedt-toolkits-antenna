@@ -33,7 +33,9 @@ models =[]
 models =[]
 
 [PlanarSpiral]
-models =[]
+models = ["PlanarArchimedean", "PlanarArchimedeanCavity",
+    "PlanarLog", "PlanarLogCavity",
+    "PlanarSinuous", "PlanarSinuousCavity"]
 
 [Reflector]
 models =[]

@@ -39,3 +39,11 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged a
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge as RectangularPatchEdge
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset as RectangularPatchInset
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe as RectangularPatchProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarArchimedean as PlanarArchimedean
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import (
+    PlanarArchimedeanCavity as PlanarArchimedeanCavity,
+)
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarLog as PlanarLog
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarLogCavity as PlanarLogCavity
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarSinuous as PlanarSinuous
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarSinuousCavity as PlanarSinuousCavity

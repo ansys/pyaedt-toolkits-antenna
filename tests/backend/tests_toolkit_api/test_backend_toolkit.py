@@ -87,3 +87,16 @@ class TestClass:
         farfield_data = aedt_common.export_farfield(frequencies=[frequency], encode=False, sphere="3D")
         assert isinstance(farfield_data, tuple)
         assert len(farfield_data) == 2
+
+    def test_06_planar_spiral_get_antenna(self, aedt_common):
+        antenna_parameters = aedt_common.get_antenna("PlanarLogCavity", synth_only=True)
+
+        assert antenna_parameters
+        for parameter in [
+            "cavity_diameter",
+            "cavity_height",
+            "bottom_absorber_thickness",
+            "middle_absorber_thickness",
+            "top_absorber_thickness",
+        ]:
+            assert parameter in antenna_parameters
