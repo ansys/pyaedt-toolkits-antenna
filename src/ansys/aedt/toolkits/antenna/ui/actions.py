@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,13 +22,14 @@
 # SOFTWARE.
 
 import base64
-import os
+from pathlib import Path
 import re
 import tempfile
 
 from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QLineEdit
+
 from ansys.aedt.core.generic.file_utils import read_json
 from ansys.aedt.core.visualization.advanced.farfield_visualization import FfdSolutionData
 
@@ -40,10 +41,14 @@ from ansys.aedt.toolkits.common.ui.actions_generic import FrontendGeneric
 
 # isort: on
 
-from ansys.aedt.core.generic.file_utils import generate_unique_project_name
 import requests
 
+from ansys.aedt.core.generic.file_utils import generate_unique_project_name
+
 number_pattern = re.compile(r"^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$")
+
+"""Default timeout for requests in seconds."""
+DEFAULT_REQUESTS_TIMEOUT = 120
 
 
 class Frontend(FrontendGeneric):
@@ -56,7 +61,7 @@ class Frontend(FrontendGeneric):
         if not self.__update_antenna_properties():
             return False
 
-        response = requests.post(self.url + "/create_antenna")
+        response = requests.post(self.url + "/create_antenna", timeout=DEFAULT_REQUESTS_TIMEOUT)
         if response.ok:
             msg = "{} synthesis".format(self.properties.antenna.antenna_selected)
             self.ui.update_logger(msg)
@@ -120,7 +125,7 @@ class Frontend(FrontendGeneric):
             logger.debug(msg)
             return False
 
-        response = requests.post(self.url + "/create_antenna")
+        response = requests.post(self.url + "/create_antenna", timeout=DEFAULT_REQUESTS_TIMEOUT)
         if response.ok:
             msg = "{} antenna created".format(self.properties.antenna.antenna_selected)
             self.ui.update_logger(msg)
@@ -134,7 +139,9 @@ class Frontend(FrontendGeneric):
 
     def update_antenna_parameter(self, key, value):
         """Update antenna parameter."""
-        response = requests.patch(self.url + "/hfss_parameters", json={"key": key, "value": value})
+        response = requests.patch(
+            self.url + "/hfss_parameters", json={"key": key, "value": value}, timeout=DEFAULT_REQUESTS_TIMEOUT
+        )
         if response.ok:
             msg = "{} updated in design".format(key)
             self.ui.update_logger(msg)
@@ -149,7 +156,7 @@ class Frontend(FrontendGeneric):
 
     def analyze_design(self):
         """Analyze design."""
-        response = requests.post(self.url + "/analyze")
+        response = requests.post(self.url + "/analyze")  # nosec B113
 
         if response.ok:
             msg = "Antenna solved"
@@ -167,25 +174,27 @@ class Frontend(FrontendGeneric):
         """Get farfield data."""
         farfield_data = None
         if self.properties.backend_url in ["127.0.0.1", "localhost"]:
-            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": False})
+            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": False})  # nosec B113
             if response.ok:
                 data = response.json()
                 farfield_data = FfdSolutionData(data[0], data[1])
         else:
-            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": True})
+            response = requests.get(self.url + "/export_farfield", json={"sphere": "3D", "encode": True})  # nosec B113
             if response.ok:
                 data = response.json()
+                temp_dir = Path(self.temp_folder)
 
                 # Create directory
-                os.mkdir(os.path.join(self.temp_folder, "geometry"))
+                geometry_dir = temp_dir / "geometry"
+                geometry_dir.mkdir()
 
                 # JSON files
                 encoded_data_bytes = bytes(data[0], "utf-8")
                 decoded_data = base64.b64decode(encoded_data_bytes)
-                metadata_path = os.path.join(self.temp_folder, "pyaedt_antenna_metadata.json")
-                with open(metadata_path, "wb") as f:
+                metadata_path = temp_dir / "pyaedt_antenna_metadata.json"
+                with metadata_path.open("wb") as f:
                     f.write(decoded_data)
-                json_data = read_json(metadata_path)
+                json_data = read_json(str(metadata_path))
 
                 # Geometry files
                 cont_geom = 0
@@ -193,8 +202,8 @@ class Frontend(FrontendGeneric):
                     geometry_names = list(json_data["model_info"].keys())
                     encoded_data_bytes = bytes(encoded_data, "utf-8")
                     decoded_data = base64.b64decode(encoded_data_bytes)
-                    file_path = os.path.join(self.temp_folder, "geometry", geometry_names[cont_geom] + ".obj")
-                    with open(file_path, "wb") as f:
+                    file_path = geometry_dir / f"{geometry_names[cont_geom]}.obj"
+                    with file_path.open("wb") as f:
                         f.write(decoded_data)
                     cont_geom += 1
 
@@ -203,19 +212,19 @@ class Frontend(FrontendGeneric):
                 for encoded_ffd in data[2]:
                     encoded_data_bytes = bytes(encoded_ffd, "utf-8")
                     decoded_data = base64.b64decode(encoded_data_bytes)
-                    file_path = os.path.join(self.temp_folder, "exportfield_{}.ffd".format(str(cont_ffd)))
-                    with open(file_path, "wb") as f:
+                    file_path = temp_dir / "exportfield_{}.ffd".format(str(cont_ffd))
+                    with file_path.open("wb") as f:
                         f.write(decoded_data)
                     cont_ffd += 1
 
                 # Scattering files
                 encoded_data_bytes = bytes(data[3], "utf-8")
                 decoded_data = base64.b64decode(encoded_data_bytes)
-                sNp_file = os.path.join(self.temp_folder, json_data["touchstone_file"])
-                with open(sNp_file, "wb") as f:
+                snp_file = temp_dir / json_data["touchstone_file"]
+                with snp_file.open("wb") as f:
                     f.write(decoded_data)
 
-                farfield_data = FfdSolutionData(file_path)
+                farfield_data = FfdSolutionData(str(file_path))
 
         if farfield_data:
             msg = "Far field results extracted"
@@ -231,7 +240,7 @@ class Frontend(FrontendGeneric):
 
     def scattering_results(self):
         """Get farfield 2D results."""
-        response = requests.get(self.url + "/scattering_results")
+        response = requests.get(self.url + "/scattering_results")  # nosec B113
 
         if response.ok:
             msg = "Scattering results extracted"
@@ -261,7 +270,6 @@ class Frontend(FrontendGeneric):
         new_properties["origin"] = origin
 
         for antenna_input_lines in self.antenna_synthesis_menu.antenna_input_frame.children():
-
             if isinstance(antenna_input_lines, QLabel):
                 original_label = antenna_input_lines.text()
                 label = original_label.lower().replace(" ", "_")

@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +22,9 @@
 # SOFTWARE.
 
 """
-API Test Configuration Module
------------------------------
+Antenna models API conftest.
+
+-------------------------
 
 Description
 ===========
@@ -32,7 +34,7 @@ The default configuration can be changed by placing a file called local_config.j
 An example of the contents of local_config.json:
 
 {
-  "desktop_version": "2025.1",
+  "desktop_version": "2026.1",
   "non_graphical": false,
   "use_grpc": true
 }
@@ -42,10 +44,13 @@ You can enable the API log file in the backend_properties.json.
 """
 
 import pytest
+
+from ansys.aedt.core import Desktop
 from ansys.aedt.core import generate_unique_project_name
-from ansys.aedt.toolkits.common.backend.api import AEDTCommon
-from ansys.aedt.toolkits.common.backend.models import Properties
-from tests.backend.conftest import read_local_config, setup_aedt_settings, DEFAULT_CONFIG, PROJECT_NAME
+from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
+from tests.backend.conftest import DEFAULT_CONFIG
+from tests.backend.conftest import read_local_config
+from tests.backend.conftest import setup_aedt_settings
 
 # Setup config
 config = DEFAULT_CONFIG.copy()
@@ -55,29 +60,64 @@ config.update(local_cfg)
 # Update AEDT settings
 setup_aedt_settings(config)
 
+VERSION = config["desktop_version"]
+NONGRAPHICAL = config["non_graphical"]
+USE_GRPC = config["use_grpc"]
+DEBUG = config["debug"]
 
-@pytest.fixture(scope="session")
-def aedt_common(logger, common_temp_dir):
+
+@pytest.fixture(scope="session", autouse=True)
+def desktop(common_temp_dir):
+    desktop = Desktop(VERSION, NONGRAPHICAL, True)
+    desktop.odesktop.SetTempDirectory(str(common_temp_dir))
+    desktop.disable_autosave()
+    port = desktop.port
+    test_session_info = {"version": VERSION, "non_graphical": NONGRAPHICAL, "port": port}
+    yield test_session_info
+    desktop = Desktop(VERSION, NONGRAPHICAL, False, port=port)
+    desktop.close_desktop()
+
+
+@pytest.fixture
+def toolkit(logger, common_temp_dir):
     """Initialize toolkit with common API."""
     logger.info("AEDTCommon API initialization")
+    toolkit = ToolkitBackend()
 
-    properties = Properties()
-    properties.aedt_version = config["desktop_version"]
-    properties.non_graphical = config["non_graphical"]
-    properties.use_grpc = config["use_grpc"]
-    properties.debug = config["debug"]
+    new_properties = {
+        "aedt_version": VERSION,
+        "non_graphical": NONGRAPHICAL,
+        "use_grpc": config["use_grpc"],
+    }
+    toolkit.set_properties(new_properties)
+    toolkit.launch_aedt()
 
-    aedt_common = AEDTCommon(properties)
-    aedt_common.launch_thread(aedt_common.launch_aedt)
-    is_aedt_launched = aedt_common.wait_to_be_idle()
+    # Close project if there are
+    if toolkit.desktop and toolkit.desktop.project_list:
+        projects = toolkit.desktop.project_list.copy()
+        for project_name in projects:
+            toolkit.desktop.odesktop.CloseProject(project_name)
+        toolkit.properties.active_project = ""
+        toolkit.properties.design_list = {}
+        toolkit.properties.active_design = ""
+        toolkit.properties.project_list = []
 
-    aedt_common.active_project = generate_unique_project_name(common_temp_dir, project_name="Test_Antenna")
-    properties.active_project = aedt_common.active_project
-    aedt_common.connect_design("HFSS")
+    active_project = generate_unique_project_name(common_temp_dir, project_name="Test_Antenna")
+    toolkit.properties.active_project = active_project
+    toolkit.connect_design("HFSS")
 
-    if is_aedt_launched:
-        yield aedt_common
-    else:
-        logger.error("AEDT is not launched")
+    toolkit.release_aedt(False, False)
+    yield toolkit
 
-    aedt_common.release_aedt(True, True)
+    # Close project if there are
+    toolkit.connect_aedt()
+    if toolkit.desktop and toolkit.desktop.project_list:
+        projects = toolkit.desktop.project_list.copy()
+        for project_name in projects:
+            toolkit.desktop.odesktop.CloseProject(project_name)
+        toolkit.properties.active_project = ""
+        toolkit.properties.design_list = {}
+        toolkit.properties.active_design = ""
+        toolkit.properties.project_list = []
+
+    toolkit.release_aedt(False, False)

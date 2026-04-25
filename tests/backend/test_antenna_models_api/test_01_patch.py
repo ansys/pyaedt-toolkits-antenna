@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,32 +23,34 @@
 
 import pytest
 
-from tests.backend.conftest import PROJECT_NAME
-
-pytestmark = [pytest.mark.antenna_models_api]
-
 from ansys.aedt.core.modeler.cad.object_3d import Object3d
 from ansys.aedt.core.modeler.geometry_operators import GeometryOperators
-
 from ansys.aedt.toolkits.antenna.backend import antenna_models
+
+pytestmark = [pytest.mark.antenna_models_api]
 
 
 class TestClass:
     """Class defining a workflow to test antenna models patch."""
-    def test_01a_rectangular_patch_probe_model_hfss(self, aedt_common):
+
+    # Patch Probe tests
+
+    def test_rectangular_patch_probe_model_hfss_terminal(self, toolkit):
+        # Antenna generate without AEDT
         antenna_module = getattr(antenna_models, "RectangularPatchProbe")
         opatch0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert opatch0.synthesis_parameters.coax_inner_rad.value
 
-        aedt_common.connect_design()
-        aedt_common.aedtapp.design_name = "rectangular_patch_probe"
-        aedt_common.save_project(release_aedt=False)
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
 
-        opatch1 = antenna_module(aedt_common.aedtapp,
-                                 frequency=1.0,
-                                 length_unit=aedt_common.aedtapp.modeler.model_units
-                                 )
+        opatch1 = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
         opatch1.init_model()
+
+        cs = toolkit.aedtapp.modeler.create_coordinate_system(origin=[10, 20, 30])
+        opatch1.coordinate_system = cs.name
+
         opatch1.model_hfss()
         opatch1.setup_hfss()
 
@@ -64,41 +67,80 @@ class TestClass:
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
         antenna_module = getattr(antenna_models, "RectangularPatchProbe")
-        opatch2 = antenna_module(aedt_common.aedtapp, name=opatch1.name)
+        opatch2 = antenna_module(toolkit.aedtapp, name=opatch1.name)
 
         assert opatch1.name != opatch2.name
 
-        aedt_common.release_aedt(False, False)
+    def test_rectangular_patch_probe_model_hfss_modal(self, toolkit):
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Modal"
 
-    def test_01b_rectangular_patch_probe_duplicate_along_line(self, aedt_common):
-        aedt_common.connect_design()
+        # Create project and design
         antenna_module = getattr(antenna_models, "RectangularPatchProbe")
-        opatch = antenna_module(aedt_common.aedtapp, frequency=1.0, origin=[500, 20, 50])
+
+        opatch1 = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
+        opatch1.init_model()
+
+        cs = toolkit.aedtapp.modeler.create_coordinate_system(origin=[10, 20, 30])
+        opatch1.coordinate_system = cs.name
+
+        opatch1.model_hfss()
+        opatch1.setup_hfss()
+
+        assert opatch1
+        assert opatch1.object_list
+        for comp in opatch1.object_list.values():
+            assert isinstance(comp, Object3d)
+        face_center = list(opatch1.object_list.values())[0].faces[0].center
+        assert opatch1.origin == [0, 0, 0]
+        opatch1.origin = [10, 20, 50]
+        assert opatch1.origin == [10, 20, 50]
+
+        face_center_new = list(opatch1.object_list.values())[0].faces[0].center
+        face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 50])
+        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
+        antenna_module = getattr(antenna_models, "RectangularPatchProbe")
+        opatch2 = antenna_module(toolkit.aedtapp, name=opatch1.name)
+
+        assert opatch1.name != opatch2.name
+
+    def test_rectangular_patch_probe_duplicate_along_line(self, toolkit):
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
+        antenna_module = getattr(antenna_models, "RectangularPatchProbe")
+        opatch = antenna_module(toolkit.aedtapp, frequency=1.0, origin=[500, 20, 50])
         opatch.init_model()
         opatch.model_hfss()
         opatch.setup_hfss()
 
         new = opatch.duplicate_along_line([0, 200, 0], 4)
         assert len(new) == 3
-        aedt_common.release_aedt(False, False)
 
-    def test_01c_rectangular_patch_probe_create_3dcomponent(self, aedt_common):
-        aedt_common.connect_design()
+    def test_rectangular_patch_probe_create_3dcomponent(self, toolkit):
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
         antenna_module = getattr(antenna_models, "RectangularPatchProbe")
-        opatch = antenna_module(aedt_common.aedtapp, frequency=1.0, origin=[500, 500, 0])
+        opatch = antenna_module(toolkit.aedtapp, frequency=1.0, origin=[500, 500, 0])
         opatch.init_model()
         opatch.model_hfss()
         opatch.setup_hfss()
 
         component = opatch.create_3dcomponent(replace=True)
-        assert list(aedt_common.aedtapp.modeler.user_defined_components.keys())[0] == component.name
-        aedt_common.release_aedt(False, False)
+        assert list(toolkit.aedtapp.modeler.user_defined_components.keys())[0] == component.name
 
-    def test_01d_rectangular_patch_probe_lattice_pair(self, aedt_common):
-        aedt_common.connect_design()
+    def test_rectangular_patch_probe_lattice_pair(self, toolkit):
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
         antenna_module = getattr(antenna_models, "RectangularPatchProbe")
         opatch1 = antenna_module(
-            aedt_common.aedtapp,
+            toolkit.aedtapp,
             frequency=1.0,
             origin=[500, 500, 0],
             outer_boundary="Radiation",
@@ -112,7 +154,7 @@ class TestClass:
         assert len(opatch1.boundaries) == 5
 
         opatch2 = antenna_module(
-            aedt_common.aedtapp,
+            toolkit.aedtapp,
             frequency=1.0,
             origin=[1500, 1000, 0],
             outer_boundary="Radiation",
@@ -124,10 +166,10 @@ class TestClass:
         opatch2.create_lattice_pair(lattice_height="20mm", bottom_extend=False)
 
         opatch2.create_3dcomponent(replace=True)
-        assert len(aedt_common.aedtapp.modeler.user_defined_components) == 2
+        assert len(toolkit.aedtapp.modeler.user_defined_components) == 1
 
         opatch3 = antenna_module(
-            aedt_common.aedtapp,
+            toolkit.aedtapp,
             frequency=1.0,
             origin=[1500, 1500, 0],
             outer_boundary="Radiation",
@@ -139,21 +181,23 @@ class TestClass:
         opatch3.create_lattice_pair(lattice_height="20mm", bottom_extend=True)
 
         assert len(opatch3.boundaries) == 5
-        aedt_common.release_aedt(False, False)
 
-    def test_02a_rectangular_patch_inset_model_hfss(self, aedt_common):
+    # Patch Inset tests
+
+    def test_rectangular_patch_inset_model_hfss_terminal(self, toolkit):
+        # Create design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
 
         antenna_module = getattr(antenna_models, "RectangularPatchInset")
         opatch0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert opatch0.synthesis_parameters.feed_width.value
 
-        aedt_common.properties.active_design = "rectangular_patch_inset"
-        aedt_common.connect_design()
+        toolkit.properties.active_design = "rectangular_patch_inset"
+        toolkit.connect_design()
 
         antenna_module = getattr(antenna_models, "RectangularPatchInset")
-        opatch1 = antenna_module(aedt_common.aedtapp,
-                                 frequency=1.0,
-                                 length_unit=aedt_common.aedtapp.modeler.model_units)
+        opatch1 = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
         opatch1.init_model()
         opatch1.model_hfss()
         opatch1.setup_hfss()
@@ -170,40 +214,75 @@ class TestClass:
         face_center_new = list(opatch1.object_list.values())[0].faces[0].center
         face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 500])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
-        opatch2 = antenna_module(aedt_common.aedtapp, name=opatch1.name)
+        opatch2 = antenna_module(toolkit.aedtapp, name=opatch1.name)
         opatch2.init_model()
         opatch2.model_hfss()
         opatch2.setup_hfss()
         assert opatch1.name != opatch2.name
-        aedt_common.release_aedt(False, False)
 
-    def test_02b_rectangular_patch_inset_duplicate_along_line(self, aedt_common):
-        aedt_common.connect_design()
+    def test_rectangular_patch_inset_model_hfss_modal(self, toolkit):
+        # Create design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Modal"
+
         antenna_module = getattr(antenna_models, "RectangularPatchInset")
-        opatch = antenna_module(aedt_common.aedtapp, frequency=1.0, origin=[500, 20, 50])
+        opatch1 = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
+        opatch1.init_model()
+        opatch1.model_hfss()
+        opatch1.setup_hfss()
+
+        assert opatch1
+        assert opatch1.object_list
+        for comp in opatch1.object_list.values():
+            assert isinstance(comp, Object3d)
+        opatch1.substrate_height = 1.575
+        face_center = list(opatch1.object_list.values())[0].faces[0].center
+        assert opatch1.origin == [0, 0, 0]
+        opatch1.origin = [10, 20, 500]
+        assert opatch1.origin == [10, 20, 500]
+        face_center_new = list(opatch1.object_list.values())[0].faces[0].center
+        face_center_eval = GeometryOperators.v_sum(face_center, [10, 20, 500])
+        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
+        opatch2 = antenna_module(toolkit.aedtapp, name=opatch1.name)
+        opatch2.init_model()
+        opatch2.model_hfss()
+        opatch2.setup_hfss()
+        assert opatch1.name != opatch2.name
+
+    def test_rectangular_patch_inset_duplicate_along_line(self, toolkit):
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
+        antenna_module = getattr(antenna_models, "RectangularPatchInset")
+        opatch = antenna_module(toolkit.aedtapp, frequency=1.0, origin=[500, 20, 50])
         opatch.init_model()
         opatch.model_hfss()
         opatch.setup_hfss()
         new = opatch.duplicate_along_line([0, 200, 0], 4)
         assert len(new) == 3
-        aedt_common.release_aedt(False, False)
 
-    def test_02c_rectangular_patch_inset_create_3dcomponent(self, aedt_common):
-        aedt_common.connect_design()
+    def test_rectangular_patch_inset_create_3dcomponent(self, toolkit):
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
         antenna_module = getattr(antenna_models, "RectangularPatchInset")
-        opatch = antenna_module(aedt_common.aedtapp, frequency=1.0, origin=[500, 500, 0])
+        opatch = antenna_module(toolkit.aedtapp, frequency=1.0, origin=[500, 500, 0])
         opatch.init_model()
         opatch.model_hfss()
         opatch.setup_hfss()
         component = opatch.create_3dcomponent(replace=True)
-        assert list(aedt_common.aedtapp.modeler.user_defined_components.keys())[0] == component.name
-        aedt_common.release_aedt(False, False)
+        assert list(toolkit.aedtapp.modeler.user_defined_components.keys())[0] == component.name
 
-    def test_02d_rectangular_patch_inset_lattice_pair(self, aedt_common):
-        aedt_common.connect_design()
+    def test_rectangular_patch_inset_lattice_pair(self, toolkit):
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
         antenna_module = getattr(antenna_models, "RectangularPatchInset")
         opatch1 = antenna_module(
-            aedt_common.aedtapp,
+            toolkit.aedtapp,
             frequency=1.0,
             origin=[1500, 500, 0],
             outer_boundary="Radiation",
@@ -216,7 +295,7 @@ class TestClass:
 
         assert len(opatch1.boundaries) == 4
         opatch2 = antenna_module(
-            aedt_common.aedtapp,
+            toolkit.aedtapp,
             frequency=1.0,
             origin=[1500, 1000, 0],
             outer_boundary="Radiation",
@@ -228,10 +307,10 @@ class TestClass:
         opatch2.create_lattice_pair(lattice_height="20mm", bottom_extend=False)
 
         opatch2.create_3dcomponent(replace=True)
-        assert len(aedt_common.aedtapp.modeler.user_defined_components) == 2
+        assert len(toolkit.aedtapp.modeler.user_defined_components) == 1
 
         opatch3 = antenna_module(
-            aedt_common.aedtapp,
+            toolkit.aedtapp,
             frequency=1.0,
             origin=[1500, 1500, 0],
             outer_boundary="Radiation",
@@ -243,21 +322,23 @@ class TestClass:
         opatch3.create_lattice_pair(lattice_height="20mm", bottom_extend=True)
 
         assert len(opatch3.boundaries) == 4
-        aedt_common.release_aedt(False, False)
 
-    def test_03a_rectangular_patch_edge_model_hfss(self, aedt_common):
+    # Patch Edge tests
+
+    def test_rectangular_patch_edge_model_hfss_terminal(self, toolkit):
         antenna_module = getattr(antenna_models, "RectangularPatchEdge")
         opatch0 = antenna_module(None, frequency=1.0, length_unit="mm")
         assert opatch0.synthesis_parameters.patch_x.value
 
-        aedt_common.properties.active_design = "rectangular_patch_edge"
-        aedt_common.connect_design()
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
 
         antenna_module = getattr(antenna_models, "RectangularPatchEdge")
         opatch1 = antenna_module(
-            aedt_common.aedtapp,
+            toolkit.aedtapp,
             frequency=1.0,
-            length_unit=aedt_common.aedtapp.modeler.model_units,
+            length_unit=toolkit.aedtapp.modeler.model_units,
         )
         opatch1.init_model()
         opatch1.model_hfss()
@@ -276,37 +357,74 @@ class TestClass:
         face_center_eval = GeometryOperators.v_sum(face_center, [-100, 20, -500])
         assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
 
-        opatch2 = antenna_module(aedt_common.aedtapp, frequency=1.0, name=opatch1.name)
+        opatch2 = antenna_module(toolkit.aedtapp, frequency=1.0, name=opatch1.name)
         assert opatch1.name != opatch2.name
-        aedt_common.release_aedt(False, False)
 
-    def test_03b_rectangular_patch_edge_duplicate_along_line(self, aedt_common):
-        aedt_common.connect_design()
+    def test_rectangular_patch_edge_model_hfss_modal(self, toolkit):
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Modal"
+
         antenna_module = getattr(antenna_models, "RectangularPatchEdge")
-        opatch = antenna_module(aedt_common.aedtapp, frequency=1.0)
+        opatch1 = antenna_module(
+            toolkit.aedtapp,
+            frequency=1.0,
+            length_unit=toolkit.aedtapp.modeler.model_units,
+        )
+        opatch1.init_model()
+        opatch1.model_hfss()
+        opatch1.setup_hfss()
+
+        assert opatch1
+        assert opatch1.object_list
+        for comp in opatch1.object_list.values():
+            assert isinstance(comp, Object3d)
+        opatch1.substrate_height = 1.575
+        face_center = list(opatch1.object_list.values())[0].faces[0].center
+        assert opatch1.origin == [0, 0, 0]
+        opatch1.origin = [-100, 20, -500]
+        assert opatch1.origin == [-100, 20, -500]
+        face_center_new = list(opatch1.object_list.values())[0].faces[0].center
+        face_center_eval = GeometryOperators.v_sum(face_center, [-100, 20, -500])
+        assert GeometryOperators.points_distance(face_center_eval, face_center_new) < 1e-3
+
+        opatch2 = antenna_module(toolkit.aedtapp, frequency=1.0, name=opatch1.name)
+        assert opatch1.name != opatch2.name
+
+    def test_rectangular_patch_edge_duplicate_along_line(self, toolkit):
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
+        antenna_module = getattr(antenna_models, "RectangularPatchEdge")
+        opatch = antenna_module(toolkit.aedtapp, frequency=1.0)
         opatch.init_model()
         opatch.model_hfss()
         opatch.setup_hfss()
         new = opatch.duplicate_along_line([0, 200, 0], 4)
         assert len(new) == 3
-        aedt_common.release_aedt(False, False)
 
-    def test_03c_rectangular_patch_edge_create_3dcomponent(self, aedt_common):
-        aedt_common.connect_design()
+    def test_rectangular_patch_edge_create_3dcomponent(self, toolkit):
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
         antenna_module = getattr(antenna_models, "RectangularPatchInset")
-        opatch = antenna_module(aedt_common.aedtapp, frequency=1.0, origin=[500, 500, 0])
+        opatch = antenna_module(toolkit.aedtapp, frequency=1.0, origin=[500, 500, 0])
         opatch.init_model()
         opatch.model_hfss()
         opatch.setup_hfss()
         component = opatch.create_3dcomponent(replace=True)
-        assert list(aedt_common.aedtapp.modeler.user_defined_components.keys())[0] == component.name
-        aedt_common.release_aedt(False, False)
+        assert list(toolkit.aedtapp.modeler.user_defined_components.keys())[0] == component.name
 
-    def test_03d_rectangular_patch_inset_lattice_pair(self, aedt_common):
-        aedt_common.connect_design()
+    def test_rectangular_patch_edge_lattice_pair(self, toolkit):
+        # Connect to HFSS design
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
         antenna_module = getattr(antenna_models, "RectangularPatchEdge")
         opatch1 = antenna_module(
-            aedt_common.aedtapp,
+            toolkit.aedtapp,
             frequency=1.0,
             origin=[1500, 500, 0],
             outer_boundary="Radiation",
@@ -319,7 +437,7 @@ class TestClass:
 
         assert len(opatch1.boundaries) == 4
         opatch2 = antenna_module(
-            aedt_common.aedtapp,
+            toolkit.aedtapp,
             frequency=1.0,
             origin=[1500, 1000, 0],
             outer_boundary="Radiation",
@@ -331,10 +449,10 @@ class TestClass:
         opatch2.create_lattice_pair(lattice_height="20mm", bottom_extend=False)
 
         opatch2.create_3dcomponent(replace=True)
-        assert len(aedt_common.aedtapp.modeler.user_defined_components) == 2
+        assert len(toolkit.aedtapp.modeler.user_defined_components) == 1
 
         opatch3 = antenna_module(
-            aedt_common.aedtapp,
+            toolkit.aedtapp,
             frequency=1.0,
             origin=[1500, 1500, 0],
             outer_boundary="Radiation",
@@ -346,4 +464,3 @@ class TestClass:
         opatch3.create_lattice_pair(lattice_height="20mm", bottom_extend=True)
 
         assert len(opatch3.boundaries) == 4
-        aedt_common.release_aedt(False, False)

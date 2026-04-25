@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -96,7 +96,7 @@ def scattering_results():
 
     response = toolkit_api.scattering_results()
     if response:
-        return jsonify(response), 200
+        return jsonify((list(response[0]), list(response[1]))), 200
     else:  # pragma: no cover
         return jsonify("Fail to get results"), 500
 

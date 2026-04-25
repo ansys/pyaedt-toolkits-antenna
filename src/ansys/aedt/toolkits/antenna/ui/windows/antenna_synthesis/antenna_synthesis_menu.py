@@ -20,14 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-import sys
 import base64
-from PySide6.QtCore import QThread
+from pathlib import Path
+
 from PySide6.QtCore import Qt
+from PySide6.QtCore import QThread
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QCheckBox
-from PySide6.QtWidgets import QComboBox
 from PySide6.QtWidgets import QFrame
 from PySide6.QtWidgets import QGridLayout
 from PySide6.QtWidgets import QHBoxLayout
@@ -37,12 +36,12 @@ from PySide6.QtWidgets import QScrollArea
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtWidgets import QSlider
 from PySide6.QtWidgets import QTableWidget
+from PySide6.QtWidgets import QTableWidgetItem
 from PySide6.QtWidgets import QVBoxLayout
 from PySide6.QtWidgets import QWidget
-from PySide6.QtWidgets import QTableWidgetItem
-
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
+
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_synthesis.antenna_synthesis_page import Ui_AntennaSynthesis
 
 
@@ -254,7 +253,13 @@ class AntennaSynthesisMenu(object):
                 selected_project = self.main_window.home_menu.project_combobox.currentText()
                 selected_design = self.main_window.home_menu.design_combobox.currentText()
                 self.model_info = self.main_window.get_aedt_model(selected_project, selected_design)
-                self.__update_antenna_model()
+
+                if self.main_window.properties.backend_url in ["127.0.0.1", "localhost"]:
+                    encode = False
+                else:
+                    encode = True
+
+                self.__update_antenna_model(encode)
 
     def __update_antenna_table(self):
         self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.table_layout)
@@ -320,7 +325,10 @@ class AntennaSynthesisMenu(object):
         else:
             encode = True
 
-        self.model_info = self.main_window.get_aedt_model(properties["active_project"], active_design, encode=encode)
+        self.model_info = self.main_window.get_aedt_model(properties["active_project"],
+                                                          active_design,
+                                                          export_as_multiple_objects=True,
+                                                          encode=encode)
         self.__update_antenna_model(encode)
         self.ui.update_progress(100)
 
@@ -336,11 +344,11 @@ class AntennaSynthesisMenu(object):
                     encoded_data_bytes = bytes(encoded_data, "utf-8")
                     decoded_data = base64.b64decode(encoded_data_bytes)
                     # Create obj file locally
-                    file_path = os.path.join(self.main_window.temp_folder, element + ".obj")
-                    with open(file_path, "wb") as f:
+                    file_path = Path(self.main_window.temp_folder) / f"{element}.obj"
+                    with file_path.open("wb") as f:
                         f.write(decoded_data)
                     # Create PyVista object
-                    if not os.path.exists(file_path):
+                    if not file_path.exists():
                         break
                     color = self.model_info[element][1]
                     opacity = self.model_info[element][2]

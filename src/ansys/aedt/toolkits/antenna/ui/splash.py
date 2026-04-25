@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
+#
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,33 +22,39 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os.path
-import sys
 
-from PySide6.QtCore import QTimer
+from pathlib import Path
+
 from PySide6.QtCore import Qt
+from PySide6.QtCore import QTimer
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QApplication
 from PySide6.QtWidgets import QSplashScreen
 
 from ansys.aedt.toolkits.antenna.ui.models import properties
 
 
-def show_splash_screen():
-    app = QApplication(sys.argv)
+def show_splash_screen(app):
+    """
+    Show the splash screen for the application.
+
+    Creates a splash screen with a specified image and dimensions,
+    displaying it for a certain duration before closing. The splash
+    screen appears on top of the main application window.
+    """
     if properties.high_resolution:
         splash_dim = 800
-    else:
+    else:  # pragma: no cover
         splash_dim = 600
-    splash_pix = QPixmap(os.path.join(os.path.dirname(__file__), "splash.png"))
+    splash_pix = QPixmap(Path(__file__).parent / "splash.png")
     scaled_pix = splash_pix.scaled(splash_dim, splash_dim, Qt.KeepAspectRatio, Qt.SmoothTransformation)
     splash = QSplashScreen(scaled_pix, Qt.WindowStaysOnTopHint)
     splash.setWindowFlag(Qt.FramelessWindowHint)
     splash.show()
 
     # Close the splash screen after a delay (e.g., 3000 milliseconds)
-    QTimer.singleShot(8000, splash.close)
+    QTimer.singleShot(7000, splash.close)
 
     # Start the main application after the splash screen
-    QTimer.singleShot(8000, app.quit)
-    app.exec()
+    QTimer.singleShot(7000, splash.close)
+    app.processEvents()
+    return splash
