@@ -8,6 +8,7 @@
 
 * [Alberto Di Maria](https://github.com/Alberto-DM)
 * [Devin](https://github.com/Devin-Crawford)
+* [Edouard Coussoux](https://github.com/ecoussoux-ansys)
 * [Eduardo Blanco](https://github.com/eblanco-ansys)
 * [gmalinve](https://github.com/gmalinve)
 * [Jorge Martínez](https://github.com/jorgepiloto)
