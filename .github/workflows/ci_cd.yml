@@ -143,7 +143,7 @@ jobs:
       - name: List output
         run: ls -R dist
 
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: Antenna-Toolkit-Installer-windows
           path: dist/*.exe
@@ -239,7 +239,7 @@ jobs:
           echo "APPLICATION_VERSION=v${version}" >> $GITHUB_ENV
           zip -r $zip_name antenna_toolkit.deb installer.sh postInstallScript.sh
 
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
            name: Antenna-Toolkit-Installer-ubuntu_${{ matrix.os }}
            path: Antenna-Toolkit-Installer-ubuntu_${{ env.OS_VERSION_PROCESSED }}.zip
@@ -336,7 +336,7 @@ jobs:
 
       - name: "Upload coverage results"
         if: ${{ matrix.python-version == env.MAIN_PYTHON_VERSION  }}
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           path: .cov/windows-coverage-html
           name: windows-html-coverage
