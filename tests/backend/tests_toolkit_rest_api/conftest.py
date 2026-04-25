@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +22,9 @@
 # SOFTWARE.
 
 """
-API Test Configuration Module
------------------------------
+REST API Test Configuration Module.
+
+----------------------------------
 
 Description
 ===========
@@ -32,7 +34,7 @@ The default configuration can be changed by placing a file called local_config.j
 An example of the contents of local_config.json:
 
 {
-  "desktop_version": "2025.1",
+  "desktop_version": "2026.1",
   "non_graphical": false,
   "use_grpc": true
 }
@@ -41,19 +43,20 @@ You can enable the API log file in the backend_properties.json.
 
 """
 
-import os
-import pytest
+from pathlib import Path
 import sys
 
+import pytest
+
 from ansys.aedt.core import generate_unique_project_name
-
-from tests.backend.conftest import read_local_config, setup_aedt_settings, DEFAULT_CONFIG, PROJECT_NAME
-
+from ansys.aedt.toolkits.antenna.backend import api
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
+from tests.backend.conftest import DEFAULT_CONFIG
+from tests.backend.conftest import read_local_config
+from tests.backend.conftest import setup_aedt_settings
 
-from ansys.aedt.toolkits.antenna.backend import api
-sys.path.append(os.path.dirname(api.__file__))
+sys.path.append(str(Path(api.__file__).resolve().parent))
 
 from ansys.aedt.toolkits.antenna.backend.run_backend import app
 
@@ -69,7 +72,6 @@ setup_aedt_settings(config)
 @pytest.fixture(scope="session")
 def client(logger, common_temp_dir):
     """Create a test client."""
-
     logger.info("AEDTCommon API initialization")
 
     properties.aedt_version = config["desktop_version"]

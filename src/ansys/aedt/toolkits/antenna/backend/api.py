@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,7 +22,6 @@
 # SOFTWARE.
 
 import gc
-import os.path
 from pathlib import Path
 import re
 import sys
@@ -35,10 +34,9 @@ from ansys.aedt.toolkits.antenna.backend.models import properties
 
 from ansys.aedt.core import generate_unique_name
 from ansys.aedt.core.visualization.advanced.touchstone_parser import find_touchstone_files
+from ansys.aedt.toolkits.antenna.backend import antenna_models
 from ansys.aedt.toolkits.common.backend.api import AEDTCommon
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
-
-from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 
 class ToolkitBackend(AEDTCommon):
@@ -92,7 +90,6 @@ class ToolkitBackend(AEDTCommon):
         >>> idle = toolkit_api.wait_to_be_idle()
         >>> toolkit.get_antenna("BowTie")
         """
-
         if self.oantenna:
             logger.debug("Antenna is already created.")
             return False
@@ -125,7 +122,7 @@ class ToolkitBackend(AEDTCommon):
         )
 
         # Update antenna properties
-        for antenna_prop in self.properties.antenna.synthesis.model_fields:
+        for antenna_prop in type(self.properties.antenna.synthesis).model_fields:
             if (
                 antenna_prop == "frequency"
                 and "start_frequency" in self.oantenna.__dir__()
@@ -302,7 +299,7 @@ class ToolkitBackend(AEDTCommon):
 
         if not sol_data:  # pragma: no cover
             return
-        return sol_data.primary_sweep_values, sol_data.data_db20()
+        return sol_data.get_expression_data(formula="dB20")
 
     def export_farfield(self, frequencies=None, setup=None, sphere=None, variations=None, encode=True):
         """Export far field data and then encode the file if the ``encode`` parameter is enabled.
@@ -343,34 +340,28 @@ class ToolkitBackend(AEDTCommon):
                 encoded_ffd_files = []
                 encoded_scattering_file = None
 
-                metadata_file = farfield_exporter.metadata_file
-                metadata_dir = os.path.dirname(metadata_file)
+                metadata_file = Path(farfield_exporter.metadata_file)
+                metadata_dir = metadata_file.parent
 
-                if os.path.isfile(metadata_file):
-                    serialized_file = self.serialize_obj_base64(metadata_file)
+                if metadata_file.is_file():
+                    serialized_file = self.serialize_obj_base64(str(metadata_file))
                     encoded_json_file = serialized_file.decode("utf-8")
 
-                geometry_path = os.path.abspath(os.path.join(metadata_dir, "geometry"))
-                if os.path.exists(geometry_path):
-                    for root, _, files in os.walk(geometry_path):
-                        for file in files:
-                            if file.lower().endswith(".obj"):
-                                geometry_file = os.path.abspath(os.path.join(root, file))
-                                serialized_file = self.serialize_obj_base64(geometry_file)
-                                encoded_geometry_files.append(serialized_file.decode("utf-8"))
+                geometry_path = metadata_dir / "geometry"
+                if geometry_path.exists():
+                    for geometry_file in geometry_path.rglob("*.obj"):
+                        serialized_file = self.serialize_obj_base64(str(geometry_file))
+                        encoded_geometry_files.append(serialized_file.decode("utf-8"))
 
-                    for root, _, files in os.walk(metadata_dir):
-                        for file in files:
-                            if file.lower().endswith(".ffd"):
-                                ffd_file = os.path.abspath(os.path.join(root, file))
-                                serialized_file = self.serialize_obj_base64(ffd_file)
-                                encoded_ffd_files.append(serialized_file.decode("utf-8"))
+                    for ffd_file in metadata_dir.rglob("*.ffd"):
+                        serialized_file = self.serialize_obj_base64(str(ffd_file))
+                        encoded_ffd_files.append(serialized_file.decode("utf-8"))
 
-                    sNp_files = find_touchstone_files(metadata_dir)
+                    snp_file = find_touchstone_files(str(metadata_dir))
 
-                    if sNp_files:
-                        snP_file = list(sNp_files.keys())[0]
-                        serialized_file = self.serialize_obj_base64(sNp_files[snP_file])
+                    if snp_file:
+                        snp_file_key = list(snp_file.keys())[0]
+                        serialized_file = self.serialize_obj_base64(snp_file[snp_file_key])
                         encoded_scattering_file = serialized_file.decode("utf-8")
 
                     self.release_aedt(False, False)

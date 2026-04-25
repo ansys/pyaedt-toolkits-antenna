@@ -8,15 +8,13 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QLayout, QSizePolicy, QVBoxLayout,
-    QWidget)
+from PySide6.QtCore import QCoreApplication
+from PySide6.QtCore import QMetaObject
+from PySide6.QtCore import QSize
+from PySide6.QtWidgets import QLayout
+from PySide6.QtWidgets import QSizePolicy
+from PySide6.QtWidgets import QVBoxLayout
+
 
 class Ui_AntennaCatalog(object):
     def setupUi(self, AntennaCatalog):

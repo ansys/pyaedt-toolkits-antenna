@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,6 +28,7 @@ class FrozenClass(object):
     __isfrozen = False
 
     def __setattr__(self, key, value):
+        """Prevent adding attributes after the object is frozen."""
         if self.__isfrozen:
             if key not in dir(self):
                 raise AttributeError(
@@ -44,6 +45,7 @@ class FrozenClass(object):
 
 class Property:
     def __init__(self, value, owner, name):
+        """Initialize a property container."""
         self.value = value
         self._owner = owner
         self._name = name
@@ -71,6 +73,7 @@ class Property:
 
 class SynthesisParameters:
     def __init__(self):
+        """Initialize synthesis parameter storage."""
         self._name = ""
 
     def add_parameter(self, name, value):
@@ -90,6 +93,7 @@ class SynthesisParameters:
 
 class InputParameters(FrozenClass):
     def __init__(self, default_parameters):
+        """Initialize input parameters and freeze their shape."""
         self.__default_properties = copy.deepcopy(default_parameters)
         for key, value in self.__default_properties.items():
             setattr(self, key, copy.deepcopy(value))
