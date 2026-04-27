@@ -30,7 +30,7 @@ jobs:
     name: "Cancel dependabot and pyansys-ci-bot pull-requests"
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel dependabot runs
+      - name: Cancel dependabot runs # zizmor: ignore[bot-conditions] safe ignore because we exit if dependabot is triggering the action
         if: github.triggering_actor == 'dependabot[bot]'
         run: |
           echo "::warning::Dependabot is not allowed to trigger this workflow. Please review carefully the changes before running the workflow manually."
