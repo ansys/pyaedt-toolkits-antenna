@@ -7,6 +7,9 @@ models = ["Archimedean", "Log", "Sinuous"]
 [Custom]
 models = ["GPSPatchCeramic"]
 
+[Dipole]
+models = ["PlanarDipole", "WireDipole"]
+
 [Helix]
 models = ["AxialMode"]
 
@@ -19,9 +22,6 @@ models = ["Conical", "Corrugated",
 [Patch]
 models =["RectangularPatchEdge", "RectangularPatchInset",
     "RectangularPatchProbe"]
-
-[Dipole]
-models = ["PlanarDipole", "WireDipole"]
 
 [LogPeriodic]
 models = []
