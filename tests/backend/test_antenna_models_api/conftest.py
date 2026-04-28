@@ -75,7 +75,7 @@ def desktop(common_temp_dir):
     test_session_info = {"version": VERSION, "non_graphical": NONGRAPHICAL, "port": port}
     yield test_session_info
     desktop = Desktop(VERSION, NONGRAPHICAL, False, port=port)
-    desktop.release_desktop(close_projects=True, close_on_exit=True)
+    desktop.close_desktop()
 
 
 @pytest.fixture

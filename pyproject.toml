@@ -104,6 +104,7 @@ max-complexity = 10
 # "N806" (non-lowercase-variable-in-function)
 "src/ansys/aedt/toolkits/antenna/ui/windows/**_column.py" = ["N801", "N802", "N803"]
 "src/ansys/aedt/toolkits/antenna/ui/windows/**_page.py" = ["N801", "N802", "N803", "N806"]
+"src/ansys/aedt/toolkits/antenna/backend/antenna_models/__init__.py" = ["F401"]
 
 [tool.coverage.run]
 source = ["ansys.aedt"]
