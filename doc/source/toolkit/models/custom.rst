@@ -1,7 +1,7 @@
 Custom
 ======
 
-This page lists the classes available for ACT-derived models that fit the toolkit scope:
+This page list the classes available for custom antennas:
 
 .. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.custom
 
@@ -10,12 +10,22 @@ This page lists the classes available for ACT-derived models that fit the toolki
 
    GPSPatchCeramic
 
-Assessment notes
-----------------
 
-``GPS_patch_ceramic`` was added because its ACT implementation is explicit parametric geometry
-that can be standardized in the toolkit.
+You must use these methods from PyAEDT as shown in this example:
 
-``UHF_Probe`` was not added because the ACT plugin only inserts a bundled ``.a3dcomp`` asset.
-It does not expose synthesis equations or editable source geometry, which would make the toolkit
-depend on an opaque ACT-only binary component instead of a standardizable model.
+.. code:: python
+
+    from ansys.aedt.core import Hfss
+
+    from ansys.aedt.toolkits.antenna.backend.antenna_models.custom import GPSPatchCeramic
+
+    aedtapp = Hfss()
+
+    # Create antenna
+    oantenna1 = GPSPatchCeramic(app)
+    oantenna1.frequency = 12.0
+    oantenna1.model_hfss()
+    oantenna1.setup_hfss()
+    ...
+    aedtapp.release_desktop()
+
