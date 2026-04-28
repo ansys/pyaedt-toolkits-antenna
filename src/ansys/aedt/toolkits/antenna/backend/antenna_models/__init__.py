@@ -28,6 +28,8 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Ar
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous
 from ansys.aedt.toolkits.antenna.backend.antenna_models.custom import GPSPatchCeramic
+from ansys.aedt.toolkits.antenna.backend.antenna_models.dipole import PlanarDipole as PlanarDipole
+from ansys.aedt.toolkits.antenna.backend.antenna_models.dipole import WireDipole as WireDipole
 from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialMode
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Corrugated
