@@ -21,22 +21,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieNormal as BowTieNormal
-from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded as BowTieRounded
-from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieSlot as BowTieSlot
-from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Archimedean as Archimedean
-from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log as Log
-from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous as Sinuous
-from ansys.aedt.toolkits.antenna.backend.antenna_models.custom import GPSPatchCeramic as GPSPatchCeramic
-from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialMode as AxialMode
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical as Conical
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Corrugated as Corrugated
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Elliptical as Elliptical
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import EPlane as EPlane
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import HPlane as HPlane
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Pyramidal as Pyramidal
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRidged as PyramidalRidged
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged as QuadRidged
-from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge as RectangularPatchEdge
-from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset as RectangularPatchInset
-from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe as RectangularPatchProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieNormal
+from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded
+from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieSlot
+from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Archimedean
+from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log
+from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous
+from ansys.aedt.toolkits.antenna.backend.antenna_models.custom import GPSPatchCeramic
+from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialMode
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Corrugated
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Elliptical
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import EPlane
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import HPlane
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Pyramidal
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRidged
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe
