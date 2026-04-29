@@ -4,6 +4,12 @@ models = ["BowTieNormal", "BowTieRounded", "BowTieSlot"]
 [ConicalSpiral]
 models = ["Archimedean", "Log", "Sinuous"]
 
+[Custom]
+models = ["GPSPatchCeramic"]
+
+[Dipole]
+models = ["PlanarDipole", "WireDipole"]
+
 [Helix]
 models = ["AxialMode", "AxialModeTaper", "NormalMode", "QuadrifilarOpen", "QuadrifilarShort"]
 
@@ -16,9 +22,6 @@ models = ["Conical", "Corrugated",
 [Patch]
 models =["RectangularPatchEdge", "RectangularPatchInset",
     "RectangularPatchProbe"]
-
-[Dipole]
-models =[]
 
 [LogPeriodic]
 models = []

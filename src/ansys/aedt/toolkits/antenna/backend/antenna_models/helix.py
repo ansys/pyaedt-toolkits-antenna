@@ -3,6 +3,8 @@
 # Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
+# SPDX-License-Identifier: MIT
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -536,6 +538,8 @@ class AxialMode(CommonHelix):
         wl_meters = light_speed / freq_hz
         gain_value_db = self.gain
         gain_value_mag = math.pow(10.0, gain_value_db / 10.0)
+        gain_value_db = self.gain
+        gain_value_mag = math.pow(10.0, gain_value_db / 10.0)
 
         groundx = constants.unit_converter(4.0 * (3.33 / freq_ghz), "Length", "in", "mm")
         groundy = constants.unit_converter(4.0 * (3.33 / freq_ghz), "Length", "in", "mm")
@@ -544,6 +548,8 @@ class AxialMode(CommonHelix):
         helix_wiredia = constants.unit_converter(0.2 * (3.33 / freq_ghz), "Length", "in", "mm")
         helix_coax_inner_radius = constants.unit_converter(0.082 * (3.33 / freq_ghz) / 2, "Length", "in", "mm")
         helix_coax_outer_radius = constants.unit_converter(0.275 * (3.33 / freq_ghz) / 2, "Length", "in", "mm")
+        helix_feed_pinl = constants.unit_converter(0.05 * (3.33 / freq_ghz), "Length", "in", "mm")
+        helix_feed_pind = constants.unit_converter(0.082 * (3.33 / freq_ghz), "Length", "in", "mm")
         helix_feed_pinl = constants.unit_converter(0.05 * (3.33 / freq_ghz), "Length", "in", "mm")
         helix_feed_pind = constants.unit_converter(0.082 * (3.33 / freq_ghz), "Length", "in", "mm")
 
@@ -560,6 +566,8 @@ class AxialMode(CommonHelix):
         parameters["coax_outer_radius"] = helix_coax_outer_radius
         parameters["feed_pinL"] = helix_feed_pinl
         parameters["feed_pinD"] = helix_feed_pind
+        parameters["feed_pinL"] = helix_feed_pinl
+        parameters["feed_pinD"] = helix_feed_pind
         parameters["number_of_turns"] = helix_turns_syn
         parameters["feeder_length"] = self.feeder_length
 
@@ -567,6 +575,9 @@ class AxialMode(CommonHelix):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
         my_keys = list(parameters.keys())
         my_keys.sort()
         parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
@@ -602,6 +613,8 @@ class AxialMode(CommonHelix):
         coax_outer_radius = self.synthesis_parameters.coax_outer_radius.hfss_variable
         feed_pinl = self.synthesis_parameters.feed_pinL.hfss_variable
         feed_pind = self.synthesis_parameters.feed_pinD.hfss_variable
+        feed_pinl = self.synthesis_parameters.feed_pinL.hfss_variable
+        feed_pind = self.synthesis_parameters.feed_pinD.hfss_variable
         feeder_length = self.synthesis_parameters.feeder_length.hfss_variable
         number_of_turns = self.synthesis_parameters.number_of_turns.hfss_variable
         self._app[number_of_turns] = str(self.synthesis_parameters.number_of_turns.value)
@@ -612,21 +625,30 @@ class AxialMode(CommonHelix):
         antenna_name = self.name
         coordinate_system = self.coordinate_system
         my_udm_pairs = []
+        my_udm_pairs = []
         mypair = ["PolygonSegments", "8"]
+        my_udm_pairs.append(mypair)
         my_udm_pairs.append(mypair)
         mypair = ["PolygonRadius", "{}/2".format(wire_diameter)]
         my_udm_pairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["StartHelixRadius", "{}/2".format(diameter)]
+        my_udm_pairs.append(mypair)
         my_udm_pairs.append(mypair)
         mypair = ["RadiusChange", "0"]
         my_udm_pairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["Pitch", spacing]
+        my_udm_pairs.append(mypair)
         my_udm_pairs.append(mypair)
         mypair = ["Turns", str(number_of_turns)]
         my_udm_pairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["SegmentsPerTurn", "16"]
         my_udm_pairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["RightHanded", self.direction]
+        my_udm_pairs.append(mypair)
         my_udm_pairs.append(mypair)
         udm = self._app.modeler.create_udp(
             dll="SegmentedHelix/PolygonHelix.dll",
@@ -641,9 +663,17 @@ class AxialMode(CommonHelix):
             create_udm = udm_obj.GetChildObject("CreateUserDefinedPart:1")
             create_udm.SetPropValue("Coordinate System", coordinate_system)
 
+        # Set coordinate system of udm
+        udm_obj = self._app.oeditor.GetChildObject(udm.name)
+        udm_operations = udm_obj.GetChildNames()
+        if "CreateUserDefinedPart:1" in udm_operations:
+            create_udm = udm_obj.GetChildObject("CreateUserDefinedPart:1")
+            create_udm.SetPropValue("Coordinate System", coordinate_system)
+
         udm.material_name = "pec"
         self._app.modeler.split(udm, "XY", "PositiveOnly")
         gnd = self._app.modeler.create_rectangle(
+            Plane.XY,
             Plane.XY,
             [
                 "-{}/2".format(groundx),
@@ -661,6 +691,8 @@ class AxialMode(CommonHelix):
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pind),
                 "-{}-{}/2".format(feed_pinl, wire_diameter),
+                "-{}/2".format(feed_pind),
+                "-{}-{}/2".format(feed_pinl, wire_diameter),
             ],
             radius=coax_outer_radius,
             new_properties={"Coordinate System": coordinate_system},
@@ -672,6 +704,8 @@ class AxialMode(CommonHelix):
             orientation=2,
             origin=[
                 "{}/2".format(diameter),
+                "-{}/2".format(feed_pind),
+                "-{}-{}/2".format(feed_pinl, wire_diameter),
                 "-{}/2".format(feed_pind),
                 "-{}-{}/2".format(feed_pinl, wire_diameter),
             ],
@@ -688,6 +722,8 @@ class AxialMode(CommonHelix):
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pind),
                 "-{}-{}/2".format(feed_pinl, wire_diameter),
+                "-{}/2".format(feed_pind),
+                "-{}-{}/2".format(feed_pinl, wire_diameter),
             ],
             radius=coax_inner_radius,
             height="-{}".format(feeder_length),
@@ -700,6 +736,8 @@ class AxialMode(CommonHelix):
             orientation=2,
             origin=[
                 "{}/2".format(diameter),
+                "-{}/2".format(feed_pind),
+                "-{}-{}/2".format(feed_pinl, wire_diameter),
                 "-{}/2".format(feed_pind),
                 "-{}-{}/2".format(feed_pinl, wire_diameter),
             ],
@@ -717,6 +755,8 @@ class AxialMode(CommonHelix):
                 "{}/2".format(diameter),
                 "-{}/2".format(feed_pind),
                 "-{}-{}/2-{}".format(feed_pinl, wire_diameter, feeder_length),
+                "-{}/2".format(feed_pind),
+                "-{}-{}/2-{}".format(feed_pinl, wire_diameter, feeder_length),
             ],
             radius=coax_outer_radius,
             height="-{}/2".format(feed_pinl),
@@ -730,6 +770,8 @@ class AxialMode(CommonHelix):
             orientation=2,
             origin=[
                 "{}/2".format(diameter),
+                "-{}/2".format(feed_pind),
+                "-{}-{}/2-{}".format(feed_pinl, wire_diameter, feeder_length),
                 "-{}/2".format(feed_pind),
                 "-{}-{}/2-{}".format(feed_pinl, wire_diameter, feeder_length),
             ],
@@ -746,6 +788,7 @@ class AxialMode(CommonHelix):
         gnd.group_name = antenna_name
         p1.group_name = antenna_name
 
+        self._app.modeler.move([udm, feed_coax, feed_pin, coax, cap, gnd, p1], [pos_x, pos_y, pos_z])
         self._app.modeler.move([udm, feed_coax, feed_pin, coax, cap, gnd, p1], [pos_x, pos_y, pos_z])
         self.object_list[udm.name] = udm
         self.object_list[feed_coax.name] = feed_coax

@@ -76,8 +76,6 @@ def setup(app):
     app.connect("builder-inited", check_pandoc_installed)
 
 
-os.environ["PYANSYS_VISUALIZER_HTML_BACKEND"] = "true"
-
 print(__version__)
 # Project information
 project = "pyaedt-toolkits-antenna"

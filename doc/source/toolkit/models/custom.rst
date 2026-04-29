@@ -1,16 +1,15 @@
-Bowtie
+Custom
 ======
 
-This page list the classes available for bowtie antennas:
+This page list the classes available for custom antennas:
 
-.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.custom
 
 .. autosummary::
    :toctree: _autosummary
 
-   BowTieNormal
-   BowTieRounded
-   BowTieSlot
+   GPSPatchCeramic
+
 
 You must use these methods from PyAEDT as shown in this example:
 
@@ -18,14 +17,15 @@ You must use these methods from PyAEDT as shown in this example:
 
     from ansys.aedt.core import Hfss
 
-    from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieNormal
+    from ansys.aedt.toolkits.antenna.backend.antenna_models.custom import GPSPatchCeramic
 
     aedtapp = Hfss()
 
     # Create antenna
-    oantenna1 = BowTieNormal(app)
+    oantenna1 = GPSPatchCeramic(app)
     oantenna1.frequency = 12.0
     oantenna1.model_hfss()
     oantenna1.setup_hfss()
     ...
     aedtapp.release_desktop()
+

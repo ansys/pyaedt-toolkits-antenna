@@ -1,0 +1,41 @@
+name = "Ceramic GPS Patch"
+
+[object_1]
+name = "sub_GPSPatchCeramic"
+color = [0, 128, 0]
+opacity = 0.2
+
+[object_2]
+name = "gnd_GPSPatchCeramic"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "ant_GPSPatchCeramic"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_4]
+name = "feed_pin_GPSPatchCeramic"
+color = [255, 128, 65]
+opacity = 0.8
+
+[object_5]
+name = "feed_coax_GPSPatchCeramic"
+color = [255, 128, 65]
+opacity = 0.8
+
+[object_6]
+name = "coax_GPSPatchCeramic"
+color = [128, 255, 255]
+opacity = 0.8
+
+[object_7]
+name = "port_cap_GPSPatchCeramic"
+color = [132, 132, 193]
+opacity = 0.8
+
+[object_8]
+name = "port_GPSPatchCeramic"
+color = [128, 0, 0]
+opacity = 0.2
