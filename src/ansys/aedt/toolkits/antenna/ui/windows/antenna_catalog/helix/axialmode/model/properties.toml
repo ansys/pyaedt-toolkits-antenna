@@ -2,7 +2,7 @@ name = "Axial mode"
 
 [object_1]
 name = "helix"
-color = [230, 230, 230]
+color = [255, 128, 65]
 opacity = 0.2
 
 [object_2]
@@ -27,7 +27,7 @@ opacity = 0.8
 
 [object_6]
 name = "gnd"
-color = [230, 230, 230]
+color = [255, 128, 65]
 opacity = 0.2
 
 [object_7]

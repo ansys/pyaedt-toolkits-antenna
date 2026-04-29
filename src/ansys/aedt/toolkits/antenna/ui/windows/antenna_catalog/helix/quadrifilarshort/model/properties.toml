@@ -2,27 +2,27 @@ name = "Quadrifilar short"
 
 [object_1]
 name = "gnd"
-color = [230, 230, 230]
+color = [255, 128, 65]
 opacity = 0.2
 
 [object_2]
 name = "helix_1"
-color = [230, 230, 230]
+color = [255, 128, 65]
 opacity = 0.2
 
 [object_3]
 name = "helix_2"
-color = [230, 230, 230]
+color = [255, 128, 65]
 opacity = 0.2
 
 [object_4]
 name = "helix_3"
-color = [230, 230, 230]
+color = [255, 128, 65]
 opacity = 0.2
 
 [object_5]
 name = "helix_4"
-color = [230, 230, 230]
+color = [255, 128, 65]
 opacity = 0.2
 
 [object_6]
@@ -47,12 +47,12 @@ opacity = 0.8
 
 [object_10]
 name = "short_1"
-color = [247, 242, 232]
+color = [255, 128, 65]
 opacity = 0.8
 
 [object_11]
 name = "short_2"
-color = [247, 242, 232]
+color = [255, 128, 65]
 opacity = 0.8
 
 [object_12]
