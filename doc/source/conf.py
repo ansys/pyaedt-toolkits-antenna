@@ -76,6 +76,9 @@ def setup(app):
     app.connect("builder-inited", check_pandoc_installed)
 
 
+os.environ["PYANSYS_VISUALIZER_HTML_BACKEND"] = "true"
+os.environ["PYAEDT_NON_GRAPHICAL"] = "1"
+
 print(__version__)
 # Project information
 project = "pyaedt-toolkits-antenna"
@@ -223,5 +226,3 @@ latex_additional_files = [watermark, ansys_logo_white, ansys_logo_white_cropped]
 # change the preamble of latex with customized title page
 # variables are the title of pdf, watermark
 latex_elements = {"preamble": latex.generate_preamble(html_title)}
-
-os.environ["PYAEDT_NON_GRAPHICAL"] = "1"
