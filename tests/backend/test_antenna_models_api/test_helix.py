@@ -92,11 +92,14 @@ class TestClass:
     def test_helix_family_models(self, toolkit, antenna_name, expected_excitations):
         antenna_module = getattr(antenna_models, antenna_name)
         toolkit.connect_design("HFSS")
-        toolkit.aedtapp.solution_type = "Modal"
+
+        toolkit.aedtapp.solution_type = "Terminal"
+
+        cs = toolkit.aedtapp.modeler.create_coordinate_system(origin=[10, 20, 30])
 
         oantenna = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
         oantenna.init_model()
-
+        oantenna.coordinate_system = cs.name
         assert oantenna.model_hfss()
         assert oantenna.setup_hfss()
         assert len(oantenna.excitations) == expected_excitations

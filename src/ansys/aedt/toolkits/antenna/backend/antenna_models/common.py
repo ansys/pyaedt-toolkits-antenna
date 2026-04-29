@@ -473,6 +473,13 @@ class CommonAntenna(object):
     @pyaedt_function_handler()
     def setup_hfss(self):
         """Set up an antenna in HFSS."""
+        # Set global coordinates to assign excitations and boundaries.
+        # This is needed because to compute the terminals, Global CS must be active
+
+        active_cs = self.coordinate_system
+
+        self._app.modeler.set_working_coordinate_system("Global")
+
         for obj_name in self.object_list.keys():
             if obj_name.startswith("PerfE") or obj_name.startswith("gnd_") or obj_name.startswith("ant_"):
                 bound = self._app.assign_perfecte_to_sheets(obj_name)
@@ -554,6 +561,7 @@ class CommonAntenna(object):
                 else:
                     self._app.solution_type = "Modal_Waveport"
 
+        self._app.modeler.set_working_coordinate_system(active_cs)
         return True
 
 
