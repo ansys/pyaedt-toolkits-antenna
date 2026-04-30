@@ -1,0 +1,8 @@
+Name = "Quadrifilar_Short"
+Frequency = 1.0
+Direction = ["Left", "Right"]
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"

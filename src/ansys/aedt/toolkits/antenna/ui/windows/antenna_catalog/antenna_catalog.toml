@@ -11,7 +11,7 @@ models = ["GPSPatchCeramic"]
 models = ["PlanarDipole", "WireDipole"]
 
 [Helix]
-models = ["AxialMode"]
+models = ["AxialMode", "AxialModeTaper", "NormalMode", "QuadrifilarOpen", "QuadrifilarShort"]
 
 [Horn]
 models = ["Conical", "Corrugated",

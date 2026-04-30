@@ -174,11 +174,16 @@ class GPSPatchCeramic(CommonPatch):
             cover_surface=True,
             name="cutout_" + antenna_name,
         )
-        cutout_obj = self._app.oeditor.GetChildObject(cutout_triangle.name)
-        cutout_operations = cutout_obj.GetChildNames()
-        if "CreatePolyline:1" in cutout_operations:
-            create_polyline = cutout_obj.GetChildObject("CreatePolyline:1")
-            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+
+        # Set coordinate system of polyline
+        cutout_obj = self._app.get_oo_object(self._app.oeditor, cutout_triangle.name)
+        self._app.set_oo_property_value(
+            aedt_object=cutout_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
+
         self._app.modeler.subtract(ant, cutout_triangle, False)
 
         void = self._app.modeler.create_circle(
@@ -256,7 +261,7 @@ class GPSPatchCeramic(CommonPatch):
 
         for antenna_obj in self.object_list.values():
             antenna_obj.group_name = antenna_name
-
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()

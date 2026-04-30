@@ -284,7 +284,7 @@ jobs:
           pip install .[tests]
 
       - name: Antenna models testing
-        timeout-minutes: 30
+        timeout-minutes: 60
         run: |
           .\.venv\Scripts\Activate.ps1
           pytest -v -m antenna_models_common_api --cov
@@ -358,7 +358,7 @@ jobs:
           pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pytest-azurepipelines
 
       - name: Antenna models testing
-        timeout-minutes: 5
+        timeout-minutes: 60
         run: |
           source .venv_linux/bin/activate
           pytest -v -m antenna_models_common_api

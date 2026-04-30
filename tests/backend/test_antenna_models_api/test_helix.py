@@ -62,3 +62,46 @@ class TestClass:
         )
 
         assert oantenna.name != oantenna2.name
+
+    @pytest.mark.parametrize(
+        ("antenna_name", "expected_parameters"),
+        [
+            ("AxialModeTaper", ["coax_inner_radius", "coax_outer_radius", "radius_change"]),
+            ("NormalMode", ["coax_inner_radius", "coax_outer_radius", "number_of_turns"]),
+            ("QuadrifilarOpen", ["groundx", "port_height", "number_of_turns"]),
+            ("QuadrifilarShort", ["groundx", "port_height", "number_of_turns"]),
+        ],
+    )
+    def test_helix_family_synthesis(self, antenna_name, expected_parameters):
+        antenna_module = getattr(antenna_models, antenna_name)
+        oantenna = antenna_module(None, frequency=1.0, length_unit="mm")
+
+        assert oantenna.synthesis_parameters
+        for parameter in expected_parameters:
+            assert hasattr(oantenna.synthesis_parameters, parameter)
+
+    @pytest.mark.parametrize(
+        ("antenna_name", "expected_excitations"),
+        [
+            ("AxialModeTaper", 1),
+            ("NormalMode", 1),
+            ("QuadrifilarOpen", 4),
+            ("QuadrifilarShort", 4),
+        ],
+    )
+    def test_helix_family_models(self, toolkit, antenna_name, expected_excitations):
+        antenna_module = getattr(antenna_models, antenna_name)
+        toolkit.connect_design("HFSS")
+
+        toolkit.aedtapp.solution_type = "Terminal"
+
+        cs = toolkit.aedtapp.modeler.create_coordinate_system(origin=[10, 20, 30])
+
+        oantenna = antenna_module(toolkit.aedtapp, frequency=1.0, length_unit=toolkit.aedtapp.modeler.model_units)
+        oantenna.init_model()
+        oantenna.coordinate_system = cs.name
+        assert oantenna.model_hfss()
+        assert oantenna.setup_hfss()
+        assert len(oantenna.excitations) == expected_excitations
+        for comp in oantenna.object_list.values():
+            assert isinstance(comp, Object3d)
