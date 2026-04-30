@@ -361,6 +361,8 @@ class Conical(CommonHorn):
         horn_sheet.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -945,11 +947,13 @@ class PyramidalRidged(CommonHorn):
         )
 
         # Set coordinate system of polyline
-        ridge_obj = self._app.oeditor.GetChildObject(ridge.name)
-        ridge_operations = ridge_obj.GetChildNames()
-        if "CreatePolyline:1" in ridge_operations:
-            create_polyline = ridge_obj.GetChildObject("CreatePolyline:1")
-            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+        ridge_obj = self._app.get_oo_object(self._app.oeditor, ridge.name)
+        self._app.set_oo_property_value(
+            aedt_object=ridge_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
 
         ridge = self._app.modeler.thicken_sheet(ridge, ridge_width, True)
         ridge.color = (132, 132, 193)
@@ -962,11 +966,13 @@ class PyramidalRidged(CommonHorn):
         )
 
         # Set coordinate system of polyline
-        ridge_obj = self._app.oeditor.GetChildObject(mridge.name)
-        ridge_operations = ridge_obj.GetChildNames()
-        if "CreatePolyline:1" in ridge_operations:
-            create_polyline = ridge_obj.GetChildObject("CreatePolyline:1")
-            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+        ridge_obj = self._app.get_oo_object(self._app.oeditor, mridge.name)
+        self._app.set_oo_property_value(
+            aedt_object=ridge_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
 
         mridge = self._app.modeler.thicken_sheet(mridge, ridge_width, True)
         mridge.color = (132, 132, 193)
@@ -1066,6 +1072,8 @@ class PyramidalRidged(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -1313,11 +1321,10 @@ class Corrugated(CommonHorn):
         )
 
         # Set coordinate system of polyline
-        horn_obj = self._app.oeditor.GetChildObject(horn.name)
-        horn_operations = horn_obj.GetChildNames()
-        if "CreatePolyline:1" in horn_operations:
-            create_polyline = horn_obj.GetChildObject("CreatePolyline:1")
-            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+        horn_obj = self._app.get_oo_object(self._app.oeditor, horn.name)
+        self._app.set_oo_property_value(
+            aedt_object=horn_obj, object_name="CreatePolyline:1", prop_name="Coordinate System", value=coordinate_system
+        )
 
         horn = horn.sweep_around_axis(2)
         horn.color = (132, 132, 193)
@@ -1352,6 +1359,9 @@ class Corrugated(CommonHorn):
         horn.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+
+        self._app.modeler.fit_all()
+
         return True
 
     @pyaedt_function_handler()
@@ -1642,6 +1652,7 @@ class Elliptical(CommonHorn):
         horn_sheet.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -2022,6 +2033,7 @@ class EPlane(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -2388,6 +2400,7 @@ class HPlane(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -2757,6 +2770,7 @@ class Pyramidal(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -3166,11 +3180,13 @@ class QuadRidged(CommonHorn):
         )
 
         # Set coordinate system of polyline
-        ridge1_obj = self._app.oeditor.GetChildObject(ridge1.name)
-        ridge1_operations = ridge1_obj.GetChildNames()
-        if "CreatePolyline:1" in ridge1_operations:
-            create_polyline = ridge1_obj.GetChildObject("CreatePolyline:1")
-            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+        ridge1_obj = self._app.get_oo_object(self._app.oeditor, ridge1.name)
+        self._app.set_oo_property_value(
+            aedt_object=ridge1_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
 
         ridge1 = self._app.modeler.thicken_sheet(ridge1, ridge_width, True)
         ridge1.color = (132, 132, 193)
@@ -3183,11 +3199,13 @@ class QuadRidged(CommonHorn):
         )
 
         # Set coordinate system of polyline
-        ridge2_obj = self._app.oeditor.GetChildObject(ridge2.name)
-        ridge2_operations = ridge2_obj.GetChildNames()
-        if "CreatePolyline:1" in ridge2_operations:
-            create_polyline = ridge2_obj.GetChildObject("CreatePolyline:1")
-            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+        ridge2_obj = self._app.get_oo_object(self._app.oeditor, ridge2.name)
+        self._app.set_oo_property_value(
+            aedt_object=ridge2_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
 
         ridge2 = self._app.modeler.thicken_sheet(ridge2, ridge_width, True)
         ridge2.color = (132, 132, 193)
@@ -3200,11 +3218,13 @@ class QuadRidged(CommonHorn):
         )
 
         # Set coordinate system of polyline
-        ridge3_obj = self._app.oeditor.GetChildObject(ridge3.name)
-        ridge3_operations = ridge3_obj.GetChildNames()
-        if "CreatePolyline:1" in ridge3_operations:
-            create_polyline = ridge3_obj.GetChildObject("CreatePolyline:1")
-            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+        ridge3_obj = self._app.get_oo_object(self._app.oeditor, ridge3.name)
+        self._app.set_oo_property_value(
+            aedt_object=ridge3_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
 
         ridge3 = self._app.modeler.thicken_sheet(ridge3, ridge_width, True)
         ridge3.color = (132, 132, 193)
@@ -3217,11 +3237,13 @@ class QuadRidged(CommonHorn):
         )
 
         # Set coordinate system of polyline
-        ridge4_obj = self._app.oeditor.GetChildObject(ridge4.name)
-        ridge4_operations = ridge4_obj.GetChildNames()
-        if "CreatePolyline:1" in ridge4_operations:
-            create_polyline = ridge4_obj.GetChildObject("CreatePolyline:1")
-            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+        ridge4_obj = self._app.get_oo_object(self._app.oeditor, ridge4.name)
+        self._app.set_oo_property_value(
+            aedt_object=ridge4_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
 
         ridge4 = self._app.modeler.thicken_sheet(ridge4, ridge_width, True)
         ridge4.color = (132, 132, 193)
@@ -3368,6 +3390,7 @@ class QuadRidged(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -3655,6 +3678,7 @@ class ConicalSpecial(CommonHorn):
         horn_sheet.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()

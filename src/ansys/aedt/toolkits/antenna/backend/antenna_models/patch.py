@@ -443,6 +443,7 @@ class RectangularPatchProbe(CommonPatch):
         coax.group_name = antenna_name
         port_cap.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -758,6 +759,7 @@ class RectangularPatchInset(CommonPatch):
         gnd.group_name = antenna_name
         ant.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -1078,6 +1080,7 @@ class RectangularPatchEdge(CommonPatch):
         gnd.group_name = antenna_name
         ant.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()

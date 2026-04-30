@@ -336,7 +336,11 @@ class AntennaSynthesisMenu(object):
         if self.model_info:
             self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.botton_image_layout)
 
+            if hasattr(self, "synthesis_plotter") and self.synthesis_plotter is not None:
+                self.synthesis_plotter.close()
+
             plotter = BackgroundPlotter(show=False)
+            self.synthesis_plotter = plotter
             for element in self.model_info:
                 if encode:
                     # Decode response

@@ -34,7 +34,7 @@ The default configuration can be changed by placing a file called local_config.j
 An example of the contents of local_config.json:
 
 {
-  "desktop_version": "2025.1",
+  "desktop_version": "2026.1",
   "non_graphical": false,
   "use_grpc": true
 }

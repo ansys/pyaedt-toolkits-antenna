@@ -24,6 +24,7 @@ outer_boundary = ""
 start_frequency = 0.0
 stop_frequency = 0.0
 substrate_height = 0.1
+direction = "Left"
 
 [setup]
 component_3d = false
