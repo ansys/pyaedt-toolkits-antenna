@@ -219,11 +219,10 @@ class BowTieNormal(CommonPatch):
         ant = self._app.modeler.create_polyline(array_points, cover_surface=True, name="ant_arm")
 
         # Set coordinate system of polyline
-        ant_obj = self._app.oeditor.GetChildObject(ant.name)
-        ant_operations = ant_obj.GetChildNames()
-        if "CreatePolyline:1" in ant_operations:
-            create_polyline = ant_obj.GetChildObject("CreatePolyline:1")
-            create_polyline.SetPropValue("Coordinate System", coordinate_system)
+        ant_obj = self._app.get_oo_object(self._app.oeditor, ant.name)
+        self._app.set_oo_property_value(
+            aedt_object=ant_obj, object_name="CreatePolyline:1", prop_name="Coordinate System", value=coordinate_system
+        )
 
         ant.color = (255, 128, 65)
         ant.transparency = 0.1

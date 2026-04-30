@@ -104,8 +104,13 @@ class CommonHelix(CommonAntenna):
 
     @direction.setter
     def direction(self, value):
+        if isinstance(value, str) and value.lower() == "left":
+            value = 0
+        elif isinstance(value, str) and value.lower() == "right":
+            value = 1
+
         self._input_parameters.direction = value
-        if value != self.direction and self.object_list:
+        if self.object_list:
             parameters = self.synthesis()
             self.update_synthesis_parameters(parameters)
             self.set_variables_in_hfss()
@@ -142,13 +147,6 @@ class CommonHelix(CommonAntenna):
             self._app.logger.warning("Material not found. Create the material before assigning it.")
             return False
         return True
-
-    def _set_udp_coordinate_system(self, udp, coordinate_system):
-        udp_obj = self._app.oeditor.GetChildObject(udp.name)
-        udp_operations = udp_obj.GetChildNames()
-        if "CreateUserDefinedPart:1" in udp_operations:
-            create_udm = udp_obj.GetChildObject("CreateUserDefinedPart:1")
-            create_udm.SetPropValue("Coordinate System", coordinate_system)
 
     def _set_unitless_parameter(self, parameter_name):
         parameter = getattr(self.synthesis_parameters, parameter_name, None)
@@ -201,7 +199,19 @@ class CommonHelix(CommonAntenna):
             library="syslib",
             name="helix",
         )
-        self._set_udp_coordinate_system(udm, coordinate_system)
+        udm_obj = self._app.get_oo_object(self._app.oeditor, udm.name)
+        # Set direction
+        self._app.set_oo_property_value(
+            aedt_object=udm_obj, object_name="CreateUserDefinedPart:1", prop_name="RightHanded", value=self.direction
+        )
+
+        # Set coordinate system of udm
+        self._app.set_oo_property_value(
+            aedt_object=udm_obj,
+            object_name="CreateUserDefinedPart:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
 
         udm.material_name = "pec"
         self._app.modeler.split(udm, "XY", "PositiveOnly")
@@ -365,7 +375,21 @@ class CommonHelix(CommonAntenna):
             library="syslib",
             name="helix_1",
         )
-        self._set_udp_coordinate_system(helix, coordinate_system)
+        # Set direction
+        helix_obj = self._app.get_oo_object(self._app.oeditor, helix.name)
+        # Set direction
+        self._app.set_oo_property_value(
+            aedt_object=helix_obj, object_name="CreateUserDefinedPart:1", prop_name="RightHanded", value=self.direction
+        )
+
+        # Set coordinate system of udm
+        self._app.set_oo_property_value(
+            aedt_object=helix_obj,
+            object_name="CreateUserDefinedPart:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
+
         helix.material_name = "pec"
         self._app.modeler.split(helix, "XY", "PositiveOnly")
         helix_names = [helix.name] + helix.duplicate_around_axis(Axis.Z, 90, 4)
@@ -538,8 +562,6 @@ class AxialMode(CommonHelix):
         wl_meters = light_speed / freq_hz
         gain_value_db = self.gain
         gain_value_mag = math.pow(10.0, gain_value_db / 10.0)
-        gain_value_db = self.gain
-        gain_value_mag = math.pow(10.0, gain_value_db / 10.0)
 
         groundx = constants.unit_converter(4.0 * (3.33 / freq_ghz), "Length", "in", "mm")
         groundy = constants.unit_converter(4.0 * (3.33 / freq_ghz), "Length", "in", "mm")
@@ -548,8 +570,7 @@ class AxialMode(CommonHelix):
         helix_wiredia = constants.unit_converter(0.2 * (3.33 / freq_ghz), "Length", "in", "mm")
         helix_coax_inner_radius = constants.unit_converter(0.082 * (3.33 / freq_ghz) / 2, "Length", "in", "mm")
         helix_coax_outer_radius = constants.unit_converter(0.275 * (3.33 / freq_ghz) / 2, "Length", "in", "mm")
-        helix_feed_pinl = constants.unit_converter(0.05 * (3.33 / freq_ghz), "Length", "in", "mm")
-        helix_feed_pind = constants.unit_converter(0.082 * (3.33 / freq_ghz), "Length", "in", "mm")
+
         helix_feed_pinl = constants.unit_converter(0.05 * (3.33 / freq_ghz), "Length", "in", "mm")
         helix_feed_pind = constants.unit_converter(0.082 * (3.33 / freq_ghz), "Length", "in", "mm")
 
@@ -575,9 +596,6 @@ class AxialMode(CommonHelix):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        my_keys = list(parameters.keys())
-        my_keys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
         my_keys = list(parameters.keys())
         my_keys.sort()
         parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
@@ -638,20 +656,32 @@ class AxialMode(CommonHelix):
         my_udm_pairs.append(mypair)
         mypair = ["SegmentsPerTurn", "16"]
         my_udm_pairs.append(mypair)
+
+        # Parameter not working in native API call, it is modified later
         mypair = ["RightHanded", self.direction]
         my_udm_pairs.append(mypair)
+
         udm = self._app.modeler.create_udp(
             dll="SegmentedHelix/PolygonHelix.dll",
             parameters=my_udm_pairs,
             library="syslib",
             name="helix",
         )
+
+        udm_obj = self._app.get_oo_object(self._app.oeditor, udm.name)
+        # Set direction
+        self._app.set_oo_property_value(
+            aedt_object=udm_obj, object_name="CreateUserDefinedPart:1", prop_name="RightHanded", value=self.direction
+        )
+
         # Set coordinate system of udm
-        udm_obj = self._app.oeditor.GetChildObject(udm.name)
-        udm_operations = udm_obj.GetChildNames()
-        if "CreateUserDefinedPart:1" in udm_operations:
-            create_udm = udm_obj.GetChildObject("CreateUserDefinedPart:1")
-            create_udm.SetPropValue("Coordinate System", coordinate_system)
+        self._app.set_oo_property_value(
+            aedt_object=udm_obj,
+            object_name="CreateUserDefinedPart:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
+
         udm.material_name = "pec"
         self._app.modeler.split(udm, "XY", "PositiveOnly")
         gnd = self._app.modeler.create_rectangle(
@@ -1066,6 +1096,7 @@ class QuadrifilarShort(CommonHelix):
         """Model in PyDiscovery. To be implemented."""
         pass
 
+    @pyaedt_function_handler()
     @pyaedt_function_handler()
     def setup_disco(self):
         """Set up model in PyDiscovery. To be implemented."""
