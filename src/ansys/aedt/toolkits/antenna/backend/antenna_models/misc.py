@@ -65,7 +65,13 @@ class CommonMisc(CommonAntenna):
 
 
 class Bicone(CommonMisc):
-    """Manages a bicone antenna."""
+    """Manages a bicone antenna.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
+        *Modern Antenna Handbook*, New York, 2008.
+    """
 
     _default_input_parameters = {
         "name": None,
@@ -211,7 +217,13 @@ class Bicone(CommonMisc):
 
 
 class Discone(CommonMisc):
-    """Manages a discone antenna."""
+    """Manages a discone antenna.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
+        *Modern Antenna Handbook*, New York, 2008.
+    """
 
     _default_input_parameters = {
         "name": None,

@@ -34,7 +34,13 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import CommonPatch
 
 
 class PlanarDipole(CommonPatch):
-    """Manages a planar dipole antenna."""
+    """Manages a planar dipole antenna.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Linear Wire Antennas"
+        *Antenna Theory*, New York, 1997.
+    """
 
     _default_input_parameters = {
         "name": "",
@@ -186,7 +192,13 @@ class PlanarDipole(CommonPatch):
 
 
 class WireDipole(CommonAntenna):
-    """Manages a wire dipole antenna."""
+    """Manages a wire dipole antenna.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Linear Wire Antennas"
+        *Antenna Theory*, New York, 1997.
+    """
 
     _default_input_parameters = {
         "name": "",
