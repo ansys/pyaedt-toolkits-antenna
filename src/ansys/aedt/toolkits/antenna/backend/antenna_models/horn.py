@@ -361,6 +361,8 @@ class Conical(CommonHorn):
         horn_sheet.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -1070,6 +1072,8 @@ class PyramidalRidged(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -1355,6 +1359,9 @@ class Corrugated(CommonHorn):
         horn.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+
+        self._app.modeler.fit_all()
+
         return True
 
     @pyaedt_function_handler()
@@ -1645,6 +1652,7 @@ class Elliptical(CommonHorn):
         horn_sheet.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -2025,6 +2033,7 @@ class EPlane(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -2391,6 +2400,7 @@ class HPlane(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -2760,6 +2770,7 @@ class Pyramidal(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -3379,6 +3390,7 @@ class QuadRidged(CommonHorn):
         horn.group_name = antenna_name
         wg_in.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -3666,6 +3678,7 @@ class ConicalSpecial(CommonHorn):
         horn_sheet.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()

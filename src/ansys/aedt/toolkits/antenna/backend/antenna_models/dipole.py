@@ -171,7 +171,7 @@ class PlanarDipole(CommonPatch):
         self.object_list[ant2.name] = ant2
         self.object_list[port.name] = port
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
-
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -275,7 +275,7 @@ class WireDipole(CommonAntenna):
         self.object_list[wire2.name] = wire2
         self.object_list[port.name] = port
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
-
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()

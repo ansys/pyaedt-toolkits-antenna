@@ -316,7 +316,7 @@ class CommonHelix(CommonAntenna):
 
         for obj in objects:
             self.object_list[obj.name] = obj
-
+        self._single_feed_model("-{}".format(self.synthesis_parameters.radius_change.hfss_variable))
         return True
 
     def _quadrifilar_model(self, shorted=False):
@@ -469,7 +469,7 @@ class CommonHelix(CommonAntenna):
 
         for obj in objects:
             self.object_list[obj.name] = obj
-
+        self._single_feed_model("-{}".format(self.synthesis_parameters.radius_change.hfss_variable))
         return True
 
     @pyaedt_function_handler()
@@ -794,6 +794,7 @@ class AxialMode(CommonHelix):
         self.object_list[cap.name] = cap
         self.object_list[gnd.name] = gnd
         self.object_list[p1.name] = p1
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()

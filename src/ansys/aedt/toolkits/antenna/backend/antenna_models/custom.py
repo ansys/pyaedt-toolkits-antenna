@@ -261,7 +261,7 @@ class GPSPatchCeramic(CommonPatch):
 
         for antenna_obj in self.object_list.values():
             antenna_obj.group_name = antenna_name
-
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()

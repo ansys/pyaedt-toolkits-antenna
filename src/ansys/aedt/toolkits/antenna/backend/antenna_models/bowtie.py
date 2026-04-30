@@ -255,6 +255,7 @@ class BowTieNormal(CommonPatch):
         self.object_list[ant2.name] = ant2
         self.object_list[p1.name] = p1
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -499,6 +500,7 @@ class BowTieRounded(CommonPatch):
         self.object_list[ant2.name] = ant2
         self.object_list[p1.name] = p1
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -796,6 +798,7 @@ class BowTieSlot(CommonPatch):
         self.object_list[ref.name] = ref
         self.object_list[p1.name] = p1
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
