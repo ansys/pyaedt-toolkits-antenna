@@ -63,14 +63,6 @@ class CommonMisc(CommonAntenna):
         else:
             self._input_parameters.material = value
 
-    @staticmethod
-    def _set_coordinate_system(obj, coordinate_system):
-        obj_ref = obj._primitives.oeditor.GetChildObject(obj.name)
-        operations = obj_ref.GetChildNames()
-        if "CreatePolyline:1" in operations:
-            create_polyline = obj_ref.GetChildObject("CreatePolyline:1")
-            create_polyline.SetPropValue("Coordinate System", coordinate_system)
-
 
 class Bicone(CommonMisc):
     """Manages a bicone antenna."""
@@ -145,7 +137,16 @@ class Bicone(CommonMisc):
             name=f"ant_{antenna_name}",
             material=self.material,
         )
-        self._set_coordinate_system(top_profile, coordinate_system)
+
+        # Set coordinate system of polyline
+        top_profile_obj = self._app.get_oo_object(self._app.oeditor, top_profile.name)
+        self._app.set_oo_property_value(
+            aedt_object=top_profile_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
+
         top_cone = top_profile.sweep_around_axis(2)
         top_cap = self._app.modeler.create_circle(
             orientation=Plane.XY,
@@ -164,7 +165,16 @@ class Bicone(CommonMisc):
             name=f"ant_{antenna_name}_1",
             material=self.material,
         )
-        self._set_coordinate_system(bottom_profile, coordinate_system)
+
+        # Set coordinate system of polyline
+        bottom_profile_obj = self._app.get_oo_object(self._app.oeditor, bottom_profile.name)
+        self._app.set_oo_property_value(
+            aedt_object=bottom_profile_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
+
         bottom_cone = bottom_profile.sweep_around_axis(2)
         bottom_cap = self._app.modeler.create_circle(
             orientation=Plane.XY,
@@ -196,6 +206,7 @@ class Bicone(CommonMisc):
         self.object_list[port_lump.name] = port_lump
 
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+        self._app.modeler.fit_all()
         return True
 
 
@@ -285,7 +296,16 @@ class Discone(CommonMisc):
             name=f"ant_{antenna_name}",
             material=self.material,
         )
-        self._set_coordinate_system(cone_profile, coordinate_system)
+
+        # Set coordinate system of polyline
+        cone_profile_obj = self._app.get_oo_object(self._app.oeditor, cone_profile.name)
+        self._app.set_oo_property_value(
+            aedt_object=cone_profile_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
+
         cone = cone_profile.sweep_around_axis(2)
         cone_cap = self._app.modeler.create_circle(
             orientation=Plane.XY,
@@ -317,4 +337,5 @@ class Discone(CommonMisc):
         self.object_list[port_lump.name] = port_lump
 
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+        self._app.modeler.fit_all()
         return True
