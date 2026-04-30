@@ -19,33 +19,33 @@ models = ["Conical", "Corrugated",
     "HPlane", "Pyramidal",
     "PyramidalRidged", "QuadRidged"]
 
-[Patch]
-models =["RectangularPatchEdge", "RectangularPatchInset",
-    "RectangularPatchProbe"]
-
 [LogPeriodic]
 models = []
 
 [Misc]
-models =[]
+models = ["Bicone", "Discone"]
 
 [Monopole]
-models =[]
+models = []
+
+[Patch]
+models = ["RectangularPatchEdge", "RectangularPatchInset",
+    "RectangularPatchProbe"]
 
 [PIFA]
-models =[]
+models = []
 
 [PlanarSpiral]
-models =[]
+models = []
 
 [Reflector]
-models =[]
+models = []
 
 [Slot]
-models =[]
+models = []
 
 [Vivaldi]
-models =[]
+models = []
 
 [YagiUda]
-models =[]
+models = []

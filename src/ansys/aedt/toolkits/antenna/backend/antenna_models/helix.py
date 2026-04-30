@@ -821,7 +821,13 @@ class AxialMode(CommonHelix):
 
 
 class AxialModeTaper(CommonHelix):
-    """Manages a tapered axial mode helix antenna."""
+    """Manages a tapered axial mode helix antenna.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
+        *Modern Antenna Handbook*, New York, 2008.
+    """
 
     _default_input_parameters = {
         "name": "",
@@ -910,7 +916,13 @@ class AxialModeTaper(CommonHelix):
 
 
 class NormalMode(CommonHelix):
-    """Manages a normal mode helix antenna."""
+    """Manages a normal mode helix antenna.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
+        *Modern Antenna Handbook*, New York, 2008.
+    """
 
     _default_input_parameters = {
         "name": "",
@@ -998,7 +1010,13 @@ class NormalMode(CommonHelix):
 
 
 class QuadrifilarOpen(CommonHelix):
-    """Manages an open quadrifilar helix antenna."""
+    """Manages an open quadrifilar helix antenna.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
+        *Modern Antenna Handbook*, New York, 2008.
+    """
 
     _default_input_parameters = {
         "name": "",
@@ -1056,7 +1074,13 @@ class QuadrifilarOpen(CommonHelix):
 
 
 class QuadrifilarShort(CommonHelix):
-    """Manages a shorted quadrifilar helix antenna."""
+    """Manages a shorted quadrifilar helix antenna.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
+        *Modern Antenna Handbook*, New York, 2008.
+    """
 
     _default_input_parameters = {
         "name": "",
