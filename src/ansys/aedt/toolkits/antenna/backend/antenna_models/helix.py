@@ -316,7 +316,7 @@ class CommonHelix(CommonAntenna):
 
         for obj in objects:
             self.object_list[obj.name] = obj
-        self._single_feed_model("-{}".format(self.synthesis_parameters.radius_change.hfss_variable))
+        self._app.modeler.fit_all()
         return True
 
     def _quadrifilar_model(self, shorted=False):
@@ -424,6 +424,7 @@ class CommonHelix(CommonAntenna):
             if index > 1:
                 obj.name = "helix_{}".format(index)
                 obj = self._app.modeler[obj.name]
+                helix_names[index - 1] = obj.name
             objects.append(obj)
 
         for index, object_name in enumerate(feed_names, start=1):
@@ -462,6 +463,16 @@ class CommonHelix(CommonAntenna):
             )
             objects.extend([short_1, short_2])
 
+            # Unite all helix and short objects
+            helix_and_short_objs = [self._app.modeler[name] for name in helix_names] + [short_1, short_2]
+            self._app.modeler.unite(helix_and_short_objs)
+            # _ = helix_and_short_objs[0]
+
+            # Remove united objects from objects list and add the united one
+            for obj in helix_and_short_objs[1:]:
+                if obj in objects:
+                    objects.remove(obj)
+
         for obj in objects:
             obj.group_name = antenna_name
 
@@ -469,7 +480,8 @@ class CommonHelix(CommonAntenna):
 
         for obj in objects:
             self.object_list[obj.name] = obj
-        self._single_feed_model("-{}".format(self.synthesis_parameters.radius_change.hfss_variable))
+
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
