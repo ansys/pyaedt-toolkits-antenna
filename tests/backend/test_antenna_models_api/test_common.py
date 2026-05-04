@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +21,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import math
+
 import pytest
-
-from tests.backend.conftest import PROJECT_NAME
-
-pytestmark = [pytest.mark.antenna_models_common_api]
 
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import StandardWaveguide
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
@@ -34,26 +33,29 @@ test_project_name = "Patch_test"
 tl_calc = TransmissionLine()
 wg_standard = StandardWaveguide()
 
+pytestmark = [pytest.mark.antenna_models_common_api]
+
 
 class TestClass:
     """Class defining a workflow to test antenna models common."""
 
     def test_01_microstrip_calculator(self):
         w1 = tl_calc.microstrip_calculator(substrate_height=0.15, permittivity=4.4)
-        assert w1[0] - 30.8173 < 1e-6
-        assert w1[1] - 0.00913 < 1e-6
+        assert math.isclose(w1[0], 0.2867789, rel_tol=1e-6)
+        assert math.isclose(w1[1], 0.006849743, rel_tol=1e-6)
+
         w2 = tl_calc.microstrip_calculator(substrate_height=0.15, permittivity=2)
-        assert w2[0] - 0.490717 < 1e-6
-        assert w2[1] - 0.0094996 < 1e-6
+        assert math.isclose(w2[0], 0.49071766, rel_tol=1e-6)
+        assert math.isclose(w2[1], 0.0094996773, rel_tol=1e-6)
 
     def test_02_stripline_calculator(self):
         w1 = tl_calc.stripline_calculator(substrate_height=10, permittivity=2.2)
-        assert w1 - 8.298368 < 1e-6
+        assert math.isclose(w1, 8.298368009, rel_tol=1e-6)
         w2 = tl_calc.stripline_calculator(substrate_height=0.15, permittivity=4.4, impedance=100)
-        assert w2 - 0.012117786 < 1e-6
+        assert math.isclose(w2, 0.01211778667, rel_tol=1e-6)
 
     def test_03_find_waveguide(self):
         w_dim = wg_standard.get_waveguide_dimensions("WR-2300", "cm")
-        assert w_dim[0] - 58.41999999 < 1e-6
+        assert math.isclose(w_dim[0], 58.41999999, rel_tol=1e-6)
         w_name = wg_standard.find_waveguide(10, "GHz")
         assert w_name == "WR-102"

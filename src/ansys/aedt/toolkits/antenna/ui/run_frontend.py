@@ -35,14 +35,6 @@ from ansys.aedt.toolkits.antenna.ui.models import properties
 # PySide6 Widgets
 from PySide6.QtWidgets import QApplication
 from PySide6.QtWidgets import QMainWindow
-from ansys.aedt.toolkits.common.ui.common_windows.home_menu import HomeMenu
-from ansys.aedt.toolkits.common.ui.common_windows.settings_column import SettingsMenu
-
-# Import general common frontend modules
-from ansys.aedt.toolkits.common.ui.logger_handler import logger
-
-# Common windows
-from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
 
 # Toolkit frontend API
 from ansys.aedt.toolkits.antenna.ui.actions import Frontend
@@ -52,14 +44,22 @@ from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_menu
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_menu import AntennaResultsMenu
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_synthesis.antenna_synthesis_menu import AntennaSynthesisMenu
 from ansys.aedt.toolkits.antenna.ui.windows.help.help_menu import HelpMenu
+from ansys.aedt.toolkits.common.ui.common_windows.home_menu import HomeMenu
+from ansys.aedt.toolkits.common.ui.common_windows.settings_column import SettingsMenu
+
+# Import general common frontend modules
+from ansys.aedt.toolkits.common.ui.logger_handler import logger
+
+# Common windows
+from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
 
 # Backend URL and port
 if len(sys.argv) == 3:
     properties.backend_url = sys.argv[1]
     properties.backend_port = int(sys.argv[2])
 
-url = properties.backend_url
-port = properties.backend_port
+# url = properties.backend_url
+# port = properties.backend_port
 
 os.environ["QT_API"] = "pyside6"
 os.environ["QT_FONT_DPI"] = "96"
@@ -272,22 +272,40 @@ class ApplicationWindow(QMainWindow, Frontend):
             if not is_left_visible:
                 self.ui.toggle_left_column()
 
-    def closeEvent(self, event):
+    def closeEvent(self, event):  # noqa: N802
         if self.antenna_catalog_menu.grid_item:
             for item in self.antenna_catalog_menu.grid_item:
                 item.plotter.close()
+        if (
+            hasattr(self.antenna_synthesis_menu, "synthesis_plotter")
+            and self.antenna_synthesis_menu.synthesis_plotter is not None
+        ):
+            self.antenna_synthesis_menu.synthesis_plotter.close()
+        if (
+            hasattr(self.antenna_results_menu, "farfield_3d_plotter")
+            and self.antenna_results_menu.farfield_3d_plotter is not None
+        ):
+            self.antenna_results_menu.farfield_3d_plotter.close()
         event.accept()
 
 
-def run_frontend(backend_url="", backend_port=0):
+def run_frontend(backend_url="", backend_port=0, app=None):
     if backend_url:
         properties.backend_url = backend_url
     if backend_port:
         properties.backend_port = backend_port
-    app = QApplication(sys.argv)
+
+    run_separately = False
+
+    if not app:
+        run_separately = True
+        app = QApplication(sys.argv)
+
     window = ApplicationWindow()
     window.show()
-    sys.exit(app.exec())
+    app.processEvents()
+    if run_separately:
+        sys.exit(app.exec())
 
 
 if __name__ == "__main__":

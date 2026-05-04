@@ -1,9 +1,6 @@
-name: "CI"
+name: night
 on:
-  pull_request:
   push:
-    tags:
-      - "v*.*.*"
     branches:
       - main
   workflow_dispatch:
@@ -25,88 +22,94 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: {} # Disable default permissions
+
 jobs:
 
-  update-changelog:
-    name: "Update CHANGELOG (on release)"
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+  vulnerabilities:
+    name: "Vulnerabilities"
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
     steps:
-      - uses: ansys/actions/doc-deploy-changelog@v10
+      - uses: ansys/actions/check-vulnerabilities@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
         with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          python-package-name: ${{ env.LIBRARY_NAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
-          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
-          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
-          use-upper-case: true
-
-  # NOTE: We do not allow dependabot to trigger the CI/CD pipeline automatically.
-  # This is to mitigate supply chain attacks, where a malicious dependency update
-  # could execute arbitrary code in our build environment.
-  # Dependabot PRs must be reviewed carefully and approved manually before
-  # running the CI.
-  block-dependabot:
-    name: "Block dependabot (on dependabot PR)"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Exit if dependabot triggered the workflow
-        if: github.triggering_actor == 'dependabot[bot]'
-        run: |
-          echo "::warning::Dependabot is not allowed to trigger this workflow. Please review carefully the changes before running the workflow manually."
-          exit 1
-
-  # NOTE: We do not allow pyansys-ci-bot to trigger the CI/CD pipeline automatically
-  # on dependabot's PR. This is to mitigate supply chain attacks, where a malicious
-  # dependency update could execute arbitrary code in our build environment.
-  # Dependabot PRs must be reviewed carefully and approved manually before
-  # running the CI.
-  block-pyansys-ci-bot:
-    name: "Block PyAnsys-CI-bot (on dependabot PR)"
-    needs: block-dependabot
-    runs-on: ubuntu-latest
-    steps:
-      - name: Exit if pyansys-ci-bot triggered the workflow on dependabot's PR
-        if: github.triggering_actor == 'pyansys-ci-bot' && startsWith(github.head_ref, 'dependabot')
-        run: |
-          echo "::warning::PyAnsys CI bot is not allowed to trigger this workflow in dependabot's PR. Please review carefully the changes before running the workflow manually."
-          exit 1
-
-  pr-title:
-    name: Check the title of the PR (if needed)
-    runs-on: ubuntu-latest
-    needs: [block-pyansys-ci-bot]
-    steps:
-      - name: Check the title of the pull request
-        if: github.event_name == 'pull_request'
-        uses: ansys/actions/check-pr-title@v10
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          use-upper-case: true
-      - name: Check the title of the pull request
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: echo "::notice::Skipping PR title check for non-PR events"
+          dev-mode: ${{ github.ref != 'refs/heads/main' }}
 
   code-style:
     name: "Code style"
     runs-on: ubuntu-latest
-    needs: [pr-title]
+    needs: vulnerabilities
+    permissions:
+      contents: read
     steps:
-      - uses: ansys/actions/code-style@v10
+      - uses: ansys/actions/code-style@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
 
+  doc-style:
+    name: "Documentation style"
+    runs-on: ubuntu-latest
+    needs: vulnerabilities
+    permissions:
+      contents: read
+    steps:
+      - uses: ansys/actions/doc-style@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          vale-version: "3.4.1"
+
+  doc-build:
+    name: "Build documentation"
+    runs-on: [self-hosted, Windows, pyaedt-toolkit]
+    needs: doc-style
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Build documentation
+        uses: ansys/actions/doc-build@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          use-python-cache: false
+          add-pdf-html-docs-as-assets: true
+          check-links: false
+
+  smoke-tests:
+    name: "Build and Smoke tests"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+    runs-on: ${{ matrix.os }}
+    needs: [code-style, vulnerabilities]
+    permissions:
+      contents: read
+    steps:
+      - uses: ansys/actions/build-wheelhouse@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
+        with:
+          library-name: ${{ env.LIBRARY_NAME }}
+          operating-system: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+          whitelist-license-check: 'fpdf2 PySide6 PySide6_Addons PySide6_Essentials shiboken6'
+
   build-application-windows:
     name: "Build Application - Windows"
     runs-on: windows-latest
-    needs: [code-style]
+    needs: smoke-tests
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -126,8 +129,10 @@ jobs:
       - name: Debug build directory
         run: Get-ChildItem -Path build -Recurse | ForEach-Object { $_.FullName }
 
-      - name: Print NSIS version
-        run: makensis -VERSION
+      - name: Check NSIS version
+        shell: pwsh
+        run: |
+          & "C:\Program Files (x86)\NSIS\makensis.exe" /VERSION
 
       - name: Run NSIS
         shell: pwsh
@@ -138,12 +143,12 @@ jobs:
           if (!(Test-Path -Path "setup.nsi")) {
             Write-Error "setup.nsi not found"
           }
-          makensis setup.nsi
+          & "C:\Program Files (x86)\NSIS\makensis.exe" setup.nsi
 
       - name: List output
         run: ls -R dist
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: Antenna-Toolkit-Installer-windows
           path: dist/*.exe
@@ -151,15 +156,19 @@ jobs:
   build-application-linux-debian:
     strategy:
       matrix:
-        os: [ "24.04", "22.04"]
+        os: ["24.04", "22.04"]
       fail-fast: false
     name: "Build Application - Ubuntu ${{ matrix.os }}"
     runs-on: ubuntu-${{ matrix.os }}
-    needs: [code-style]
+    needs: smoke-tests
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -228,72 +237,37 @@ jobs:
           fpm -v $version --fpm-options-file installer/linux/debian/fpm-options-debian
 
       - name: Create zip file
+        env:
+          MATRIX_OS: ${{ matrix.os }}
         run: |
           cp installer/linux/debian/installer.sh installer.sh
           cp installer/linux/debian/postInstallScript.sh postInstallScript.sh
           chmod +x installer.sh postInstallScript.sh antenna_toolkit.deb
           version=$(cat ./installer/VERSION)
-          os_version_processed=$(echo "${{ matrix.os }}" | sed 's/\./_/g')
+          os_version_processed=$(echo "${MATRIX_OS}" | sed 's/\./_/g')
           zip_name="Antenna-Toolkit-Installer-ubuntu_${os_version_processed}.zip"
           echo "OS_VERSION_PROCESSED=${os_version_processed}" >> $GITHUB_ENV
           echo "APPLICATION_VERSION=v${version}" >> $GITHUB_ENV
           zip -r $zip_name antenna_toolkit.deb installer.sh postInstallScript.sh
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-           name: Antenna-Toolkit-Installer-ubuntu_${{ matrix.os }}
-           path: Antenna-Toolkit-Installer-ubuntu_${{ env.OS_VERSION_PROCESSED }}.zip
-
-  doc-style:
-    name: "Documentation style"
-    runs-on: ubuntu-latest
-    needs: [pr-title]
-    steps:
-      - uses: ansys/actions/doc-style@v10
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          vale-version: "3.4.1"
-
-  doc-build:
-    name: "Build documentation"
-    runs-on: [self-hosted, pyaedt, toolkits, Windows]
-    needs: [ doc-style ]
-    timeout-minutes: 30
-    steps:
-      - name: Build documentation
-        uses: ansys/actions/doc-build@v10
-        with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          use-python-cache: false
-          add-pdf-html-docs-as-assets: true
-          check-links: false
-
-  smoke-tests:
-    name: "Build and Smoke tests"
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ windows-latest, ubuntu-latest ]
-        python-version: ['3.10', '3.11', '3.12', '3.13']
-    runs-on: ${{ matrix.os }}
-    needs: [ code-style ]
-    steps:
-      - uses: ansys/actions/build-wheelhouse@v10
-        with:
-          library-name: ${{ env.LIBRARY_NAME }}
-          operating-system: ${{ matrix.os }}
-          python-version: ${{ matrix.python-version }}
-          whitelist-license-check: 'jeepney'
+          name: Antenna-Toolkit-Installer-ubuntu_${{ matrix.os }}
+          path: Antenna-Toolkit-Installer-ubuntu_${{ env.OS_VERSION_PROCESSED }}.zip
 
   tests_windows:
     name: "Windows Tests"
-    runs-on: [self-hosted, pyaedt, toolkits, Windows]
-    needs: [smoke-tests]
+    runs-on: [self-hosted, Windows, pyaedt-toolkit]
+    needs: smoke-tests
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -310,7 +284,7 @@ jobs:
           pip install .[tests]
 
       - name: Antenna models testing
-        timeout-minutes: 30
+        timeout-minutes: 60
         run: |
           .\.venv\Scripts\Activate.ps1
           pytest -v -m antenna_models_common_api --cov
@@ -335,15 +309,13 @@ jobs:
           python -m coverage xml -o .cov\windows-coverage.xml
 
       - name: "Upload coverage results"
-        if: ${{ matrix.python-version == env.MAIN_PYTHON_VERSION  }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           path: .cov/windows-coverage-html
           name: windows-html-coverage
 
       - name: "Upload coverage report to codecov"
-        if: ${{ matrix.python-version == env.MAIN_PYTHON_VERSION }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           name: windows-codecov-tests
           files: .cov/windows-coverage.xml
@@ -353,16 +325,20 @@ jobs:
 
   tests_linux:
     name: "Linux Tests"
-    runs-on: [self-hosted, pyaedt, toolkits, Linux]
-    needs: [ smoke-tests ]
+    runs-on: [self-hosted, Linux, pyaedt-toolkit]
+    needs: smoke-tests
+    permissions:
+      contents: read
     env:
-      ANSYSEM_ROOT251: '/opt/AnsysEM/v251/AnsysEM'
+      ANSYSEM_ROOT261: '/usr/ansys_inc/v261/AnsysEM'
       ANS_NODEPCHECK: '1'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -382,9 +358,8 @@ jobs:
           pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pytest-azurepipelines
 
       - name: Antenna models testing
-        timeout-minutes: 5
+        timeout-minutes: 60
         run: |
-          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT251 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_models_common_api
           pytest -v -m antenna_models_api
@@ -392,103 +367,35 @@ jobs:
       - name: Toolkit API testing
         timeout-minutes: 30
         run: |
-          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT251 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_api
 
       - name: Toolkit REST API testing
         timeout-minutes: 30
         run: |
-          export LD_LIBRARY_PATH=${{ env.ANSYSEM_ROOT251 }}/common/mono/Linux64/lib64:$LD_LIBRARY_PATH
           source .venv_linux/bin/activate
           pytest -v -m antenna_toolkit_rest_api
-
 
   build-library:
     name: "Build library artifacts"
     runs-on: ubuntu-latest
-    needs: [ doc-build, tests_windows, tests_linux ]
+    needs: [doc-build, tests_windows, tests_linux, build-application-windows, build-application-linux-debian]
+    permissions:
+      contents: read
     steps:
-      - uses: ansys/actions/build-library@v10
+      - uses: ansys/actions/build-library@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-
-  release:
-    name: "Release"
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-    needs: [build-library, build-application-windows, build-application-linux-debian]
-    runs-on: ubuntu-latest
-    # Specifying a GitHub environment is optional, but strongly encouraged
-    environment: release
-    permissions:
-      id-token: write
-      contents: write
-    steps:
-      - name: Download the library artifacts from build-library step
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: ${{ env.LIBRARY_NAME }}-artifacts
-          path: ${{ env.LIBRARY_NAME }}-artifacts
-
-      - name: Release to PyPI using trusted publisher
-        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
-        with:
-          repository-url: "https://upload.pypi.org/legacy/"
-          print-hash: true
-          packages-dir: ${{ env.LIBRARY_NAME }}-artifacts
-          skip-existing: false
-
-      - name: Release to GitHub
-        uses: ansys/actions/release-github@v10
-        with:
-          library-name: ${{ env.LIBRARY_NAME }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          generate_release_notes: false
-
-      - name: "Download all artifacts that got generated in the CI/CD"
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          path: /tmp/artifacts
-
-      - name: List artifacts
-        run: ls -R /tmp/artifacts
-
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            /tmp/artifacts/Antenna-Toolkit-Installer-windows/*.exe
-
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            /tmp/artifacts/Antenna-Toolkit-Installer-ubuntu_22.04/*.zip
-
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            /tmp/artifacts/Antenna-Toolkit-Installer-ubuntu_24.04/*.zip
 
   doc-deploy-dev:
     name: "Deploy development documentation"
     runs-on: ubuntu-latest
     needs: build-library
-    if: github.event_name == 'push'
+    permissions:
+      contents: write # Needed to update files on the gh-pages branch
     steps:
-      - uses: ansys/actions/doc-deploy-dev@v10
-        with:
-          cname: ${{ env.DOCUMENTATION_CNAME }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
-          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
-
-  doc-deploy-stable:
-    name: "Deploy stable documentation"
-    runs-on: ubuntu-latest
-    needs: release
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-    steps:
-      - uses: ansys/actions/doc-deploy-stable@v10
+      - uses: ansys/actions/doc-deploy-dev@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}

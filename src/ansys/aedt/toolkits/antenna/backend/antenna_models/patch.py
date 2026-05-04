@@ -26,10 +26,9 @@ import math
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
-from ansys.aedt.toolkits.common.backend.logger_handler import logger
-
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
 
 
 class CommonPatch(CommonAntenna):
@@ -190,9 +189,9 @@ class RectangularPatchProbe(CommonPatch):
         """
         parameters = {}
         length_unit = self.length_unit
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
 
         if self._app and (
             self.material in self._app.materials.mat_names_aedt
@@ -208,33 +207,33 @@ class RectangularPatchProbe(CommonPatch):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(permittivity)
+        sub_permittivity = float(permittivity)
 
         sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
-        patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((subPermittivity + 1.0) / 2.0))
+        patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((sub_permittivity + 1.0) / 2.0))
 
-        eff_Permittivity = (subPermittivity + 1.0) / 2.0 + (subPermittivity - 1.0) / 2.0 * math.pow(
+        eff_permittivity = (sub_permittivity + 1.0) / 2.0 + (sub_permittivity - 1.0) / 2.0 * math.pow(
             1.0 + 12.0 * sub_meters / patch_width, -0.5
         )
 
-        effective_length = 3.0e8 / (2.0 * freq_hz * math.sqrt(eff_Permittivity))
+        effective_length = 3.0e8 / (2.0 * freq_hz * math.sqrt(eff_permittivity))
 
-        top = (eff_Permittivity + 0.3) * (patch_width / sub_meters + 0.264)
-        bottom = (eff_Permittivity - 0.258) * (patch_width / sub_meters + 0.8)
+        top = (eff_permittivity + 0.3) * (patch_width / sub_meters + 0.264)
+        bottom = (eff_permittivity - 0.258) * (patch_width / sub_meters + 0.8)
 
         delta_length = 0.412 * sub_meters * top / bottom
 
         patch_length = effective_length - 2.0 * delta_length
 
-        # eff_WL_meters = wavelength / math.sqrt(eff_Permittivity)
+        # eff_WL_meters = wavelength / math.sqrt(eff_permittivity)
 
-        k = 2.0 * math.pi / eff_Permittivity
-        G = math.pi * patch_width / (120.0 * math.pi * wavelength) * (1.0 - math.pow(k * sub_meters, 2) / 24)
+        k = 2.0 * math.pi / eff_permittivity
+        g = math.pi * patch_width / (120.0 * math.pi * wavelength) * (1.0 - math.pow(k * sub_meters, 2) / 24)
 
         # impedance at edge of patch
-        Res = 1.0 / (2.0 * G)
-        offset_pin_pos = patch_length / math.pi * math.asin(math.sqrt(50.0 / Res))
+        res = 1.0 / (2.0 * g)
+        offset_pin_pos = patch_length / math.pi * math.asin(math.sqrt(50.0 / res))
 
         patch_x = constants.unit_converter(patch_width, "Length", "meter", length_unit)
         parameters["patch_x"] = patch_x
@@ -278,16 +277,19 @@ class RectangularPatchProbe(CommonPatch):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw rectangular patch antenna with coaxial probe.
-        Once the antenna is created, this method will not be used anymore."""
+        """
+        Draw rectangular patch antenna with coaxial probe.
+
+        Once the antenna is created, this method will not be used anymore.
+        """
         if self.object_list:
             logger.debug("This antenna already exists")
             return False
@@ -328,10 +330,10 @@ class RectangularPatchProbe(CommonPatch):
             sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
-        sub.history().properties["Coordinate System"] = coordinate_system
 
         # Ground
         gnd = self._app.modeler.create_rectangle(
@@ -339,10 +341,10 @@ class RectangularPatchProbe(CommonPatch):
             origin=["-" + gnd_x + "/2", "-" + gnd_y + "/2", "0"],
             sizes=[gnd_x, gnd_y],
             name="gnd_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         gnd.color = (255, 128, 65)
         gnd.transparency = 0.1
-        gnd.history().properties["Coordinate System"] = coordinate_system
 
         # Antenna
         ant = self._app.modeler.create_rectangle(
@@ -354,16 +356,17 @@ class RectangularPatchProbe(CommonPatch):
             ],
             sizes=[patch_x, patch_y],
             name="ant_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         ant.color = (255, 128, 65)
         ant.transparency = 0.1
-        ant.history().properties["Coordinate System"] = coordinate_system
 
         void = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=[feed_x, feed_y, "0"],
             radius=coax_outer_rad,
             name="void_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
 
         self._app.modeler.subtract(gnd, void, False)
@@ -375,9 +378,9 @@ class RectangularPatchProbe(CommonPatch):
             height=sub_h,
             name="feed_pin_" + antenna_name,
             material="pec",
+            new_properties={"Coordinate System": coordinate_system},
         )
         feed_pin.color = (255, 128, 65)
-        feed_pin.history().properties["Coordinate System"] = coordinate_system
 
         feed_coax = self._app.modeler.create_cylinder(
             orientation=2,
@@ -386,9 +389,9 @@ class RectangularPatchProbe(CommonPatch):
             height="-" + feed_length,
             name="feed_coax_" + antenna_name,
             material="pec",
+            new_properties={"Coordinate System": coordinate_system},
         )
         feed_coax.color = (255, 128, 65)
-        feed_coax.history().properties["Coordinate System"] = coordinate_system
 
         coax = self._app.modeler.create_cylinder(
             orientation=2,
@@ -397,9 +400,9 @@ class RectangularPatchProbe(CommonPatch):
             height="-" + feed_length,
             name="coax_" + antenna_name,
             material="Teflon (tm)",
+            new_properties={"Coordinate System": coordinate_system},
         )
         coax.color = (128, 255, 255)
-        coax.history().properties["Coordinate System"] = coordinate_system
 
         port_cap = self._app.modeler.create_cylinder(
             orientation=2,
@@ -408,18 +411,18 @@ class RectangularPatchProbe(CommonPatch):
             height="-" + sub_h + "/" + str(10),
             name="port_cap_" + antenna_name,
             material="pec",
+            new_properties={"Coordinate System": coordinate_system},
         )
         port_cap.color = (132, 132, 193)
-        port_cap.history().properties["Coordinate System"] = coordinate_system
 
         p1 = self._app.modeler.create_circle(
-            cs_plane=2,
+            orientation=2,
             origin=[feed_x, feed_y, "-" + feed_length],
             radius=coax_outer_rad,
             name="port_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         p1.color = (128, 0, 0)
-        p1.history().properties["Coordinate System"] = coordinate_system
 
         self.object_list[sub.name] = sub
         self.object_list[gnd.name] = gnd
@@ -440,6 +443,8 @@ class RectangularPatchProbe(CommonPatch):
         coax.group_name = antenna_name
         port_cap.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -529,9 +534,9 @@ class RectangularPatchInset(CommonPatch):
         """
         parameters = {}
         length_unit = self.length_unit
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
 
         if self._app and (
             self.material in self._app.materials.mat_names_aedt
@@ -547,40 +552,40 @@ class RectangularPatchInset(CommonPatch):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(permittivity)
+        sub_permittivity = float(permittivity)
 
-        patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((subPermittivity + 1.0) / 2.0))
+        patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((sub_permittivity + 1.0) / 2.0))
 
         sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
-        eff_Permittivity = (subPermittivity + 1.0) / 2.0 + (subPermittivity - 1.0) / 2.0 * math.pow(
+        eff_permittivity = (sub_permittivity + 1.0) / 2.0 + (sub_permittivity - 1.0) / 2.0 * math.pow(
             1.0 + 12.0 * sub_meters / patch_width, -0.5
         )
 
-        effective_length = 3.0e8 / (2.0 * freq_hz * math.sqrt(eff_Permittivity))
+        effective_length = 3.0e8 / (2.0 * freq_hz * math.sqrt(eff_permittivity))
 
-        top = (eff_Permittivity + 0.3) * (patch_width / sub_meters + 0.264)
-        bottom = (eff_Permittivity - 0.258) * (patch_width / sub_meters + 0.8)
+        top = (eff_permittivity + 0.3) * (patch_width / sub_meters + 0.264)
+        bottom = (eff_permittivity - 0.258) * (patch_width / sub_meters + 0.8)
 
         delta_length = 0.412 * sub_meters * top / bottom
 
         patch_length = effective_length - 2.0 * delta_length
 
-        # eff_WL_meters = wavelength / math.sqrt(eff_Permittivity)
+        # eff_WL_meters = wavelength / math.sqrt(eff_permittivity)
 
-        k = 2.0 * math.pi / eff_Permittivity
-        G = math.pi * patch_width / (120.0 * math.pi * wavelength) * (1.0 - math.pow(k * sub_meters, 2) / 24)
+        k = 2.0 * math.pi / eff_permittivity
+        g = math.pi * patch_width / (120.0 * math.pi * wavelength) * (1.0 - math.pow(k * sub_meters, 2) / 24)
 
         # impedance at edge of patch
-        Res = 1.0 / (2.0 * G)
-        inset_distance_meter = patch_length / math.pi * math.asin(math.sqrt(50.0 / Res))
+        res = 1.0 / (2.0 * g)
+        inset_distance_meter = patch_length / math.pi * math.asin(math.sqrt(50.0 / res))
 
-        # quarterwave_imped = math.sqrt(50.0 * Res)
+        # quarterwave_imped = math.sqrt(50.0 * res)
 
-        uStrip = self._transmission_line_calculator.microstrip_calculator(sub_meters, subPermittivity, 50.0, 150.0)
+        u_strip = self._transmission_line_calculator.microstrip_calculator(sub_meters, sub_permittivity, 50.0, 150.0)
 
-        microstrip_width = uStrip[0]
-        microstrip_length = uStrip[1]
+        microstrip_width = u_strip[0]
+        microstrip_length = u_strip[1]
 
         patch_x = constants.unit_converter(patch_width, "Length", "meter", length_unit)
         parameters["patch_x"] = patch_x
@@ -620,9 +625,9 @@ class RectangularPatchInset(CommonPatch):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -630,7 +635,8 @@ class RectangularPatchInset(CommonPatch):
     def model_hfss(self):
         """Draw a rectangular patch antenna inset fed.
 
-        Once the antenna is created, this method is not used anymore."""
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
             return False
@@ -668,10 +674,10 @@ class RectangularPatchInset(CommonPatch):
             sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
-        sub.history().properties["Coordinate System"] = coordinate_system
 
         # Ground
         gnd = self._app.modeler.create_rectangle(
@@ -679,10 +685,10 @@ class RectangularPatchInset(CommonPatch):
             origin=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
             sizes=[sub_x, sub_y],
             name="gnd_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         gnd.color = (255, 128, 65)
         gnd.transparency = 0.1
-        gnd.history().properties["Coordinate System"] = coordinate_system
 
         # Antenna
         ant = self._app.modeler.create_rectangle(
@@ -694,10 +700,10 @@ class RectangularPatchInset(CommonPatch):
             ],
             sizes=[patch_x, patch_y],
             name="ant_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         ant.color = (255, 128, 65)
         ant.transparency = 0.1
-        ant.history().properties["Coordinate System"] = coordinate_system
 
         cutout = self._app.modeler.create_rectangle(
             orientation=2,
@@ -708,9 +714,9 @@ class RectangularPatchInset(CommonPatch):
             ],
             sizes=[feed_width + "+2*" + inset_gap, feed_length],
             name="cutout_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         cutout.color = (255, 128, 65)
-        cutout.history().properties["Coordinate System"] = coordinate_system
 
         self._app.modeler.subtract(ant, cutout, False)
 
@@ -718,14 +724,14 @@ class RectangularPatchInset(CommonPatch):
             orientation=2,
             origin=[
                 "-" + feed_width + "/2",
-                patch_y + "/2" "-" + inset_distance,
+                patch_y + "/2-" + inset_distance,
                 sub_h,
             ],
             sizes=[feed_width, feed_length + "+" + inset_distance],
             name="feed_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         feed.color = (255, 128, 65)
-        feed.history().properties["Coordinate System"] = coordinate_system
 
         self._app.modeler.unite([ant, feed])
 
@@ -738,9 +744,9 @@ class RectangularPatchInset(CommonPatch):
             ],
             sizes=[sub_h, feed_width],
             name="port_lump_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         p1.color = (255, 128, 65)
-        p1.history().properties["Coordinate System"] = coordinate_system
 
         self.object_list[sub.name] = sub
         self.object_list[gnd.name] = gnd
@@ -753,6 +759,8 @@ class RectangularPatchInset(CommonPatch):
         gnd.group_name = antenna_name
         ant.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -842,9 +850,9 @@ class RectangularPatchEdge(CommonPatch):
         """
         parameters = {}
         length_unit = self.length_unit
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
 
         if self._app and (
             self.material in self._app.materials.mat_names_aedt
@@ -860,47 +868,47 @@ class RectangularPatchEdge(CommonPatch):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(permittivity)
+        sub_permittivity = float(permittivity)
 
-        patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((subPermittivity + 1.0) / 2.0))
+        patch_width = 3.0e8 / ((2.0 * freq_hz) * math.sqrt((sub_permittivity + 1.0) / 2.0))
 
         sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
-        eff_Permittivity = (subPermittivity + 1.0) / 2.0 + (subPermittivity - 1.0) / 2.0 * math.pow(
+        eff_permittivity = (sub_permittivity + 1.0) / 2.0 + (sub_permittivity - 1.0) / 2.0 * math.pow(
             1.0 + 12.0 * sub_meters / patch_width, -0.5
         )
 
-        effective_length = 3.0e8 / (2.0 * freq_hz * math.sqrt(eff_Permittivity))
+        effective_length = 3.0e8 / (2.0 * freq_hz * math.sqrt(eff_permittivity))
 
-        top = (eff_Permittivity + 0.3) * (patch_width / sub_meters + 0.264)
-        bottom = (eff_Permittivity - 0.258) * (patch_width / sub_meters + 0.8)
+        top = (eff_permittivity + 0.3) * (patch_width / sub_meters + 0.264)
+        bottom = (eff_permittivity - 0.258) * (patch_width / sub_meters + 0.8)
 
         delta_length = 0.412 * sub_meters * top / bottom
 
         patch_length = effective_length - 2.0 * delta_length
 
-        # eff_WL_meters = wavelength / math.sqrt(eff_Permittivity)
+        # eff_WL_meters = wavelength / math.sqrt(eff_permittivity)
 
-        k = 2.0 * math.pi / eff_Permittivity
-        G = math.pi * patch_width / (120.0 * math.pi * wavelength) * (1.0 - math.pow(k * sub_meters, 2) / 24)
+        k = 2.0 * math.pi / eff_permittivity
+        g = math.pi * patch_width / (120.0 * math.pi * wavelength) * (1.0 - math.pow(k * sub_meters, 2) / 24)
 
         # impedance at edge of patch
-        Res = 1.0 / (2.0 * G)
-        # offset_pin_pos = patch_length / math.pi * math.asin(math.sqrt(50.0 / Res))
+        res = 1.0 / (2.0 * g)
+        # offset_pin_pos = patch_length / math.pi * math.asin(math.sqrt(50.0 / res))
 
-        quarterwave_imped = math.sqrt(50.0 * Res)
+        quarterwave_imped = math.sqrt(50.0 * res)
 
-        uStrip1 = self._transmission_line_calculator.microstrip_calculator(
-            sub_meters, subPermittivity, quarterwave_imped, 90.0
+        u_strip1 = self._transmission_line_calculator.microstrip_calculator(
+            sub_meters, sub_permittivity, quarterwave_imped, 90.0
         )
 
-        microstrip_edge_width = uStrip1[0]
-        microstrip_edge_length = uStrip1[1]
+        microstrip_edge_width = u_strip1[0]
+        microstrip_edge_length = u_strip1[1]
 
-        uStrip2 = self._transmission_line_calculator.microstrip_calculator(sub_meters, subPermittivity, 50.0, 150.0)
+        u_strip2 = self._transmission_line_calculator.microstrip_calculator(sub_meters, sub_permittivity, 50.0, 150.0)
 
-        microstrip_width = uStrip2[0]
-        microstrip_length = uStrip2[1]
+        microstrip_width = u_strip2[0]
+        microstrip_length = u_strip2[1]
 
         patch_x = constants.unit_converter(patch_width, "Length", "meter", length_unit)
         parameters["patch_x"] = patch_x
@@ -940,9 +948,9 @@ class RectangularPatchEdge(CommonPatch):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -950,7 +958,8 @@ class RectangularPatchEdge(CommonPatch):
     def model_hfss(self):
         """Draw a rectangular patch edge antenna inset fed.
 
-        Once the antenna is created, this method is not used anymore."""
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             self._app.logger.warning("This antenna already exists.")
             return False
@@ -988,10 +997,10 @@ class RectangularPatchEdge(CommonPatch):
             sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
-        sub.history().properties["Coordinate System"] = coordinate_system
 
         # Ground
         gnd = self._app.modeler.create_rectangle(
@@ -999,10 +1008,10 @@ class RectangularPatchEdge(CommonPatch):
             origin=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
             sizes=[sub_x, sub_y],
             name="gnd_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         gnd.color = (255, 128, 65)
         gnd.transparency = 0.1
-        gnd.history().properties["Coordinate System"] = coordinate_system
 
         # Antenna
         ant = self._app.modeler.create_rectangle(
@@ -1014,10 +1023,10 @@ class RectangularPatchEdge(CommonPatch):
             ],
             sizes=[patch_x, patch_y],
             name="ant_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         ant.color = (255, 128, 65)
         ant.transparency = 0.1
-        ant.history().properties["Coordinate System"] = coordinate_system
 
         edge_feed = self._app.modeler.create_rectangle(
             orientation=2,
@@ -1028,9 +1037,9 @@ class RectangularPatchEdge(CommonPatch):
             ],
             sizes=[edge_feed_width, patch_y + "/2" + "+" + edge_feed_length],
             name="cutout_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         edge_feed.color = (255, 128, 65)
-        edge_feed.history().properties["Coordinate System"] = coordinate_system
 
         feed = self._app.modeler.create_rectangle(
             orientation=2,
@@ -1041,9 +1050,9 @@ class RectangularPatchEdge(CommonPatch):
             ],
             sizes=[feed_width, feed_length],
             name="feed_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         feed.color = (255, 128, 65)
-        feed.history().properties["Coordinate System"] = coordinate_system
 
         self._app.modeler.unite([ant, edge_feed, feed])
 
@@ -1056,9 +1065,9 @@ class RectangularPatchEdge(CommonPatch):
             ],
             sizes=[sub_h, feed_width],
             name="port_lump_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         p1.color = (255, 128, 65)
-        p1.history().properties["Coordinate System"] = coordinate_system
 
         self.object_list[sub.name] = sub
         self.object_list[gnd.name] = gnd
@@ -1071,6 +1080,8 @@ class RectangularPatchEdge(CommonPatch):
         gnd.group_name = antenna_name
         ant.group_name = antenna_name
         p1.group_name = antenna_name
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):

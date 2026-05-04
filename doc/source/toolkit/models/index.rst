@@ -10,6 +10,7 @@ The Antenna API contains classes for all antenna types available in the toolkit:
    bowtie
    common
    conical_spiral
+   custom
    helix
    horn
    patch

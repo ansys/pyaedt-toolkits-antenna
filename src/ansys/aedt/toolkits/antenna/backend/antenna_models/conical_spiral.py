@@ -26,9 +26,8 @@ import math
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
-from ansys.aedt.toolkits.common.backend.logger_handler import logger
-
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
 
 
 class CommonConicalSpiral(CommonAntenna):
@@ -161,10 +160,16 @@ class Archimedean(CommonConicalSpiral):
     >>> from ansys.aedt.core import Hfss
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Archimedean
     >>> hfss = Hfss()
-    >>> antenna = Archimedean(hfss, start_frequency=20.0,
-    ...                              stop_frequency=50.0, frequency_unit="GHz",
-    ...                              outer_boundary='Radiation', length_unit="mm",
-    ...                              antenna_name="Archimedean", origin=[1, 100, 50])
+    >>> antenna = Archimedean(
+    ...     hfss,
+    ...     start_frequency=20.0,
+    ...     stop_frequency=50.0,
+    ...     frequency_unit="GHz",
+    ...     outer_boundary="Radiation",
+    ...     length_unit="mm",
+    ...     antenna_name="Archimedean",
+    ...     origin=[1, 100, 50],
+    ... )
     >>> antenna.model_hfss()
     >>> antenna.setup_hfss()
     >>> hfss.release_desktop(False, False)
@@ -200,7 +205,7 @@ class Archimedean(CommonConicalSpiral):
             Analytical parameters.
         """
         parameters = {}
-        lightSpeed = constants.SpeedOfLight
+        light_speed = constants.SpeedOfLight
         start_freq_hz = constants.unit_converter(self.start_frequency, "Freq", self.frequency_unit, "Hz")
         stop_freq_hz = constants.unit_converter(self.stop_frequency, "Freq", self.frequency_unit, "Hz")
 
@@ -211,10 +216,10 @@ class Archimedean(CommonConicalSpiral):
         arms = 2
         port_extension = 0.1
 
-        outer_rad_calc = lightSpeed / (2 * math.pi * start_freq_hz)
+        outer_rad_calc = light_speed / (2 * math.pi * start_freq_hz)
         outer_rad_calc = constants.unit_converter(outer_rad_calc, "Length", "meter", self.length_unit)
         outer_rad_calc_cm = constants.unit_converter(outer_rad_calc, "Length", self.length_unit, "cm")
-        inner_rad_calc = lightSpeed / (2 * math.pi * stop_freq_hz)
+        inner_rad_calc = light_speed / (2 * math.pi * stop_freq_hz)
         inner_rad = constants.unit_converter(inner_rad_calc, "Length", "meter", self.length_unit)
         inner_rad_cm = constants.unit_converter(inner_rad, "Length", self.length_unit, "cm")
         port_extension = constants.unit_converter(port_extension, "Length", "cm", self.length_unit)
@@ -233,9 +238,9 @@ class Archimedean(CommonConicalSpiral):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -283,34 +288,36 @@ class Archimedean(CommonConicalSpiral):
         antenna_name = self.name
         coordinate_system = self.coordinate_system
 
-        my_udmPairs = []
+        self._app.modeler.set_working_coordinate_system(coordinate_system)
+
+        my_udm_pairs = []
         mypair = ["NumberOfPoints", points]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["NumberOfArms", arms]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["InnerRadius", inner_rad]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["NumberOfTurns", turns]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["Offset", offset_angle]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["ConeHeight", cone_height]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["ExpansionCoefficient", expansion_coefficient]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["SpiralCoefficient", spiral_coefficient]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["Port_Extension", port_extension]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         obj_udm = self._app.modeler.create_udm(
-            udmfullname="HFSS/Antenna Toolkit/Spiral/Archimedean.py",
-            udm_params_list=my_udmPairs,
-            udm_library="syslib",
+            udm_full_name="HFSS/Antenna Toolkit/Spiral/Archimedean.py",
+            parameters=my_udm_pairs,
+            library="syslib",
             name="archimidean",
         )
         for part in obj_udm.parts:
             comp = obj_udm.parts[part]
-            comp.history().properties["Coordinate System"] = coordinate_system
+
             if "AntennaArm" in comp.name:
                 comp.name = "ant_" + comp.name + antenna_name
             else:
@@ -321,6 +328,8 @@ class Archimedean(CommonConicalSpiral):
         obj_udm.move([pos_x, pos_y, pos_z])
 
         obj_udm.group_name = antenna_name
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -370,10 +379,16 @@ class Log(CommonConicalSpiral):
     >>> from ansys.aedt.core import Hfss
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log
     >>> hfss = Hfss()
-    >>> antenna = Log(hfss, start_frequency=20.0,
-    ...                              stop_frequency=50.0, frequency_unit="GHz",
-    ...                              outer_boundary='Radiation', length_unit="mm",
-    ...                              antenna_name="Log", origin=[1, 100, 50])
+    >>> antenna = Log(
+    ...     hfss,
+    ...     start_frequency=20.0,
+    ...     stop_frequency=50.0,
+    ...     frequency_unit="GHz",
+    ...     outer_boundary="Radiation",
+    ...     length_unit="mm",
+    ...     antenna_name="Log",
+    ...     origin=[1, 100, 50],
+    ... )
     >>> antenna.model_hfss()
     >>> antenna.setup_hfss()
     >>> hfss.release_desktop(False, False)
@@ -437,9 +452,9 @@ class Log(CommonConicalSpiral):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -447,8 +462,8 @@ class Log(CommonConicalSpiral):
     def model_hfss(self):
         """Draw a conical log spiral antenna. This method uses the User Defined Model from AEDT installation.
 
-        Once the antenna is created, this method is not used anymore."""
-
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             logger.debug("This antenna already exists")
             return False
@@ -484,30 +499,32 @@ class Log(CommonConicalSpiral):
         antenna_name = self.name
         coordinate_system = self.coordinate_system
 
-        my_udmPairs = []
+        self._app.modeler.set_working_coordinate_system(coordinate_system)
+
+        my_udm_pairs = []
         mypair = ["NumberOfPoints", points]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["NumberOfArms", arms]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["InnerRadius", inner_rad]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["NumberOfTurns", turns]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["Offset", offset_angle]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["ConeHeight", cone_height]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["ExpansionCoefficient", expansion_coefficient]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         obj_udm = self._app.modeler.create_udm(
-            udmfullname="HFSS/Antenna Toolkit/Spiral/Log.py",
-            udm_params_list=my_udmPairs,
-            udm_library="syslib",
+            udm_full_name="HFSS/Antenna Toolkit/Spiral/Log.py",
+            parameters=my_udm_pairs,
+            library="syslib",
             name="log",
         )
         for part in obj_udm.parts:
             comp = obj_udm.parts[part]
-            comp.history().properties["Coordinate System"] = coordinate_system
+
             if "AntennaArm" in comp.name:
                 comp.name = "ant_" + comp.name + antenna_name
             else:
@@ -518,6 +535,8 @@ class Log(CommonConicalSpiral):
         obj_udm.move([pos_x, pos_y, pos_z])
 
         obj_udm.group_name = antenna_name
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -567,10 +586,16 @@ class Sinuous(CommonConicalSpiral):
     >>> from ansys.aedt.core import Hfss
     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous
     >>> hfss = Hfss()
-    >>> antenna = Archimedean(hfss, start_frequency=20.0,
-    ...                              stop_frequency=50.0, frequency_unit="GHz",
-    ...                              outer_boundary='Radiation', length_unit="cm",
-    ...                              antenna_name="Sinuous", origin=[1, 100, 50])
+    >>> antenna = Archimedean(
+    ...     hfss,
+    ...     start_frequency=20.0,
+    ...     stop_frequency=50.0,
+    ...     frequency_unit="GHz",
+    ...     outer_boundary="Radiation",
+    ...     length_unit="cm",
+    ...     antenna_name="Sinuous",
+    ...     origin=[1, 100, 50],
+    ... )
     >>> antenna.model_hfss()
     >>> antenna.setup_hfss()
     >>> hfss.release_desktop(False, False)
@@ -606,7 +631,7 @@ class Sinuous(CommonConicalSpiral):
             Analytical parameters.
         """
         parameters = {}
-        lightSpeed = constants.SpeedOfLight
+        light_speed = constants.SpeedOfLight
         start_freq_hz = constants.unit_converter(self.start_frequency, "Freq", self.frequency_unit, "Hz")
         stop_freq_hz = constants.unit_converter(self.stop_frequency, "Freq", self.frequency_unit, "Hz")
 
@@ -619,12 +644,12 @@ class Sinuous(CommonConicalSpiral):
         arms = 4
 
         outer_rad_calc = (
-            scale_factor * lightSpeed / start_freq_hz / 4.0 / (math.radians(alpha_angle) + math.radians(delta_angle))
+            scale_factor * light_speed / start_freq_hz / 4.0 / (math.radians(alpha_angle) + math.radians(delta_angle))
         )
         outer_rad = constants.unit_converter(outer_rad_calc, "Length", "meter", self.length_unit)
         inner_rad_calc = (
             scale_factor
-            * lightSpeed
+            * light_speed
             / stop_freq_hz
             / 4.0
             / 2.0
@@ -647,9 +672,9 @@ class Sinuous(CommonConicalSpiral):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -657,8 +682,8 @@ class Sinuous(CommonConicalSpiral):
     def model_hfss(self):
         """Draw a sinuous log spiral antenna. This method uses the User Defined Model from AEDT installation.
 
-        Once the antenna is created, this method is not used anymore."""
-
+        Once the antenna is created, this method is not used anymore.
+        """
         if self.object_list:
             logger.debug("This antenna already exists")
             return False
@@ -697,36 +722,38 @@ class Sinuous(CommonConicalSpiral):
         antenna_name = self.name
         coordinate_system = self.coordinate_system
 
-        my_udmPairs = []
+        self._app.modeler.set_working_coordinate_system(coordinate_system)
+
+        my_udm_pairs = []
         mypair = ["NumberOfPoints", points]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["NumberOfCells", cell_number]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["Alpha", alpha_angle]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["GrowRate", growth_rate]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["OuterRadius", outer_rad]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["Delta", delta_angle]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["NumberOfArms", arms]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["ConeHeight", cone_height]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         mypair = ["Port_Extension", port_extension]
-        my_udmPairs.append(mypair)
+        my_udm_pairs.append(mypair)
         obj_udm = self._app.modeler.create_udm(
-            udmfullname="HFSS/Antenna Toolkit/Spiral/Sinuous.py",
-            udm_params_list=my_udmPairs,
-            udm_library="syslib",
+            udm_full_name="HFSS/Antenna Toolkit/Spiral/Sinuous.py",
+            parameters=my_udm_pairs,
+            library="syslib",
             name="log",
         )
         port_cont = 1
         gnd_cont = 1
         for part in obj_udm.parts:
             comp = obj_udm.parts[part]
-            comp.history().properties["Coordinate System"] = coordinate_system
+
             if "AntennaArm" in comp.name:
                 comp.name = "ant_" + comp.name + antenna_name
             elif "Port" in comp.name:
@@ -741,6 +768,8 @@ class Sinuous(CommonConicalSpiral):
         obj_udm.move([pos_x, pos_y, pos_z])
 
         obj_udm.group_name = antenna_name
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):

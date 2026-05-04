@@ -20,36 +20,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from PySide6.QtCore import QThread
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QComboBox
-from PySide6.QtWidgets import QLabel
-from PySide6.QtWidgets import QLineEdit
-from PySide6.QtWidgets import QVBoxLayout
-from PySide6.QtWidgets import QHBoxLayout
-from PySide6.QtWidgets import QGridLayout
-from PySide6.QtWidgets import QWidget
-from PySide6.QtWidgets import QScrollArea
-from PySide6.QtWidgets import QSizePolicy
-from PySide6.QtWidgets import QSpacerItem
-from PySide6.QtWidgets import QCheckBox
-from PySide6.QtGui import QPixmap
-from PySide6.QtGui import QFont
-from PySide6.QtCore import Signal
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame
-
-from pyvistaqt import BackgroundPlotter
-import pyvista as pv
-import pyqtgraph as pg
+from pathlib import Path
 
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
+import pyqtgraph as pg
+from PySide6.QtCore import Qt
+from PySide6.QtCore import QThread
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import QCheckBox
+from PySide6.QtWidgets import QFrame
+from PySide6.QtWidgets import QHBoxLayout
+from PySide6.QtWidgets import QLabel
+from PySide6.QtWidgets import QLineEdit
+from PySide6.QtWidgets import QSizePolicy
+from PySide6.QtWidgets import QSpacerItem
+from PySide6.QtWidgets import QVBoxLayout
+from PySide6.QtWidgets import QWidget
+import pyvista as pv
+from pyvistaqt import BackgroundPlotter
 
-from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_page import Ui_AntennaResults
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_column import Ui_LeftColumn
-
-import os
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_page import Ui_AntennaResults
 
 
 class GetResultsThread(QThread):
@@ -128,8 +121,6 @@ class AntennaResultsMenu(object):
         # Modify theme
         app_color = self.main_window.ui.themes["app_color"]
         text_font_size = self.main_window.properties.font["text_size"]
-        title_font_size = self.main_window.properties.font["title_size"]
-
         # Column
 
         layout_row_obj = QVBoxLayout()
@@ -238,7 +229,7 @@ class AntennaResultsMenu(object):
         # 3D
         self.farfield_3d_plotter = BackgroundPlotter(show=False)
         self.farfield_3d_plotter.set_background(color=self.main_window.ui.themes["app_color"]["bg_one"])
-        logo_path = os.path.join(os.path.dirname(__file__), "ANSYS_logo.obj")
+        logo_path = Path(__file__).parent / "ANSYS_logo.obj"
         cad_mesh = pv.read(logo_path)
         self.cad_actor = self.farfield_3d_plotter.add_mesh(cad_mesh)
         self.farfield_3d_plotter.view_xy()
@@ -337,7 +328,8 @@ class AntennaResultsMenu(object):
                 rgb_tuple = tuple(int(background_hex[i:i + 2], 16) for i in (0, 2, 4))
                 self.farfield_3d_plotter.clear()
                 self.farfield_data.plot_3d(pyvista_object=self.farfield_3d_plotter,
-                                           background=rgb_tuple)
+                                           background=rgb_tuple, show=False)
+                self.farfield_data.show()
         except Exception as e:
             self.ui.update_logger("Far field results can not be obtained")
             self.ui.update_logger("An error occurred:{}".format(e))

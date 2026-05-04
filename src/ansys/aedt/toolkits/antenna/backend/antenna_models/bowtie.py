@@ -25,8 +25,9 @@ from collections import OrderedDict
 import math
 
 import ansys.aedt.core.generic.constants as constants
+from ansys.aedt.core.generic.constants import Axis
+from ansys.aedt.core.generic.constants import Plane
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
-
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import CommonPatch
 
@@ -110,9 +111,9 @@ class BowTieNormal(CommonPatch):
             Analytical parameters.
         """
         parameters = {}
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
 
         if self._app and (
             self.material in self._app.materials.mat_names_aedt
@@ -128,14 +129,14 @@ class BowTieNormal(CommonPatch):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(permittivity)
+        sub_permittivity = float(permittivity)
 
         sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         tl = TransmissionLine()
-        eff_Permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, subPermittivity)
+        eff_permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, sub_permittivity)
 
-        eff_wl_meters = wavelength / math.sqrt(eff_Permittivity)
+        eff_wl_meters = wavelength / math.sqrt(eff_permittivity)
         eff_wl_working_units = constants.unit_converter(eff_wl_meters, output_units=self.length_unit)
         correction_factor = 0.65
         arm_length = correction_factor * math.sqrt(
@@ -158,9 +159,9 @@ class BowTieNormal(CommonPatch):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -205,34 +206,42 @@ class BowTieNormal(CommonPatch):
             sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
-        sub.history().properties["Coordinate System"] = coordinate_system
+
         array_points = [["{}/2".format(inner_width), "{}/2".format(port_gap), 0]]
         array_points.append(["-{}/2".format(inner_width), "{}/2".format(port_gap), 0])
         array_points.append(["-{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0])
         array_points.append(["{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0])
         array_points.append(["{}/2".format(inner_width), "{}/2".format(port_gap), 0])
         ant = self._app.modeler.create_polyline(array_points, cover_surface=True, name="ant_arm")
+
+        # Set coordinate system of polyline
+        ant_obj = self._app.get_oo_object(self._app.oeditor, ant.name)
+        self._app.set_oo_property_value(
+            aedt_object=ant_obj, object_name="CreatePolyline:1", prop_name="Coordinate System", value=coordinate_system
+        )
+
         ant.color = (255, 128, 65)
         ant.transparency = 0.1
-        ant.history().properties["Coordinate System"] = coordinate_system
+
         ant2_name = ant.duplicate_around_axis(
-            self._app.AXIS.Z,
+            Axis.Z,
             180,
             2,
         )[0]
         ant2 = self._app.modeler[ant2_name]
         ant2.transparency = 0.1
         p1 = self._app.modeler.create_rectangle(
-            orientation=self._app.PLANE.XY,
+            orientation=Plane.XY,
             origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             sizes=[inner_width, port_gap],
             name="port_lump_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         p1.color = (128, 0, 0)
-        p1.history().properties["Coordinate System"] = coordinate_system
 
         self._app.modeler.move([p1.name, ant2_name, ant.name], [0, 0, sub_h])
 
@@ -246,6 +255,8 @@ class BowTieNormal(CommonPatch):
         self.object_list[ant2.name] = ant2
         self.object_list[p1.name] = p1
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -338,9 +349,9 @@ class BowTieRounded(CommonPatch):
             Analytical parameters.
         """
         parameters = {}
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
 
         if self._app and (
             self.material in self._app.materials.mat_names_aedt
@@ -356,14 +367,14 @@ class BowTieRounded(CommonPatch):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(permittivity)
+        sub_permittivity = float(permittivity)
 
         sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         tl = TransmissionLine()
-        eff_Permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, subPermittivity)
+        eff_permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, sub_permittivity)
 
-        eff_wl_meters = wavelength / math.sqrt(eff_Permittivity)
+        eff_wl_meters = wavelength / math.sqrt(eff_permittivity)
         eff_wl_working_units = constants.unit_converter(eff_wl_meters, output_units=self.length_unit)
         correction_factor = 0.58
         arm_length = round(
@@ -390,9 +401,9 @@ class BowTieRounded(CommonPatch):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -438,10 +449,11 @@ class BowTieRounded(CommonPatch):
             sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
-        sub.history().properties["Coordinate System"] = coordinate_system
+
         array_points = [["{}/2".format(inner_width), "{}/2".format(port_gap), 0]]
         array_points.append(["-{}/2".format(inner_width), "{}/2".format(port_gap), 0])
         array_points.append(["-{}/2".format(outer_width), "{}/2.0+{}".format(port_gap, arm_length), 0.0])
@@ -451,29 +463,30 @@ class BowTieRounded(CommonPatch):
         y_val = "if({0}>={1}/2,{2}-{1}/2/tan(asin({1}/2/{0}))+{3}/2 ,{2})".format(
             outer_radius, outer_width, arm_length, port_gap
         )
-        round = self._app.modeler.create_circle(self._app.PLANE.XY, [0.0, y_val, 0.0], outer_radius)
+        round = self._app.modeler.create_circle(
+            orientation=Plane.XY,
+            origin=[0.0, y_val, 0.0],
+            radius=outer_radius,
+            new_properties={"Coordinate System": coordinate_system},
+        )
         round.move([0, "-{}-({}/2)".format(arm_length, port_gap), 0])
-        round.split(self._app.PLANE.ZX, "PositiveOnly")
+        round.split(Plane.ZX, "PositiveOnly")
         round.move([0, "{}+({}/2)".format(arm_length, port_gap), 0])
         ant.unite(round)
         ant.color = (255, 128, 65)
         ant.transparency = 0.1
-        ant.history().properties["Coordinate System"] = coordinate_system
-        ant2_name = ant.duplicate_around_axis(
-            self._app.AXIS.Z,
-            180,
-            2,
-        )[0]
+
+        ant2_name = ant.duplicate_around_axis(Axis.Z, 180, 2)[0]
         ant2 = self._app.modeler[ant2_name]
         ant2.transparency = 0.1
         p1 = self._app.modeler.create_rectangle(
-            orientation=self._app.PLANE.XY,
+            orientation=Plane.XY,
             origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             sizes=[inner_width, port_gap],
             name="port_lump_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         p1.color = (128, 0, 0)
-        p1.history().properties["Coordinate System"] = coordinate_system
 
         self._app.modeler.move([p1.name, ant2_name, ant.name], [0, 0, sub_h])
 
@@ -487,6 +500,8 @@ class BowTieRounded(CommonPatch):
         self.object_list[ant2.name] = ant2
         self.object_list[p1.name] = p1
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):
@@ -579,9 +594,9 @@ class BowTieSlot(CommonPatch):
             Analytical parameters.
         """
         parameters = {}
-        lightSpeed = constants.SpeedOfLight  # m/s
+        light_speed = constants.SpeedOfLight  # m/s
         freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-        wavelength = lightSpeed / freq_hz
+        wavelength = light_speed / freq_hz
 
         if self._app and (
             self.material in self._app.materials.mat_names_aedt
@@ -597,14 +612,14 @@ class BowTieSlot(CommonPatch):
             self._app.logger.warning("Material is not found. Create the material before assigning it.")
             return parameters
 
-        subPermittivity = float(permittivity)
+        sub_permittivity = float(permittivity)
 
         sub_meters = constants.unit_converter(self.substrate_height, "Length", self.length_unit, "meter")
 
         tl = TransmissionLine()
-        eff_Permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, subPermittivity)
+        eff_permittivity = tl.suspended_strip_calculator(wavelength, wavelength / 80.0, sub_meters, sub_permittivity)
 
-        eff_wl_meters = wavelength / math.sqrt(eff_Permittivity)
+        eff_wl_meters = wavelength / math.sqrt(eff_permittivity)
         eff_wl_working_units = constants.unit_converter(eff_wl_meters, output_units=self.length_unit)
         correction_factor = 1.275
         arm_length = round(
@@ -631,9 +646,9 @@ class BowTieSlot(CommonPatch):
         parameters["pos_y"] = self.origin[1]
         parameters["pos_z"] = self.origin[2]
 
-        myKeys = list(parameters.keys())
-        myKeys.sort()
-        parameters_out = OrderedDict([(i, parameters[i]) for i in myKeys])
+        my_keys = list(parameters.keys())
+        my_keys.sort()
+        parameters_out = OrderedDict([(i, parameters[i]) for i in my_keys])
 
         return parameters_out
 
@@ -679,30 +694,30 @@ class BowTieSlot(CommonPatch):
             sizes=[sub_x, sub_y, sub_h],
             name="sub_" + antenna_name,
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
-        sub.history().properties["Coordinate System"] = coordinate_system
 
         # Slot
         slot = self._app.modeler.create_rectangle(
-            orientation=self._app.PLANE.XY,
+            orientation=Plane.XY,
             origin=["-" + sub_x + "/2", "-" + sub_y + "/2", 0.0],
             sizes=[sub_x, sub_y],
             name="ant_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         slot.color = (0, 128, 0)
-        slot.history().properties["Coordinate System"] = coordinate_system
 
         # Inner Slot
         islot = self._app.modeler.create_rectangle(
-            orientation=self._app.PLANE.XY,
+            orientation=Plane.XY,
             origin=["-" + inner_width + "/2", "-" + port_gap + "/2", 0.0],
             sizes=[inner_width, port_gap],
             name="slot_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         islot.color = (0, 128, 0)
-        islot.history().properties["Coordinate System"] = coordinate_system
 
         array_points = [["-{}/2".format(inner_width), "{}/2".format(port_gap), "0"]]
         array_points.append(["{}/2".format(inner_width), "{}/2".format(port_gap), "0"])
@@ -715,58 +730,58 @@ class BowTieSlot(CommonPatch):
         self._app.modeler.connect([arm.name, inner.name])
 
         ant2_name = arm.duplicate_around_axis(
-            self._app.AXIS.Z,
+            Axis.Z,
             180,
             2,
         )[0]
         arm1 = self._app.modeler[ant2_name]
 
-        ant = self._app.modeler.subtract(
+        _ = self._app.modeler.subtract(
             tool_list=[arm1.name, arm.name, islot.name],
             blank_list=[slot.name],
             keep_originals=False,
         )
 
         feed = self._app.modeler.create_rectangle(
-            orientation=self._app.PLANE.XY,
+            orientation=Plane.XY,
             origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             sizes=["-{}/2+{}/2".format(sub_x, inner_width), "-{}".format(port_gap)],
             name="feed_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         feed.color = (128, 0, 0)
-        feed.history().properties["Coordinate System"] = coordinate_system
         self._app.modeler.move([feed.name], [0, feed_offset, 0])
 
         feed1 = self._app.modeler.create_rectangle(
-            orientation=self._app.PLANE.XY,
+            orientation=Plane.XY,
             origin=["{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             sizes=["{}/2-{}/2".format(sub_x, inner_width), "-{}".format(port_gap)],
             name="feed_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         feed1.color = (128, 0, 0)
-        feed1.history().properties["Coordinate System"] = coordinate_system
         self._app.modeler.move([feed1.name], [0, feed_offset, 0])
 
         self._app.modeler.unite([slot.name, feed.name, feed1.name])
 
         p1 = self._app.modeler.create_rectangle(
-            orientation=self._app.PLANE.XY,
+            orientation=Plane.XY,
             origin=["{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             sizes=["-{}*0.95".format(inner_width), "-{}".format(port_gap)],
             name="port_lump_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         p1.color = (128, 0, 0)
-        p1.history().properties["Coordinate System"] = coordinate_system
         self._app.modeler.move([p1.name], [0, feed_offset, 0])
 
         ref = self._app.modeler.create_rectangle(
-            orientation=self._app.PLANE.XY,
+            orientation=Plane.XY,
             origin=["-{}/2".format(inner_width), "-{}/2".format(port_gap), 0.0],
             sizes=["{}*0.05".format(inner_width), "-{}".format(port_gap)],
             name="gnd_" + antenna_name,
+            new_properties={"Coordinate System": coordinate_system},
         )
         ref.color = (128, 0, 0)
-        ref.history().properties["Coordinate System"] = coordinate_system
         self._app.modeler.move([ref.name], [0, feed_offset, 0])
 
         slot.color = (255, 128, 65)
@@ -783,6 +798,8 @@ class BowTieSlot(CommonPatch):
         self.object_list[ref.name] = ref
         self.object_list[p1.name] = p1
         self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+        self._app.modeler.fit_all()
+        return True
 
     @pyaedt_function_handler()
     def model_disco(self):

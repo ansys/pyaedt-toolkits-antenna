@@ -1,8 +1,8 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import pytest
+
 from ansys.aedt.core import is_linux
 
 pytestmark = [pytest.mark.antenna_toolkit_api]
@@ -28,7 +29,12 @@ pytestmark = [pytest.mark.antenna_toolkit_api]
 
 class TestClass:
     """Class defining a workflow to test antenna toolkit."""
+
     def test_01_get_antenna(self, aedt_common):
+        antenna_parameters_0 = aedt_common.get_antenna("GPSPatchCeramic", synth_only=True)
+
+        assert antenna_parameters_0
+
         antenna_parameters_1 = aedt_common.get_antenna("RectangularPatchProbe", synth_only=True)
 
         assert antenna_parameters_1
@@ -62,8 +68,7 @@ class TestClass:
 
     @pytest.mark.skipif(is_linux, reason="Crashes on Linux")
     def test_03_analyze(self, aedt_common):
-
-        aedt_common.properties.antenna.setup.num_cores = 2
+        aedt_common.properties.antenna.setup.num_cores = 4
         aedt_common.connect_design()
         aedt_common.aedtapp.setups[0].props["MaxDeltaS"] = 1
         aedt_common.aedtapp.setups[0].props["MaximumPasses"] = 1
@@ -80,9 +85,10 @@ class TestClass:
 
     @pytest.mark.skipif(is_linux, reason="Crashes on Linux")
     def test_05_export_farfield(self, aedt_common):
-        """Get aedt model."""
-        frequency = (str(aedt_common.properties.antenna.synthesis.frequency) +
-                     aedt_common.properties.antenna.synthesis.frequency_unit)
+        frequency = (
+            str(aedt_common.properties.antenna.synthesis.frequency)
+            + aedt_common.properties.antenna.synthesis.frequency_unit
+        )
         encoded_files = aedt_common.export_farfield(frequencies=[frequency], encode=True, sphere="3D")
         assert isinstance(encoded_files, tuple)
         assert len(encoded_files) == 4
