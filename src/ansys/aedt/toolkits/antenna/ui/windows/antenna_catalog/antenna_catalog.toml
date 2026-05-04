@@ -26,7 +26,8 @@ models = []
 models = ["Bicone", "Discone"]
 
 [Monopole]
-models = []
+models = ["BladeAntenna", "CircularDiscMonopole", "EllipticalBaseStripMonopole", "VerticalTrapezoidalMonopole",
+    "WireMonopole"]
 
 [Patch]
 models = ["RectangularPatchEdge", "RectangularPatchInset",

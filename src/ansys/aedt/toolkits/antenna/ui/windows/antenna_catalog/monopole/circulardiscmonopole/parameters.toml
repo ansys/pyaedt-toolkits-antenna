@@ -1,4 +1,4 @@
-Name = "Circular Disc Monopole"
+Name = "Circular_Disc"
 Frequency = 0.9
 Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
 Origin_X_Position = 0.0

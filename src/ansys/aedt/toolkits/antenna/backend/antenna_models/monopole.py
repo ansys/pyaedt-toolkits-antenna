@@ -119,7 +119,11 @@ class BladeAntenna(CommonMonopole):
             return False
 
         self.set_variables_in_hfss()
+        pos_x = self.synthesis_parameters.pos_x.hfss_variable
+        pos_y = self.synthesis_parameters.pos_y.hfss_variable
+        pos_z = self.synthesis_parameters.pos_z.hfss_variable
         antenna_name = self.name
+        coordinate_system = self.coordinate_system
 
         flare_angle = self.synthesis_parameters.flare_angle.hfss_variable
         width_blade_base = self.synthesis_parameters.width_blade_base.hfss_variable
@@ -151,6 +155,15 @@ class BladeAntenna(CommonMonopole):
         ]
         blade_sheet = self._app.modeler.create_polyline(blade_points, cover_surface=True, close_surface=True)
 
+        # Set coordinate system of polyline
+        blade_sheet_obj = self._app.get_oo_object(self._app.oeditor, blade_sheet.name)
+        self._app.set_oo_property_value(
+            aedt_object=blade_sheet_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
+
         feed_points = [
             [0, f"abs({spacing_feed})+({width_feed_top}/2)-({width_feed_base}/2)", 0],
             [0, f"abs({spacing_feed})+({width_feed_top}/2)+({width_feed_base}/2)", 0],
@@ -159,6 +172,16 @@ class BladeAntenna(CommonMonopole):
             [0, f"abs({spacing_feed})+({width_feed_top}/2)-({width_feed_base}/2)", 0],
         ]
         feed_sheet = self._app.modeler.create_polyline(feed_points, cover_surface=True, close_surface=True)
+
+        # Set coordinate system of polyline
+        feed_sheet_obj = self._app.get_oo_object(self._app.oeditor, feed_sheet.name)
+        self._app.set_oo_property_value(
+            aedt_object=feed_sheet_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
+
         blade_sheet.unite(feed_sheet)
 
         slot_1 = self._app.modeler.create_rectangle(
@@ -169,6 +192,7 @@ class BladeAntenna(CommonMonopole):
                 f"{height_feed}+{height_slot_1}-{thickness_slot}/2",
             ],
             sizes=[f"2*{width_slot_1}", thickness_slot],
+            new_properties={"Coordinate System": coordinate_system},
         )
         right_slope = f"abs({width_blade_base}-({height_blade}*tan({flare_angle})+{width_blade_top}))/{height_blade}"
         slot_2 = self._app.modeler.create_rectangle(
@@ -179,6 +203,7 @@ class BladeAntenna(CommonMonopole):
                 f"{height_feed}+{height_slot_2}-{thickness_slot}/2",
             ],
             sizes=[f"2*{width_slot_2}", thickness_slot],
+            new_properties={"Coordinate System": coordinate_system},
         )
         slot_3 = self._app.modeler.create_rectangle(
             orientation=Plane.YZ,
@@ -188,9 +213,11 @@ class BladeAntenna(CommonMonopole):
                 f"{height_feed}+{height_slot_3}-{thickness_slot}/2",
             ],
             sizes=[f"2*{width_slot_3}", thickness_slot],
+            new_properties={"Coordinate System": coordinate_system},
         )
         blade_sheet.subtract([slot_1, slot_2, slot_3], keep_originals=False)
         antenna = self._app.modeler.thicken_sheet(blade_sheet, thickness_blade, both_sides=True)
+        antenna.material_name = self.material
         antenna.name = f"antenna_{antenna_name}"
         antenna.move([0, 0, height_port])
 
@@ -199,6 +226,7 @@ class BladeAntenna(CommonMonopole):
             sizes=[ground_x, ground_y, thickness_blade],
             name=f"ground_{antenna_name}",
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
 
         port = self._app.modeler.create_rectangle(
@@ -206,16 +234,28 @@ class BladeAntenna(CommonMonopole):
             origin=[0, f"abs({spacing_feed})+abs({spacing_port})+({width_feed_top}/2)-({height_port}/4)", 0],
             sizes=[f"{height_port}/2", height_port],
             name=f"port_lump_{antenna_name}",
+            new_properties={"Coordinate System": coordinate_system},
         )
 
-        self._set_object_properties(antenna, (255, 128, 65), 0.1, antenna_name)
-        self._set_object_properties(ground, (255, 128, 65), 0.1, antenna_name)
-        self._set_object_properties(port, (128, 0, 0), 0.2, antenna_name)
+        antenna.color = (255, 128, 65)
+        antenna.transparency = 0.1
+        ground.color = (255, 128, 65)
+        ground.transparency = 0.1
+        port.color = (255, 128, 65)
+        port.transparency = 0.2
 
         self.object_list[antenna.name] = antenna
         self.object_list[ground.name] = ground
         self.object_list[port.name] = port
-        return self._finalize_objects(self.object_list.keys())
+
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+
+        ground.group_name = antenna_name
+        antenna.group_name = antenna_name
+        port.group_name = antenna_name
+        self._app.modeler.fit_all()
+
+        return True
 
 
 class CircularDiscMonopole(CommonMonopole):
@@ -263,6 +303,10 @@ class CircularDiscMonopole(CommonMonopole):
             return False
 
         self.set_variables_in_hfss()
+        pos_x = self.synthesis_parameters.pos_x.hfss_variable
+        pos_y = self.synthesis_parameters.pos_y.hfss_variable
+        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        coordinate_system = self.coordinate_system
         antenna_name = self.name
         disc_diameter = self.synthesis_parameters.disc_diameter.hfss_variable
         pin_height = self.synthesis_parameters.pin_height.hfss_variable
@@ -277,6 +321,7 @@ class CircularDiscMonopole(CommonMonopole):
             height=f"{pin_height}-{port_gap}",
             name=f"pin_{antenna_name}",
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         disc = self._app.modeler.create_cylinder(
             orientation=Axis.X,
@@ -285,6 +330,7 @@ class CircularDiscMonopole(CommonMonopole):
             height=pin_diameter,
             name=f"disc_{antenna_name}",
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         antenna = pin.unite(disc)
         antenna.name = f"antenna_{antenna_name}"
@@ -298,21 +344,35 @@ class CircularDiscMonopole(CommonMonopole):
             sizes=[groundplane_width, groundplane_width, self._ground_thickness(groundplane_width)],
             name=f"ground_{antenna_name}",
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         port = self._app.modeler.create_rectangle(
             orientation=Plane.YZ,
             origin=[0, f"-{pin_diameter}/2", 0],
             sizes=[pin_diameter, port_gap],
             name=f"port_lump_{antenna_name}",
+            new_properties={"Coordinate System": coordinate_system},
         )
 
-        self._set_object_properties(antenna, (255, 128, 65), 0.1, antenna_name)
-        self._set_object_properties(ground, (255, 128, 65), 0.1, antenna_name)
-        self._set_object_properties(port, (128, 0, 0), 0.2, antenna_name)
+        antenna.color = (255, 128, 65)
+        antenna.transparency = 0.1
+        ground.color = (255, 128, 65)
+        ground.transparency = 0.1
+        port.color = (255, 128, 65)
+        port.transparency = 0.2
+
         self.object_list[antenna.name] = antenna
         self.object_list[ground.name] = ground
         self.object_list[port.name] = port
-        return self._finalize_objects(self.object_list.keys())
+
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+
+        ground.group_name = antenna_name
+        antenna.group_name = antenna_name
+        port.group_name = antenna_name
+        self._app.modeler.fit_all()
+
+        return True
 
 
 class EllipticalBaseStripMonopole(CommonMonopole):
@@ -362,7 +422,12 @@ class EllipticalBaseStripMonopole(CommonMonopole):
             return False
 
         self.set_variables_in_hfss()
+        pos_x = self.synthesis_parameters.pos_x.hfss_variable
+        pos_y = self.synthesis_parameters.pos_y.hfss_variable
+        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        coordinate_system = self.coordinate_system
         antenna_name = self.name
+
         strip_height = self.synthesis_parameters.strip_height.hfss_variable
         strip_width = self.synthesis_parameters.strip_width.hfss_variable
         base_height = self.synthesis_parameters.base_height.hfss_variable
@@ -378,12 +443,14 @@ class EllipticalBaseStripMonopole(CommonMonopole):
             height=f"{pin_height}-{feed_gap}",
             name=f"feedpin_{antenna_name}",
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         strip_top = self._app.modeler.create_box(
             origin=[f"-{pin_diameter}/2", f"-{strip_width}/2", f"{pin_height}+{base_height}"],
             sizes=[pin_diameter, strip_width, f"{strip_height}-{base_height}"],
             name=f"striptop_{antenna_name}",
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         strip_base = self._app.modeler.create_ellipse(
             orientation=Plane.YZ,
@@ -392,17 +459,20 @@ class EllipticalBaseStripMonopole(CommonMonopole):
             ratio=f"2*{base_height}/{strip_width}",
             is_covered=True,
             name=f"stripbase_{antenna_name}",
+            new_properties={"Coordinate System": coordinate_system},
         )
         cut_rect = self._app.modeler.create_rectangle(
             orientation=Plane.YZ,
             origin=[f"-{pin_diameter}/2", f"-{strip_width}/2", f"{pin_height}+{base_height}"],
             sizes=[strip_width, f"2*{base_height}"],
             name=f"stripcut_{antenna_name}",
+            new_properties={"Coordinate System": coordinate_system},
         )
         strip_base.subtract(cut_rect, keep_originals=False)
         strip_base = strip_base.sweep_along_vector([pin_diameter, 0, 0])
-        antenna = strip_base.unite([strip_top, feed_pin])
+        antenna = strip_base.unite(strip_top)
         antenna.name = f"antenna_{antenna_name}"
+        antenna.material_name = self.material
 
         ground = self._app.modeler.create_box(
             origin=[
@@ -413,21 +483,40 @@ class EllipticalBaseStripMonopole(CommonMonopole):
             sizes=[groundplane_width, groundplane_width, self._ground_thickness(groundplane_width)],
             name=f"ground_{antenna_name}",
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         port = self._app.modeler.create_rectangle(
             orientation=Plane.YZ,
             origin=[0, f"-{pin_diameter}/2", 0],
             sizes=[pin_diameter, feed_gap],
             name=f"port_lump_{antenna_name}",
+            new_properties={"Coordinate System": coordinate_system},
         )
 
-        self._set_object_properties(antenna, (255, 128, 65), 0.1, antenna_name)
-        self._set_object_properties(ground, (255, 128, 65), 0.1, antenna_name)
-        self._set_object_properties(port, (128, 0, 0), 0.2, antenna_name)
+        antenna.color = (255, 128, 65)
+        antenna.transparency = 0.1
+        ground.color = (255, 128, 65)
+        ground.transparency = 0.1
+        port.color = (255, 128, 65)
+        port.transparency = 0.2
+        feed_pin.color = (255, 128, 65)
+        feed_pin.transparency = 0.2
+
         self.object_list[antenna.name] = antenna
         self.object_list[ground.name] = ground
         self.object_list[port.name] = port
-        return self._finalize_objects(self.object_list.keys())
+        self.object_list[feed_pin.name] = feed_pin
+
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+
+        ground.group_name = antenna_name
+        antenna.group_name = antenna_name
+        port.group_name = antenna_name
+        feed_pin.group_name = antenna_name
+
+        self._app.modeler.fit_all()
+
+        return True
 
 
 class VerticalTrapezoidalMonopole(CommonMonopole):
@@ -476,6 +565,10 @@ class VerticalTrapezoidalMonopole(CommonMonopole):
             return False
 
         self.set_variables_in_hfss()
+        pos_x = self.synthesis_parameters.pos_x.hfss_variable
+        pos_y = self.synthesis_parameters.pos_y.hfss_variable
+        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        coordinate_system = self.coordinate_system
         antenna_name = self.name
         monopole_height = self.synthesis_parameters.monopole_height.hfss_variable
         monopole_top_width = self.synthesis_parameters.monopole_top_width.hfss_variable
@@ -492,6 +585,7 @@ class VerticalTrapezoidalMonopole(CommonMonopole):
             height=f"{pin_height}-{port_gap}",
             name=f"pin_{antenna_name}",
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         trapezoid = self._app.modeler.create_polyline(
             [
@@ -505,6 +599,16 @@ class VerticalTrapezoidalMonopole(CommonMonopole):
             close_surface=True,
             name=f"trapezoid_{antenna_name}",
         )
+
+        # Set coordinate system of polyline
+        trapezoid_obj = self._app.get_oo_object(self._app.oeditor, trapezoid.name)
+        self._app.set_oo_property_value(
+            aedt_object=trapezoid_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
+
         trapezoid = trapezoid.sweep_along_vector([f"2*{pin_radius}", 0, 0])
         antenna = pin.unite(trapezoid)
         antenna.name = f"antenna_{antenna_name}"
@@ -518,21 +622,35 @@ class VerticalTrapezoidalMonopole(CommonMonopole):
             sizes=[groundplane_width, groundplane_width, self._ground_thickness(groundplane_width)],
             name=f"ground_{antenna_name}",
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         port = self._app.modeler.create_rectangle(
             orientation=Plane.YZ,
             origin=[0, f"-{pin_radius}", 0],
             sizes=[f"2*{pin_radius}", port_gap],
             name=f"port_lump_{antenna_name}",
+            new_properties={"Coordinate System": coordinate_system},
         )
 
-        self._set_object_properties(antenna, (255, 128, 65), 0.1, antenna_name)
-        self._set_object_properties(ground, (255, 128, 65), 0.1, antenna_name)
-        self._set_object_properties(port, (128, 0, 0), 0.2, antenna_name)
+        antenna.color = (255, 128, 65)
+        antenna.transparency = 0.1
+        ground.color = (255, 128, 65)
+        ground.transparency = 0.1
+        port.color = (255, 128, 65)
+        port.transparency = 0.2
+
         self.object_list[antenna.name] = antenna
         self.object_list[ground.name] = ground
         self.object_list[port.name] = port
-        return self._finalize_objects(self.object_list.keys())
+
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
+
+        ground.group_name = antenna_name
+        antenna.group_name = antenna_name
+        port.group_name = antenna_name
+
+        self._app.modeler.fit_all()
+        return True
 
 
 class WireMonopole(CommonMonopole):
@@ -578,6 +696,10 @@ class WireMonopole(CommonMonopole):
             return False
 
         self.set_variables_in_hfss()
+        pos_x = self.synthesis_parameters.pos_x.hfss_variable
+        pos_y = self.synthesis_parameters.pos_y.hfss_variable
+        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        coordinate_system = self.coordinate_system
         antenna_name = self.name
         monopole_length = self.synthesis_parameters.monopole_length.hfss_variable
         wire_rad = self.synthesis_parameters.wire_rad.hfss_variable
@@ -591,103 +713,40 @@ class WireMonopole(CommonMonopole):
             height=f"{monopole_length}-{port_gap}",
             name=f"wire_{antenna_name}",
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         ground = self._app.modeler.create_box(
             origin=[f"-{ground_width}/2", f"-{ground_width}/2", f"-{self._ground_thickness(ground_width)}"],
             sizes=[ground_width, ground_width, self._ground_thickness(ground_width)],
             name=f"ground_{antenna_name}",
             material=self.material,
+            new_properties={"Coordinate System": coordinate_system},
         )
         port = self._app.modeler.create_rectangle(
             orientation=Plane.YZ,
             origin=[0, f"-{wire_rad}", 0],
             sizes=[f"2*{wire_rad}", port_gap],
             name=f"port_lump_{antenna_name}",
+            new_properties={"Coordinate System": coordinate_system},
         )
 
-        self._set_object_properties(wire, (255, 128, 65), 0.1, antenna_name)
-        self._set_object_properties(ground, (255, 128, 65), 0.1, antenna_name)
-        self._set_object_properties(port, (128, 0, 0), 0.2, antenna_name)
+        wire.color = (255, 128, 65)
+        wire.transparency = 0.1
+        ground.color = (255, 128, 65)
+        ground.transparency = 0.1
+        port.color = (255, 128, 65)
+        port.transparency = 0.2
+
         self.object_list[wire.name] = wire
         self.object_list[ground.name] = ground
         self.object_list[port.name] = port
-        return self._finalize_objects(self.object_list.keys())
 
+        self._app.modeler.move(list(self.object_list.keys()), [pos_x, pos_y, pos_z])
 
-class WireMonopoleInfGnd(CommonMonopole):
-    _default_input_parameters = {
-        "name": "",
-        "origin": [0, 0, 0],
-        "length_unit": "mm",
-        "coordinate_system": "Global",
-        "frequency": 0.9,
-        "frequency_unit": "GHz",
-        "material": "pec",
-        "outer_boundary": "",
-    }
+        ground.group_name = antenna_name
+        wire.group_name = antenna_name
+        port.group_name = antenna_name
 
-    def __init__(self, *args, **kwargs):
-        CommonMonopole.__init__(self, self._default_input_parameters, *args, **kwargs)
-        self._parameters = self.synthesis()
-        self.update_synthesis_parameters(self._parameters)
-        self.antenna_type = "WireMonopoleInfGnd"
+        self._app.modeler.fit_all()
 
-    @pyaedt_function_handler()
-    def synthesis(self):
-        wavelength = constants.SpeedOfLight / constants.unit_converter(
-            self.frequency, "Freq", self.frequency_unit, "Hz"
-        )
-        wavelength = self._length_value(wavelength)
-        correction_factor = 0.893
-        port_gap = correction_factor * 0.0075 * wavelength
-        parameters = {
-            "monopole_length": correction_factor * (0.25 * wavelength - port_gap),
-            "wire_rad": correction_factor * 0.0075 * wavelength,
-            "port_gap": port_gap,
-            "air_width": correction_factor * 0.75 * wavelength,
-            "pos_x": self.origin[0],
-            "pos_y": self.origin[1],
-            "pos_z": self.origin[2],
-        }
-        return self._sorted_parameters(parameters)
-
-    @pyaedt_function_handler()
-    def model_hfss(self):
-        if self.object_list:
-            return False
-
-        self.set_variables_in_hfss()
-        antenna_name = self.name
-        monopole_length = self.synthesis_parameters.monopole_length.hfss_variable
-        wire_rad = self.synthesis_parameters.wire_rad.hfss_variable
-        port_gap = self.synthesis_parameters.port_gap.hfss_variable
-        air_width = self.synthesis_parameters.air_width.hfss_variable
-
-        wire = self._app.modeler.create_cylinder(
-            orientation=Axis.Z,
-            origin=[0, 0, port_gap],
-            radius=wire_rad,
-            height=f"{monopole_length}-{port_gap}",
-            name=f"wire_{antenna_name}",
-            material=self.material,
-        )
-        reference = self._app.modeler.create_box(
-            origin=[f"-{air_width}/4", f"-{air_width}/4", f"-{self._ground_thickness(air_width)}"],
-            sizes=[f"{air_width}/2", f"{air_width}/2", self._ground_thickness(air_width)],
-            name=f"reference_{antenna_name}",
-            material=self.material,
-        )
-        port = self._app.modeler.create_rectangle(
-            orientation=Plane.YZ,
-            origin=[0, f"-{wire_rad}", 0],
-            sizes=[f"2*{wire_rad}", port_gap],
-            name=f"port_lump_{antenna_name}",
-        )
-
-        self._set_object_properties(wire, (255, 128, 65), 0.1, antenna_name)
-        self._set_object_properties(reference, (132, 132, 192), 0.5, antenna_name)
-        self._set_object_properties(port, (128, 0, 0), 0.2, antenna_name)
-        self.object_list[wire.name] = wire
-        self.object_list[reference.name] = reference
-        self.object_list[port.name] = port
-        return self._finalize_objects(self.object_list.keys())
+        return True

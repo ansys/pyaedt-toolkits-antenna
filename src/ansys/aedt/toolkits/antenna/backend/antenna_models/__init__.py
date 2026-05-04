@@ -45,8 +45,11 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRid
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged
 from ansys.aedt.toolkits.antenna.backend.antenna_models.misc import Bicone
 from ansys.aedt.toolkits.antenna.backend.antenna_models.misc import Discone
+from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import BladeAntenna
+from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import CircularDiscMonopole
 from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import EllipticalBaseStripMonopole
 from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import VerticalTrapezoidalMonopole
+from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import WireMonopole
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe

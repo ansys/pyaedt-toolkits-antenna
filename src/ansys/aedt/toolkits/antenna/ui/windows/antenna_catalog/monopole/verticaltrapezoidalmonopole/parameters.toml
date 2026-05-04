@@ -1,4 +1,4 @@
-Name = "Vertical Trapezoidal Monopole"
+Name = "Vertical_Trapezoidal"
 Frequency = 1.0
 Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
 Origin_X_Position = 0.0

@@ -1,4 +1,4 @@
-Name = "Wire Monopole"
+Name = "Wire"
 Frequency = 0.9
 Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
 Origin_X_Position = 0.0

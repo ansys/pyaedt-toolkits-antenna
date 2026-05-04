@@ -1,14 +1,14 @@
-name = "Vertical Trapezoidal Monopole"
+name = "Vertical Trapezoidal"
 
 [object_1]
 name = "antenna_VerticalTrapezoidalMonopole"
 color = [255, 128, 65]
-opacity = 0.1
+opacity = 1.0
 
 [object_2]
 name = "ground_VerticalTrapezoidalMonopole"
 color = [255, 128, 65]
-opacity = 0.1
+opacity = 1.0
 
 [object_3]
 name = "port_lump_VerticalTrapezoidalMonopole"

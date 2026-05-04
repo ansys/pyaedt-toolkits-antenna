@@ -519,7 +519,10 @@ class CommonAntenna(object):
                             axis_dir[1] = edge.midpoint
                         elif terminal_references[0] in self._app.modeler.get_bodynames_from_position(edge.midpoint):
                             axis_dir[0] = edge.midpoint
-                    terminal_references = terminal_references[1:]
+                    gnd_references = [
+                        ref for ref in terminal_references if "gnd" in ref.lower() or "ground" in ref.lower()
+                    ]
+                    terminal_references = gnd_references if gnd_references else terminal_references[1:]
 
             elif "port_{}".format(self.name) in item:
                 port = self.object_list[item]
