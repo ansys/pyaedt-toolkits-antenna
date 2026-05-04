@@ -67,6 +67,7 @@ class Synthesis(BaseModel, validate_assignment=True):
     start_frequency: float = 0.0
     stop_frequency: float = 0.0
     substrate_height: float = 0.1
+    direction: str = "Left"
 
 
 class Setup(BaseModel, validate_assignment=True):

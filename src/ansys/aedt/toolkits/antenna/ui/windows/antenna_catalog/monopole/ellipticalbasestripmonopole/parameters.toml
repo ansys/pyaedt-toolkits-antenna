@@ -1,0 +1,7 @@
+Name = "Elliptical_Base_Strip"
+Frequency = 0.9
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"
