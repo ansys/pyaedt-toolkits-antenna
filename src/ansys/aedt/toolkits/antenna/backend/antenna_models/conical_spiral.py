@@ -328,6 +328,7 @@ class Archimedean(CommonConicalSpiral):
         obj_udm.move([pos_x, pos_y, pos_z])
 
         obj_udm.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -534,6 +535,7 @@ class Log(CommonConicalSpiral):
         obj_udm.move([pos_x, pos_y, pos_z])
 
         obj_udm.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()
@@ -766,6 +768,7 @@ class Sinuous(CommonConicalSpiral):
         obj_udm.move([pos_x, pos_y, pos_z])
 
         obj_udm.group_name = antenna_name
+        self._app.modeler.fit_all()
         return True
 
     @pyaedt_function_handler()

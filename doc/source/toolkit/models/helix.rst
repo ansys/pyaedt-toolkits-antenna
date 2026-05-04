@@ -8,6 +8,10 @@ This pages lists the classes available for helix antennas:
    :toctree: _autosummary
 
    AxialMode
+   AxialModeTaper
+   NormalMode
+   QuadrifilarOpen
+   QuadrifilarShort
 
 You must use these methods from PyAEDT as shown in this example:
 

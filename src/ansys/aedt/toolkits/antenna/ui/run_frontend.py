@@ -276,6 +276,16 @@ class ApplicationWindow(QMainWindow, Frontend):
         if self.antenna_catalog_menu.grid_item:
             for item in self.antenna_catalog_menu.grid_item:
                 item.plotter.close()
+        if (
+            hasattr(self.antenna_synthesis_menu, "synthesis_plotter")
+            and self.antenna_synthesis_menu.synthesis_plotter is not None
+        ):
+            self.antenna_synthesis_menu.synthesis_plotter.close()
+        if (
+            hasattr(self.antenna_results_menu, "farfield_3d_plotter")
+            and self.antenna_results_menu.farfield_3d_plotter is not None
+        ):
+            self.antenna_results_menu.farfield_3d_plotter.close()
         event.accept()
 
 

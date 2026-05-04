@@ -4,8 +4,14 @@ models = ["BowTieNormal", "BowTieRounded", "BowTieSlot"]
 [ConicalSpiral]
 models = ["Archimedean", "Log", "Sinuous"]
 
+[Custom]
+models = ["GPSPatchCeramic"]
+
+[Dipole]
+models = ["PlanarDipole", "WireDipole"]
+
 [Helix]
-models = ["AxialMode"]
+models = ["AxialMode", "AxialModeTaper", "NormalMode", "QuadrifilarOpen", "QuadrifilarShort"]
 
 [Horn]
 models = ["Conical", "Corrugated",
@@ -13,36 +19,33 @@ models = ["Conical", "Corrugated",
     "HPlane", "Pyramidal",
     "PyramidalRidged", "QuadRidged"]
 
-[Patch]
-models =["RectangularPatchEdge", "RectangularPatchInset",
-    "RectangularPatchProbe"]
-
-[Dipole]
-models =[]
-
 [LogPeriodic]
 models = []
 
 [Misc]
-models =[]
+models = ["Bicone", "Discone"]
 
 [Monopole]
-models = ["BladeAntenna", "CircularDiscMonopole", "EllipticalBaseStripMonopole", "VerticalTrapezoidalMonopole", "WireMonopole", "WireMonopoleInfGnd"]
+models = []
+
+[Patch]
+models = ["RectangularPatchEdge", "RectangularPatchInset",
+    "RectangularPatchProbe"]
 
 [PIFA]
-models =[]
+models = []
 
 [PlanarSpiral]
-models =[]
+models = []
 
 [Reflector]
-models =[]
+models = []
 
 [Slot]
-models =[]
+models = []
 
 [Vivaldi]
-models =[]
+models = []
 
 [YagiUda]
-models =[]
+models = []
