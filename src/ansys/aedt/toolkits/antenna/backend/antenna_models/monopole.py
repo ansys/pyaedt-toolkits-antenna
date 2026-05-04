@@ -49,10 +49,13 @@ class CommonMonopole(CommonAntenna):
         obj.color = color
         obj.transparency = transparency
         obj.group_name = group_name
-        try:
-            obj.history().properties["Coordinate System"] = self.coordinate_system
-        except Exception:
-            pass
+        history = getattr(obj, "history", None)
+        if not callable(history):
+            return
+
+        properties = getattr(history(), "properties", None)
+        if properties is not None and "Coordinate System" in properties:
+            properties["Coordinate System"] = self.coordinate_system
 
     def _finalize_objects(self, objects):
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
