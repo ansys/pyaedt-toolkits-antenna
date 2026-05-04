@@ -1,0 +1,16 @@
+name = "Circular Disc"
+
+[object_1]
+name = "antenna_CircularDiscMonopole"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_2]
+name = "ground_CircularDiscMonopole"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_3]
+name = "port_lump_CircularDiscMonopole"
+color = [128, 0, 0]
+opacity = 0.2
