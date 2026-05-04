@@ -1,3 +1,27 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 # # Antenna toolkit example
 #
 # This example demonstrates how to use the ``ToolkitBackend`` class.
@@ -11,7 +35,7 @@ import tempfile
 
 from ansys.aedt.core import generate_unique_project_name
 from ansys.aedt.core.visualization.advanced.farfield_visualization import FfdSolutionData
-
+from ansys.aedt.core.visualization.plot.pyvista import ModelPlotter
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
 
@@ -19,13 +43,17 @@ from ansys.aedt.toolkits.antenna.backend.models import properties
 #
 # Set AEDT version.
 
-aedt_version = "2025.1"
+aedt_version = "2026.1"
 
 # ## Set non-graphical mode
 #
 # Set non-graphical mode.
 
 non_graphical = True
+
+# ## Set number of cores
+
+num_cores = 4
 
 # ## Create temporary directory
 
@@ -174,6 +202,10 @@ toolkit_api.release_aedt(False, False)
 
 toolkit_api.update_hfss_parameters("pos_x", "0")
 
+# ## Modify number of cores
+
+properties.antenna.setup.num_cores = num_cores
+
 # ## Analyze design in batch mode
 
 toolkit_api.analyze()
@@ -203,21 +235,23 @@ toolkit_api.release_aedt(True, True)
 
 # Plot exported files
 
-from ansys.aedt.core.visualization.plot.pyvista import ModelPlotter
-
 model = ModelPlotter()
 for file in files:
     model.add_object(file[0], file[1], file[2])
 
-model.plot(show=False)
+model.plot()
 
 # ## Load far field
 
 farfield_data = FfdSolutionData(farfield_metadata)
 
-# ## Plot far field
+# ## Plot far field 3D
 
-data = farfield_data.plot_3d(show=False)
+data = farfield_data.plot_3d()
+
+# ## Plot far field cut
+
+farfield_data.plot_cut(primary_sweep="theta")
 
 # ## Clean temporary directory
 

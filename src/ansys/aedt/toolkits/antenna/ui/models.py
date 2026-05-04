@@ -22,6 +22,7 @@
 # SOFTWARE.
 
 import os
+from pathlib import Path
 import sys
 from typing import Any
 from typing import Dict
@@ -32,12 +33,12 @@ if sys.version_info >= (3, 11):
 else:
     import tomli as tomllib
 
-from ansys.aedt.toolkits.common.ui.models import UIProperties
-from ansys.aedt.toolkits.common.ui.models import general_settings
 from pydantic import BaseModel
 from pydantic import Field
 
 import ansys.aedt.toolkits.antenna
+from ansys.aedt.toolkits.common.ui.models import UIProperties
+from ansys.aedt.toolkits.common.ui.models import general_settings
 
 
 class AntennaProperties(BaseModel):
@@ -63,17 +64,18 @@ class Properties(FrontendProperties, UIProperties, validate_assignment=True):
 
 frontend_properties = {}
 
-installation_folder = os.path.dirname(ansys.aedt.toolkits.antenna.__file__)
+installation_folder = Path(ansys.aedt.toolkits.antenna.__file__).parent
 
 if "PYAEDT_TOOLKIT_CONFIG_DIR" in os.environ:
-    local_dir = os.path.abspath(os.environ["PYAEDT_TOOLKIT_CONFIG_DIR"])
-    frontend_config = os.path.join(local_dir, "frontend_properties.toml")
-    if os.path.isfile(frontend_config):
-        with open(frontend_config, mode="rb") as file_handler:
+    local_dir = Path(os.environ["PYAEDT_TOOLKIT_CONFIG_DIR"]).resolve()
+    frontend_config = local_dir / "frontend_properties.toml"
+    if frontend_config.is_file():
+        with frontend_config.open(mode="rb") as file_handler:
             frontend_properties = tomllib.load(file_handler)
 
-if not frontend_properties and os.path.isfile(os.path.join(installation_folder, "ui/frontend_properties.toml")):
-    with open(os.path.join(installation_folder, "ui/frontend_properties.toml"), mode="rb") as file_handler:
+installed_frontend_config = installation_folder / "ui" / "frontend_properties.toml"
+if not frontend_properties and installed_frontend_config.is_file():
+    with installed_frontend_config.open(mode="rb") as file_handler:
         frontend_properties = tomllib.load(file_handler)
 
 toolkit_property = {}

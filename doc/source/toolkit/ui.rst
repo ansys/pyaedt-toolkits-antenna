@@ -47,8 +47,7 @@ launching information, see these topics:
    You have two options: **Synthesis** and **Generate**.
    The **Generate** button is unavailable if the wizard is not connected to AEDT.
 
-   - The **Synthesis** button is for performing the synthesis of the antenna. A connection to AEDT
-   is not needed.
+   - The **Synthesis** button is for performing the synthesis of the antenna. A connection to AEDT is not needed.
      You can see the parameters that control the antenna geometry. Additionally, you can do as many
      syntheses as you want and even change the antenna template.
 

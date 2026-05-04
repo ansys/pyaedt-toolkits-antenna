@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +22,10 @@
 # SOFTWARE.
 
 """Sphinx documentation configuration file."""
+
 from datetime import datetime
 import os
-import pathlib
+from pathlib import Path
 import sys
 
 from ansys_sphinx_theme import ansys_favicon
@@ -35,30 +37,33 @@ from ansys_sphinx_theme import pyansys_logo_black
 from ansys_sphinx_theme import watermark
 from sphinx.util import logging
 
-root_path = str(pathlib.Path(__file__).parent.parent.parent)
+root_path = str(Path(__file__).parent.parent.parent)
+src_path = Path(root_path) / "src"
+sys.path.insert(0, str(root_path))
+sys.path.insert(0, str(src_path))
+print("root_path:", root_path)
+print("src_path:", str(src_path))
 
 try:
-    from ansys.aedt.toolkits.antenna import __version__
+    from ansys.aedt.toolkits.antenna import __version__  # noqa: E402
 except ImportError:
     sys.path.append(root_path)
-    src_path = os.path.join(root_path, "src")
-    sys.path.append(src_path)
-    from ansys.aedt.toolkits.antenna import __version__
+
+    sys.path.append(str(src_path))
+    from ansys.aedt.toolkits.antenna import __version__  # noqa: E402
 
 logger = logging.getLogger(__name__)
-path = pathlib.Path(os.path.join(root_path, "examples"))
-EXAMPLES_DIRECTORY = path.resolve()
 
 # Sphinx event hooks
 
 
 def check_pandoc_installed(app):
-    """Ensure that pandoc is installed"""
+    """Ensure that pandoc is installed."""
     import pypandoc
 
     try:
         pandoc_path = pypandoc.get_pandoc_path()
-        pandoc_dir = os.path.dirname(pandoc_path)
+        pandoc_dir = str(Path(pandoc_path).parent)
         if pandoc_dir not in os.environ["PATH"].split(os.pathsep):
             logger.info("Pandoc directory is not in $PATH.")
             os.environ["PATH"] += os.pathsep + pandoc_dir
@@ -71,13 +76,16 @@ def setup(app):
     app.connect("builder-inited", check_pandoc_installed)
 
 
+os.environ["PYANSYS_VISUALIZER_HTML_BACKEND"] = "true"
+os.environ["PYAEDT_NON_GRAPHICAL"] = "1"
+
 print(__version__)
 # Project information
-project = "ansys-aedt-toolkits-antenna"
+project = "pyaedt-toolkits-antenna"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS, Inc."
 release = version = __version__
-cname = os.getenv("DOCUMENTATION_CNAME", "nocname.com")
+cname = os.getenv("DOCUMENTATION_CNAME", "aedt.antenna.toolkit.docs.pyansys.com")
 switcher_version = get_version_match(__version__)
 print(copyright)
 
@@ -167,8 +175,8 @@ numpydoc_validation_checks = {
 
 # Removing check on repo lines of code as using line numbers as anchor is not working
 linkcheck_ignore = [
-    "https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/src/ansys/aedt/toolkits/antenna/ui/" "actions.py#L165",
-    "https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/src/ansys/aedt/toolkits/antenna/ui/" "actions.py#L143",
+    "https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/src/ansys/aedt/toolkits/antenna/ui/actions.py#L165",
+    "https://github.com/ansys/pyaedt-toolkits-antenna/blob/main/src/ansys/aedt/toolkits/antenna/ui/actions.py#L143",
 ]
 
 # static path
@@ -200,7 +208,9 @@ nbsphinx_allow_errors = True
 
 # Sphinx gallery customization
 
-nbsphinx_thumbnails = {}
+nbsphinx_thumbnails = {
+    "examples/create_antenna_simple": "_static/bowtie_example.png",
+}
 
 nbsphinx_custom_formats = {
     ".py": ["jupytext.reads", {"fmt": ""}],

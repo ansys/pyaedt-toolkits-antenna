@@ -23,12 +23,10 @@
 
 import copy
 import math
-import os
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.file_utils import generate_unique_name
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
-
 from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import InputParameters
 from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import Property
 from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import SynthesisParameters
@@ -66,6 +64,18 @@ class CommonAntenna(object):
         self.boundaries = {}
         self.excitations = {}
         self.mesh_operations = {}
+
+        self.__excitation_type = None
+
+    @property
+    def excitation_type(self):
+        """Excitation type.
+
+        Returns
+        -------
+        str
+        """
+        return self.__excitation_type
 
     @property
     def material(self):
@@ -172,9 +182,9 @@ class CommonAntenna(object):
     def coordinate_system(self, value):
         self._input_parameters.coordinate_system = value
         for antenna_obj in self.object_list:
-            self.object_list[antenna_obj].history().properties[
-                "Coordinate System"
-            ] = self._input_parameters.coordinate_system
+            self.object_list[antenna_obj].history().properties["Coordinate System"] = (
+                self._input_parameters.coordinate_system
+            )
 
     @property
     def name(self):
@@ -238,9 +248,9 @@ class CommonAntenna(object):
         >>> horn = horn.create_lattice_pair(lattice_height="20mm")
         """
         if not lattice_height:
-            lightSpeed = constants.SpeedOfLight  # m/s
+            light_speed = constants.SpeedOfLight  # m/s
             freq_hz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
-            wavelength = lightSpeed / freq_hz
+            wavelength = light_speed / freq_hz
             lattice_height = str(wavelength / 10.0) + "meter"
 
         self.synthesis_parameters.add_parameter("lattice_height", lattice_height)
@@ -284,9 +294,9 @@ class CommonAntenna(object):
                 material="vacuum",
             )
 
-        lattice1 = self._app.assign_lattice_pair(face_couple=[lattice_box.bottom_face_x.id, lattice_box.top_face_x.id])
+        lattice1 = self._app.assign_lattice_pair(assignment=[lattice_box.bottom_face_x.id, lattice_box.top_face_x.id])
         self.boundaries[lattice1.name] = lattice1
-        lattice2 = self._app.assign_lattice_pair(face_couple=[lattice_box.bottom_face_y.id, lattice_box.top_face_y.id])
+        lattice2 = self._app.assign_lattice_pair(assignment=[lattice_box.bottom_face_y.id, lattice_box.top_face_y.id])
         self.boundaries[lattice2.name] = lattice2
 
         self.object_list[lattice_box.name] = lattice_box
@@ -321,7 +331,9 @@ class CommonAntenna(object):
         >>> horn = horn.create_3dcomponent()
         """
         if not component_file:
-            component_file = os.path.join(self._app.working_directory, self.name + ".a3dcomp")
+            from pathlib import Path
+
+            component_file = str(Path(self._app.working_directory) / (self.name + ".a3dcomp"))
         if not component_name:
             component_name = self.name
 
@@ -334,13 +346,21 @@ class CommonAntenna(object):
         if not boundaries:
             boundaries = [""]
 
+        excitations = list(self.excitations.keys())
+
+        if self.excitation_type and "Terminal" in self.excitation_type:
+            for exc in self.excitations.values():
+                if hasattr(exc, "children"):
+                    for term in exc.children:
+                        excitations.append(term)
+
         self._app.modeler.create_3dcomponent(
             input_file=component_file,
             name=component_name,
             variables_to_include=parameters,
             assignment=list(self.object_list.keys()),
             boundaries=boundaries,
-            excitations=list(self.excitations.keys()),
+            excitations=excitations,
             coordinate_systems=[self.coordinate_system],
             reference_coordinate_system=self.coordinate_system,
             component_outline="None",
@@ -352,7 +372,7 @@ class CommonAntenna(object):
                 variables_to_include=parameters,
                 assignment=list(self.object_list.keys()),
                 boundaries=boundaries,
-                excitations=list(self.excitations.keys()),
+                excitations=excitations,
                 coordinate_systems=[self.coordinate_system],
                 reference_coordinate_system=self.coordinate_system,
             )
@@ -453,6 +473,12 @@ class CommonAntenna(object):
     @pyaedt_function_handler()
     def setup_hfss(self):
         """Set up an antenna in HFSS."""
+        # Set global coordinates to assign excitations and boundaries.
+        # This is needed because to compute the terminals, Global CS must be active
+
+        active_cs = self.coordinate_system
+
+        self._app.modeler.set_working_coordinate_system("Global")
 
         for obj_name in self.object_list.keys():
             if obj_name.startswith("PerfE") or obj_name.startswith("gnd_") or obj_name.startswith("ant_"):
@@ -513,6 +539,12 @@ class CommonAntenna(object):
 
                 self.excitations[port1.name] = port1
                 port_count += 1
+
+                if self._app.solution_type == "Terminal":
+                    self.__excitation_type = "Terminal_Lumped"
+                else:
+                    self._app.solution_type = "Modal_Lumped"
+
             elif port:
                 if self._app.solution_type == "Terminal" and port_cap:
                     terminal_references = port_cap.name
@@ -524,6 +556,12 @@ class CommonAntenna(object):
                 self.excitations[port1.name] = port1
                 port_count += 1
 
+                if self._app.solution_type == "Terminal":
+                    self.__excitation_type = "Terminal_Waveport"
+                else:
+                    self._app.solution_type = "Modal_Waveport"
+
+        self._app.modeler.set_working_coordinate_system(active_cs)
         return True
 
 
@@ -573,32 +611,31 @@ class TransmissionLine(object):
         tuple
             Line width and length.
         """
-
         z0 = impedance
         e0 = permittivity
         h0 = substrate_height
 
-        A_us = z0 / 60.0 * math.sqrt((e0 + 1.0) / 2.0) + (e0 - 1.0) / (e0 + 1.0) * (0.23 + 0.11 / e0)
-        B_us = 377.0 * math.pi / (2.0 * z0 * math.sqrt(e0))
+        a_us = z0 / 60.0 * math.sqrt((e0 + 1.0) / 2.0) + (e0 - 1.0) / (e0 + 1.0) * (0.23 + 0.11 / e0)
+        b_us = 377.0 * math.pi / (2.0 * z0 * math.sqrt(e0))
 
-        w_over_subH_1 = 8.0 * math.exp(A_us) / (math.exp(2.0 * A_us) - 2.0)
-        w_over_subH_2 = (
+        w_over_subh_1 = 8.0 * math.exp(a_us) / (math.exp(2.0 * a_us) - 2.0)
+        w_over_subh_2 = (
             2.0
             / math.pi
             * (
-                B_us
+                b_us
                 - 1.0
-                - math.log(2.0 * B_us - 1.0)
-                + (e0 - 1.0) / (2.0 * e0) * (math.log(B_us - 1.0) + 0.39 - 0.61 / e0)
+                - math.log(2.0 * b_us - 1.0)
+                + (e0 - 1.0) / (2.0 * e0) * (math.log(b_us - 1.0) + 0.39 - 0.61 / e0)
             )
         )
 
-        ustrip_width = w_over_subH_1 * h0
-        if w_over_subH_1 < 2.0:
-            ustrip_width = w_over_subH_1 * h0
+        ustrip_width = w_over_subh_1 * h0
+        if w_over_subh_1 < 2.0:
+            ustrip_width = w_over_subh_1 * h0
 
-        if w_over_subH_2 >= 2:
-            ustrip_width = w_over_subH_2 * h0
+        if w_over_subh_2 >= 2:
+            ustrip_width = w_over_subh_2 * h0
 
         er_eff = (e0 + 1.0) / 2.0 + (e0 - 1.0) / 2.0 * 1.0 / (math.sqrt(1.0 + 12.0 * h0 / ustrip_width))
         f = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "Hz")
@@ -627,7 +664,6 @@ class TransmissionLine(object):
         float
             Line width.
         """
-
         x = 30.0 * math.pi / (math.sqrt(permittivity) * impedance) - 0.441
 
         if math.sqrt(permittivity) * impedance <= 120:
@@ -656,15 +692,15 @@ class TransmissionLine(object):
         float
             Effective permittivity.
         """
-        Hfrac = 16.0  # H_as_fraction_of_wavelength 1/H
-        H = (wavelength / math.sqrt(permittivity) + substrate_height * Hfrac) / Hfrac
-        heigth_ratio = substrate_height / (H - substrate_height)
+        hfrac = 16.0  # H_as_fraction_of_wavelength 1/H
+        h = (wavelength / math.sqrt(permittivity) + substrate_height * hfrac) / hfrac
+        heigth_ratio = substrate_height / (h - substrate_height)
         a = math.pow(0.8621 - 0.125 * math.log(heigth_ratio), 4.0)
         b = math.pow(0.4986 - 0.1397 * math.log(heigth_ratio), 4.0)
 
-        Width_to_height_ratio = w1 / (H - substrate_height)
+        width_to_height_ratio = w1 / (h - substrate_height)
         sqrt_er_eff = math.pow(
-            1.0 + heigth_ratio * (a - b * math.log(Width_to_height_ratio)) * (1.0 / math.sqrt(permittivity) - 1.0),
+            1.0 + heigth_ratio * (a - b * math.log(width_to_height_ratio)) * (1.0 / math.sqrt(permittivity) - 1.0),
             -1.0,
         )
         effective_permittivity = math.pow(sqrt_er_eff, 2.0)
@@ -762,7 +798,6 @@ class StandardWaveguide(object):
         list
             Waveguide dimensions.
         """
-
         if name in self.wg:
             wg_dim = []
             for dbl in self.wg[name]:
@@ -787,7 +822,6 @@ class StandardWaveguide(object):
         str
             Waveguide name.
         """
-
         freq = constants.unit_converter(freq, "Frequency", units, "GHz")
         op_freq = freq * 0.8
 

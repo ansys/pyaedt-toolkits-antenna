@@ -1,6 +1,7 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
-# SPDX-License-Identifier: MIT
+# -*- coding: utf-8 -*-
 #
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +21,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""
-Common conftest
-"""
+"""Common conftest."""
+
+from pathlib import Path
+import shutil
+from typing import List
 
 import pytest
+
+UI_TESTS_PREFIX = "tests/ui"
 
 
 @pytest.fixture(scope="session")
 def common_temp_dir(tmp_path_factory):
     tmp_dir = tmp_path_factory.mktemp("test_antenna_toolkit_workflows", numbered=True)
+    src_folder = Path(__file__).parent / "input_data"
+    shutil.copytree(src_folder, Path(tmp_dir) / "input_data")
 
     yield tmp_dir
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: List[pytest.Item]):
+    """Apply marker on tests."""
+    for item in items:
+        # Mark unit, integration and system tests
+        if item.nodeid.startswith(UI_TESTS_PREFIX):
+            item.add_marker(pytest.mark.ui)

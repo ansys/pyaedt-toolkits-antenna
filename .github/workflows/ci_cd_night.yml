@@ -1,0 +1,403 @@
+name: night
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+
+env:
+  MAIN_PYTHON_VERSION: '3.12'
+  DOCUMENTATION_CNAME: 'aedt.antenna.toolkit.docs.pyansys.com'
+  LIBRARY_NAME: 'ansys-aedt-toolkits-antenna'
+  LIBRARY_NAMESPACE: 'ansys.aedt.toolkits.antenna'
+  ANSYSLMD_LICENSE_FILE: ${{ format('1055@{0}', secrets.LICENSE_SERVER) }}
+  ON_CI: True
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {} # Disable default permissions
+
+jobs:
+
+  vulnerabilities:
+    name: "Vulnerabilities"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: ansys/actions/check-vulnerabilities@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          python-package-name: ${{ env.LIBRARY_NAME }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          dev-mode: ${{ github.ref != 'refs/heads/main' }}
+
+  code-style:
+    name: "Code style"
+    runs-on: ubuntu-latest
+    needs: vulnerabilities
+    permissions:
+      contents: read
+    steps:
+      - uses: ansys/actions/code-style@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          use-python-cache: false
+
+  doc-style:
+    name: "Documentation style"
+    runs-on: ubuntu-latest
+    needs: vulnerabilities
+    permissions:
+      contents: read
+    steps:
+      - uses: ansys/actions/doc-style@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          vale-version: "3.4.1"
+
+  doc-build:
+    name: "Build documentation"
+    runs-on: [self-hosted, Windows, pyaedt-toolkit]
+    needs: doc-style
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Build documentation
+        uses: ansys/actions/doc-build@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          use-python-cache: false
+          add-pdf-html-docs-as-assets: true
+          check-links: false
+
+  smoke-tests:
+    name: "Build and Smoke tests"
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+    runs-on: ${{ matrix.os }}
+    needs: [code-style, vulnerabilities]
+    permissions:
+      contents: read
+    steps:
+      - uses: ansys/actions/build-wheelhouse@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
+        with:
+          library-name: ${{ env.LIBRARY_NAME }}
+          operating-system: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+          whitelist-license-check: 'fpdf2 PySide6 PySide6_Addons PySide6_Essentials shiboken6'
+
+  build-application-windows:
+    name: "Build Application - Windows"
+    runs-on: windows-latest
+    needs: smoke-tests
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Install Dependencies
+        run: pip install .[freeze]
+
+      - name: Extract version
+        run: |
+          python installer/extract_version.py
+
+      - name: Freeze application
+        run: pyinstaller frozen.spec
+
+      - name: Install NSIS
+        run: choco install nsis -y
+
+      - name: Debug build directory
+        run: Get-ChildItem -Path build -Recurse | ForEach-Object { $_.FullName }
+
+      - name: Check NSIS version
+        shell: pwsh
+        run: |
+          & "C:\Program Files (x86)\NSIS\makensis.exe" /VERSION
+
+      - name: Run NSIS
+        shell: pwsh
+        if: always()
+        run: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference = "Stop"
+          if (!(Test-Path -Path "setup.nsi")) {
+            Write-Error "setup.nsi not found"
+          }
+          & "C:\Program Files (x86)\NSIS\makensis.exe" setup.nsi
+
+      - name: List output
+        run: ls -R dist
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: Antenna-Toolkit-Installer-windows
+          path: dist/*.exe
+
+  build-application-linux-debian:
+    strategy:
+      matrix:
+        os: ["24.04", "22.04"]
+      fail-fast: false
+    name: "Build Application - Ubuntu ${{ matrix.os }}"
+    runs-on: ubuntu-${{ matrix.os }}
+    needs: smoke-tests
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Install Linux Dependencies
+        run: |
+          sudo apt update
+          sudo apt install aptitude -y;
+          sudo aptitude install libfontconfig1-dev \
+            libfreetype6-dev \
+            libx11-dev \
+            libx11-xcb-dev \
+            libxext-dev \
+            libxfixes-dev \
+            libxi-dev \
+            libxrender-dev \
+            libxcb1-dev \
+            libxcb-glx0-dev \
+            libxcb-keysyms1-dev \
+            libxcb-image0-dev \
+            libxcb-shm0-dev \
+            libxcb-icccm4-dev \
+            libxcb-sync-dev \
+            libxcb-xfixes0-dev \
+            libxcb-shape0-dev \
+            libxcb-randr0-dev \
+            libxcb-render-util0-dev \
+            libxcb-cursor-dev \
+            libxcb-util-dev \
+            libxcb-xkb-dev \
+            libxcb-xinerama0-dev \
+            libxkbcommon-dev \
+            libxkbcommon-x11-dev \
+            -y
+          sudo apt install ruby -y
+          sudo gem install fpm
+
+      - name: Install Python Dependencies
+        run: pip install .[freeze]
+
+      - name: Extract version
+        run: |
+          set -e
+          python installer/extract_version.py
+
+      - name: Freeze application
+        env:
+          ADD_PYTHON_BINARIES: true
+        run: pyinstaller frozen.spec
+
+      - name: Setup and Copy Linux files for packaging
+        run: |
+          mkdir -p package/opt
+          mkdir -p package/share/applications
+          mkdir -p package/share/icons
+          cp -r dist/antenna_toolkit package/opt/antenna_toolkit
+          cp installer/assets/splash_icon.svg package/share/icons/splash_icon.svg
+          cp installer/linux/debian/antenna_toolkit_prebuild.desktop package/share/applications
+          find package/opt/antenna_toolkit -type f -exec chmod 644 -- {} +
+          find package/opt/antenna_toolkit -type d -exec chmod 755 -- {} +
+          find package/share -type f -exec chmod 644 -- {} +
+          chmod +x package/opt/antenna_toolkit/antenna_toolkit
+          chmod +x package/opt/antenna_toolkit/_internal/assets/uninstaller_ubuntu.sh
+          version=v`cat ./installer/VERSION`
+          echo "APPLICATION_VERSION=$version" >> $GITHUB_ENV
+          set -x  # Debug mode
+          fpm -v $version --fpm-options-file installer/linux/debian/fpm-options-debian
+
+      - name: Create zip file
+        env:
+          MATRIX_OS: ${{ matrix.os }}
+        run: |
+          cp installer/linux/debian/installer.sh installer.sh
+          cp installer/linux/debian/postInstallScript.sh postInstallScript.sh
+          chmod +x installer.sh postInstallScript.sh antenna_toolkit.deb
+          version=$(cat ./installer/VERSION)
+          os_version_processed=$(echo "${MATRIX_OS}" | sed 's/\./_/g')
+          zip_name="Antenna-Toolkit-Installer-ubuntu_${os_version_processed}.zip"
+          echo "OS_VERSION_PROCESSED=${os_version_processed}" >> $GITHUB_ENV
+          echo "APPLICATION_VERSION=v${version}" >> $GITHUB_ENV
+          zip -r $zip_name antenna_toolkit.deb installer.sh postInstallScript.sh
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: Antenna-Toolkit-Installer-ubuntu_${{ matrix.os }}
+          path: Antenna-Toolkit-Installer-ubuntu_${{ env.OS_VERSION_PROCESSED }}.zip
+
+  tests_windows:
+    name: "Windows Tests"
+    runs-on: [self-hosted, Windows, pyaedt-toolkit]
+    needs: smoke-tests
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Create Python venv
+        run: |
+          python -m venv .venv
+          .\.venv\Scripts\Activate.ps1
+
+      - name: Install packages for testing
+        run: |
+          .\.venv\Scripts\Activate.ps1
+          python -m pip install --upgrade pip
+          pip install --upgrade build wheel
+          pip install .[tests]
+
+      - name: Antenna models testing
+        timeout-minutes: 60
+        run: |
+          .\.venv\Scripts\Activate.ps1
+          pytest -v -m antenna_models_common_api --cov
+          pytest -v -m antenna_models_api --cov --cov-append
+
+      - name: Toolkit API testing
+        timeout-minutes: 30
+        run: |
+          .\.venv\Scripts\Activate.ps1
+          pytest -v -m antenna_toolkit_api --cov --cov-append
+
+      - name: Toolkit REST API testing
+        timeout-minutes: 30
+        run: |
+          .\.venv\Scripts\Activate.ps1
+          pytest -v -m antenna_toolkit_rest_api --cov --cov-append
+
+      - name: "Combine coverage files"
+        run: |
+          .\.venv\Scripts\Activate.ps1
+          python -m coverage html -d .cov\windows-coverage-html
+          python -m coverage xml -o .cov\windows-coverage.xml
+
+      - name: "Upload coverage results"
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          path: .cov/windows-coverage-html
+          name: windows-html-coverage
+
+      - name: "Upload coverage report to codecov"
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
+        with:
+          name: windows-codecov-tests
+          files: .cov/windows-coverage.xml
+          flags: windows_tests
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  tests_linux:
+    name: "Linux Tests"
+    runs-on: [self-hosted, Linux, pyaedt-toolkit]
+    needs: smoke-tests
+    permissions:
+      contents: read
+    env:
+      ANSYSEM_ROOT261: '/usr/ansys_inc/v261/AnsysEM'
+      ANS_NODEPCHECK: '1'
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Create Python venv
+        run: |
+          python -m venv .venv_linux
+
+      - name: Install packages for testing
+        run: |
+          source .venv_linux/bin/activate
+          python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip -U
+          python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org wheel setuptools -U
+          python -c "import sys; print(sys.executable)"
+          python -m pip install --upgrade pip
+          pip install --upgrade build wheel
+          pip install .[tests]
+          pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pytest-azurepipelines
+
+      - name: Antenna models testing
+        timeout-minutes: 60
+        run: |
+          source .venv_linux/bin/activate
+          pytest -v -m antenna_models_common_api
+          pytest -v -m antenna_models_api
+
+      - name: Toolkit API testing
+        timeout-minutes: 30
+        run: |
+          source .venv_linux/bin/activate
+          pytest -v -m antenna_toolkit_api
+
+      - name: Toolkit REST API testing
+        timeout-minutes: 30
+        run: |
+          source .venv_linux/bin/activate
+          pytest -v -m antenna_toolkit_rest_api
+
+  build-library:
+    name: "Build library artifacts"
+    runs-on: ubuntu-latest
+    needs: [doc-build, tests_windows, tests_linux, build-application-windows, build-application-linux-debian]
+    permissions:
+      contents: read
+    steps:
+      - uses: ansys/actions/build-library@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
+        with:
+          library-name: ${{ env.LIBRARY_NAME }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+  doc-deploy-dev:
+    name: "Deploy development documentation"
+    runs-on: ubuntu-latest
+    needs: build-library
+    permissions:
+      contents: write # Needed to update files on the gh-pages branch
+    steps:
+      - uses: ansys/actions/doc-deploy-dev@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
