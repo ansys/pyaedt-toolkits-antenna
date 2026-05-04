@@ -43,7 +43,6 @@ MODELS = [
     ("EllipticalBaseStripMonopole", "strip_width", 1.0),
     ("VerticalTrapezoidalMonopole", "monopole_height", 1.0),
     ("WireMonopole", "monopole_length", 1.0),
-    ("WireMonopoleInfGnd", "monopole_length", 1.0),
 ]
 
 CATALOG_ROOT = (
