@@ -580,7 +580,6 @@ class AxialMode(CommonHelix):
         helix_wiredia = constants.unit_converter(0.2 * (3.33 / freq_ghz), "Length", "in", "mm")
         helix_coax_inner_radius = constants.unit_converter(0.082 * (3.33 / freq_ghz) / 2, "Length", "in", "mm")
         helix_coax_outer_radius = constants.unit_converter(0.275 * (3.33 / freq_ghz) / 2, "Length", "in", "mm")
-
         helix_feed_pinl = constants.unit_converter(0.05 * (3.33 / freq_ghz), "Length", "in", "mm")
         helix_feed_pind = constants.unit_converter(0.082 * (3.33 / freq_ghz), "Length", "in", "mm")
 
@@ -650,7 +649,6 @@ class AxialMode(CommonHelix):
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
         antenna_name = self.name
         coordinate_system = self.coordinate_system
-
         my_udm_pairs = []
         mypair = ["PolygonSegments", "8"]
         my_udm_pairs.append(mypair)

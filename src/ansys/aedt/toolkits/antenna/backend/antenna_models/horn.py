@@ -1359,6 +1359,7 @@ class Corrugated(CommonHorn):
         horn.group_name = antenna_name
         cap.group_name = antenna_name
         p1.group_name = antenna_name
+        return True
 
         self._app.modeler.fit_all()
 

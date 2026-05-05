@@ -14,10 +14,16 @@ models = ["PlanarDipole", "WireDipole"]
 models = ["AxialMode", "AxialModeTaper", "NormalMode", "QuadrifilarOpen", "QuadrifilarShort"]
 
 [Horn]
-models = ["Conical", "Corrugated",
-    "EPlane", "Elliptical",
-    "HPlane", "Pyramidal",
-    "PyramidalRidged", "QuadRidged"]
+models = [
+  "Conical",
+  "Corrugated",
+  "EPlane",
+  "Elliptical",
+  "HPlane",
+  "Pyramidal",
+  "PyramidalRidged",
+  "QuadRidged",
+]
 
 [LogPeriodic]
 models = []
@@ -26,12 +32,25 @@ models = []
 models = ["Bicone", "Discone"]
 
 [Monopole]
-models = ["BladeAntenna", "CircularDiscMonopole", "EllipticalBaseStripMonopole", "VerticalTrapezoidalMonopole",
-    "WireMonopole"]
+models = [
+  "BladeAntenna",
+  "CircularDiscMonopole",
+  "EllipticalBaseStripMonopole",
+  "VerticalTrapezoidalMonopole",
+  "WireMonopole",
+]
 
 [Patch]
-models = ["RectangularPatchEdge", "RectangularPatchInset",
-    "RectangularPatchProbe"]
+models = [
+  "EllipticalEdge",
+  "EllipticalInset",
+  "EllipticalProbe",
+  "MbyNPatchArray",
+  "RectangularPatchEdge",
+  "RectangularPatchInset",
+  "RectangularPatchProbe",
+  "SeqRotated2Patch",
+]
 
 [PIFA]
 models = []

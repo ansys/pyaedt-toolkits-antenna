@@ -1,21 +1,16 @@
-name = "Rectangular Edge Fed"
+name = "Elliptical Edge Fed"
 
 [object_1]
-name = "sub"
+name = "sub_Patch"
 color = [0, 128, 0]
 opacity = 0.2
 
 [object_2]
-name = "gnd"
+name = "gnd_Patch"
 color = [255, 128, 65]
 opacity = 0.9
 
 [object_3]
-name = "ant"
-color = [255, 128, 65]
-opacity = 0.9
-
-[object_4]
-name = "port_lump"
+name = "ant_Patch"
 color = [255, 128, 65]
 opacity = 0.9

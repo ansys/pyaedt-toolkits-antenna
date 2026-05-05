@@ -50,6 +50,11 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import Circular
 from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import EllipticalBaseStripMonopole
 from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import VerticalTrapezoidalMonopole
 from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import WireMonopole
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import EllipticalEdge
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import EllipticalInset
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import EllipticalProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import MbyNPatchArray
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import SeqRotated2Patch

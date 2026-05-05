@@ -221,7 +221,7 @@ class ToolkitBackend(AEDTCommon):
             and key in self.properties.antenna.parameters_hfss
             and self.properties.antenna.parameters_hfss[key] in self.aedtapp.variable_manager.independent_variable_names
         ):
-            ratio_re = re.compile("|".join(["ratio", "coefficient", "points", "number"]))
+            ratio_re = re.compile("|".join(["ratio", "coefficient", "points", "number", "count", "phase"]))
             if "angle" in key:  # pragma: no cover
                 if "deg" not in val:
                     val = val + "deg"
