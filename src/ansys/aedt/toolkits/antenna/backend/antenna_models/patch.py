@@ -28,6 +28,7 @@ import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
+from ansys.aedt.toolkits.antenna.backend.antenna_models.common import properties
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
 
 
@@ -35,11 +36,13 @@ class CommonPatch(CommonAntenna):
     """Provides base methods common to patch antenna."""
 
     def __init__(self, _default_input_parameters, *args, **kwargs):
+        default_input_parameters = properties.antenna.synthesis.model_dump()
+        default_input_parameters.update(_default_input_parameters)
         CommonAntenna.antenna_type = "Patch"
-        CommonAntenna.__init__(self, _default_input_parameters, *args, **kwargs)
+        CommonAntenna.__init__(self, default_input_parameters, *args, **kwargs)
         if "substrate_height" not in kwargs:
             self.substrate_height = constants.unit_converter(
-                self.substrate_height, "Length", _default_input_parameters["length_unit"], self.length_unit
+                self.substrate_height, "Length", default_input_parameters["length_unit"], self.length_unit
             )
         self._transmission_line_calculator = TransmissionLine(self.frequency, self.frequency_unit)
 
