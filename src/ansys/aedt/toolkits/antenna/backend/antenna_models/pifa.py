@@ -388,7 +388,7 @@ class PlanarInvertedF(CommonPIFA):
 
         ant_short_wall = self._app.modeler.create_rectangle(
             orientation=1,
-            origin=[short_x_origin, "0", "0"],
+            origin=[short_x_origin, "0", "-" + sub_h],
             sizes=[sub_h, trace_width],
             name="ant_short_wall_" + antenna_name,
             new_properties={"Coordinate System": coordinate_system},
@@ -413,9 +413,14 @@ class PlanarInvertedF(CommonPIFA):
         )
         ant_microstrip.color = (255, 128, 65)
 
+        self._app.modeler.unite([ant_feed, ant_short_arm, ant_top, ant_microstrip])
+        antenna = self._app.modeler[ant_feed.name]
+        antenna.name = "ant_" + antenna_name
+        antenna.color = (255, 128, 65)
+
         port_lump = self._app.modeler.create_rectangle(
             orientation=1,
-            origin=[f"-{feed_width}/2+{feed_offset}", "-" + feed_length, "0"],
+            origin=[f"-{feed_width}/2+{feed_offset}", "-" + feed_length, "-" + sub_h],
             sizes=[sub_h, feed_width],
             name="port_lump_" + antenna_name,
             new_properties={"Coordinate System": coordinate_system},
@@ -425,11 +430,8 @@ class PlanarInvertedF(CommonPIFA):
         objects = {
             sub.name: sub,
             gnd.name: gnd,
-            ant_feed.name: ant_feed,
-            ant_short_arm.name: ant_short_arm,
+            antenna.name: antenna,
             ant_short_wall.name: ant_short_wall,
-            ant_top.name: ant_top,
-            ant_microstrip.name: ant_microstrip,
             port_lump.name: port_lump,
         }
         return self._finalize_model(objects, {"pos_x": pos_x, "pos_y": pos_y, "pos_z": pos_z})
