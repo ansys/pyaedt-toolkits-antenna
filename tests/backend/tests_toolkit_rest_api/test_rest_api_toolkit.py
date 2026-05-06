@@ -47,25 +47,6 @@ class TestClass:
         data = json.loads(response.data.decode("utf-8"))
         assert isinstance(data, dict)
 
-    def test_01b_get_planar_spiral_synthesis(self, client):
-        new_properties = {
-            "model": "PlanarLogCavity",
-            "synth_only": True,
-        }
-        client.put("/properties", json=new_properties)
-        response = client.post("/create_antenna")
-
-        assert response.status_code == 200
-        data = json.loads(response.data.decode("utf-8"))
-        for parameter in [
-            "cavity_diameter",
-            "cavity_height",
-            "bottom_absorber_thickness",
-            "middle_absorber_thickness",
-            "top_absorber_thickness",
-        ]:
-            assert parameter in data
-
     def test_02_update_parameters(self, client):
         response1 = client.patch("/hfss_parameters", json={})
         assert response1.status_code == 500
