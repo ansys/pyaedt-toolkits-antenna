@@ -122,7 +122,7 @@ class ToolkitBackend(AEDTCommon):
         )
 
         # Update antenna properties
-        for antenna_prop in self.properties.antenna.synthesis.__class__.model_fields:
+        for antenna_prop in type(self.properties.antenna.synthesis).model_fields:
             if (
                 antenna_prop == "frequency"
                 and "start_frequency" in self.oantenna.__dir__()
@@ -221,7 +221,7 @@ class ToolkitBackend(AEDTCommon):
             and key in self.properties.antenna.parameters_hfss
             and self.properties.antenna.parameters_hfss[key] in self.aedtapp.variable_manager.independent_variable_names
         ):
-            ratio_re = re.compile("|".join(["ratio", "coefficient", "points", "number"]))
+            ratio_re = re.compile("|".join(["ratio", "coefficient", "points", "number", "count", "phase"]))
             if "angle" in key:  # pragma: no cover
                 if "deg" not in val:
                     val = val + "deg"
@@ -360,8 +360,8 @@ class ToolkitBackend(AEDTCommon):
                     snp_file = find_touchstone_files(str(metadata_dir))
 
                     if snp_file:
-                        snp_file = list(snp_file.keys())[0]
-                        serialized_file = self.serialize_obj_base64(snp_file)
+                        snp_file_key = list(snp_file.keys())[0]
+                        serialized_file = self.serialize_obj_base64(snp_file[snp_file_key])
                         encoded_scattering_file = serialized_file.decode("utf-8")
 
                     self.release_aedt(False, False)

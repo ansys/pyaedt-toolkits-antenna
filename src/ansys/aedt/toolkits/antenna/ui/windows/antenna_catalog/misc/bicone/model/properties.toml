@@ -1,0 +1,16 @@
+name = "Bicone"
+
+[object_1]
+name = "ant"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_2]
+name = "ant_1"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "port_lump"
+color = [128, 0, 0]
+opacity = 0.2
