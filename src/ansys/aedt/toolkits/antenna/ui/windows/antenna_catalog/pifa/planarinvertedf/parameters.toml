@@ -1,9 +1,9 @@
-Name = "Planar_Inverted_F"
+Coordinate_System = "Global"
 Frequency = 2.4
-Substrate_Material = ["Duroid (tm)", "FR4_epoxy", "Rogers RT / duroid 6002(tm)", "Teflon (tm)"]
-Substrate_Height = 1.5748
-Boundary_Condition = ["Radiation", "PML", "FEBI", "None"]
+Name = "Planar_Inverted_F"
 Origin_X_Position = 0.0
 Origin_Y_Position = 0.0
 Origin_Z_Position = 0.0
-Coordinate_System = "Global"
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Substrate_Height = 1.5748
+Substrate_Material = ["Duroid (tm)", "FR4_epoxy", "Rogers RT / duroid 6002(tm)", "Teflon (tm)"]
