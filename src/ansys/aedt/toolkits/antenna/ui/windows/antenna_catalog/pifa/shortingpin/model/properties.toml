@@ -1,0 +1,46 @@
+name = "Shorting Pin PIFA"
+
+[object_1]
+name = "sub_ShortingPin"
+color = [0, 128, 0]
+opacity = 0.2
+
+[object_2]
+name = "gnd_ShortingPin"
+color = [65, 128, 255]
+opacity = 0.9
+
+[object_3]
+name = "ant_ShortingPin"
+color = [65, 128, 255]
+opacity = 0.9
+
+[object_4]
+name = "feed_pin_ShortingPin"
+color = [255, 128, 65]
+opacity = 0.8
+
+[object_5]
+name = "feed_coax_ShortingPin"
+color = [255, 128, 65]
+opacity = 0.8
+
+[object_6]
+name = "coax_ShortingPin"
+color = [128, 255, 255]
+opacity = 0.8
+
+[object_7]
+name = "port_cap_ShortingPin"
+color = [132, 132, 193]
+opacity = 0.8
+
+[object_8]
+name = "port_ShortingPin"
+color = [128, 0, 0]
+opacity = 0.2
+
+[object_9]
+name = "short_pin_ShortingPin"
+color = [255, 128, 65]
+opacity = 0.8

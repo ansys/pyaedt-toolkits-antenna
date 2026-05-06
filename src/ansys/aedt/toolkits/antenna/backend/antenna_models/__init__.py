@@ -58,3 +58,6 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import Rectangular
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import SeqRotated2Patch
+from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import PlanarInvertedF
+from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import ShortingPin
+from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import ShortingPlate
