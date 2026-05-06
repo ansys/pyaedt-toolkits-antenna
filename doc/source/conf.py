@@ -77,6 +77,7 @@ def setup(app):
 
 
 os.environ["PYANSYS_VISUALIZER_HTML_BACKEND"] = "true"
+os.environ["PYAEDT_NON_GRAPHICAL"] = "1"
 
 print(__version__)
 # Project information

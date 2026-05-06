@@ -1,0 +1,16 @@
+name = "Discone"
+
+[object_1]
+name = "gnd"
+color = [230, 230, 230]
+opacity = 0.2
+
+[object_2]
+name = "ant"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "port_lump"
+color = [128, 0, 0]
+opacity = 0.2

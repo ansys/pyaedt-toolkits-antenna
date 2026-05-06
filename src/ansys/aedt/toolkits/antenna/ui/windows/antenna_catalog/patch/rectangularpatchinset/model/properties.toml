@@ -1,16 +1,21 @@
 name = "Rectangular Inset Fed"
 
 [object_1]
-name = "sub_Patch"
+name = "sub"
 color = [0, 128, 0]
 opacity = 0.2
 
 [object_2]
-name = "gnd_Patch"
+name = "gnd"
 color = [255, 128, 65]
 opacity = 0.9
 
 [object_3]
-name = "ant_Patch"
+name = "ant"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_4]
+name = "port_lump"
 color = [255, 128, 65]
 opacity = 0.9

@@ -1,0 +1,131 @@
+name = "M by N Patch Array"
+
+[object_1]
+name = "sub"
+color = [0, 128, 0]
+opacity = 0.2
+
+[object_2]
+name = "gnd"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "ant_0_0"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_4]
+name = "ant_0_1"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_5]
+name = "ant_0_2"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_6]
+name = "ant_1_0"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_7]
+name = "ant_1_1"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_8]
+name = "ant_1_2"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_9]
+name = "coax_0_0"
+color = [128, 255, 255]
+opacity = 0.9
+
+[object_10]
+name = "coax_0_1"
+color = [128, 255, 255]
+opacity = 0.9
+
+[object_11]
+name = "coax_0_2"
+color = [128, 255, 255]
+opacity = 0.9
+
+[object_12]
+name = "coax_1_0"
+color = [128, 255, 255]
+opacity = 0.9
+
+[object_13]
+name = "coax_1_1"
+color = [128, 255, 255]
+opacity = 0.9
+
+[object_14]
+name = "coax_1_2"
+color = [128, 255, 255]
+opacity = 0.9
+
+[object_15]
+name = "feed_coax_0_0"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_16]
+name = "feed_coax_0_1"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_17]
+name = "feed_coax_0_2"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_18]
+name = "feed_coax_1_0"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_19]
+name = "feed_coax_1_1"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_20]
+name = "feed_coax_1_2"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_21]
+name = "feed_pin_0_0"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_22]
+name = "feed_pin_0_1"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_23]
+name = "feed_pin_0_2"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_24]
+name = "feed_pin_1_0"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_25]
+name = "feed_pin_1_1"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_26]
+name = "feed_pin_1_2"
+color = [255, 128, 65]
+opacity = 0.9

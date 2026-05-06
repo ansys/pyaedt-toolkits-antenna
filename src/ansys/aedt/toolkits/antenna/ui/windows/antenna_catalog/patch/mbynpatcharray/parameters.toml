@@ -1,0 +1,11 @@
+Name = "MbyN_Patch_Array"
+Frequency = 1.0
+Substrate_Material = ["Teflon (tm)", "FR4_epoxy", "Rogers RT / duroid 6002(tm)"]
+Substrate_Height = 1.272
+Number_of_Patches_X = 2
+Number_of_Patches_Y = 3
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"

@@ -2,22 +2,22 @@ name = "Sinuous"
 
 [object_1]
 name = "ant_arm1"
-color = [65, 65, 65]
+color = [255, 128, 65]
 opacity = 1.0
 
 [object_2]
 name = "ant_arm2"
-color = [65, 65, 65]
+color = [255, 128, 65]
 opacity = 1.0
 
 [object_3]
 name =  "ant_arm3"
-color = [65, 65, 65]
+color = [255, 128, 65]
 opacity = 1.0
 
 [object_4]
 name =  "ant_arm4"
-color = [65, 65, 65]
+color = [255, 128, 65]
 opacity = 1.0
 
 [object_5]
