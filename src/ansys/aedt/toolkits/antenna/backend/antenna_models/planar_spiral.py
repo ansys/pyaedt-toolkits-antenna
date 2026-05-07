@@ -203,14 +203,9 @@ class PlanarArchimedeanCavity(_PlanarSpiralCavityMixin, PlanarArchimedean):
     @pyaedt_function_handler()
     def synthesis(self):
         parameters = dict(super().synthesis())
-        turns_number = parameters["turns_number"]
-        outer_radius = constants.unit_converter(parameters["inner_rad"], "Length", self.length_unit, "cm")
-        outer_radius += (
-            parameters["expansion_coefficient"]
-            * (turns_number * 2 * math.pi) ** (1.0 / parameters["spiral_coefficient"])
-            * 1.0e-3
-        )
-        outer_radius = constants.unit_converter(outer_radius, "Length", "cm", self.length_unit)
+        start_freq_hz = constants.unit_converter(self.start_frequency, "Freq", self.frequency_unit, "Hz")
+        outer_radius = constants.SpeedOfLight / (2 * math.pi * start_freq_hz)
+        outer_radius = constants.unit_converter(outer_radius, "Length", "meter", self.length_unit)
         parameters.update(self._cavity_parameters(outer_radius))
         return _ordered_parameters(parameters)
 
