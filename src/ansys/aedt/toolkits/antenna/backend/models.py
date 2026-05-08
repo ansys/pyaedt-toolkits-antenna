@@ -34,6 +34,7 @@ from typing import Dict
 from typing import List
 
 from pydantic import BaseModel
+from pydantic import model_validator
 
 from ansys.aedt.toolkits.common.backend.models import CommonProperties
 from ansys.aedt.toolkits.common.backend.models import common_properties
@@ -68,6 +69,16 @@ class Synthesis(BaseModel, validate_assignment=True):
     stop_frequency: float = 0.0
     substrate_height: float = 0.1
     direction: str = "Left"
+
+    @model_validator(mode="after")
+    def update_center_frequency(self):
+        if self.start_frequency > 0.0 and self.stop_frequency > 0.0:
+            object.__setattr__(
+                self,
+                "frequency",
+                (self.stop_frequency - self.start_frequency) / 2.0 + self.start_frequency,
+            )
+        return self
 
 
 class Setup(BaseModel, validate_assignment=True):
