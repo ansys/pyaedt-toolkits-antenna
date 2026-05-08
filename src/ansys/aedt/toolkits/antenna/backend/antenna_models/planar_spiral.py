@@ -142,6 +142,7 @@ class _PlanarSpiralCavityMixin:
 
 
 class PlanarArchimedean(ConicalArchimedean):
+    antenna_type = "PlanarArchimedean"
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
@@ -156,7 +157,6 @@ class PlanarArchimedean(ConicalArchimedean):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.antenna_type = "PlanarArchimedean"
 
     @pyaedt_function_handler()
     def synthesis(self):
@@ -191,6 +191,7 @@ class PlanarArchimedean(ConicalArchimedean):
 
 
 class PlanarArchimedeanCavity(_PlanarSpiralCavityMixin, PlanarArchimedean):
+    antenna_type = "PlanarArchimedeanCavity"
     _default_input_parameters = {
         **PlanarArchimedean._default_input_parameters,
         **_PlanarSpiralCavityMixin._cavity_defaults,
@@ -198,7 +199,6 @@ class PlanarArchimedeanCavity(_PlanarSpiralCavityMixin, PlanarArchimedean):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.antenna_type = "PlanarArchimedeanCavity"
 
     @pyaedt_function_handler()
     def synthesis(self):
@@ -219,6 +219,7 @@ class PlanarArchimedeanCavity(_PlanarSpiralCavityMixin, PlanarArchimedean):
 
 
 class PlanarLog(ConicalLog):
+    antenna_type = "PlanarLog"
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
@@ -233,7 +234,6 @@ class PlanarLog(ConicalLog):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.antenna_type = "PlanarLog"
 
     @pyaedt_function_handler()
     def synthesis(self):
@@ -266,6 +266,7 @@ class PlanarLog(ConicalLog):
 
 
 class PlanarLogCavity(_PlanarSpiralCavityMixin, PlanarLog):
+    antenna_type = "PlanarLogCavity"
     _default_input_parameters = {
         **PlanarLog._default_input_parameters,
         **_PlanarSpiralCavityMixin._cavity_defaults,
@@ -273,7 +274,6 @@ class PlanarLogCavity(_PlanarSpiralCavityMixin, PlanarLog):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.antenna_type = "PlanarLogCavity"
 
     @pyaedt_function_handler()
     def synthesis(self):
@@ -294,6 +294,7 @@ class PlanarLogCavity(_PlanarSpiralCavityMixin, PlanarLog):
 
 
 class PlanarSinuous(ConicalSinuous):
+    antenna_type = "PlanarSinuous"
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
@@ -308,7 +309,6 @@ class PlanarSinuous(ConicalSinuous):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.antenna_type = "PlanarSinuous"
 
     @pyaedt_function_handler()
     def synthesis(self):
@@ -344,6 +344,7 @@ class PlanarSinuous(ConicalSinuous):
 
 
 class PlanarSinuousCavity(_PlanarSpiralCavityMixin, PlanarSinuous):
+    antenna_type = "PlanarSinuousCavity"
     _default_input_parameters = {
         **PlanarSinuous._default_input_parameters,
         **_PlanarSpiralCavityMixin._cavity_defaults,
@@ -351,7 +352,6 @@ class PlanarSinuousCavity(_PlanarSpiralCavityMixin, PlanarSinuous):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.antenna_type = "PlanarSinuousCavity"
 
     @pyaedt_function_handler()
     def synthesis(self):

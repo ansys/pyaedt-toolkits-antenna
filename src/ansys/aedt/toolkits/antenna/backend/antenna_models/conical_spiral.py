@@ -227,7 +227,7 @@ class Archimedean(CommonConicalSpiral):
         parameters["expansion_coefficient"] = expansion_coefficient
         parameters["offset_angle"] = offset_angle
         parameters["spiral_coefficient"] = spiral_coefficient
-        parameters["inner_rad"] = round(inner_rad, 2)
+        parameters["inner_rad"] = round(inner_rad, 6)
         parameters["turns_number"] = round((outer_rad_calc_cm - inner_rad_cm) / 2.0 / math.pi / 0.1, 2)
         parameters["cone_height"] = round((outer_rad_calc - inner_rad) * math.tan(math.radians(66.66)), 2)
         parameters["points"] = points
@@ -246,9 +246,10 @@ class Archimedean(CommonConicalSpiral):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw a conical archimidean spiral antenna.
+        """Draw a conical archimedean spiral antenna.
 
-        This method uses the user-defined model from the AEDT installation.
+        This method builds the geometry natively using PyAEDT modeler primitives,
+        without relying on the AEDT UDM (User-Defined Model) to avoid known UDM bugs.
 
         Once the antenna is created, this method is not used anymore.
         """
@@ -265,69 +266,213 @@ class Archimedean(CommonConicalSpiral):
 
         self.set_variables_in_hfss()
 
-        # Map parameters
-        expansion_coefficient = self.synthesis_parameters.expansion_coefficient.hfss_variable
-        self._app[expansion_coefficient] = str(self.synthesis_parameters.expansion_coefficient.value)
-        offset_angle = self.synthesis_parameters.offset_angle.hfss_variable
-        self._app[offset_angle] = str(self.synthesis_parameters.offset_angle.value) + "deg"
-        spiral_coefficient = self.synthesis_parameters.spiral_coefficient.hfss_variable
-        self._app[spiral_coefficient] = str(self.synthesis_parameters.spiral_coefficient.value)
-        inner_rad = self.synthesis_parameters.inner_rad.hfss_variable
-        turns = self.synthesis_parameters.turns_number.hfss_variable
-        self._app[turns] = str(self.synthesis_parameters.turns_number.value)
-        cone_height = self.synthesis_parameters.cone_height.hfss_variable
-        arms = self.synthesis_parameters.arms_number.hfss_variable
-        self._app[arms] = str(self.synthesis_parameters.arms_number.value)
-        points = self.synthesis_parameters.points.hfss_variable
-        self._app[points] = str(self.synthesis_parameters.points.value)
-        port_extension = self.synthesis_parameters.port_extension.hfss_variable
+        # Read synthesized parameter values
+        expansion_coefficient = self.synthesis_parameters.expansion_coefficient.value  # a
+        offset_angle_deg = self.synthesis_parameters.offset_angle.value  # degrees
+        spiral_coefficient = self.synthesis_parameters.spiral_coefficient.value  # sc exponent (sc = 1/value in UDM)
+        inner_rad = self.synthesis_parameters.inner_rad.value
+        turns_number = self.synthesis_parameters.turns_number.value
+        cone_height = self.synthesis_parameters.cone_height.value
+        arms_number = int(self.synthesis_parameters.arms_number.value)
+        n_points = int(self.synthesis_parameters.points.value)
 
-        pos_x = self.synthesis_parameters.pos_x.hfss_variable
-        pos_y = self.synthesis_parameters.pos_y.hfss_variable
-        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        pos_x = self.synthesis_parameters.pos_x.value
+        pos_y = self.synthesis_parameters.pos_y.value
+        pos_z = self.synthesis_parameters.pos_z.value
         antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         self._app.modeler.set_working_coordinate_system(coordinate_system)
 
-        my_udm_pairs = []
-        mypair = ["NumberOfPoints", points]
-        my_udm_pairs.append(mypair)
-        mypair = ["NumberOfArms", arms]
-        my_udm_pairs.append(mypair)
-        mypair = ["InnerRadius", inner_rad]
-        my_udm_pairs.append(mypair)
-        mypair = ["NumberOfTurns", turns]
-        my_udm_pairs.append(mypair)
-        mypair = ["Offset", offset_angle]
-        my_udm_pairs.append(mypair)
-        mypair = ["ConeHeight", cone_height]
-        my_udm_pairs.append(mypair)
-        mypair = ["ExpansionCoefficient", expansion_coefficient]
-        my_udm_pairs.append(mypair)
-        mypair = ["SpiralCoefficient", spiral_coefficient]
-        my_udm_pairs.append(mypair)
-        mypair = ["Port_Extension", port_extension]
-        my_udm_pairs.append(mypair)
-        obj_udm = self._app.modeler.create_udm(
-            udm_full_name="HFSS/Antenna Toolkit/Spiral/Archimedean.py",
-            parameters=my_udm_pairs,
-            library="syslib",
-            name="archimidean",
+        # ---------------------------------------------------------------
+        # Replicate the UDM geometry algorithm (Archimedean.py)
+        # r(phi) = inner_rad + a * phi^(1/sc)
+        # ---------------------------------------------------------------
+        a = expansion_coefficient
+        sc = 1.0 / spiral_coefficient  # matches UDM: SC = 1/SpiralCoefficient
+        offset = math.radians(offset_angle_deg)
+
+        # Number of phi samples (must be odd, matching UDM logic)
+        n_per_turn = n_points / turns_number
+        n = int(n_points) + 1
+        if n % 2 == 0:
+            n += 1
+        turns_adj = turns_number + 1.0 / n_per_turn
+        max_phi_rad = math.radians(360.0 * turns_adj)
+        step = max_phi_rad / n
+
+        phi = [i * step for i in range(n)]
+
+        # Outer radius at end of spiral (needed for conical operations)
+        r_max = inner_rad + a * math.pow(phi[n - 1], sc)
+
+        # ---------------------------------------------------------------
+        # Port1: closed polygon at inner_rad, z=cone_height (UDM identical)
+        # For planar cone_height=0 so z=0.
+        # ---------------------------------------------------------------
+        port_pts = [
+            [inner_rad + pos_x, pos_y, cone_height + pos_z],
+            [inner_rad * math.cos(offset) + pos_x, inner_rad * math.sin(offset) + pos_y, cone_height + pos_z],
+            [-inner_rad + pos_x, pos_y, cone_height + pos_z],
+            [-inner_rad * math.cos(offset) + pos_x, -inner_rad * math.sin(offset) + pos_y, cone_height + pos_z],
+            [inner_rad + pos_x, pos_y, cone_height + pos_z],
+        ]
+        port1 = self._app.modeler.create_polyline(
+            points=port_pts,
+            cover_surface=True,
+            close_surface=True,
+            name="port_lump_" + antenna_name,
+            material=self.material,
         )
-        for part in obj_udm.parts:
-            comp = obj_udm.parts[part]
 
-            if "AntennaArm" in comp.name:
-                comp.name = "ant_" + comp.name + antenna_name
-            else:
-                comp.name = "port_lump_" + antenna_name
+        # Set coordinate system of polyline
+        port1_obj = self._app.get_oo_object(self._app.oeditor, port1.name)
+        self._app.set_oo_property_value(
+            aedt_object=port1_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
+        port1.color = (128, 0, 0)
+        port1.transparency = 0.1
 
-            self.object_list[comp.name] = comp
+        # ---------------------------------------------------------------
+        # Build the closed flat arm polygon (always z=0, matching UDM)
+        # ---------------------------------------------------------------
+        outer_facets = max(1, int(n_per_turn / 4))
+        num_points = int(2 * n + outer_facets)
+        num_segments = num_points - 1
 
-        obj_udm.move([pos_x, pos_y, pos_z])
+        positions = [None] * num_points
 
-        obj_udm.group_name = antenna_name
+        for i in range(n):
+            # Outer edge of arm (curve 1)
+            r = inner_rad + a * math.pow(phi[i], sc)
+            positions[i] = [r * math.cos(phi[i]) + pos_x, r * math.sin(phi[i]) + pos_y, pos_z]
+            # Inner edge of arm (curve 2, reversed, offset by 'offset')
+            j = n - i - 1
+            r2 = inner_rad + a * math.pow(phi[j], sc)
+            positions[i + n + outer_facets - 1] = [
+                r2 * math.cos(phi[j] + offset) + pos_x,
+                r2 * math.sin(phi[j] + offset) + pos_y,
+                pos_z,
+            ]
+
+        # Outer tip facets connecting outer curve end to inner curve start
+        outer_facet_angle_step = offset / outer_facets
+        r_outer = inner_rad + a * math.pow(phi[n - 1], sc)
+        for k in range(1, outer_facets):
+            angle = phi[n - 1] + outer_facet_angle_step * k
+            positions[n + k - 1] = [r_outer * math.cos(angle) + pos_x, r_outer * math.sin(angle) + pos_y, pos_z]
+
+        # Close the polygon (repeat first point)
+        positions[num_segments] = list(positions[0])
+
+        arm1 = self._app.modeler.create_polyline(
+            points=positions,
+            cover_surface=True,
+            close_surface=True,
+            name="ant_AntennaArm1_base_" + antenna_name,
+            material=self.material,
+        )
+
+        # Set coordinate system of polyline
+        arm1_obj = self._app.get_oo_object(self._app.oeditor, arm1.name)
+        self._app.set_oo_property_value(
+            aedt_object=arm1_obj, object_name="CreatePolyline:1", prop_name="Coordinate System", value=coordinate_system
+        )
+
+        # ---------------------------------------------------------------
+        # Conical mapping: sweep flat arm along Z then intersect with cone,
+        # extract the conical face and top face, unite them, delete solid.
+        # Replicates the UDM SweepAlongVector + Intersect + CreateObjectFromFace approach.
+        # ---------------------------------------------------------------
+        if cone_height > 0:
+            self._app.modeler.sweep_along_vector(
+                assignment=arm1.name,
+                sweep_vector=[0, 0, cone_height],
+            )
+            cone_obj = self._app.modeler.create_cone(
+                orientation="Z",
+                origin=[pos_x, pos_y, pos_z],
+                bottom_radius=r_max,
+                top_radius=inner_rad,
+                height=cone_height,
+                name="cone_ref_" + antenna_name,
+                material="vacuum",
+                new_properties={"Coordinate System": coordinate_system},
+            )
+            self._app.modeler.intersect(
+                assignment=[arm1.name, cone_obj.name],
+                keep_originals=False,
+            )
+
+            # --- Extract lateral face (conical surface of the arm) ---
+            # Point near the outer edge at phi[n-1], slightly above z=0
+            actual_cone_h = cone_height * r_max / (r_max - inner_rad)
+            face_z = pos_z + 0.0001
+            face_r = (actual_cone_h - 0.0001) / actual_cone_h * r_max
+            face_x = pos_x + face_r * math.cos(phi[n - 1])
+            face_y = pos_y + face_r * math.sin(phi[n - 1])
+
+            face_id = self._app.modeler.get_faceid_from_position(
+                [face_x, face_y, face_z], arm1.name, self._app.modeler.model_units
+            )
+
+            if not face_id:
+                logger.error("Geometry creation failed, it can not be retrieved the arm face.")
+                return False
+
+            arm_sheet = self._app.modeler.create_object_from_face(face_id)
+
+            # --- Extract top face (at z = cone_height) ---
+            top_z = pos_z + cone_height
+            top_r = (actual_cone_h - cone_height) / actual_cone_h * r_max - 0.0001
+            top_x = pos_x + top_r * math.cos(offset / 2.0)
+            top_y = pos_y + top_r * math.sin(offset / 2.0)
+            top_face = self._app.modeler.get_faceid_from_position(
+                [top_x, top_y, top_z], arm1.name, self._app.modeler.model_units
+            )
+
+            top_sheet = self._app.modeler.create_object_from_face(top_face)
+
+            # --- Unite both faces into a single surface, delete solid ---
+            self._app.modeler.unite([arm_sheet.name, top_sheet.name])
+            self._app.modeler.delete(arm1.name)
+
+            # Update arm1 reference to the resulting sheet
+            old_name = arm1.name
+            arm_sheet.name = "ant_AntennaArm1_" + antenna_name
+            arm_sheet.group_name = antenna_name
+            if old_name in self.object_list:
+                del self.object_list[old_name]
+            self.object_list["ant_AntennaArm1_" + antenna_name] = arm_sheet
+            arm1 = arm_sheet
+        else:
+            arm1.name = "ant_AntennaArm1_" + antenna_name
+            arm1.group_name = antenna_name
+            self.object_list["ant_AntennaArm1_" + antenna_name] = arm1
+
+        # ---------------------------------------------------------------
+        # Duplicate arms around Z axis (UDM: DuplicateAroundAxis)
+        # ---------------------------------------------------------------
+        if arms_number > 1:
+            angle_step = 360.0 / arms_number
+            duplicated = arm1.duplicate_around_axis(
+                axis="Z",
+                angle=angle_step,
+                clones=arms_number,
+            )
+            for idx, dup_name in enumerate(duplicated, start=2):
+                dup_obj = self._app.modeler[dup_name]
+                new_name = "ant_AntennaArm" + str(idx) + "_" + antenna_name
+                dup_obj.name = new_name
+                dup_obj.group_name = antenna_name
+                self.object_list[new_name] = dup_obj
+
+        port1.group_name = antenna_name
+        self.object_list[port1.name] = port1
+
         self._app.modeler.fit_all()
         return True
 
@@ -460,7 +605,10 @@ class Log(CommonConicalSpiral):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw a conical log spiral antenna. This method uses the User Defined Model from AEDT installation.
+        """Draw a conical log spiral antenna.
+
+        This method builds the geometry natively using PyAEDT modeler primitives,
+        without relying on the AEDT UDM (User-Defined Model) to avoid known UDM bugs.
 
         Once the antenna is created, this method is not used anymore.
         """
@@ -477,64 +625,99 @@ class Log(CommonConicalSpiral):
 
         self.set_variables_in_hfss()
 
-        # Map parameters
-        expansion_coefficient = self.synthesis_parameters.expansion_coefficient.hfss_variable
-        self._app[expansion_coefficient] = str(self.synthesis_parameters.expansion_coefficient.value)
-        offset_angle = self.synthesis_parameters.offset_angle.hfss_variable
-        self._app[offset_angle] = str(self.synthesis_parameters.offset_angle.value) + "deg"
-        spiral_coefficient = self.synthesis_parameters.spiral_coefficient.hfss_variable
-        self._app[spiral_coefficient] = str(self.synthesis_parameters.spiral_coefficient.value)
-        inner_rad = self.synthesis_parameters.inner_rad.hfss_variable
-        turns = self.synthesis_parameters.turns_number.hfss_variable
-        self._app[turns] = str(self.synthesis_parameters.turns_number.value)
-        cone_height = self.synthesis_parameters.cone_height.hfss_variable
-        arms = self.synthesis_parameters.arms_number.hfss_variable
-        self._app[arms] = str(self.synthesis_parameters.arms_number.value)
-        points = self.synthesis_parameters.points.hfss_variable
-        self._app[points] = str(self.synthesis_parameters.points.value)
+        # Read synthesized parameter values
+        expansion_coefficient = self.synthesis_parameters.expansion_coefficient.value  # growth per turn
+        offset_angle_deg = self.synthesis_parameters.offset_angle.value  # arm width in degrees
+        inner_rad = self.synthesis_parameters.inner_rad.value
+        turns_number = self.synthesis_parameters.turns_number.value
+        arms_number = int(self.synthesis_parameters.arms_number.value)
+        n_points = int(self.synthesis_parameters.points.value)
 
-        pos_x = self.synthesis_parameters.pos_x.hfss_variable
-        pos_y = self.synthesis_parameters.pos_y.hfss_variable
-        pos_z = self.synthesis_parameters.pos_z.hfss_variable
+        pos_x = self.synthesis_parameters.pos_x.value
+        pos_y = self.synthesis_parameters.pos_y.value
+        pos_z = self.synthesis_parameters.pos_z.value
         antenna_name = self.name
         coordinate_system = self.coordinate_system
 
         self._app.modeler.set_working_coordinate_system(coordinate_system)
 
-        my_udm_pairs = []
-        mypair = ["NumberOfPoints", points]
-        my_udm_pairs.append(mypair)
-        mypair = ["NumberOfArms", arms]
-        my_udm_pairs.append(mypair)
-        mypair = ["InnerRadius", inner_rad]
-        my_udm_pairs.append(mypair)
-        mypair = ["NumberOfTurns", turns]
-        my_udm_pairs.append(mypair)
-        mypair = ["Offset", offset_angle]
-        my_udm_pairs.append(mypair)
-        mypair = ["ConeHeight", cone_height]
-        my_udm_pairs.append(mypair)
-        mypair = ["ExpansionCoefficient", expansion_coefficient]
-        my_udm_pairs.append(mypair)
-        obj_udm = self._app.modeler.create_udm(
-            udm_full_name="HFSS/Antenna Toolkit/Spiral/Log.py",
-            parameters=my_udm_pairs,
-            library="syslib",
-            name="log",
+        # ---------------------------------------------------------------
+        # Logarithmic spiral: r(phi) = inner_rad * exp(phi * ln(a) / (2*pi))
+        # where a = expansion_coefficient (growth ratio per full turn).
+        # ---------------------------------------------------------------
+        offset = math.radians(offset_angle_deg)
+        k = math.log(expansion_coefficient) / (2 * math.pi)  # log-spiral rate per radian
+
+        # Build phi array over total arc
+        n_per_turn = n_points / turns_number
+        n = int(n_points) + 1
+        if n % 2 == 0:
+            n += 1
+        turns_adj = turns_number + 1.0 / n_per_turn
+        max_phi_rad = math.radians(360.0 * turns_adj)
+        step = max_phi_rad / n
+
+        phi = [i * step for i in range(n)]
+
+        outer_facets = max(1, int(n_per_turn / 4))
+        num_points = int(2 * n + outer_facets)
+        num_segments = num_points - 1
+
+        positions = [None] * num_points
+
+        for i in range(n):
+            # Outer edge of arm (curve 1)
+            r = inner_rad * math.exp(k * phi[i])
+            positions[i] = [r * math.cos(phi[i]), r * math.sin(phi[i]), 0.0]
+            # Inner edge of arm (curve 2, reversed, offset by 'offset')
+            j = n - i - 1
+            r2 = inner_rad * math.exp(k * phi[j])
+            positions[i + n + outer_facets - 1] = [
+                r2 * math.cos(phi[j] + offset),
+                r2 * math.sin(phi[j] + offset),
+                0.0,
+            ]
+
+        # Outer tip facets
+        outer_facet_angle_step = offset / outer_facets
+        r_outer = inner_rad * math.exp(k * phi[n - 1])
+        for m in range(1, outer_facets):
+            angle = phi[n - 1] + outer_facet_angle_step * m
+            positions[n + m - 1] = [r_outer * math.cos(angle), r_outer * math.sin(angle), 0.0]
+
+        # Close the polygon
+        positions[num_segments] = list(positions[0])
+
+        # Offset arm by antenna origin
+        positions_offset = [[p[0] + pos_x, p[1] + pos_y, p[2] + pos_z] for p in positions]
+
+        arm1 = self._app.modeler.create_polyline(
+            points=positions_offset,
+            cover_surface=True,
+            close_surface=True,
+            name="ant_AntennaArm1_" + antenna_name,
+            material=self.material,
         )
-        for part in obj_udm.parts:
-            comp = obj_udm.parts[part]
+        arm1.group_name = antenna_name
+        self.object_list[arm1.name] = arm1
 
-            if "AntennaArm" in comp.name:
-                comp.name = "ant_" + comp.name + antenna_name
-            else:
-                comp.name = "port_lump_" + antenna_name
+        # Duplicate arms around Z axis
+        if arms_number > 1:
+            angle_step = 360.0 / arms_number
+            duplicated = self._app.modeler.duplicate_around_axis(
+                assignment=arm1.name,
+                axis="Z",
+                angle=angle_step,
+                clones=arms_number - 1,
+                create_new_objects=True,
+            )
+            for idx, dup_name in enumerate(duplicated, start=2):
+                dup_obj = self._app.modeler[dup_name]
+                new_name = "ant_AntennaArm" + str(idx) + "_" + antenna_name
+                dup_obj.name = new_name
+                dup_obj.group_name = antenna_name
+                self.object_list[new_name] = dup_obj
 
-            self.object_list[comp.name] = comp
-
-        obj_udm.move([pos_x, pos_y, pos_z])
-
-        obj_udm.group_name = antenna_name
         self._app.modeler.fit_all()
         return True
 
