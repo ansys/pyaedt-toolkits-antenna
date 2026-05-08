@@ -442,6 +442,8 @@ class Archimedean(CommonConicalSpiral):
             old_name = arm1.name
             arm_sheet.name = "ant_AntennaArm1_" + antenna_name
             arm_sheet.group_name = antenna_name
+            arm_sheet.color = (255, 128, 65)
+            arm_sheet.transparency = 0.1
             if old_name in self.object_list:
                 del self.object_list[old_name]
             self.object_list["ant_AntennaArm1_" + antenna_name] = arm_sheet
@@ -449,6 +451,8 @@ class Archimedean(CommonConicalSpiral):
         else:
             arm1.name = "ant_AntennaArm1_" + antenna_name
             arm1.group_name = antenna_name
+            arm1.color = (255, 128, 65)
+            arm1.transparency = 0.1
             self.object_list["ant_AntennaArm1_" + antenna_name] = arm1
 
         # ---------------------------------------------------------------
@@ -780,11 +784,15 @@ class Log(CommonConicalSpiral):
 
             arm_sheet.name = "ant_AntennaArm1_" + antenna_name
             arm_sheet.group_name = antenna_name
+            arm_sheet.color = (255, 128, 65)
+            arm_sheet.transparency = 0.1
             self.object_list["ant_AntennaArm1_" + antenna_name] = arm_sheet
             arm1 = arm_sheet
         else:
             arm1.name = "ant_AntennaArm1_" + antenna_name
             arm1.group_name = antenna_name
+            arm1.color = (255, 128, 65)
+            arm1.transparency = 0.1
             self.object_list["ant_AntennaArm1_" + antenna_name] = arm1
 
         # ---------------------------------------------------------------
