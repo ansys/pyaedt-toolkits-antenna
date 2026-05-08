@@ -39,6 +39,13 @@ def _ordered_parameters(parameters):
 
 
 class _PlanarSpiralCavityMixin:
+    _cavity_visual_settings = {
+        "gnd_cavity": {"color": (66, 191, 244), "transparency": 0.75},
+        "bottom_absorber": {"color": (86, 244, 66), "transparency": 0.55},
+        "middle_absorber": {"color": (244, 66, 66), "transparency": 0.55},
+        "top_absorber": {"color": (72, 66, 244), "transparency": 0.55},
+    }
+
     _cavity_defaults = {
         "cavity_height": None,
         "cavity_diameter": None,
@@ -77,6 +84,11 @@ class _PlanarSpiralCavityMixin:
             return material_name
         logger.warning(f"Material {material_name} not found. Using {fallback} instead.")
         return fallback
+
+    def _apply_visual_settings(self, obj, settings_key):
+        visual_settings = self._cavity_visual_settings[settings_key]
+        obj.color = visual_settings["color"]
+        obj.transparency = visual_settings["transparency"]
 
     def _add_cavity(self):
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
@@ -135,6 +147,11 @@ class _PlanarSpiralCavityMixin:
             material=self._resolve_material(self._input_parameters.top_absorber_material),
             new_properties={"Coordinate System": self.coordinate_system},
         )
+
+        self._apply_visual_settings(cavity, "gnd_cavity")
+        self._apply_visual_settings(bottom_absorber, "bottom_absorber")
+        self._apply_visual_settings(middle_absorber, "middle_absorber")
+        self._apply_visual_settings(top_absorber, "top_absorber")
 
         for obj in [cavity, bottom_absorber, middle_absorber, top_absorber]:
             obj.group_name = self.name
