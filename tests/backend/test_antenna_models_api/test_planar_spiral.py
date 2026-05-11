@@ -97,8 +97,36 @@ PLANAR_SPIRAL_MODELS = [
     ),
     ("PlanarLog", ["ant_AntennaArm1", "ant_AntennaArm2", "port_lump_"]),
     ("PlanarLogCavity", ["ant_AntennaArm1", "ant_AntennaArm2", "port_lump_", "gnd_cavity_", "top_absorber_"]),
-    ("PlanarSinuous", ["ant_AntennaArm1", "ant_AntennaArm4", "port_lump_", "gnd_1_", "gnd_2_"]),
-    ("PlanarSinuousCavity", ["ant_AntennaArm1", "port_lump_", "gnd_1_", "gnd_cavity_", "middle_absorber_"]),
+    (
+        "PlanarSinuous",
+        [
+            "ant_AntennaArm1",
+            "ant_AntennaArm2",
+            "ant_AntennaArm3",
+            "ant_AntennaArm4",
+            "port_lump_",
+            "ant_ext1_",
+            "gnd_2_",
+            "port_lump_",
+        ],
+    ),
+    (
+        "PlanarSinuousCavity",
+        [
+            "ant_AntennaArm1",
+            "ant_AntennaArm2",
+            "ant_AntennaArm3",
+            "ant_AntennaArm4",
+            "port_lump_",
+            "ant_ext1_",
+            "gnd_2_",
+            "port_lump_",
+            "gnd_cavity_",
+            "bottom_absorber_",
+            "middle_absorber_",
+            "top_absorber_",
+        ],
+    ),
 ]
 
 
