@@ -1207,7 +1207,7 @@ class Sinuous(CommonConicalSpiral):
                 obj_edge4 = self._app.modeler.create_object_from_edge(edge_id4)
                 self._app.modeler.sweep_along_vector(obj_edge2.name, [0, 0, port_ext])
                 self._app.modeler.sweep_along_vector(obj_edge4.name, [0, 0, port_ext])
-                obj_edge2.name = "gnd_1_" + antenna_name
+                obj_edge2.name = "ant_ext1_" + antenna_name
                 obj_edge2.color = (65, 65, 65)
                 obj_edge2.group_name = antenna_name
                 self.object_list[obj_edge2.name] = obj_edge2
