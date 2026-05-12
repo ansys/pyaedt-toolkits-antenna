@@ -1,16 +1,16 @@
 name = "Gap Fed Slot"
 
 [object_1]
-name = "sub_slot"
 color = [0, 128, 0]
+name = "sub_slot"
 opacity = 0.2
 
 [object_2]
-name = "gnd_slot"
 color = [255, 128, 65]
+name = "gnd_slot"
 opacity = 0.9
 
 [object_3]
-name = "port_slot"
 color = [128, 0, 0]
+name = "port_slot"
 opacity = 0.4
