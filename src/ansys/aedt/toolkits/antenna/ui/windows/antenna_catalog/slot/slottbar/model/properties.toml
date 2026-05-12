@@ -7,5 +7,5 @@ opacity = 0.85
 
 [object_2]
 color = [128, 0, 0]
-name = "port_slot"
+name = "port_lump"
 opacity = 0.4
