@@ -56,7 +56,14 @@ models = [
 models = ["PlanarInvertedF", "ShortingPin", "ShortingPlate"]
 
 [PlanarSpiral]
-models = []
+models = [
+  "PlanarArchimedean",
+  "PlanarArchimedeanCavity",
+  "PlanarLog",
+  "PlanarLogCavity",
+  "PlanarSinuous",
+  "PlanarSinuousCavity",
+]
 
 [Reflector]
 models = []

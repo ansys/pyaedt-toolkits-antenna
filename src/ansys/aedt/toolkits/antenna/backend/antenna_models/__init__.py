@@ -61,3 +61,9 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import SeqRotated2
 from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import PlanarInvertedF
 from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import ShortingPin
 from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import ShortingPlate
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarArchimedean
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarArchimedeanCavity
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarLog
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarLogCavity
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarSinuous
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarSinuousCavity

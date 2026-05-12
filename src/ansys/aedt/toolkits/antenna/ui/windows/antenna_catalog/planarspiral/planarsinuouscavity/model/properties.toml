@@ -1,0 +1,61 @@
+name = "Planar Sinuous Cavity"
+
+[object_1]
+name = "ant_arm1"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_2]
+name = "ant_arm2"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_3]
+name = "ant_arm3"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_4]
+name = "ant_arm4"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_5]
+name = "port_lump_1"
+color = [255, 0, 0]
+opacity = 1.0
+
+[object_6]
+name = "port_lump_2"
+color = [255, 0, 0]
+opacity = 1.0
+
+[object_7]
+name = "gnd_1"
+color = [65, 65, 65]
+opacity = 1.0
+
+[object_8]
+name = "gnd_2"
+color = [65, 65, 65]
+opacity = 1.0
+
+[object_9]
+name = "gnd_cavity"
+color = [66, 191, 244]
+opacity = 0.25
+
+[object_10]
+name = "bottom_absorber"
+color = [86, 244, 66]
+opacity = 0.45
+
+[object_11]
+name = "middle_absorber"
+color = [244, 66, 66]
+opacity = 0.45
+
+[object_12]
+name = "top_absorber"
+color = [72, 66, 244]
+opacity = 0.45
