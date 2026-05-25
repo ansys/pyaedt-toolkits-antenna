@@ -227,6 +227,11 @@ class SlotGap(CommonPrintedSlot):
         )
         self._app.modeler.subtract(gnd, slot, False)
 
+        # Split in half the ground plane to let HFSS assign a terminal
+        split = gnd.split(constants.Plane.YZ)
+        split_gnd = self._app.modeler.get_object_from_name(split[1])
+        split_gnd.name = "PerfE_split"
+
         port = self._app.modeler.create_rectangle(
             orientation=2,
             origin=["-" + slot_width + "/2", feed_offset + "-" + slot_width + "/2", "0"],
@@ -238,6 +243,7 @@ class SlotGap(CommonPrintedSlot):
 
         self.object_list[sub.name] = sub
         self.object_list[gnd.name] = gnd
+        self.object_list[split_gnd.name] = split_gnd
         self.object_list[port.name] = port
 
         _set_group_and_move(self, sub, gnd, port)
