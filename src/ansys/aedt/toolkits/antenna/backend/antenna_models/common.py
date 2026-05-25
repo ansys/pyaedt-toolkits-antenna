@@ -501,7 +501,7 @@ class CommonAntenna(object):
         for item in list(self.object_list.keys()):
             terminal_references = []
             port_lump = port = port_cap = None
-            if f"port_lump_{self.name}" in item:
+            if "port_lump_{}".format(self.name) in item:
                 port_lump = self.object_list[item]
                 terminal_references = [
                     i
@@ -513,13 +513,22 @@ class CommonAntenna(object):
                     )
                 ]
                 if len(terminal_references) > 1:
-                    terminal_references = terminal_references[1:]
-            elif f"port_{self.name}" in item and not item.startswith("port_cap_"):
+                    axis_dir = [[], []]
+                    for edge in port_lump.edges:
+                        if terminal_references[1] in self._app.modeler.get_bodynames_from_position(edge.midpoint):
+                            axis_dir[1] = edge.midpoint
+                        elif terminal_references[0] in self._app.modeler.get_bodynames_from_position(edge.midpoint):
+                            axis_dir[0] = edge.midpoint
+                    gnd_references = [
+                        ref for ref in terminal_references if "gnd" in ref.lower() or "ground" in ref.lower()
+                    ]
+                    terminal_references = gnd_references if gnd_references else terminal_references[1:]
+
+            elif "port_{}".format(self.name) in item:
                 port = self.object_list[item]
-                port_suffix = item.replace(f"port_{self.name}", "", 1)
-                matching_port_cap = f"port_cap_{self.name}{port_suffix}"
-                if matching_port_cap in self.object_list:
-                    port_cap = self.object_list[matching_port_cap]
+                for item_cap in list(self.object_list.keys()):
+                    if "port_cap_{}".format(self.name) in item_cap:
+                        port_cap = self.object_list[item_cap]
 
             if port_lump:
                 port1 = self._app.lumped_port(
