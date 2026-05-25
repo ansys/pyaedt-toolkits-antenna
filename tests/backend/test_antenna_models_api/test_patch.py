@@ -50,7 +50,10 @@ class TestClass:
         oantenna.setup_hfss()
 
         assert oantenna
+        assert oantenna.excitation_type == "Terminal_Waveport"
         assert oantenna.object_list
+        assert len(oantenna.excitations) == 1
+        assert next(iter(oantenna.excitations.values())).children
         for comp in oantenna.object_list.values():
             assert isinstance(comp, Object3d)
 

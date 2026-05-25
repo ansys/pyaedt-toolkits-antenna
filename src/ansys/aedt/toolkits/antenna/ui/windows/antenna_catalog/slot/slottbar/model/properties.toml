@@ -9,3 +9,8 @@ opacity = 0.85
 color = [128, 0, 0]
 name = "port_lump"
 opacity = 0.4
+
+[object_3]
+color = [255, 255, 255]
+name = "feed_slot_tbar"
+opacity = 0.4

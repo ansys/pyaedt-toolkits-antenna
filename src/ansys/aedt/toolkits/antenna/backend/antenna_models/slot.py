@@ -206,7 +206,6 @@ class SlotGap(CommonPrintedSlot):
             sizes=[sub_x, sub_y, sub_h],
             name="sub_" + self.name,
             material=self.material,
-            new_properties={"Coordinate System": self.coordinate_system},
         )
         sub.color = (0, 128, 0)
         sub.transparency = 0.8
@@ -216,7 +215,6 @@ class SlotGap(CommonPrintedSlot):
             origin=["-" + sub_x + "/2", "-" + sub_y + "/2", "0"],
             sizes=[sub_x, sub_y],
             name="gnd_" + self.name,
-            new_properties={"Coordinate System": self.coordinate_system},
         )
         gnd.color = (255, 128, 65)
         gnd.transparency = 0.1
@@ -226,7 +224,6 @@ class SlotGap(CommonPrintedSlot):
             origin=["-" + slot_width + "/2", "-" + slot_length + "/2", "0"],
             sizes=[slot_width, slot_length],
             name="slot_" + self.name,
-            new_properties={"Coordinate System": self.coordinate_system},
         )
         self._app.modeler.subtract(gnd, slot, False)
 
@@ -235,7 +232,6 @@ class SlotGap(CommonPrintedSlot):
             origin=["-" + slot_width + "/2", feed_offset + "-" + slot_width + "/2", "0"],
             sizes=[slot_width, slot_width],
             name="port_lump_" + self.name,
-            new_properties={"Coordinate System": self.coordinate_system},
         )
         port.color = (128, 0, 0)
         port.transparency = 0.4
@@ -378,7 +374,7 @@ class SlotMicrostrip(CommonPrintedSlot):
 
         port = self._app.modeler.create_rectangle(
             orientation=1,
-            origin=["-" + sub_x + "/2", feed_offset + "-" + microstrip_width + "/2", "0"],
+            origin=["-" + sub_x + "/2", feed_offset + "-" + microstrip_width + "/2", "-" + sub_h],
             sizes=[sub_h, microstrip_width],
             name="port_lump_" + self.name,
             new_properties={"Coordinate System": self.coordinate_system},
@@ -513,7 +509,9 @@ class SlotTBar(CommonSlot):
             material="pec",
             new_properties={"Coordinate System": self.coordinate_system},
         )
-        self._app.modeler.unite([cavity, bar, feed_bar, feed_pin, transition])
+        signal = self._app.modeler.unite([bar, feed_bar, feed_pin, transition])
+        signal = self._app.modeler.get_objects_by_name(signal)[0]
+        signal.name = "feed_" + self.name
 
         port = self._app.modeler.create_rectangle(
             orientation=2,
@@ -526,9 +524,10 @@ class SlotTBar(CommonSlot):
         port.transparency = 0.4
 
         self.object_list[cavity.name] = cavity
+        self.object_list[signal.name] = signal
         self.object_list[port.name] = port
 
-        _set_group_and_move(self, cavity, port)
+        _set_group_and_move(self, cavity, signal, port)
         return True
 
 
@@ -648,8 +647,8 @@ class SlotCavityBackedArray(CommonSlot):
             new_properties={"Coordinate System": self.coordinate_system},
         )
         self._app.modeler.subtract(cavity, [reflector, cavity_void, waveguide], False)
-        cavity.color = (255, 128, 65)
-        cavity.transparency = 0.1
+        cavity.color = (90, 96, 110)
+        cavity.transparency = 0.55
 
         cavity_face = self._app.modeler.create_rectangle(
             orientation=2,
@@ -658,8 +657,8 @@ class SlotCavityBackedArray(CommonSlot):
             name="ant_" + self.name,
             new_properties={"Coordinate System": self.coordinate_system},
         )
-        cavity_face.color = (255, 128, 65)
-        cavity_face.transparency = 0.1
+        cavity_face.color = (180, 205, 230)
+        cavity_face.transparency = 0.35
 
         x_centers = [
             "-" + width_spacing_1 + "/2-" + width_spacing_2,
@@ -696,7 +695,8 @@ class SlotCavityBackedArray(CommonSlot):
             material="pec",
             new_properties={"Coordinate System": self.coordinate_system},
         )
-        pin.color = (255, 128, 65)
+        pin.color = (214, 145, 32)
+        pin.transparency = 0.15
 
         port = self._app.modeler.create_rectangle(
             orientation=2,
@@ -709,8 +709,8 @@ class SlotCavityBackedArray(CommonSlot):
             name="port_lump_" + self.name,
             new_properties={"Coordinate System": self.coordinate_system},
         )
-        port.color = (128, 0, 0)
-        port.transparency = 0.4
+        port.color = (196, 34, 51)
+        port.transparency = 0.15
 
         self.object_list[cavity.name] = cavity
         self.object_list[cavity_face.name] = cavity_face
