@@ -25,7 +25,7 @@ classifiers = [
 ]
 dependencies = [
     "ansys-aedt-toolkits-common[all]==0.16.1",
-    "pyvista[all]"
+    "ansys-tools-visualization-interface[all] @ git+https://github.com/ansys/ansys-tools-visualization-interface.git@main",
 ]
 
 [project.optional-dependencies]
