@@ -25,6 +25,7 @@ classifiers = [
 ]
 dependencies = [
     "ansys-aedt-toolkits-common[all]==0.16.1",
+    "pyvista[all]"
 ]
 
 [project.optional-dependencies]
