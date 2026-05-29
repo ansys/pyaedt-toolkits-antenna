@@ -54,6 +54,7 @@ def display_interactive_scene(plotter, height=520):
     )
     display(HTML(iframe_html))
 
+
 # ##  Set AEDT version
 #
 # Set AEDT version.
