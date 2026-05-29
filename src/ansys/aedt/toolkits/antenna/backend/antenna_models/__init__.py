@@ -67,3 +67,7 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import Pla
 from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarLogCavity
 from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarSinuous
 from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarSinuousCavity
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotCavityBackedArray
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotGap
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotMicrostrip
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotTBar
