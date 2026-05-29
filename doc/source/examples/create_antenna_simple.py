@@ -28,14 +28,29 @@
 # It initiates AEDT through PyAEDT, sets up an empty HFSS design, and proceeds to create the antenna.
 
 
-# ## Perform required imports
+# ## Perform required imports and define display_interactive_scene wrapper (for documentation purposes)
 #
 # Import the antenna toolkit class and PyAEDT.
 
+import html
 import tempfile
+
+from IPython.display import HTML
+from IPython.display import display
 
 import ansys.aedt.core
 from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded
+
+
+def display_interactive_scene(plotter, height=520):
+    """Embed a plotter scene in an iframe to keep notebook page layout stable."""
+    scene_html = plotter.export_html(None).getvalue()
+    iframe_html = (
+        f'<iframe srcdoc="{html.escape(scene_html, quote=True)}" '
+        f'style="width:100%; height:{height}px; border:1px solid #d9d9d9; border-radius:4px;" '
+        'loading="lazy"></iframe>'
+    )
+    display(HTML(iframe_html))
 
 # ##  Set AEDT version
 #
@@ -116,8 +131,13 @@ oantenna2.setup_hfss()
 # ## Plot HFSS model
 #
 # Plot geometry with PyVista.
+# Export interactive HTML without calling ``show()`` so doc-build does not hang.
 
-app.plot()
+model = app.plot(show=False)
+# ``app.plot(show=False)`` returns a ModelPlotter without creating the internal
+# PyVista object yet, so call ``plot(show=False)`` before exporting HTML.
+model.plot(show=False)
+display_interactive_scene(model.pv, height=500)
 
 # ## Release AEDT
 #

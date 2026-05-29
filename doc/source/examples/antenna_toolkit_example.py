@@ -28,16 +28,31 @@
 # It initiates AEDT through PyAEDT, sets up an empty HFSS design, and proceeds to create the antenna.
 
 
-# ## Perform required imports
+# ## Perform required imports and define display_interactive_scene wrapper (for documentation purposes)
 
+import html
 import sys
 import tempfile
+
+from IPython.display import HTML
+from IPython.display import display
 
 from ansys.aedt.core import generate_unique_project_name
 from ansys.aedt.core.visualization.advanced.farfield_visualization import FfdSolutionData
 from ansys.aedt.core.visualization.plot.pyvista import ModelPlotter
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
+
+
+def display_interactive_scene(plotter, height=520):
+    """Embed a plotter scene in an iframe to keep notebook page layout stable."""
+    scene_html = plotter.export_html(None).getvalue()
+    iframe_html = (
+        f'<iframe srcdoc="{html.escape(scene_html, quote=True)}" '
+        f'style="width:100%; height:{height}px; border:1px solid #d9d9d9; border-radius:4px;" '
+        'loading="lazy"></iframe>'
+    )
+    display(HTML(iframe_html))
 
 # ##  Set AEDT version
 #
@@ -232,6 +247,8 @@ files = toolkit_api.export_aedt_model(encode=False)
 toolkit_api.release_aedt(True, True)
 
 # ## Plot results
+#
+# Export interactive HTML without calling ``show()`` so doc-build does not hang.
 
 # Plot exported files
 
@@ -239,7 +256,8 @@ model = ModelPlotter()
 for file in files:
     model.add_object(file[0], file[1], file[2])
 
-model.plot()
+model.plot(show=False)
+display_interactive_scene(model.pv, height=500)
 
 # ## Load far field
 
@@ -247,7 +265,8 @@ farfield_data = FfdSolutionData(farfield_metadata)
 
 # ## Plot far field 3D
 
-data = farfield_data.plot_3d()
+farfield_plotter = farfield_data.plot_3d(show=False)
+display_interactive_scene(farfield_plotter, height=560)
 
 # ## Plot far field cut
 
