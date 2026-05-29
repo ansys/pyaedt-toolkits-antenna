@@ -34,7 +34,7 @@ tests = [
 ]
 doc = [
     "ansys-aedt-toolkits-common[doc]==0.16.1",
-    "pyvista[jupyter]"
+    "pyvista[jupyter]<=0.47.2"
 ]
 freeze = [
     "pyinstaller"
