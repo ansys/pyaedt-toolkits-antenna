@@ -1,0 +1,9 @@
+Name = "Slot_Microstrip"
+Frequency = 1.0
+Material = ["FR4_epoxy", "Teflon (tm)", "Rogers RT / duroid 6002(tm)"]
+Substrate_Height = 0.15748
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"

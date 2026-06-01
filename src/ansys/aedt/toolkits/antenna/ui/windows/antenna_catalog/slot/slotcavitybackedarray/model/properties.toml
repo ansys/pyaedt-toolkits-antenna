@@ -1,0 +1,21 @@
+name = "Cavity Backed Slot Array"
+
+[object_1]
+color = [255, 128, 65]
+name = "cavity_slot_array"
+opacity = 0.9
+
+[object_2]
+color = [255, 128, 65]
+name = "face_slot_array"
+opacity = 0.9
+
+[object_3]
+color = [255, 128, 65]
+name = "pin_slot_array"
+opacity = 0.8
+
+[object_4]
+color = [128, 0, 0]
+name = "port_lump_array"
+opacity = 0.4

@@ -1,0 +1,9 @@
+Coordinate_System = "Global"
+Frequency = 2.4
+Name = "Planar_Inverted_F"
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Substrate_Height = 1.5748
+Substrate_Material = ["Duroid (tm)", "FR4_epoxy", "Rogers RT / duroid 6002(tm)", "Teflon (tm)"]
