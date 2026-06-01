@@ -3,7 +3,7 @@ name = "Vivaldi Stepped"
 [object_1]
 name = "sub"
 color = [0, 128, 0]
-opacity = 0.2
+opacity = 0.1
 
 [object_2]
 name = "ant_bottom"

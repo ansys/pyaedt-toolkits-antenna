@@ -182,6 +182,15 @@ class CommonVivaldi(CommonPatch):
             name=f"{name}_slot_half",
         )
 
+        # Set coordinate system of polyline
+        slot_half_obj = self._app.get_oo_object(self._app.oeditor, slot_half.name)
+        self._app.set_oo_property_value(
+            aedt_object=slot_half_obj,
+            object_name="CreatePolyline:1",
+            prop_name="Coordinate System",
+            value=coordinate_system,
+        )
+
         tool_objects = [slot_half.name]
 
         if self.feeder_length > 0:
@@ -408,7 +417,7 @@ class CommonVivaldi(CommonPatch):
         self._app.solution_type = "Terminal"
         port = self._app.wave_port(
             assignment="port_" + self.name,
-            reference="port_cap_" + self.name,
+            reference=["ant_bottom_" + self.name, "ant_top_" + self.name],
             name="port_" + self.name + "_1",
         )
         self.excitations[port.name] = port
