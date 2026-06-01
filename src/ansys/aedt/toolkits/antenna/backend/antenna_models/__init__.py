@@ -71,3 +71,5 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotCavityBa
 from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotGap
 from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotMicrostrip
 from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotTBar
+from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import Vivaldi
+from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import VivaldiStepped
