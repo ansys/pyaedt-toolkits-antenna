@@ -23,7 +23,6 @@
 
 import copy
 import math
-import re
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.file_utils import generate_unique_name
@@ -455,13 +454,12 @@ class CommonAntenna(object):
         """Create HFSS design variables."""
         if not not_used:
             not_used = []
-        no_unit_re = re.compile("|".join(["ratio", "coefficient", "points", "number"]))
         for p in self.synthesis_parameters.__dict__.values():
             if isinstance(p, Property) and p.hfss_variable not in not_used:
                 properties.antenna.parameters_hfss[p.name] = p.hfss_variable
                 if "angle" in p.hfss_variable:
                     self._app[p.hfss_variable] = str(p.value) + "deg"
-                elif no_unit_re.search(p.hfss_variable):
+                elif "ratio" in p.hfss_variable:
                     self._app[p.hfss_variable] = str(p.value)
                 else:
                     self._app[p.hfss_variable] = str(p.value) + self.length_unit
@@ -475,6 +473,13 @@ class CommonAntenna(object):
     @pyaedt_function_handler()
     def setup_hfss(self):
         """Set up an antenna in HFSS."""
+        # Set global coordinates to assign excitations and boundaries.
+        # This is needed because to compute the terminals, Global CS must be active
+
+        active_cs = self.coordinate_system
+
+        self._app.modeler.set_working_coordinate_system("Global")
+
         for obj_name in self.object_list.keys():
             if obj_name.startswith("PerfE") or obj_name.startswith("gnd_") or obj_name.startswith("ant_"):
                 bound = self._app.assign_perfecte_to_sheets(obj_name)
@@ -514,7 +519,10 @@ class CommonAntenna(object):
                             axis_dir[1] = edge.midpoint
                         elif terminal_references[0] in self._app.modeler.get_bodynames_from_position(edge.midpoint):
                             axis_dir[0] = edge.midpoint
-                    terminal_references = terminal_references[1:]
+                    gnd_references = [
+                        ref for ref in terminal_references if "gnd" in ref.lower() or "ground" in ref.lower()
+                    ]
+                    terminal_references = gnd_references if gnd_references else terminal_references[1:]
 
             elif "port_{}".format(self.name) in item:
                 port = self.object_list[item]
@@ -556,6 +564,7 @@ class CommonAntenna(object):
                 else:
                     self._app.solution_type = "Modal_Waveport"
 
+        self._app.modeler.set_working_coordinate_system(active_cs)
         return True
 
 
