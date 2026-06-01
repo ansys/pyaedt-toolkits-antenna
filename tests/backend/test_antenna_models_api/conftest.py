@@ -45,6 +45,7 @@ You can enable the API log file in the backend_properties.json.
 
 import pytest
 
+from ansys.aedt.core import Desktop
 from ansys.aedt.core import generate_unique_project_name
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from tests.backend.conftest import DEFAULT_CONFIG
@@ -65,8 +66,20 @@ USE_GRPC = config["use_grpc"]
 DEBUG = config["debug"]
 
 
-@pytest.fixture(scope="session")
-def aedt_common(logger, common_temp_dir):
+@pytest.fixture(scope="session", autouse=True)
+def desktop(common_temp_dir):
+    desktop = Desktop(VERSION, NONGRAPHICAL, True)
+    desktop.odesktop.SetTempDirectory(str(common_temp_dir))
+    desktop.disable_autosave()
+    port = desktop.port
+    test_session_info = {"version": VERSION, "non_graphical": NONGRAPHICAL, "port": port}
+    yield test_session_info
+    desktop = Desktop(VERSION, NONGRAPHICAL, False, port=port)
+    desktop.close_desktop()
+
+
+@pytest.fixture
+def toolkit(logger, common_temp_dir):
     """Initialize toolkit with common API."""
     logger.info("AEDTCommon API initialization")
     toolkit = ToolkitBackend()
