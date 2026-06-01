@@ -24,14 +24,19 @@ from functools import partial
 from pathlib import Path
 import sys
 
+from PySide6.QtCore import Qt
 from PySide6.QtCore import Signal
+from PySide6.QtGui import QColor
+from PySide6.QtGui import QFont
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QComboBox
+from PySide6.QtWidgets import QDialog
+from PySide6.QtWidgets import QFrame
+from PySide6.QtWidgets import QGridLayout
+from PySide6.QtWidgets import QHBoxLayout
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QLineEdit
-from PySide6.QtWidgets import QVBoxLayout
-from PySide6.QtWidgets import QHBoxLayout
-from PySide6.QtWidgets import QGridLayout
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QPushButton
 from PySide6.QtWidgets import QScrollArea
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtWidgets import QSpacerItem
@@ -42,12 +47,12 @@ from pyvistaqt import BackgroundPlotter
 
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
-
-from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_page import Ui_AntennaCatalog
-from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_column import Ui_LeftColumn
-
-import os
-import sys
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_column import (
+    Ui_LeftColumn,
+)
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_page import (
+    Ui_AntennaCatalog,
+)
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -482,9 +487,11 @@ class AntennaCatalogMenu(object):
         open_detached_button.clicked.connect(open_detached_view)
 
         def resize_pixmap():
-            pixmap = QPixmap(image_path)
-            pixmap = pixmap.scaled(antenna_image.width(), antenna_image.height(),
-                                   Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = QPixmap(str(image_path))
+            available_size = antenna_image.contentsRect().size()
+            if pixmap.isNull() or available_size.width() <= 0 or available_size.height() <= 0:
+                return
+            pixmap = pixmap.scaled(available_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             antenna_image.setPixmap(pixmap)
 
         antenna_image.resizeEvent = lambda event: resize_pixmap()
