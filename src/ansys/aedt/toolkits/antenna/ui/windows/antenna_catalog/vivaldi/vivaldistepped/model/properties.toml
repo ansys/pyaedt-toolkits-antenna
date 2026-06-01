@@ -1,0 +1,21 @@
+name = "Vivaldi Stepped"
+
+[object_1]
+name = "sub"
+color = [0, 128, 0]
+opacity = 0.1
+
+[object_2]
+name = "ant_bottom"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "ant_top"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_4]
+name = "ant_stripline"
+color = [255, 128, 65]
+opacity = 0.9
