@@ -1,0 +1,36 @@
+name = "Planar Archimedean Cavity"
+
+[object_1]
+name = "ant_arm1"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_2]
+name = "ant_arm2"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_3]
+name = "port_lump"
+color = [255, 0, 0]
+opacity = 0.2
+
+[object_4]
+name = "gnd_cavity"
+color = [66, 191, 244]
+opacity = 0.25
+
+[object_5]
+name = "bottom_absorber"
+color = [86, 244, 66]
+opacity = 0.45
+
+[object_6]
+name = "middle_absorber"
+color = [244, 66, 66]
+opacity = 0.45
+
+[object_7]
+name = "top_absorber"
+color = [72, 66, 244]
+opacity = 0.45

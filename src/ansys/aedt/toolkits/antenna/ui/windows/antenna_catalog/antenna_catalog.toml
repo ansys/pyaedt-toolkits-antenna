@@ -4,45 +4,75 @@ models = ["BowTieNormal", "BowTieRounded", "BowTieSlot"]
 [ConicalSpiral]
 models = ["Archimedean", "Log", "Sinuous"]
 
-[Helix]
-models = ["AxialMode"]
-
-[Horn]
-models = ["Conical", "Corrugated",
-    "EPlane", "Elliptical",
-    "HPlane", "Pyramidal",
-    "PyramidalRidged", "QuadRidged"]
-
-[Patch]
-models =["RectangularPatchEdge", "RectangularPatchInset",
-    "RectangularPatchProbe"]
+[Custom]
+models = ["GPSPatchCeramic"]
 
 [Dipole]
-models =[]
+models = ["PlanarDipole", "WireDipole"]
+
+[Helix]
+models = ["AxialMode", "AxialModeTaper", "NormalMode", "QuadrifilarOpen", "QuadrifilarShort"]
+
+[Horn]
+models = [
+  "Conical",
+  "Corrugated",
+  "EPlane",
+  "Elliptical",
+  "HPlane",
+  "Pyramidal",
+  "PyramidalRidged",
+  "QuadRidged",
+]
 
 [LogPeriodic]
 models = []
 
 [Misc]
-models =[]
+models = ["Bicone", "Discone"]
 
 [Monopole]
-models =[]
+models = [
+  "BladeAntenna",
+  "CircularDiscMonopole",
+  "EllipticalBaseStripMonopole",
+  "VerticalTrapezoidalMonopole",
+  "WireMonopole",
+]
+
+[Patch]
+models = [
+  "EllipticalEdge",
+  "EllipticalInset",
+  "EllipticalProbe",
+  "MbyNPatchArray",
+  "RectangularPatchEdge",
+  "RectangularPatchInset",
+  "RectangularPatchProbe",
+  "SeqRotated2Patch",
+]
 
 [PIFA]
-models =[]
+models = ["PlanarInvertedF", "ShortingPin", "ShortingPlate"]
 
 [PlanarSpiral]
-models =[]
+models = [
+  "PlanarArchimedean",
+  "PlanarArchimedeanCavity",
+  "PlanarLog",
+  "PlanarLogCavity",
+  "PlanarSinuous",
+  "PlanarSinuousCavity",
+]
 
 [Reflector]
-models =[]
+models = []
 
 [Slot]
-models =[]
+models = ["SlotCavityBackedArray", "SlotGap", "SlotMicrostrip", "SlotTBar"]
 
 [Vivaldi]
 models = ["Vivaldi", "VivaldiStepped"]
 
 [YagiUda]
-models =[]
+models = []
