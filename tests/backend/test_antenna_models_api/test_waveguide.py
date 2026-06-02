@@ -92,9 +92,9 @@ def test_waveguide_catalog_resources():
     )
 
     expected_models = {
-        "circularwaveguide": {"image_suffixes": {".jpg", ".jpeg", ".png"}, "model_files": 3},
-        "rectangularwaveguide": {"image_suffixes": {".jpg", ".jpeg", ".png"}, "model_files": 3},
-        "rectangularwaveguideslotarray": {"image_suffixes": {".jpg", ".jpeg", ".png"}, "model_files": 4},
+        "circularwaveguide": {"image_suffixes": {".jpg", ".jpeg", ".png"}, "model_files": 4},
+        "rectangularwaveguide": {"image_suffixes": {".jpg", ".jpeg", ".png"}, "model_files": 4},
+        "rectangularwaveguideslotarray": {"image_suffixes": {".jpg", ".jpeg", ".png"}, "model_files": 5},
     }
 
     for model_name, resource_info in expected_models.items():
