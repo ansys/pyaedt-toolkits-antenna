@@ -7,6 +7,10 @@ models = ["Archimedean", "Log", "Sinuous"]
 [Custom]
 models = ["GPSPatchCeramic"]
 
+[Waveguide]
+models = ["CircularWaveguide", "RectangularWaveguide",
+    "RectangularWaveguideSlotArray"]
+
 [Dipole]
 models = ["PlanarDipole", "WireDipole"]
 
