@@ -1,4 +1,4 @@
-name = "Rectangular Waveguide"
+name = "Rectangular Waveguide Slot Array"
 
 [object_1]
 name = "metal"
