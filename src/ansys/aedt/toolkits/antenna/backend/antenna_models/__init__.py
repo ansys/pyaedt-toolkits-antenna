@@ -73,3 +73,5 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotMicrostr
 from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotTBar
 from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import Vivaldi
 from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import VivaldiStepped
+from ansys.aedt.toolkits.antenna.backend.antenna_models.yagiuda import QuasiYagi
+from ansys.aedt.toolkits.antenna.backend.antenna_models.yagiuda import WireYagiUda

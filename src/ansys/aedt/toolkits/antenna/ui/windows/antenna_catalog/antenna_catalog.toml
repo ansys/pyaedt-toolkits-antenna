@@ -75,4 +75,4 @@ models = ["SlotCavityBackedArray", "SlotGap", "SlotMicrostrip", "SlotTBar"]
 models = ["Vivaldi", "VivaldiStepped"]
 
 [YagiUda]
-models = []
+models = ["QuasiYagi", "WireYagiUda"]
