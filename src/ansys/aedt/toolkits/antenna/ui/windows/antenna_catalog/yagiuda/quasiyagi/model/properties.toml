@@ -1,0 +1,31 @@
+name = "Quasi Yagi"
+
+[object_1]
+name = "sub_QuasiYagi"
+color = [0, 128, 0]
+opacity = 0.2
+
+[object_2]
+name = "gnd_QuasiYagi"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_3]
+name = "ant_director_QuasiYagi"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_4]
+name = "ant_driver_QuasiYagi"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_5]
+name = "ant_launcher_QuasiYagi"
+color = [255, 128, 65]
+opacity = 0.9
+
+[object_6]
+name = "port_lump_QuasiYagi"
+color = [128, 0, 0]
+opacity = 0.2

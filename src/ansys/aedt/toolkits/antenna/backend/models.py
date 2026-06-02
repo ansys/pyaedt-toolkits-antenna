@@ -34,6 +34,7 @@ from typing import Dict
 from typing import List
 
 from pydantic import BaseModel
+from pydantic import model_validator
 
 from ansys.aedt.toolkits.common.backend.models import CommonProperties
 from ansys.aedt.toolkits.common.backend.models import common_properties
@@ -44,6 +45,15 @@ class Synthesis(BaseModel, validate_assignment=True):
 
     name: str = ""
     coordinate_system: str = "Global"
+    element_1_port_phase: float = 0.0
+    element_1_rotation_angle: float = 0.0
+    element_2_port_phase: float = 90.0
+    element_2_rotation_angle: float = -90.0
+    element_3_port_phase: float = 180.0
+    element_3_rotation_angle: float = -180.0
+    element_4_port_phase: float = 270.0
+    element_4_rotation_angle: float = -270.0
+    feed_rotation_angle: float = 45.0
     frequency: float = 10.0
     frequency_unit: str = "GHz"
     feeder_length: float = 0.0
@@ -51,11 +61,24 @@ class Synthesis(BaseModel, validate_assignment=True):
     length_unit: str = "meter"
     material: str = "pec"
     material_properties: Dict[str, Any] = {}
+    number_of_patches_x: int = 2
+    number_of_patches_y: int = 3
     origin: List[float] = [0.0, 0.0, 0.0]
     outer_boundary: str = ""
     start_frequency: float = 0.0
     stop_frequency: float = 0.0
     substrate_height: float = 0.1
+    direction: str = "Left"
+
+    @model_validator(mode="after")
+    def update_center_frequency(self):
+        if self.start_frequency > 0.0 and self.stop_frequency > 0.0:
+            object.__setattr__(
+                self,
+                "frequency",
+                (self.stop_frequency - self.start_frequency) / 2.0 + self.start_frequency,
+            )
+        return self
 
 
 class Setup(BaseModel, validate_assignment=True):

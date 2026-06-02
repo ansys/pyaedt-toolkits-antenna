@@ -21,7 +21,7 @@ ABOUT_TEXT = f"""<h2>Antenna Toolkit {__version__}</h2>
 In addition, this package allows you to access a software that is licensed under separate terms
 ("Separately Licensed Software"). If you choose to install such Separately Licensed Software,
 you acknowledge that you are responsible for complying with any associated terms and conditions.</p>
-<p>Copyright 2023 - 2024 ANSYS, Inc. All rights reserved.</p>
+<p>Copyright 2023 - 2026 ANSYS, Inc. All rights reserved.</p>
 <p>If you have any questions or issues, please open an issue in
 <a href='{ISSUE_TRACKER_URL}'>pyaedt-toolkits-antenna Issues</a> page.</p>
 <p>Alternatively, you can contact us at <a href='mailto:pyansys.core@ansys.com'>pyansys.core@ansys.com</a>.</p>

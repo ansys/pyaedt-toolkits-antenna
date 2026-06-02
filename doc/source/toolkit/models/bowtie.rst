@@ -1,5 +1,6 @@
 Bowtie
 ======
+
 This page list the classes available for bowtie antennas:
 
 .. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie

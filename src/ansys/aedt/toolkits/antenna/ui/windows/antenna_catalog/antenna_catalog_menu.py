@@ -1,4 +1,4 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -24,18 +24,19 @@ from functools import partial
 from pathlib import Path
 import sys
 
-# toolkit PySide6 Widgets
-from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
 from PySide6.QtCore import Qt
 from PySide6.QtCore import Signal
+from PySide6.QtGui import QColor
 from PySide6.QtGui import QFont
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QComboBox
+from PySide6.QtWidgets import QDialog
 from PySide6.QtWidgets import QFrame
 from PySide6.QtWidgets import QGridLayout
 from PySide6.QtWidgets import QHBoxLayout
 from PySide6.QtWidgets import QLabel
 from PySide6.QtWidgets import QLineEdit
+from PySide6.QtWidgets import QPushButton
 from PySide6.QtWidgets import QScrollArea
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtWidgets import QSpacerItem
@@ -44,8 +45,14 @@ from PySide6.QtWidgets import QWidget
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
 
-from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_column import Ui_LeftColumn
-from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_page import Ui_AntennaCatalog
+# toolkit PySide6 Widgets
+from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_column import (
+    Ui_LeftColumn,
+)
+from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_page import (
+    Ui_AntennaCatalog,
+)
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -116,6 +123,144 @@ class AntennaItem(QWidget):
     def mousePressEvent(self, event):  # noqa: N802
         self.antenna_item_signal.emit(self.index)
         super().mousePressEvent(event)
+
+
+class DetachedImageDialog(QDialog):
+    """Display a larger image preview with mouse-based zoom and panning."""
+
+    def __init__(self, image_path, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Image Preview")
+        self.resize(900, 700)
+
+        self._pixmap = QPixmap(str(image_path))
+        self._zoom_factor = 1.0
+        self._fit_scale = 1.0
+
+        dialog_layout = QVBoxLayout(self)
+        self.scroll_area = ImageScrollArea(self._apply_zoom, self)
+
+        self.image_label = QLabel()
+        self.image_label.setAlignment(Qt.AlignCenter)
+        self.scroll_area.setWidget(self.image_label)
+
+        dialog_layout.addWidget(self.scroll_area)
+
+    def showEvent(self, event):  # noqa: N802
+        super().showEvent(event)
+        self._zoom_factor = 1.0
+        self._update_pixmap(reset_view=True)
+
+    def resizeEvent(self, event):  # noqa: N802
+        super().resizeEvent(event)
+        self._update_pixmap()
+
+    def _fit_to_viewport_scale(self):
+        if self._pixmap.isNull():
+            return 1.0
+
+        viewport_size = self.scroll_area.viewport().size()
+        if viewport_size.width() <= 0 or viewport_size.height() <= 0:
+            return 1.0
+
+        width_scale = viewport_size.width() / self._pixmap.width()
+        height_scale = viewport_size.height() / self._pixmap.height()
+        return min(width_scale, height_scale)
+
+    def _update_pixmap(self, reset_view=False):
+        if self._pixmap.isNull():
+            return
+
+        self._fit_scale = self._fit_to_viewport_scale()
+        effective_scale = max(self._fit_scale * self._zoom_factor, 0.01)
+
+        scaled_width = max(
+            1,
+            int(self._pixmap.width() * effective_scale),
+        )
+        scaled_height = max(
+            1,
+            int(self._pixmap.height() * effective_scale),
+        )
+        scaled_pixmap = self._pixmap.scaled(
+            scaled_width,
+            scaled_height,
+            Qt.KeepAspectRatio,
+            Qt.SmoothTransformation,
+        )
+        self.image_label.setPixmap(scaled_pixmap)
+        self.image_label.resize(scaled_pixmap.size())
+
+        if reset_view:
+            self.scroll_area.horizontalScrollBar().setValue(0)
+            self.scroll_area.verticalScrollBar().setValue(0)
+
+    def _apply_zoom(self, factor, anchor_pos):
+        previous_size = self.image_label.size()
+        previous_horizontal = self.scroll_area.horizontalScrollBar().value()
+        previous_vertical = self.scroll_area.verticalScrollBar().value()
+
+        self._zoom_factor = min(max(self._zoom_factor * factor, 0.25), 5.0)
+        self._update_pixmap()
+
+        if previous_size.width() <= 0 or previous_size.height() <= 0:
+            return
+
+        width_ratio = (previous_horizontal + anchor_pos.x()) / previous_size.width()
+        height_ratio = (previous_vertical + anchor_pos.y()) / previous_size.height()
+        current_size = self.image_label.size()
+        self.scroll_area.horizontalScrollBar().setValue(
+            int(width_ratio * current_size.width() - anchor_pos.x())
+        )
+        self.scroll_area.verticalScrollBar().setValue(
+            int(height_ratio * current_size.height() - anchor_pos.y())
+        )
+
+
+class ImageScrollArea(QScrollArea):
+    """Scroll area supporting mouse-wheel zoom and drag panning."""
+
+    def __init__(self, zoom_callback, parent=None):
+        super().__init__(parent)
+        self._zoom_callback = zoom_callback
+        self._drag_origin = None
+        self._horizontal_origin = 0
+        self._vertical_origin = 0
+        self.setWidgetResizable(False)
+        self.setAlignment(Qt.AlignCenter)
+        self.setCursor(Qt.OpenHandCursor)
+
+    def wheelEvent(self, event):  # noqa: N802
+        zoom_step = 1.1 if event.angleDelta().y() > 0 else 1 / 1.1
+        self._zoom_callback(zoom_step, event.position())
+        event.accept()
+
+    def mousePressEvent(self, event):  # noqa: N802
+        if event.button() == Qt.LeftButton:
+            self._drag_origin = event.position().toPoint()
+            self._horizontal_origin = self.horizontalScrollBar().value()
+            self._vertical_origin = self.verticalScrollBar().value()
+            self.setCursor(Qt.ClosedHandCursor)
+            event.accept()
+            return
+        super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):  # noqa: N802
+        if self._drag_origin is not None:
+            delta = event.position().toPoint() - self._drag_origin
+            self.horizontalScrollBar().setValue(self._horizontal_origin - delta.x())
+            self.verticalScrollBar().setValue(self._vertical_origin - delta.y())
+            event.accept()
+            return
+        super().mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event):  # noqa: N802
+        if event.button() == Qt.LeftButton and self._drag_origin is not None:
+            self._drag_origin = None
+            self.setCursor(Qt.OpenHandCursor)
+            event.accept()
+            return
+        super().mouseReleaseEvent(event)
 
 
 class AntennaCatalogMenu(object):
@@ -314,26 +459,46 @@ class AntennaCatalogMenu(object):
         # Populate synthesis page
         self.ui.set_page(self.main_window.antenna_synthesis_menu.antenna_synthesis_menu_widget)
 
-    @staticmethod
-    def add_image(image_path):
+    def add_image(self, image_path):
         """Add the image to antenna settings."""
-        image_layout = QHBoxLayout()
+        image_layout = QGridLayout()
         image_layout.setObjectName("image_layout_pixmap")
+        image_layout.setContentsMargins(12, 12, 12, 12)
         antenna_image = QLabel()
         antenna_image.setObjectName("antenna_picture")
-        antenna_image.setScaledContents(True)
         antenna_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        antenna_image.setAlignment(Qt.AlignCenter)
+
+        open_detached_button = QPushButton("Open")
+        open_detached_button.setObjectName("open_detached_image_button")
+        open_detached_button.setFixedSize(64, 28)
+        button_color = QColor(self.ui.themes["app_color"]["dark_three"])
+        text_color = self.ui.themes["app_color"]["text_foreground"]
+        open_detached_button.setStyleSheet(
+            "padding: 4px 8px; border-radius: 6px;"
+            f"background-color: rgba({button_color.red()}, {button_color.green()}, {button_color.blue()}, 150);"
+            f"color: {text_color};"
+        )
+
+        def open_detached_view():
+            dialog = DetachedImageDialog(image_path, self.main_window)
+            dialog.exec()
+
+        open_detached_button.clicked.connect(open_detached_view)
 
         def resize_pixmap():
             pixmap = QPixmap(str(image_path))
-            pixmap = pixmap.scaled(antenna_image.width(), antenna_image.height(),
-                                   Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            available_size = antenna_image.contentsRect().size()
+            if pixmap.isNull() or available_size.width() <= 0 or available_size.height() <= 0:
+                return
+            pixmap = pixmap.scaled(available_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             antenna_image.setPixmap(pixmap)
 
         antenna_image.resizeEvent = lambda event: resize_pixmap()
 
         resize_pixmap()
-        image_layout.addWidget(antenna_image)
+        image_layout.addWidget(antenna_image, 0, 0)
+        image_layout.addWidget(open_detached_button, 0, 0, alignment=Qt.AlignBottom | Qt.AlignRight)
         return image_layout
 
     def add_line(self, label_value, value):

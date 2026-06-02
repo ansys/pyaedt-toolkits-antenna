@@ -1,0 +1,16 @@
+name = "Blade Antenna"
+
+[object_1]
+name = "antenna_BladeAntenna"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_2]
+name = "ground_BladeAntenna"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_3]
+name = "port_lump_BladeAntenna"
+color = [128, 0, 0]
+opacity = 0.2

@@ -1,4 +1,4 @@
-# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -249,17 +249,16 @@ class AntennaSynthesisMenu(object):
             value = item.text()
             self.ui.update_logger("Changed value of key {} to {}".format(key, value))
             if self.main_window.properties.antenna.antenna_created:
-                self.main_window.update_antenna_parameter(key, value)
-                selected_project = self.main_window.home_menu.project_combobox.currentText()
-                selected_design = self.main_window.home_menu.design_combobox.currentText()
-                self.model_info = self.main_window.get_aedt_model(selected_project, selected_design)
-
                 if self.main_window.properties.backend_url in ["127.0.0.1", "localhost"]:
                     encode = False
                 else:
                     encode = True
 
-                self.__update_antenna_model(encode)
+                self.main_window.update_antenna_parameter(key, value)
+                selected_project = self.main_window.home_menu.project_combobox.currentText()
+                selected_design = self.main_window.home_menu.design_combobox.currentText()
+                self.model_info = self.main_window.get_aedt_model(selected_project, selected_design)
+                self.__update_antenna_model()
 
     def __update_antenna_table(self):
         self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.table_layout)
@@ -336,7 +335,11 @@ class AntennaSynthesisMenu(object):
         if self.model_info:
             self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.botton_image_layout)
 
+            if hasattr(self, "synthesis_plotter") and self.synthesis_plotter is not None:
+                self.synthesis_plotter.close()
+
             plotter = BackgroundPlotter(show=False)
+            self.synthesis_plotter = plotter
             for element in self.model_info:
                 if encode:
                     # Decode response

@@ -21,26 +21,60 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieNormal as BowTieNormal
-from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded as BowTieRounded
-from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieSlot as BowTieSlot
-from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Archimedean as Archimedean
-from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log as Log
-from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous as Sinuous
-from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialMode as AxialMode
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical as Conical
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Corrugated as Corrugated
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Elliptical as Elliptical
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import EPlane as EPlane
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import HPlane as HPlane
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Pyramidal as Pyramidal
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRidged as PyramidalRidged
-from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged as QuadRidged
-from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge as RectangularPatchEdge
-from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset as RectangularPatchInset
-from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe as RectangularPatchProbe
-from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import CircularWaveguide as CircularWaveguide
-from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import RectangularWaveguide as RectangularWaveguide
-from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import (
-    RectangularWaveguideSlotArray as RectangularWaveguideSlotArray,
-)
+from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieNormal
+from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded
+from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieSlot
+from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Archimedean
+from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log
+from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous
+from ansys.aedt.toolkits.antenna.backend.antenna_models.custom import GPSPatchCeramic
+from ansys.aedt.toolkits.antenna.backend.antenna_models.dipole import PlanarDipole
+from ansys.aedt.toolkits.antenna.backend.antenna_models.dipole import WireDipole
+from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialMode
+from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import AxialModeTaper
+from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import NormalMode
+from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import QuadrifilarOpen
+from ansys.aedt.toolkits.antenna.backend.antenna_models.helix import QuadrifilarShort
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Conical
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Corrugated
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Elliptical
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import EPlane
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import HPlane
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Pyramidal
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRidged
+from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged
+from ansys.aedt.toolkits.antenna.backend.antenna_models.misc import Bicone
+from ansys.aedt.toolkits.antenna.backend.antenna_models.misc import Discone
+from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import BladeAntenna
+from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import CircularDiscMonopole
+from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import EllipticalBaseStripMonopole
+from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import VerticalTrapezoidalMonopole
+from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import WireMonopole
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import EllipticalEdge
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import EllipticalInset
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import EllipticalProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import MbyNPatchArray
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchEdge
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchInset
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import RectangularPatchProbe
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import SeqRotated2Patch
+from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import PlanarInvertedF
+from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import ShortingPin
+from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import ShortingPlate
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarArchimedean
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarArchimedeanCavity
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarLog
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarLogCavity
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarSinuous
+from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarSinuousCavity
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotCavityBackedArray
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotGap
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotMicrostrip
+from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotTBar
+from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import Vivaldi
+from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import VivaldiStepped
+from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import CircularWaveguide
+from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import RectangularWaveguide
+from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import RectangularWaveguideSlotArray
+from ansys.aedt.toolkits.antenna.backend.antenna_models.yagiuda import QuasiYagi
+from ansys.aedt.toolkits.antenna.backend.antenna_models.yagiuda import WireYagiUda

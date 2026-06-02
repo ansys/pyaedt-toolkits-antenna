@@ -1,0 +1,16 @@
+name = "T-Bar Fed Slot"
+
+[object_1]
+color = [255, 128, 65]
+name = "cavity_slot"
+opacity = 0.85
+
+[object_2]
+color = [128, 0, 0]
+name = "port_lump"
+opacity = 0.4
+
+[object_3]
+color = [255, 255, 255]
+name = "feed_slot_tbar"
+opacity = 0.4
