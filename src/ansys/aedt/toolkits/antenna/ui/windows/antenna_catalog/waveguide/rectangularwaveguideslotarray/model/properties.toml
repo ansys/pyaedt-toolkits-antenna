@@ -1,4 +1,4 @@
-name = "Rectangular Waveguide Slot Array"
+name = "Rectangular Waveguide"
 
 [object_1]
 name = "metal"
@@ -19,3 +19,8 @@ opacity = 0.8
 name = "port"
 color = [128, 0, 0]
 opacity = 0.2
+
+[object_5]
+name = "inner"
+color = [255, 128, 65]
+opacity = 0.1
