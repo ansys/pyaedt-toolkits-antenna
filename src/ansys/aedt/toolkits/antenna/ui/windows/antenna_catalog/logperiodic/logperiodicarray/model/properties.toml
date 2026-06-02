@@ -1,0 +1,11 @@
+name = "LogPeriodicArray"
+
+[object_1]
+name = "booms"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_2]
+name = "port"
+color = [128, 0, 0]
+opacity = 0.25

@@ -30,7 +30,7 @@ models = [
 ]
 
 [LogPeriodic]
-models = []
+models = ["LogPeriodicArray"]
 
 [Misc]
 models = ["Bicone", "Discone"]
