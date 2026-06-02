@@ -257,8 +257,12 @@ class AntennaSynthesisMenu(object):
                 self.main_window.update_antenna_parameter(key, value)
                 selected_project = self.main_window.home_menu.project_combobox.currentText()
                 selected_design = self.main_window.home_menu.design_combobox.currentText()
-                self.model_info = self.main_window.get_aedt_model(selected_project, selected_design)
-                self.__update_antenna_model()
+                self.model_info = self.main_window.get_aedt_model(selected_project,
+                                                                  selected_design,
+                                                                  export_as_multiple_objects=True,
+                                                                  encode=encode
+                                                                  )
+                self.__update_antenna_model(encode)
 
     def __update_antenna_table(self):
         self.main_window.ui.clear_layout(self.main_window.antenna_synthesis_menu.table_layout)
