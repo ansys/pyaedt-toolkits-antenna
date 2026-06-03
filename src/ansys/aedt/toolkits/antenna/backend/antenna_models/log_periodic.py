@@ -1142,13 +1142,13 @@ class LogPeriodicArray(CommonLogPeriodic):
         sigma_ratio = self.synthesis_parameters.sigma_ratio.hfss_variable
         r_wire = self.synthesis_parameters.r_wire.hfss_variable
         s_feed = self.synthesis_parameters.s_feed.hfss_variable
+        num_sides = self.synthesis_parameters.num_sides.hfss_variable
 
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
 
         number_of_elements = max(int(round(self.synthesis_parameters.number_of_elements.value)), 2)
-        num_sides = max(int(round(self.synthesis_parameters.num_sides.value)), 0)
 
         upper_boom = self._app.modeler.create_cylinder(
             orientation=Axis.X,

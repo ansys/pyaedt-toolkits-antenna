@@ -77,6 +77,7 @@ class Synthesis(BaseModel, validate_assignment=True):
     stop_frequency: float = 0.0
     substrate_height: float = 0.1
     direction: str = "Left"
+    num_sides: int = 6
 
     @model_validator(mode="after")
     def update_center_frequency(self):

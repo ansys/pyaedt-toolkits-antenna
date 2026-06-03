@@ -8,6 +8,7 @@ Sigma_Ratio = 0.198
 Base_Element_Length = 32.98
 Base_Element_Radius = 0.093165
 Number_Of_Elements = 8
+Num_Sides = 6
 Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
 Origin_X_Position = 0.0
 Origin_Y_Position = 0.0
