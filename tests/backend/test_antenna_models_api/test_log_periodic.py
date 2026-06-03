@@ -21,12 +21,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from pathlib import Path
+import sys
+
 import pytest
+import pyvista as pv
 
 from ansys.aedt.core.modeler.cad.object_3d import Object3d
+from ansys.aedt.core.modeler.geometry_operators import GeometryOperators
 from ansys.aedt.toolkits.antenna.backend import antenna_models
 
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
+
 pytestmark = [pytest.mark.antenna_models_api]
+
+CATALOG_ROOT = (
+    Path(__file__).resolve().parents[3]
+    / "src"
+    / "ansys"
+    / "aedt"
+    / "toolkits"
+    / "antenna"
+    / "ui"
+    / "windows"
+    / "antenna_catalog"
+    / "logperiodic"
+)
+
+PRINTED_MODELS = ["LogPeriodicToothed", "LogPeriodicTrapezoidal"]
 
 
 class TestClass:
@@ -52,3 +77,76 @@ class TestClass:
 
         oantenna2 = antenna_module(toolkit.aedtapp, length_unit="mm", outer_boundary="Radiation")
         assert oantenna1.name != oantenna2.name
+
+    @pytest.mark.parametrize("antenna_name", PRINTED_MODELS)
+    def test_printed_log_periodic_family(self, toolkit, antenna_name):
+        antenna_module = getattr(antenna_models, antenna_name)
+        antenna_no_app = antenna_module(None, start_frequency=4.0, stop_frequency=10.0, length_unit="mm")
+        assert antenna_no_app.synthesis_parameters
+        assert antenna_no_app.start_frequency == 4.0
+        assert antenna_no_app.stop_frequency == 10.0
+
+        toolkit.connect_design("HFSS")
+        toolkit.aedtapp.solution_type = "Terminal"
+
+        antenna = antenna_module(
+            toolkit.aedtapp,
+            start_frequency=4.0,
+            stop_frequency=10.0,
+            length_unit=toolkit.aedtapp.modeler.model_units,
+        )
+        antenna.init_model()
+        antenna.model_hfss()
+        antenna.setup_hfss()
+
+        assert antenna.object_list
+        for component in antenna.object_list.values():
+            assert isinstance(component, Object3d)
+
+        original_center = list(antenna.object_list.values())[0].faces[0].center
+        antenna.origin = [10, 15, 5]
+        moved_center = list(antenna.object_list.values())[0].faces[0].center
+        expected_center = GeometryOperators.v_sum(original_center, [10, 15, 5])
+        assert GeometryOperators.points_distance(expected_center, moved_center) < 1e-3
+
+
+def test_log_periodic_catalog_assets():
+    expected_models = {
+        "logperiodicarray": 2,
+        "logperiodictoothed": 4,
+        "logperiodictrapezoidal": 4,
+    }
+
+    for model_name, object_count in expected_models.items():
+        antenna_dir = CATALOG_ROOT / model_name
+        assert (antenna_dir / "parameters.toml").is_file()
+        assert any(path.suffix.lower() in {".jpg", ".jpeg", ".png"} for path in antenna_dir.iterdir())
+
+        properties_file = antenna_dir / "model" / "properties.toml"
+        assert properties_file.is_file()
+        with properties_file.open("rb") as file_handler:
+            antenna_info = tomllib.load(file_handler)
+
+        assert antenna_info["name"]
+        assert len([key for key in antenna_info if key != "name"]) == object_count
+        for object_name, object_properties in antenna_info.items():
+            if object_name == "name":
+                continue
+            assert (antenna_dir / "model" / f"{object_properties['name']}.obj").is_file()
+
+        if model_name in {"logperiodictoothed", "logperiodictrapezoidal"}:
+            plotter = pv.Plotter(off_screen=True, window_size=[400, 400])
+            plotter.set_background("white")
+            for object_name, object_properties in antenna_info.items():
+                if object_name == "name":
+                    continue
+                mesh = pv.read(antenna_dir / "model" / f"{object_properties['name']}.obj")
+                plotter.add_mesh(
+                    mesh,
+                    color=object_properties["color"],
+                    opacity=object_properties["opacity"],
+                    show_scalar_bar=False,
+                )
+            plotter.view_isometric()
+            image = plotter.screenshot(return_img=True)
+            assert int((image < 245).any(axis=2).sum()) > 1000

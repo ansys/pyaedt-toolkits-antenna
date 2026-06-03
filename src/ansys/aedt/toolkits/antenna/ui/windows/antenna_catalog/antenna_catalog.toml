@@ -8,8 +8,11 @@ models = ["Archimedean", "Log", "Sinuous"]
 models = ["GPSPatchCeramic"]
 
 [Waveguide]
-models = ["CircularWaveguide", "RectangularWaveguide",
-    "RectangularWaveguideSlotArray"]
+models = [
+  "CircularWaveguide",
+  "RectangularWaveguide",
+  "RectangularWaveguideSlotArray",
+]
 
 [Dipole]
 models = ["PlanarDipole", "WireDipole"]
@@ -30,7 +33,7 @@ models = [
 ]
 
 [LogPeriodic]
-models = ["LogPeriodicArray"]
+models = ["LogPeriodicArray", "LogPeriodicToothed", "LogPeriodicTrapezoidal"]
 
 [Misc]
 models = ["Bicone", "Discone"]

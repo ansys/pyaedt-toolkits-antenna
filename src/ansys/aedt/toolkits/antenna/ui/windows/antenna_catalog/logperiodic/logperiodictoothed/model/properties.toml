@@ -1,0 +1,21 @@
+name = "LogPeriodicToothed"
+
+[object_1]
+color = [0, 128, 0]
+name = "sub_LogPeriodicToothed"
+opacity = 0.2
+
+[object_2]
+color = [255, 128, 65]
+name = "ant_toothed_upper_LogPeriodicToothed"
+opacity = 0.9
+
+[object_3]
+color = [255, 128, 65]
+name = "ant_toothed_lower_LogPeriodicToothed"
+opacity = 0.9
+
+[object_4]
+color = [128, 0, 0]
+name = "port_lump_LogPeriodicToothed"
+opacity = 0.25
