@@ -22,6 +22,7 @@
 # SOFTWARE.
 
 import copy
+import re
 
 
 class FrozenClass(object):
@@ -98,3 +99,14 @@ class InputParameters(FrozenClass):
         for key, value in self.__default_properties.items():
             setattr(self, key, copy.deepcopy(value))
         self._freeze()  # no new attributes after this point.
+
+
+_UNITLESS_PARAMETER_RE = re.compile(
+    r"(ratio|coefficient|points|number|resistance|impedance|tau|sigma)",
+    re.IGNORECASE,
+)
+
+
+def is_unitless_parameter(parameter_name):
+    """Return ``True`` when the parameter should not be suffixed with a length unit."""
+    return bool(_UNITLESS_PARAMETER_RE.search(parameter_name))

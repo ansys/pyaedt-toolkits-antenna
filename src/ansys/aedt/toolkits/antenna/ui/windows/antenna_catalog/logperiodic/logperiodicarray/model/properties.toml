@@ -1,0 +1,21 @@
+name = "LogPeriodicArray"
+
+[object_1]
+name = "lower_boom_LogPeriodicArray"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_2]
+name = "upper_boom_LogPeriodicArray"
+color = [255, 128, 65]
+opacity = 1.0
+
+[object_3]
+name = "port_lump_LogPeriodicArray"
+color = [128, 0, 0]
+opacity = 0.25
+
+[object_4]
+name = "load_sheet_LogPeriodicArray"
+color = [128, 0, 0]
+opacity = 0.25
