@@ -34,18 +34,22 @@ class CommonMonopole(CommonAntenna):
     """Provides base methods common to monopole antennas."""
 
     def __init__(self, default_input_parameters, *args, **kwargs):
+        """Initialize the common monopole input parameter set."""
         CommonAntenna.antenna_type = "Monopole"
         CommonAntenna.__init__(self, default_input_parameters, *args, **kwargs)
 
     def _length_value(self, value, unit="meter"):
+        """Convert a length value into the active antenna length unit."""
         return constants.unit_converter(value, "Length", unit, self.length_unit)
 
     def _sorted_parameters(self, parameters):
+        """Return a parameter dictionary sorted alphabetically by key."""
         keys = list(parameters.keys())
         keys.sort()
         return OrderedDict((key, parameters[key]) for key in keys)
 
     def _set_object_properties(self, obj, color, transparency, group_name):
+        """Apply display and grouping properties to a created modeler object."""
         obj.color = color
         obj.transparency = transparency
         obj.group_name = group_name
@@ -58,6 +62,7 @@ class CommonMonopole(CommonAntenna):
             properties["Coordinate System"] = self.coordinate_system
 
     def _finalize_objects(self, objects):
+        """Move created objects to the configured origin position."""
         pos_x = self.synthesis_parameters.pos_x.hfss_variable
         pos_y = self.synthesis_parameters.pos_y.hfss_variable
         pos_z = self.synthesis_parameters.pos_z.hfss_variable
@@ -65,10 +70,48 @@ class CommonMonopole(CommonAntenna):
         return True
 
     def _ground_thickness(self, dimension):
+        """Return a thin ground-plane thickness derived from a planar dimension."""
         return f"{dimension}/50"
 
 
 class BladeAntenna(CommonMonopole):
+    """Manage a planar blade monopole antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``1.2``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Conductive material assigned to the antenna geometry. The default is
+        ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``""``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.monopole.BladeAntenna`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] M. Ono and Y. Takeichi, "A one-eighth-wave blade antenna with metal
+       leading edge," in *Antennas and Propagation Society International
+       Symposium*, Atlanta, GA, USA, 1974, pp. 225-228.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import BladeAntenna
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = BladeAntenna(app)
+    >>> antenna.model_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
@@ -81,6 +124,7 @@ class BladeAntenna(CommonMonopole):
     }
 
     def __init__(self, *args, **kwargs):
+        """Initialize the blade monopole and synthesize its default geometry."""
         CommonMonopole.__init__(self, self._default_input_parameters, *args, **kwargs)
         self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
@@ -88,6 +132,13 @@ class BladeAntenna(CommonMonopole):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Compute scaled blade monopole dimensions from the operating frequency.
+
+        Returns
+        -------
+        collections.OrderedDict
+            Synthesized geometric parameters in the active length unit.
+        """
         scale = 1.2 / constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
         parameters = {
             "flare_angle": 40.0,
@@ -118,6 +169,13 @@ class BladeAntenna(CommonMonopole):
 
     @pyaedt_function_handler()
     def model_hfss(self):
+        """Create the blade monopole geometry in HFSS.
+
+        Returns
+        -------
+        bool
+            ``True`` when geometry is created, ``False`` when it already exists.
+        """
         if self.object_list:
             return False
 
@@ -262,6 +320,47 @@ class BladeAntenna(CommonMonopole):
 
 
 class CircularDiscMonopole(CommonMonopole):
+    """Manage a circular disc monopole antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``0.9``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Conductive material assigned to the antenna geometry. The default is
+        ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``""``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.monopole.CircularDiscMonopole`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] S. Honda et al., "A disc monopole antenna with 1:8 impedance bandwidth
+       and omnidirectional radiation pattern," in *Proceedings of the
+       International Symposium on Antennas and Propagation*, Sapporo, Japan,
+       Sept. 1992, pp. 1145-1148.
+    .. [2] N. P. Agrawall et al., "Wide-Band Planar Monopole Antennas," *IEEE
+       Transactions on Antennas and Propagation*, vol. 46, no. 2,
+       pp. 294-295, Feb. 1998.
+
+    Examples
+    --------
+     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import CircularDiscMonopole
+     >>> import ansys.aedt.core
+     >>> app = ansys.aedt.core.Hfss()
+     >>> antenna = CircularDiscMonopole(app)
+     >>> antenna.model_hfss()
+     >>> app.release_desktop(False, False)
+    """
+
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
@@ -274,6 +373,7 @@ class CircularDiscMonopole(CommonMonopole):
     }
 
     def __init__(self, *args, **kwargs):
+        """Initialize the circular disc monopole and synthesize its parameters."""
         CommonMonopole.__init__(self, self._default_input_parameters, *args, **kwargs)
         self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
@@ -281,6 +381,13 @@ class CircularDiscMonopole(CommonMonopole):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Compute circular disc monopole dimensions from the target frequency.
+
+        Returns
+        -------
+        collections.OrderedDict
+            Synthesized geometric parameters in the active length unit.
+        """
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
         wavelength = constants.SpeedOfLight / constants.unit_converter(
             self.frequency, "Freq", self.frequency_unit, "Hz"
@@ -302,6 +409,13 @@ class CircularDiscMonopole(CommonMonopole):
 
     @pyaedt_function_handler()
     def model_hfss(self):
+        """Create the circular disc monopole geometry in HFSS.
+
+        Returns
+        -------
+        bool
+            ``True`` when geometry is created, ``False`` when it already exists.
+        """
         if self.object_list:
             return False
 
@@ -379,6 +493,49 @@ class CircularDiscMonopole(CommonMonopole):
 
 
 class EllipticalBaseStripMonopole(CommonMonopole):
+    """Manage a strip monopole with an elliptical base transition.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``0.9``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Conductive material assigned to the antenna geometry. The default is
+        ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``""``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.monopole.EllipticalBaseStripMonopole`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] P. V. Anob, K. P. Ray, and G. Kumar, "Wideband orthogonal square
+       monopole antennas with semi-circular base," in *Antennas and Propagation
+       Society International Symposium*, Boston, MA, USA, 2001,
+       pp. 294-297, vol. 3.
+    .. [2] W. S. Chen et al., "The design of the cross semi-elliptic disc
+       monopole antenna and the band-rejected cross semi-elliptic monopole
+       antenna for UWB applications," in *IEEE Antennas and Propagation
+       Society International Symposium*, Albuquerque, NM, USA, 2006,
+       pp. 4649-4652.
+
+    Examples
+    --------
+     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import EllipticalBaseStripMonopole
+     >>> import ansys.aedt.core
+     >>> app = ansys.aedt.core.Hfss()
+     >>> antenna = EllipticalBaseStripMonopole(app)
+     >>> antenna.model_hfss()
+     >>> app.release_desktop(False, False)
+    """
+
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
@@ -391,6 +548,7 @@ class EllipticalBaseStripMonopole(CommonMonopole):
     }
 
     def __init__(self, *args, **kwargs):
+        """Initialize the elliptical-base strip monopole geometry parameters."""
         CommonMonopole.__init__(self, self._default_input_parameters, *args, **kwargs)
         self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
@@ -398,6 +556,13 @@ class EllipticalBaseStripMonopole(CommonMonopole):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Compute elliptical-base strip monopole dimensions.
+
+        Returns
+        -------
+        collections.OrderedDict
+            Synthesized geometric parameters in the active length unit.
+        """
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
         wavelength = constants.SpeedOfLight / constants.unit_converter(
             self.frequency, "Freq", self.frequency_unit, "Hz"
@@ -421,6 +586,13 @@ class EllipticalBaseStripMonopole(CommonMonopole):
 
     @pyaedt_function_handler()
     def model_hfss(self):
+        """Create the elliptical-base strip monopole geometry in HFSS.
+
+        Returns
+        -------
+        bool
+            ``True`` when geometry is created, ``False`` when it already exists.
+        """
         if self.object_list:
             return False
 
@@ -523,6 +695,47 @@ class EllipticalBaseStripMonopole(CommonMonopole):
 
 
 class VerticalTrapezoidalMonopole(CommonMonopole):
+    """Manage a vertical trapezoidal planar monopole antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``1.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Conductive material assigned to the antenna geometry. The default is
+        ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``""``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.monopole.VerticalTrapezoidalMonopole`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] N. P. Agrawall et al., "Wide-Band Planar Monopole Antennas," *IEEE
+       Transactions on Antennas and Propagation*, vol. 46, no. 2,
+       pp. 294-295, Feb. 1998.
+    .. [2] J. A. Evans and M. J. Ammann, "Planar trapezoidal and pentagonal
+       monopoles with impedance bandwidths in excess of 10:1," in *Antennas and
+       Propagation Society International Symposium*, Orlando, FL, USA, 1999,
+       pp. 1558-1561, vol. 3.
+
+    Examples
+    --------
+     >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import VerticalTrapezoidalMonopole
+     >>> import ansys.aedt.core
+     >>> app = ansys.aedt.core.Hfss()
+     >>> antenna = VerticalTrapezoidalMonopole(app)
+     >>> antenna.model_hfss()
+     >>> app.release_desktop(False, False)
+    """
+
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
@@ -535,6 +748,7 @@ class VerticalTrapezoidalMonopole(CommonMonopole):
     }
 
     def __init__(self, *args, **kwargs):
+        """Initialize the trapezoidal monopole and synthesize its parameters."""
         CommonMonopole.__init__(self, self._default_input_parameters, *args, **kwargs)
         self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
@@ -542,6 +756,13 @@ class VerticalTrapezoidalMonopole(CommonMonopole):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Compute vertical trapezoidal monopole dimensions.
+
+        Returns
+        -------
+        collections.OrderedDict
+            Synthesized geometric parameters in the active length unit.
+        """
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
         wavelength = constants.SpeedOfLight / constants.unit_converter(
             self.frequency, "Freq", self.frequency_unit, "Hz"
@@ -564,6 +785,13 @@ class VerticalTrapezoidalMonopole(CommonMonopole):
 
     @pyaedt_function_handler()
     def model_hfss(self):
+        """Create the vertical trapezoidal monopole geometry in HFSS.
+
+        Returns
+        -------
+        bool
+            ``True`` when geometry is created, ``False`` when it already exists.
+        """
         if self.object_list:
             return False
 
@@ -657,6 +885,42 @@ class VerticalTrapezoidalMonopole(CommonMonopole):
 
 
 class WireMonopole(CommonMonopole):
+    """Manage a thin-wire monopole over a finite ground plane.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``0.9``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Conductive material assigned to the antenna geometry. The default is
+        ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``""``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.monopole.WireMonopole`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] C. A. Balanis, "Linear Wire Antennas," in *Antenna Theory*,
+       2nd ed., New York, 1997.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import WireMonopole
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = WireMonopole(app)
+    >>> antenna.model_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
@@ -669,6 +933,7 @@ class WireMonopole(CommonMonopole):
     }
 
     def __init__(self, *args, **kwargs):
+        """Initialize the wire monopole and synthesize its default dimensions."""
         CommonMonopole.__init__(self, self._default_input_parameters, *args, **kwargs)
         self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
@@ -676,6 +941,13 @@ class WireMonopole(CommonMonopole):
 
     @pyaedt_function_handler()
     def synthesis(self):
+        """Compute thin-wire monopole dimensions from the operating wavelength.
+
+        Returns
+        -------
+        collections.OrderedDict
+            Synthesized geometric parameters in the active length unit.
+        """
         wavelength = constants.SpeedOfLight / constants.unit_converter(
             self.frequency, "Freq", self.frequency_unit, "Hz"
         )
@@ -695,6 +967,13 @@ class WireMonopole(CommonMonopole):
 
     @pyaedt_function_handler()
     def model_hfss(self):
+        """Create the thin-wire monopole geometry in HFSS.
+
+        Returns
+        -------
+        bool
+            ``True`` when geometry is created, ``False`` when it already exists.
+        """
         if self.object_list:
             return False
 

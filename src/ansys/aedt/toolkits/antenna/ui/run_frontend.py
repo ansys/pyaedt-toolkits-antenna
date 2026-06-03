@@ -58,8 +58,8 @@ if len(sys.argv) == 3:
     properties.backend_url = sys.argv[1]
     properties.backend_port = int(sys.argv[2])
 
-url = properties.backend_url
-port = properties.backend_port
+# url = properties.backend_url
+# port = properties.backend_port
 
 os.environ["QT_API"] = "pyside6"
 os.environ["QT_FONT_DPI"] = "96"

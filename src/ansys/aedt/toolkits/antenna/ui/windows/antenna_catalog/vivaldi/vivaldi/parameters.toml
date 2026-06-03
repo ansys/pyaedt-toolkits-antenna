@@ -1,0 +1,10 @@
+Name = "Vivaldi"
+Start_Frequency = 8.0
+Stop_Frequency = 21.0
+Material = ["FR4_epoxy", "Teflon (tm)", "Rogers RT / duroid 5880 (tm)"]
+Substrate_Height = 1.575
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"
