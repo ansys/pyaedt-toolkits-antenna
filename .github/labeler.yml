@@ -7,8 +7,9 @@ documentation:
 maintenance:
 - changed-files:
   - any-glob-to-any-file:
-    - ".github/**/*"
     - ".flake8"
+    - ".github/**/*"
+    - ".pre-commit-config.yaml"
     - "pyproject.toml"
 
 testing:

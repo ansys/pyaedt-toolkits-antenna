@@ -1,1 +1,6 @@
-.github/* @Samuelopez-ansys @MaxJPRey @maxcapodi78
+.github/* @Samuelopez-ansys @gmalinve @SMoraisAnsys @ecoussoux-ansys
+
+# These owners will be the default owners for everything in the repo. Unless a
+# previous match takes precedence, the maintainers team will be requested
+# for review when someone opens a pull request.
+* @Samuelopez-ansys @SMoraisAnsys
