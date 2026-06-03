@@ -96,7 +96,48 @@ class CommonWaveguide(CommonAntenna):
 
 
 class CircularWaveguide(CommonWaveguide):
-    """Manages a circular waveguide section."""
+    """Manage a circular waveguide section.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Waveguide material. The default is ``"pec"``.
+    material_properties : dict, optional
+        Material properties for the waveguide material. The default is ``{}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is determined by the common antenna base
+        class when not explicitly provided.
+    wg_radius : float, optional
+        Waveguide inner radius. When ``None``, it is synthesized from the
+        operating frequency.
+    wg_length : float, optional
+        Waveguide length. When ``None``, it is synthesized from the operating
+        frequency.
+    wall_thickness : float, optional
+        Waveguide wall thickness. When ``None``, it is synthesized from the
+        operating frequency.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide.CircularWaveguide`
+        Antenna object.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import CircularWaveguide
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = CircularWaveguide(app)
+    >>> antenna.model_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _default_input_parameters = {
         "name": "",
@@ -225,7 +266,54 @@ class CircularWaveguide(CommonWaveguide):
 
 
 class RectangularWaveguide(CommonWaveguide):
-    """Manages a rectangular waveguide section."""
+    """Manage a rectangular waveguide section.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Waveguide material. The default is ``"pec"``.
+    material_properties : dict, optional
+        Material properties for the waveguide material. The default is ``{}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is determined by the common antenna base
+        class when not explicitly provided.
+    wg_standard : str, optional
+        Standard waveguide name. The default is ``"auto"``, which selects a
+        size from frequency.
+    wg_width : float, optional
+        Waveguide inner width. When ``None``, it is synthesized from the
+        selected standard.
+    wg_height : float, optional
+        Waveguide inner height. When ``None``, it is synthesized from the
+        selected standard.
+    wg_length : float, optional
+        Waveguide length. When ``None``, it is synthesized from the operating
+        frequency.
+    wall_thickness : float, optional
+        Waveguide wall thickness. When ``None``, it is synthesized from the
+        selected standard.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide.RectangularWaveguide`
+        Antenna object.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import RectangularWaveguide
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = RectangularWaveguide(app)
+    >>> antenna.model_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _default_input_parameters = {
         "name": "",
@@ -363,7 +451,82 @@ class RectangularWaveguide(CommonWaveguide):
 
 
 class RectangularWaveguideSlotArray(CommonWaveguide):
-    """Manages a rectangular waveguide slot array."""
+    """Manage a rectangular waveguide slot array.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.3``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Waveguide material. The default is ``"pec"``.
+    material_properties : dict, optional
+        Material properties for the waveguide material. The default is ``{}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is determined by the common antenna base
+        class when not explicitly provided.
+    wg_standard : str, optional
+        Standard waveguide name. The default is ``"auto"``, which selects a
+        size from frequency.
+    wg_width : float, optional
+        Waveguide inner width. When ``None``, it is synthesized from the
+        selected standard.
+    wg_height : float, optional
+        Waveguide inner height. When ``None``, it is synthesized from the
+        selected standard.
+    wg_length : float, optional
+        Waveguide length. When ``None``, it is synthesized from slot-array
+        defaults and adjusted to satisfy spacing constraints.
+    wall_thickness : float, optional
+        Waveguide wall thickness. When ``None``, it is synthesized from the
+        selected standard.
+    inset_from_feed : float, optional
+        Distance from the feed plane to the first slot. When ``None``, it is
+        synthesized from the reference design.
+    inset_from_termination : float, optional
+        Distance from the last slot to the terminated end. When ``None``, it
+        is synthesized from the reference design.
+    slot_spacing : float, optional
+        Center-to-center spacing between adjacent slots. When ``None``, it is
+        synthesized from the reference design.
+    slot_width : float, optional
+        Slot width. When ``None``, it is synthesized from the reference design.
+    slot_length : float, optional
+        Slot length. When ``None``, it is synthesized from the reference
+        design.
+    slot_offset : float, optional
+        Alternating lateral slot offset from the waveguide centerline. When
+        ``None``, it is synthesized from the reference design.
+    slots_number : int, optional
+        Number of radiating slots. The default is ``13``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide.RectangularWaveguideSlotArray`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] R. Elliott and I. Kurtz, "The design of small slot arrays," in
+       *IEEE Transactions on Antennas and Propagation*, vol. 26, no. 2,
+       pp. 214-219, Mar. 1978.
+    .. [2] D. Y. Kim and R. S. Elliott, "A design procedure for slot arrays
+       fed by single-ridge waveguide," in *IEEE Transactions on Antennas and
+       Propagation*, vol. 36, no. 11, pp. 1531-1536, Nov. 1988.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import RectangularWaveguideSlotArray
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = RectangularWaveguideSlotArray(app)
+    >>> antenna.model_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _default_input_parameters = {
         "name": "",

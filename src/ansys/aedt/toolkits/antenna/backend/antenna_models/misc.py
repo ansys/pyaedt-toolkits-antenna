@@ -65,12 +65,41 @@ class CommonMisc(CommonAntenna):
 
 
 class Bicone(CommonMisc):
-    """Manages a bicone antenna.
+    """Manage a bicone antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Metal material. The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.misc.Bicone`
+        Antenna object.
 
     Notes
     -----
     .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
         *Modern Antenna Handbook*, New York, 2008.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.misc import Bicone
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = Bicone(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
     """
 
     _default_input_parameters = {
@@ -217,12 +246,41 @@ class Bicone(CommonMisc):
 
 
 class Discone(CommonMisc):
-    """Manages a discone antenna.
+    """Manage a discone antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Metal material. The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.misc.Discone`
+        Antenna object.
 
     Notes
     -----
     .. [1] C. Balanis, "Wideband and Travelling-Wave Antennas,"
         *Modern Antenna Handbook*, New York, 2008.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.misc import Discone
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = Discone(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
     """
 
     _default_input_parameters = {

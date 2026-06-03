@@ -425,7 +425,51 @@ class CommonVivaldi(CommonPatch):
 
 
 class Vivaldi(CommonVivaldi):
-    """Manages a continuous Vivaldi antenna."""
+    """Manage a continuous Vivaldi antenna.
+
+    Parameters
+    ----------
+    start_frequency : float, optional
+        Lower edge of the operating band. The default is ``8.0``.
+    stop_frequency : float, optional
+        Upper edge of the operating band. The default is ``21.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    feeder_length : float, optional
+        Feed section length before the taper starts. The default is ``0.0``.
+    material : str, optional
+        Substrate material. The default is ``"FR4_epoxy"``.
+    material_properties : dict, optional
+        Material properties for the substrate. The default is
+        ``{"permittivity": 4.4}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+    substrate_height : float, optional
+        Substrate height. The default is ``1.575``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi.Vivaldi`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] R. Johnson, "Slot Antennas," in *Antenna Engineering Handbook*,
+       3rd ed., New York, McGraw-Hill, 1993.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import Vivaldi
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = Vivaldi(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     def __init__(self, *args, **kwargs):
         CommonVivaldi.__init__(self, self._default_input_parameters, *args, **kwargs)
@@ -433,7 +477,51 @@ class Vivaldi(CommonVivaldi):
 
 
 class VivaldiStepped(CommonVivaldi):
-    """Manages a stepped Vivaldi antenna."""
+    """Manage a stepped Vivaldi antenna.
+
+    Parameters
+    ----------
+    start_frequency : float, optional
+        Lower edge of the operating band. The default is ``8.0``.
+    stop_frequency : float, optional
+        Upper edge of the operating band. The default is ``21.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    feeder_length : float, optional
+        Feed section length before the taper starts. The default is ``0.0``.
+    material : str, optional
+        Substrate material. The default is ``"FR4_epoxy"``.
+    material_properties : dict, optional
+        Material properties for the substrate. The default is
+        ``{"permittivity": 4.4}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+    substrate_height : float, optional
+        Substrate height. The default is ``1.575``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi.VivaldiStepped`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] R. Johnson, "Slot Antennas," in *Antenna Engineering Handbook*,
+       3rd ed., New York, McGraw-Hill, 1993.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import VivaldiStepped
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = VivaldiStepped(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _point_parameter_name = "number_of_steps"
     _point_count = 20

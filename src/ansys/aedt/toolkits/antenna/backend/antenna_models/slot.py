@@ -122,6 +122,48 @@ class CommonPrintedSlot(CommonSlot):
 
 
 class SlotGap(CommonPrintedSlot):
+    """Manage a gap-fed printed slot antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``1.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Substrate material. The default is ``"FR4_epoxy"``.
+    material_properties : dict, optional
+        Material properties for the substrate. The default is
+        ``{"permittivity": 4.4}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"cm"``.
+    substrate_height : float, optional
+        Substrate height. The default is ``0.15748``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.slot.SlotGap`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Linear Wire Antennas," in *Antenna Theory*,
+       2nd ed., New York, Wiley, 1997.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotGap
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = SlotGap(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
@@ -251,6 +293,48 @@ class SlotGap(CommonPrintedSlot):
 
 
 class SlotMicrostrip(CommonPrintedSlot):
+    """Manage a microstrip-fed printed slot antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``1.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Substrate material. The default is ``"FR4_epoxy"``.
+    material_properties : dict, optional
+        Material properties for the substrate. The default is
+        ``{"permittivity": 4.4}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"cm"``.
+    substrate_height : float, optional
+        Substrate height. The default is ``0.15748``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.slot.SlotMicrostrip`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] C. Balanis, "Linear Wire Antennas," in *Antenna Theory*,
+       2nd ed., New York, Wiley, 1997.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotMicrostrip
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = SlotMicrostrip(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
@@ -398,6 +482,42 @@ class SlotMicrostrip(CommonPrintedSlot):
 
 
 class SlotTBar(CommonSlot):
+    """Manage a T-bar-fed cavity-backed slot antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``1.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.slot.SlotTBar`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] E. Newman and G. Thiele, "Some important parameters in the design
+       of T-bar fed slot antennas," *IEEE Transactions on Antennas and
+       Propagation*, vol. 23, no. 1, pp. 97-100, Jan. 1975.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotTBar
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = SlotTBar(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
@@ -538,6 +658,45 @@ class SlotTBar(CommonSlot):
 
 
 class SlotCavityBackedArray(CommonSlot):
+    """Manage a cavity-backed slot antenna array.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``3.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.slot.SlotCavityBackedArray`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] C. A. Balanis, *Antenna Theory, Analysis and Design*,
+       3rd ed., Wiley, chapters 6 and 12.
+    .. [2] Byungje Lee et al., "Cavity-backed slot antenna array for the
+       repeater system of a satellite digital multimedia broadcasting
+       service," *IEEE Antennas and Wireless Propagation Letters*, vol. 4,
+       pp. 389-392, 2005.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotCavityBackedArray
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = SlotCavityBackedArray(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     _default_input_parameters = {
         "name": "",
         "origin": [0, 0, 0],
