@@ -32,6 +32,7 @@
 #
 # Import the antenna toolkit class and PyAEDT.
 
+from pathlib import Path
 import tempfile
 
 import ansys.aedt.core
@@ -117,7 +118,7 @@ oantenna2.setup_hfss()
 #
 # Plot geometry with PyVista.
 
-app.plot(show=False)
+app.plot(output_file=Path(temp_dir) / "hfss_model.png", show=False)
 
 # ## Release AEDT
 #

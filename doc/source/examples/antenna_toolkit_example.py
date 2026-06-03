@@ -30,6 +30,7 @@
 
 # ## Perform required imports
 
+from pathlib import Path
 import sys
 import tempfile
 
@@ -239,7 +240,7 @@ model = ModelPlotter()
 for file in files:
     model.add_object(file[0], file[1], file[2])
 
-model.plot(show=False)
+model.plot(export_image_path=Path(temp_dir) / "antenna_model.png", show=False)
 
 # ## Load far field
 
@@ -247,11 +248,14 @@ farfield_data = FfdSolutionData(farfield_metadata)
 
 # ## Plot far field 3D
 
-data = farfield_data.plot_3d()
+data = farfield_data.plot_3d(
+    output_file=Path(temp_dir) / "farfield_3d.png",
+    show=False,
+)
 
 # ## Plot far field cut
 
-farfield_data.plot_cut(primary_sweep="theta")
+farfield_data.plot_cut(primary_sweep="theta", output_file=Path(temp_dir) / "farfield_cut.png", show=False)
 
 # ## Clean temporary directory
 
