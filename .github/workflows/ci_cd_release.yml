@@ -5,7 +5,8 @@ on:
       - "v*.*.*"
 
 env:
-  MAIN_PYTHON_VERSION: '3.12'
+  MAIN_PYTHON_VERSION: '3.14'
+  TESTS_PYTHON_VERSION: '3.10'
   DOCUMENTATION_CNAME: 'aedt.antenna.toolkit.docs.pyansys.com'
   LIBRARY_NAME: 'ansys-aedt-toolkits-antenna'
   LIBRARY_NAMESPACE: 'ansys.aedt.toolkits.antenna'
@@ -292,7 +293,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          python-version: ${{ env.TESTS_PYTHON_VERSION }}
 
       - name: Create Python venv
         run: |
@@ -363,7 +364,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          python-version: ${{ env.TESTS_PYTHON_VERSION }}
 
       - name: Create Python venv
         run: |
