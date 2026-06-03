@@ -471,7 +471,57 @@ class CommonPrintedLogPeriodic(CommonPatch):
 
 
 class LogPeriodicToothed(CommonPrintedLogPeriodic):
-    """Manages a toothed printed log periodic antenna."""
+    """Manage a toothed printed log periodic antenna.
+
+    Parameters
+    ----------
+    start_frequency : float, optional
+        Lower edge of the operating band. The default is ``4.0``.
+    stop_frequency : float, optional
+        Upper edge of the operating band. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Substrate material. The default is ``"Duroid (tm)"``.
+    material_properties : dict, optional
+        Material properties for the substrate. The default is
+        ``{"permittivity": 2.2}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+    substrate_height : float, optional
+        Substrate height. The default is ``1.5748``.
+    tau_ratio : float, optional
+        Successive element scaling ratio. The default is ``0.65``.
+    sigma_ratio : float, optional
+        Successive spacing ratio. The default is ``0.81``.
+    delta_angle : float, optional
+        Tooth taper angle in degrees. The default is ``45.0``.
+    beta_angle : float, optional
+        Main flare angle in degrees. The default is ``45.0``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.log_periodic.LogPeriodicToothed`
+        Antenna object.
+
+    Notes
+    -----
+     .. [1] C. Balanis, "Frequency Independent Antennas:
+         Spirals and Log Periodics," in *Modern Antenna Handbook*,
+         New York, Wiley, 2008.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend import antenna_models
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = antenna_models.log_periodic.LogPeriodicToothed(app)
+    >>> antenna.model_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _default_input_parameters = {
         **CommonPrintedLogPeriodic._default_input_parameters,
@@ -662,7 +712,58 @@ class LogPeriodicToothed(CommonPrintedLogPeriodic):
 
 
 class LogPeriodicTrapezoidal(CommonPrintedLogPeriodic):
-    """Manages a trapezoidal printed log periodic antenna."""
+    """Manage a trapezoidal printed log periodic antenna.
+
+    Parameters
+    ----------
+    start_frequency : float, optional
+        Lower edge of the operating band. The default is ``4.0``.
+    stop_frequency : float, optional
+        Upper edge of the operating band. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Substrate material. The default is ``"Duroid (tm)"``.
+    material_properties : dict, optional
+        Material properties for the substrate. The default is
+        ``{"permittivity": 2.2}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+    substrate_height : float, optional
+        Substrate height. The default is ``1.5748``.
+    tau_ratio : float, optional
+        Successive element scaling ratio. The default is ``0.7``.
+    sigma_ratio : float, optional
+        Successive spacing ratio. The default is ``0.84``.
+    delta_angle : float, optional
+        Trapezoid tooth taper angle in degrees.
+        The default is ``30.0``.
+    beta_angle : float, optional
+        Main flare angle in degrees. The default is ``60.0``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.log_periodic.LogPeriodicTrapezoidal`
+        Antenna object.
+
+    Notes
+    -----
+     .. [1] C. Balanis, "Frequency Independent Antennas:
+         Spirals and Log Periodics," in *Modern Antenna Handbook*,
+         New York, Wiley, 2008.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend import antenna_models
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = antenna_models.log_periodic.LogPeriodicTrapezoidal(app)
+    >>> antenna.model_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _default_input_parameters = {
         **CommonPrintedLogPeriodic._default_input_parameters,
@@ -857,7 +958,66 @@ class LogPeriodicTrapezoidal(CommonPrintedLogPeriodic):
 
 
 class LogPeriodicArray(CommonLogPeriodic):
-    """Manages a log periodic dipole array antenna."""
+    """Manage a log periodic dipole array antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency used for synthesis. The default is ``5.05``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Conductor material. The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    gain : float, optional
+        Expected directivity in dBi. The default is ``10.0``.
+    input_resistance : float, optional
+        Feed resistance in ohms. The default is ``100.0``.
+    load_impedance : float, optional
+        Termination resistance in ohms. The default is ``118.7921``.
+    boom_spacing : float, optional
+        Spacing between booms. The default is ``0.22693``.
+    tau_ratio : float, optional
+        Successive element scaling ratio. The default is ``0.9265``.
+    sigma_ratio : float, optional
+        Successive spacing ratio. The default is ``0.198``.
+    base_element_length : float, optional
+        Length of the largest dipole element. The default is ``32.98``.
+    base_element_radius : float, optional
+        Radius of each dipole element. The default is ``0.093165``.
+    number_of_elements : int, optional
+        Number of dipole elements. The default is ``8``.
+    num_sides : int, optional
+        Number of sides used for cylindrical sections. The default is ``6``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.log_periodic.LogPeriodicArray`
+        Antenna object.
+
+    Notes
+    -----
+     .. [1] C. A. Balanis, "Horn Antennas," in
+         *Antenna Theory: Analysis and Design*, 3rd ed., Hoboken,
+         Wiley, 2005, sec. 11.4, pp. 619-637.
+     .. [2] R. H. DuHamel and E. G. Berry,
+         "Logarithmically Periodic Antenna Arrays,"
+         *IRE Wescon Convention Record*, Part 1, 1958,
+         pp. 161-177.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend import antenna_models
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = antenna_models.log_periodic.LogPeriodicArray(app)
+    >>> antenna.model_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _default_input_parameters = {
         "name": "",
