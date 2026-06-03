@@ -1,0 +1,14 @@
+Beta_Angle = 60.0
+Coordinate_System = "Global"
+Delta_Angle = 30.0
+Material = ["Duroid (tm)", "FR4_epoxy", "Teflon (tm)", "Rogers RT / duroid 5880 (tm)"]
+Name = "LogPeriodicTrapezoidal"
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Sigma_Ratio = 0.84
+Start_Frequency = 4.0
+Stop_Frequency = 10.0
+Substrate_Height = 1.5748
+Tau_Ratio = 0.7

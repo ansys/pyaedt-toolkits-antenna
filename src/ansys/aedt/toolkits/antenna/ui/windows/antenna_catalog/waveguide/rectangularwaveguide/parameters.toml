@@ -1,0 +1,13 @@
+Name = "Rectangular_Waveguide"
+Frequency = 10.0
+Rectangular_Waveguide = ["WR-102", "WR-90", "WR-75", "WR-62"]
+Material = ["pec", "copper", "aluminum"]
+WG_Width = 22.86
+WG_Height = 10.16
+WG_Length = 50.8
+Wall_Thickness = 1.27
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"
