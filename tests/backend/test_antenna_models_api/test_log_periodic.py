@@ -112,7 +112,7 @@ class TestClass:
 
 def test_log_periodic_catalog_assets():
     expected_models = {
-        "logperiodicarray": 2,
+        "logperiodicarray": 4,
         "logperiodictoothed": 4,
         "logperiodictrapezoidal": 4,
     }
