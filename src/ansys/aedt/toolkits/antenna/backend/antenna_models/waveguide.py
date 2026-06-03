@@ -26,11 +26,12 @@ import re
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
+
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import StandardWaveguide
 from ansys.aedt.toolkits.antenna.backend.antenna_models.parameters import Property
 from ansys.aedt.toolkits.antenna.backend.models import properties
-from ansys.aedt.toolkits.common.backend.logger_handler import logger
 
 _DIMENSIONLESS_PARAMETER_RE = re.compile("|".join(["ratio", "coefficient", "points", "number"]))
 

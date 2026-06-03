@@ -26,15 +26,15 @@ import multiprocessing
 import os
 import sys
 
+from ansys.aedt.toolkits.common.utils import clean_python_processes
+from ansys.aedt.toolkits.common.utils import find_free_port
+from ansys.aedt.toolkits.common.utils import is_server_running
+from ansys.aedt.toolkits.common.utils import process_desktop_properties
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication
 
 from ansys.aedt.toolkits.antenna.backend.models import properties as backend_properties
 from ansys.aedt.toolkits.antenna.ui.models import properties as frontend_properties
-from ansys.aedt.toolkits.common.utils import clean_python_processes
-from ansys.aedt.toolkits.common.utils import find_free_port
-from ansys.aedt.toolkits.common.utils import is_server_running
-from ansys.aedt.toolkits.common.utils import process_desktop_properties
 
 backend = None
 ui = None
@@ -51,8 +51,9 @@ def start_backend(pp):
 
 
 def show_splash_and_start_frontend(qt_app, url_backend):
-    from ansys.aedt.toolkits.antenna.ui.splash import show_splash_screen
     from ansys.aedt.toolkits.common.utils import check_backend_communication
+
+    from ansys.aedt.toolkits.antenna.ui.splash import show_splash_screen
 
     splash = show_splash_screen(qt_app)  # Should return the splash widget
 
