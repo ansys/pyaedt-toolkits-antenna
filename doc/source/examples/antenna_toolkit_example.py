@@ -239,7 +239,7 @@ model = ModelPlotter()
 for file in files:
     model.add_object(file[0], file[1], file[2])
 
-model.plot()
+model.plot(show=False)
 
 # ## Load far field
 
