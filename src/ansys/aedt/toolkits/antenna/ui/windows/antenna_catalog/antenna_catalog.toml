@@ -72,9 +72,6 @@ models = [
   "PlanarSinuousCavity",
 ]
 
-[Reflector]
-models = []
-
 [Slot]
 models = ["SlotCavityBackedArray", "SlotGap", "SlotMicrostrip", "SlotTBar"]
 
