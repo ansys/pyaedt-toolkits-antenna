@@ -21,7 +21,9 @@
 # SOFTWARE.
 
 from functools import partial
+import inspect
 from pathlib import Path
+import re
 import sys
 
 from PySide6.QtCore import Qt
@@ -40,11 +42,13 @@ from PySide6.QtWidgets import QPushButton
 from PySide6.QtWidgets import QScrollArea
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtWidgets import QSpacerItem
+from PySide6.QtWidgets import QTextBrowser
 from PySide6.QtWidgets import QVBoxLayout
 from PySide6.QtWidgets import QWidget
 import pyvista as pv
 from pyvistaqt import BackgroundPlotter
 
+from ansys.aedt.toolkits.antenna.backend import antenna_models
 # toolkit PySide6 Widgets
 from ansys.aedt.toolkits.common.ui.utils.widgets import PyPushButton
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_column import (
@@ -128,7 +132,7 @@ class AntennaItem(QWidget):
 class DetachedImageDialog(QDialog):
     """Display a larger image preview with mouse-based zoom and panning."""
 
-    def __init__(self, image_path, parent=None):
+    def __init__(self, image_path, notes_markdown=None, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Image Preview")
         self.resize(900, 700)
@@ -146,14 +150,48 @@ class DetachedImageDialog(QDialog):
 
         dialog_layout.addWidget(self.scroll_area)
 
+        self.notes_browser = None
+        if notes_markdown:
+            self.notes_browser = QTextBrowser()
+            self.notes_browser.setObjectName("detached_image_notes")
+            self.notes_browser.setReadOnly(True)
+            self.notes_browser.setOpenExternalLinks(True)
+            self.notes_browser.setMarkdown(f"## Reference\n\n{notes_markdown}")
+            self.notes_browser.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+            dialog_layout.addWidget(self.notes_browser)
+
     def showEvent(self, event):  # noqa: N802
         super().showEvent(event)
         self._zoom_factor = 1.0
         self._update_pixmap(reset_view=True)
+        self._resize_notes_browser()
 
     def resizeEvent(self, event):  # noqa: N802
         super().resizeEvent(event)
         self._update_pixmap()
+        self._resize_notes_browser()
+
+    def _resize_notes_browser(self):
+        if not self.notes_browser:
+            return
+
+        max_height = max(1, self.height() // 4)
+        viewport_width = max(1, self.notes_browser.viewport().width())
+        self.notes_browser.document().setTextWidth(viewport_width)
+        self.notes_browser.document().adjustSize()
+
+        contents_margins = self.notes_browser.contentsMargins()
+        frame_height = self.notes_browser.frameWidth() * 2
+        content_height = int(self.notes_browser.document().size().height())
+        desired_height = (
+            content_height
+            + contents_margins.top()
+            + contents_margins.bottom()
+            + frame_height
+        )
+
+        self.notes_browser.setMaximumHeight(max_height)
+        self.notes_browser.setFixedHeight(min(desired_height, max_height))
 
     def _fit_to_viewport_scale(self):
         if self._pixmap.isNull():
@@ -261,6 +299,66 @@ class ImageScrollArea(QScrollArea):
             event.accept()
             return
         super().mouseReleaseEvent(event)
+
+
+def _extract_numpy_docstring_section(docstring, section_name):
+    if not docstring:
+        return ""
+
+    lines = inspect.cleandoc(docstring).splitlines()
+    target_header = section_name.strip().lower()
+    section_lines = []
+    capture = False
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        stripped = line.strip()
+        next_line = lines[index + 1].strip() if index + 1 < len(lines) else ""
+
+        is_section_header = bool(stripped) and re.fullmatch(r"[-=]{3,}", next_line)
+        if is_section_header:
+            if capture:
+                break
+            if stripped.lower() == target_header:
+                capture = True
+                index += 2
+                continue
+
+        if capture:
+            section_lines.append(line)
+        index += 1
+
+    return "\n".join(section_lines).strip()
+
+
+def _notes_to_markdown(notes_text):
+    if not notes_text:
+        return ""
+
+    converted_lines = []
+    for line in notes_text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            converted_lines.append("")
+            continue
+        if stripped.startswith(".. ["):
+            converted_lines.append(re.sub(r"^\.\.\s+\[(.+?)\]\s+", r"1. ", stripped))
+            continue
+        if stripped.startswith("*"):
+            converted_lines.append(re.sub(r"^\*\s+", "- ", stripped).replace("``", "`"))
+            continue
+        converted_lines.append(stripped.replace("``", "`"))
+
+    return "\n".join(converted_lines).strip()
+
+
+def _get_antenna_notes_markdown(antenna_name):
+    antenna_class = getattr(antenna_models, antenna_name, None)
+    if not antenna_class:
+        return ""
+
+    notes_text = _extract_numpy_docstring_section(inspect.getdoc(antenna_class), "Notes")
+    return _notes_to_markdown(notes_text)
 
 
 class AntennaCatalogMenu(object):
@@ -480,8 +578,10 @@ class AntennaCatalogMenu(object):
             f"color: {text_color};"
         )
 
+        notes_markdown = _get_antenna_notes_markdown(self.main_window.properties.antenna.antenna_selected)
+
         def open_detached_view():
-            dialog = DetachedImageDialog(image_path, self.main_window)
+            dialog = DetachedImageDialog(image_path, notes_markdown, self.main_window)
             dialog.exec()
 
         open_detached_button.clicked.connect(open_detached_view)
