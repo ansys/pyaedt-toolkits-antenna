@@ -9,7 +9,7 @@ version = "0.9.dev0"
 description = "Toolkit to design antennas with Ansys AEDT."
 readme = "README.rst"
 requires-python = ">=3.10"
-license = "Apache-2.0"
+license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
 maintainers = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
@@ -29,14 +29,39 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tests = [
-    "ansys-aedt-toolkits-common[tests]>=0.16.2"
-]
-doc = [
-    "ansys-aedt-toolkits-common[doc]>=0.16.2",
-]
 freeze = [
     "pyinstaller"
+]
+
+[dependency-groups]
+dev = [
+    "prek==0.4.3",
+    { include-group = "doc" },
+    { include-group = "tests" },
+]
+doc = [
+    "ansys-sphinx-theme>=1.8.2",
+    "ipython",
+    "ipywidgets",
+    "jupyterlab",
+    "jupytext",
+    "nbsphinx",
+    "numpydoc",
+    "pypandoc",
+    "pyside6",
+    "recommonmark",
+    "Sphinx",
+    "sphinx-autobuild",
+    "sphinx-copybutton",
+    "sphinx_design",
+    "pyvista[jupyter]",
+]
+tests = [
+    "flask",
+    "pytest",
+    "pytest-cov",
+    "pytest-qt",
+    "pyside6",
 ]
 
 [tool.flit.module]

@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - package-ecosystem: "pip" # See documentation for possible values
+  - package-ecosystem: "uv" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
@@ -15,13 +15,15 @@ updates:
         - "ansys-sphinx-theme"
         - "ansys-tools-visualization-interface"
         - "ansys-pythonnet"
+        - "pyaedt"
+        - "pyedb"
     assignees:
       - "Samuelopez-ansys"
     labels:
       - "maintenance"
       - "dependencies"
     commit-message:
-      prefix: "BUILD(pip)"
+      prefix: "BUILD(uv)"
 
   - package-ecosystem: "github-actions"
     cooldown:

@@ -79,6 +79,7 @@ jobs:
           use-python-cache: false
           add-pdf-html-docs-as-assets: true
           check-links: false
+          group-dependencies-name: 'doc'
 
   smoke-tests:
     name: "Build and Smoke tests"
@@ -272,17 +273,19 @@ jobs:
         with:
           python-version: ${{ env.TESTS_PYTHON_VERSION }}
 
-      - name: Create Python venv
-        run: |
-          python -m venv .venv
-          .\.venv\Scripts\Activate.ps1
+      - name: Set up uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          enable-cache: false
+          prune-cache: true
+
+      - name: Create virtual environment
+        run: uv venv .venv
 
       - name: Install packages for testing
         run: |
           .\.venv\Scripts\Activate.ps1
-          python -m pip install --upgrade pip
-          pip install --upgrade build wheel
-          pip install .[tests]
+          uv sync --frozen --group tests
 
       - name: Antenna models testing
         timeout-minutes: 60
@@ -343,38 +346,67 @@ jobs:
         with:
           python-version: ${{ env.TESTS_PYTHON_VERSION }}
 
-      - name: Create Python venv
+      - name: Set up uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          enable-cache: false
+          prune-cache: true
+
+      - name: Install system packages for Linux tests
         run: |
-          python -m venv .venv_linux
+          sudo apt-get update
+          sudo apt-get install -y xvfb \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libx11-dev \
+            libx11-xcb-dev \
+            libxext-dev \
+            libxfixes-dev \
+            libxi-dev \
+            libxrender-dev \
+            libxcb1-dev \
+            libxcb-glx0-dev \
+            libxcb-keysyms1-dev \
+            libxcb-image0-dev \
+            libxcb-shm0-dev \
+            libxcb-icccm4-dev \
+            libxcb-sync-dev \
+            libxcb-xfixes0-dev \
+            libxcb-shape0-dev \
+            libxcb-randr0-dev \
+            libxcb-render-util0-dev \
+            libxcb-cursor-dev \
+            libxcb-util-dev \
+            libxcb-xkb-dev \
+            libxcb-xinerama0-dev \
+            libxkbcommon-dev \
+            libxkbcommon-x11-dev
+
+      - name: Create virtual environment
+        run: uv venv .venv
 
       - name: Install packages for testing
         run: |
-          source .venv_linux/bin/activate
-          python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip -U
-          python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org wheel setuptools -U
-          python -c "import sys; print(sys.executable)"
-          python -m pip install --upgrade pip
-          pip install --upgrade build wheel
-          pip install .[tests]
-          pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pytest-azurepipelines
+          source .venv/bin/activate
+          uv sync --frozen --group tests
 
       - name: Antenna models testing
         timeout-minutes: 60
         run: |
-          source .venv_linux/bin/activate
+          source .venv/bin/activate
           pytest -v -m antenna_models_common_api
           pytest -v -m antenna_models_api
 
       - name: Toolkit API testing
         timeout-minutes: 30
         run: |
-          source .venv_linux/bin/activate
+          source .venv/bin/activate
           pytest -v -m antenna_toolkit_api
 
       - name: Toolkit REST API testing
         timeout-minutes: 30
         run: |
-          source .venv_linux/bin/activate
+          source .venv/bin/activate
           pytest -v -m antenna_toolkit_rest_api
 
   build-library:
