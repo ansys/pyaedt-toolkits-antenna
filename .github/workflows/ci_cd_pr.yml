@@ -314,9 +314,7 @@ jobs:
 
 
       - name: Install packages for testing
-        run: |
-          .\.venv\Scripts\Activate.ps1
-          uv sync --frozen --group tests
+        run: uv sync --frozen --group tests
 
       - name: Antenna models testing
         timeout-minutes: 60
@@ -415,9 +413,7 @@ jobs:
 
 
       - name: Install packages for testing
-        run: |
-          source .venv/bin/activate
-          uv sync --frozen --group tests
+        run: uv sync --frozen --group tests
 
       - name: Antenna models testing
         timeout-minutes: 60
