@@ -21,9 +21,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ansys.aedt.core.modeler.cad.object_3d import Object3d
 import pytest
 
-from ansys.aedt.core.modeler.cad.object_3d import Object3d
 from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 pytestmark = [pytest.mark.antenna_models_api]

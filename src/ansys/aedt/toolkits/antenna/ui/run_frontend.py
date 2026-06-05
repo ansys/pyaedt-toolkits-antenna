@@ -33,6 +33,14 @@ from ansys.aedt.toolkits.antenna.ui.models import properties
 # isort: on
 
 # PySide6 Widgets
+from ansys.aedt.toolkits.common.ui.common_windows.home_menu import HomeMenu
+from ansys.aedt.toolkits.common.ui.common_windows.settings_column import SettingsMenu
+
+# Import general common frontend modules
+from ansys.aedt.toolkits.common.ui.logger_handler import logger
+
+# Common windows
+from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
 from PySide6.QtWidgets import QApplication
 from PySide6.QtWidgets import QMainWindow
 
@@ -44,14 +52,6 @@ from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_menu
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_results.antenna_results_menu import AntennaResultsMenu
 from ansys.aedt.toolkits.antenna.ui.windows.antenna_synthesis.antenna_synthesis_menu import AntennaSynthesisMenu
 from ansys.aedt.toolkits.antenna.ui.windows.help.help_menu import HelpMenu
-from ansys.aedt.toolkits.common.ui.common_windows.home_menu import HomeMenu
-from ansys.aedt.toolkits.common.ui.common_windows.settings_column import SettingsMenu
-
-# Import general common frontend modules
-from ansys.aedt.toolkits.common.ui.logger_handler import logger
-
-# Common windows
-from ansys.aedt.toolkits.common.ui.main_window.main_window_layout import MainWindowLayout
 
 # Backend URL and port
 if len(sys.argv) == 3:

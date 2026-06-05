@@ -7,6 +7,13 @@ models = ["Archimedean", "Log", "Sinuous"]
 [Custom]
 models = ["GPSPatchCeramic"]
 
+[Waveguide]
+models = [
+  "CircularWaveguide",
+  "RectangularWaveguide",
+  "RectangularWaveguideSlotArray",
+]
+
 [Dipole]
 models = ["PlanarDipole", "WireDipole"]
 
@@ -26,7 +33,7 @@ models = [
 ]
 
 [LogPeriodic]
-models = []
+models = ["LogPeriodicArray", "LogPeriodicToothed", "LogPeriodicTrapezoidal"]
 
 [Misc]
 models = ["Bicone", "Discone"]
@@ -64,9 +71,6 @@ models = [
   "PlanarSinuous",
   "PlanarSinuousCavity",
 ]
-
-[Reflector]
-models = []
 
 [Slot]
 models = ["SlotCavityBackedArray", "SlotGap", "SlotMicrostrip", "SlotTBar"]

@@ -35,6 +35,7 @@
 import tempfile
 
 import ansys.aedt.core
+
 from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded
 
 # ##  Set AEDT version

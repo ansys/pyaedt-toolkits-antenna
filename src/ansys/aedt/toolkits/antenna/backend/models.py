@@ -33,11 +33,10 @@ from typing import Any
 from typing import Dict
 from typing import List
 
-from pydantic import BaseModel
-from pydantic import model_validator
-
 from ansys.aedt.toolkits.common.backend.models import CommonProperties
 from ansys.aedt.toolkits.common.backend.models import common_properties
+from pydantic import BaseModel
+from pydantic import model_validator
 
 
 class Synthesis(BaseModel, validate_assignment=True):
@@ -58,6 +57,14 @@ class Synthesis(BaseModel, validate_assignment=True):
     frequency_unit: str = "GHz"
     feeder_length: float = 0.0
     gain: float = 0.0
+    input_resistance: float = 0.0
+    load_impedance: float = 0.0
+    boom_spacing: float = 0.0
+    tau_ratio: float = 0.0
+    sigma_ratio: float = 0.0
+    base_element_length: float = 0.0
+    base_element_radius: float = 0.0
+    number_of_elements: int = 0
     length_unit: str = "meter"
     material: str = "pec"
     material_properties: Dict[str, Any] = {}
@@ -69,6 +76,7 @@ class Synthesis(BaseModel, validate_assignment=True):
     stop_frequency: float = 0.0
     substrate_height: float = 0.1
     direction: str = "Left"
+    num_sides: int = 6
 
     @model_validator(mode="after")
     def update_center_frequency(self):

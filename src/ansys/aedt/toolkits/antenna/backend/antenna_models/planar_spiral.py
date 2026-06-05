@@ -26,10 +26,11 @@ import math
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
+
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Archimedean as ConicalArchimedean
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Log as ConicalLog
 from ansys.aedt.toolkits.antenna.backend.antenna_models.conical_spiral import Sinuous as ConicalSinuous
-from ansys.aedt.toolkits.common.backend.logger_handler import logger
 
 
 def _ordered_parameters(parameters):
@@ -159,6 +160,45 @@ class _PlanarSpiralCavityMixin:
 
 
 class PlanarArchimedean(ConicalArchimedean):
+    """Manage a planar Archimedean spiral antenna.
+
+    Parameters
+    ----------
+    start_frequency : float, optional
+        Lower operating frequency. The default is ``4.0``.
+    stop_frequency : float, optional
+        Upper operating frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Metal material. The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"meter"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral.PlanarArchimedean`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] R. Johnson, "Frequency Independent Antennas," in *Antenna
+       Engineering Handbook*, 3rd ed., New York, McGraw-Hill, 1993.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarArchimedean
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = PlanarArchimedean(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     antenna_type = "PlanarArchimedean"
     _default_input_parameters = {
         "name": "",
@@ -208,6 +248,58 @@ class PlanarArchimedean(ConicalArchimedean):
 
 
 class PlanarArchimedeanCavity(_PlanarSpiralCavityMixin, PlanarArchimedean):
+    """Manage a planar Archimedean spiral antenna backed by a cavity.
+
+    Parameters
+    ----------
+    start_frequency : float, optional
+        Lower operating frequency. The default is ``4.0``.
+    stop_frequency : float, optional
+        Upper operating frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Metal material for the spiral. The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"meter"``.
+    cavity_height : float, optional
+        Cavity depth. When ``None``, it is synthesized from wavelength.
+    cavity_diameter : float, optional
+        Cavity diameter. When ``None``, it is synthesized from the spiral size.
+    top_absorber_material : str, optional
+        Material assigned to the top absorber. The default is
+        ``"teflon_based"``.
+    top_absorber_thickness : float, optional
+        Thickness of the top absorber layer. When ``None``, it is synthesized.
+    middle_absorber_material : str, optional
+        Material assigned to the middle absorber. The default is
+        ``"teflon_based"``.
+    middle_absorber_thickness : float, optional
+        Thickness of the middle absorber layer. When ``None``, it is synthesized.
+    bottom_absorber_material : str, optional
+        Material assigned to the bottom absorber. The default is ``"FR4_epoxy"``.
+    bottom_absorber_thickness : float, optional
+        Thickness of the bottom absorber layer. When ``None``, it is synthesized.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral.PlanarArchimedeanCavity`
+        Antenna object.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarArchimedeanCavity
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = PlanarArchimedeanCavity(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     antenna_type = "PlanarArchimedeanCavity"
     _default_input_parameters = {
         **PlanarArchimedean._default_input_parameters,
@@ -236,6 +328,45 @@ class PlanarArchimedeanCavity(_PlanarSpiralCavityMixin, PlanarArchimedean):
 
 
 class PlanarLog(ConicalLog):
+    """Manage a planar logarithmic spiral antenna.
+
+    Parameters
+    ----------
+    start_frequency : float, optional
+        Lower operating frequency. The default is ``4.0``.
+    stop_frequency : float, optional
+        Upper operating frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Metal material. The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"meter"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral.PlanarLog`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] R. Johnson, "Frequency Independent Antennas," in *Antenna
+       Engineering Handbook*, 3rd ed., New York, McGraw-Hill, 1993.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarLog
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = PlanarLog(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     antenna_type = "PlanarLog"
     _default_input_parameters = {
         "name": "",
@@ -283,6 +414,58 @@ class PlanarLog(ConicalLog):
 
 
 class PlanarLogCavity(_PlanarSpiralCavityMixin, PlanarLog):
+    """Manage a planar logarithmic spiral antenna backed by a cavity.
+
+    Parameters
+    ----------
+    start_frequency : float, optional
+        Lower operating frequency. The default is ``4.0``.
+    stop_frequency : float, optional
+        Upper operating frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Metal material for the spiral. The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"meter"``.
+    cavity_height : float, optional
+        Cavity depth. When ``None``, it is synthesized from wavelength.
+    cavity_diameter : float, optional
+        Cavity diameter. When ``None``, it is synthesized from the spiral size.
+    top_absorber_material : str, optional
+        Material assigned to the top absorber. The default is
+        ``"teflon_based"``.
+    top_absorber_thickness : float, optional
+        Thickness of the top absorber layer. When ``None``, it is synthesized.
+    middle_absorber_material : str, optional
+        Material assigned to the middle absorber. The default is
+        ``"teflon_based"``.
+    middle_absorber_thickness : float, optional
+        Thickness of the middle absorber layer. When ``None``, it is synthesized.
+    bottom_absorber_material : str, optional
+        Material assigned to the bottom absorber. The default is ``"FR4_epoxy"``.
+    bottom_absorber_thickness : float, optional
+        Thickness of the bottom absorber layer. When ``None``, it is synthesized.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral.PlanarLogCavity`
+        Antenna object.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarLogCavity
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = PlanarLogCavity(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     antenna_type = "PlanarLogCavity"
     _default_input_parameters = {
         **PlanarLog._default_input_parameters,
@@ -311,6 +494,45 @@ class PlanarLogCavity(_PlanarSpiralCavityMixin, PlanarLog):
 
 
 class PlanarSinuous(ConicalSinuous):
+    """Manage a planar sinuous antenna.
+
+    Parameters
+    ----------
+    start_frequency : float, optional
+        Lower operating frequency. The default is ``4.0``.
+    stop_frequency : float, optional
+        Upper operating frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Metal material. The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"meter"``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral.PlanarSinuous`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] R. Johnson, "Frequency Independent Antennas," in *Antenna
+       Engineering Handbook*, 3rd ed., New York, McGraw-Hill, 1993.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarSinuous
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = PlanarSinuous(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     antenna_type = "PlanarSinuous"
     _default_input_parameters = {
         "name": "",
@@ -361,6 +583,58 @@ class PlanarSinuous(ConicalSinuous):
 
 
 class PlanarSinuousCavity(_PlanarSpiralCavityMixin, PlanarSinuous):
+    """Manage a planar sinuous antenna backed by a cavity.
+
+    Parameters
+    ----------
+    start_frequency : float, optional
+        Lower operating frequency. The default is ``4.0``.
+    stop_frequency : float, optional
+        Upper operating frequency. The default is ``10.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Metal material for the spiral. The default is ``"pec"``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"meter"``.
+    cavity_height : float, optional
+        Cavity depth. When ``None``, it is synthesized from wavelength.
+    cavity_diameter : float, optional
+        Cavity diameter. When ``None``, it is synthesized from the spiral size.
+    top_absorber_material : str, optional
+        Material assigned to the top absorber. The default is
+        ``"teflon_based"``.
+    top_absorber_thickness : float, optional
+        Thickness of the top absorber layer. When ``None``, it is synthesized.
+    middle_absorber_material : str, optional
+        Material assigned to the middle absorber. The default is
+        ``"teflon_based"``.
+    middle_absorber_thickness : float, optional
+        Thickness of the middle absorber layer. When ``None``, it is synthesized.
+    bottom_absorber_material : str, optional
+        Material assigned to the bottom absorber. The default is ``"FR4_epoxy"``.
+    bottom_absorber_thickness : float, optional
+        Thickness of the bottom absorber layer. When ``None``, it is synthesized.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral.PlanarSinuousCavity`
+        Antenna object.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.planar_spiral import PlanarSinuousCavity
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = PlanarSinuousCavity(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
+
     antenna_type = "PlanarSinuousCavity"
     _default_input_parameters = {
         **PlanarSinuous._default_input_parameters,
