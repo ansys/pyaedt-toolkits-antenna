@@ -279,8 +279,6 @@ jobs:
           enable-cache: false
           prune-cache: true
 
-      - name: Create virtual environment
-        run: uv venv .venv
 
       - name: Install packages for testing
         run: |
@@ -382,8 +380,6 @@ jobs:
             libxkbcommon-dev \
             libxkbcommon-x11-dev
 
-      - name: Create virtual environment
-        run: uv venv .venv
 
       - name: Install packages for testing
         run: |
