@@ -25,15 +25,30 @@ classifiers = [
 ]
 dependencies = [
     "ansys-aedt-toolkits-common[all]>=0.16.1",
-    "ansys-tools-visualization-interface[all] @ git+https://github.com/ansys/ansys-tools-visualization-interface.git@main",
+    "ansys-tools-visualization-interface",
 ]
 
 [project.optional-dependencies]
 tests = [
-    "ansys-aedt-toolkits-common[tests]==0.16.1"
+    "flask",
+    "pytest",
+    "pytest-cov",
+    "pytest-qt",
 ]
 doc = [
-    "ansys-aedt-toolkits-common[doc]==0.16.1",
+    "ansys-sphinx-theme>=1.8.2",
+    "ipython",
+    "ipywidgets",
+    "jupyterlab",
+    "jupytext",
+    "nbsphinx",
+    "numpydoc",
+    "pypandoc",
+    "recommonmark",
+    "Sphinx",
+    "sphinx-autobuild",
+    "sphinx-copybutton",
+    "sphinx_design",
     "pyvista[jupyter]<=0.47.2"
 ]
 freeze = [
