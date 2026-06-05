@@ -1,0 +1,21 @@
+name = "LogPeriodicTrapezoidal"
+
+[object_1]
+color = [0, 128, 0]
+name = "sub_LogPeriodicTrapezoidal"
+opacity = 0.2
+
+[object_2]
+color = [255, 128, 65]
+name = "ant_trapezoidal_upper_LogPeriodicTrapezoidal"
+opacity = 0.9
+
+[object_3]
+color = [255, 128, 65]
+name = "ant_trapezoidal_lower_LogPeriodicTrapezoidal"
+opacity = 0.9
+
+[object_4]
+color = [128, 0, 0]
+name = "port_lump_LogPeriodicTrapezoidal"
+opacity = 0.25

@@ -28,8 +28,9 @@ import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.constants import Axis
 from ansys.aedt.core.generic.constants import Plane
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
-from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
+
+from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 
 
 class CommonYagiUda(CommonAntenna):
@@ -100,7 +101,43 @@ class CommonYagiUda(CommonAntenna):
 
 
 class QuasiYagi(CommonYagiUda):
-    """Manages a quasi-Yagi antenna family model."""
+    """Manage a quasi-Yagi antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``2.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Substrate material. The default is ``"Rogers"``.
+    material_properties : dict, optional
+        Material properties for the substrate. The default is
+        ``{"permittivity": 10.2}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+    substrate_height : float, optional
+        Substrate height. The default is ``3.175``.
+    gain : float, optional
+        Target gain in dBi. The default is ``0.0``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.yagiuda.QuasiYagi`
+        Antenna object.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.yagiuda import QuasiYagi
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = QuasiYagi(app)
+    >>> antenna.model_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _default_input_parameters = {
         "name": "",
@@ -270,7 +307,54 @@ class QuasiYagi(CommonYagiUda):
 
 
 class WireYagiUda(CommonYagiUda):
-    """Manages a wire Yagi-Uda antenna family model."""
+    """Manage a wire Yagi-Uda antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``1.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Conductor material. The default is ``"pec"``.
+    material_properties : dict, optional
+        Material properties for the conductor. The default is ``{}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"cm"``.
+    substrate_height : float, optional
+        Reserved substrate-height input carried by the common family base.
+        The default is ``0.0``.
+    gain : float, optional
+        Target gain in dBi used to select a Viezbicke design table entry.
+        The default is ``9.26``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.yagiuda.WireYagiUda`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] P. P. Viezbicke, *Yagi Antenna Design*, National Bureau of
+       Standards, U.S. Department of Commerce, Boulder, CO, NBS Technical
+       Note 688, 1976.
+    .. [2] C. A. Balanis, "Design of Yagi-Uda Antennas," in *Antenna Theory:
+       Analysis and Design*, 3rd ed., Hoboken, Wiley, 2005, sec. 10.3,
+       pp. 577-600.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.yagiuda import WireYagiUda
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = WireYagiUda(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _default_input_parameters = {
         "name": "",

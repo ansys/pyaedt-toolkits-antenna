@@ -28,6 +28,7 @@ import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.constants import Axis
 from ansys.aedt.core.generic.constants import Plane
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
+
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import TransmissionLine
 from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import CommonPatch
 

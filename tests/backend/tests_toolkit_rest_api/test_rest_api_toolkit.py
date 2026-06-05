@@ -23,9 +23,8 @@
 
 import json
 
-import pytest
-
 from ansys.aedt.core import is_linux
+import pytest
 
 pytestmark = [pytest.mark.antenna_toolkit_rest_api]
 

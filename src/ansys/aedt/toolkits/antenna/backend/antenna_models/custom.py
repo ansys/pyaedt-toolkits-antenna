@@ -25,12 +25,31 @@ from collections import OrderedDict
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
-from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import CommonPatch
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
+
+from ansys.aedt.toolkits.antenna.backend.antenna_models.patch import CommonPatch
 
 
 class GPSPatchCeramic(CommonPatch):
-    """Manages the ACT-derived ceramic GPS patch antenna."""
+    """Manages the ACT-derived ceramic GPS patch antenna.
+
+    This antenna is modeled after the ACT (ANSYS Customization Toolkit) reference
+    design for a GPS L1-band (1.575 GHz) ceramic patch antenna with a coaxial feed.
+
+    Parameters
+    ----------
+    *args : list
+        Positional arguments forwarded to :class:`CommonPatch`.
+    **kwargs : dict
+        Keyword arguments forwarded to :class:`CommonPatch`.
+
+    Examples
+    --------
+    Create a GPS ceramic patch antenna at the default frequency of 1.575 GHz:
+
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.custom import GPSPatchCeramic
+    >>> antenna = GPSPatchCeramic()
+    """
 
     _default_input_parameters = {
         "name": "",
@@ -63,6 +82,7 @@ class GPSPatchCeramic(CommonPatch):
     }
 
     def __init__(self, *args, **kwargs):
+        """Initialize the GPS ceramic patch antenna and compute synthesis parameters."""
         CommonPatch.__init__(self, self._default_input_parameters, *args, **kwargs)
         self._parameters = self.synthesis()
         self.update_synthesis_parameters(self._parameters)
@@ -70,7 +90,21 @@ class GPSPatchCeramic(CommonPatch):
 
     @pyaedt_function_handler()
     def synthesis(self):
-        """Scale the ACT reference geometry from the nominal GPS center frequency."""
+        """Scale the ACT reference geometry from the nominal GPS center frequency.
+
+        All reference dimensions defined in ``_reference_dimensions_mm`` are
+        scaled by the ratio of the reference frequency (1.575 GHz) to the
+        requested operating frequency and then converted to the active
+        ``length_unit``.
+
+        Returns
+        -------
+        collections.OrderedDict
+            Alphabetically sorted mapping of parameter names to their scaled
+            values expressed in ``self.length_unit``.  Also includes the
+            position keys ``pos_x``, ``pos_y``, and ``pos_z`` taken directly
+            from ``self.origin``.
+        """
         freq_ghz = constants.unit_converter(self.frequency, "Freq", self.frequency_unit, "GHz")
         scale = self._reference_frequency_ghz / freq_ghz
         length_unit = self.length_unit
@@ -89,6 +123,13 @@ class GPSPatchCeramic(CommonPatch):
         return OrderedDict([(i, parameters[i]) for i in my_keys])
 
     def _ensure_material(self):
+        """Ensure the ceramic substrate material exists in the active HFSS project.
+
+        If the material named by ``self.material`` is not already present in
+        the AEDT material library, a new material is created and its
+        ``permittivity`` and ``dielectric_loss_tangent`` properties are set
+        from ``self.material_properties``.
+        """
         if not self._app:
             return
         if (
@@ -106,7 +147,28 @@ class GPSPatchCeramic(CommonPatch):
 
     @pyaedt_function_handler()
     def model_hfss(self):
-        """Draw the ACT-derived ceramic GPS patch antenna."""
+        """Draw the ACT-derived ceramic GPS patch antenna in HFSS.
+
+        Creates the following objects in the active HFSS design:
+
+        * **sub** – ceramic dielectric substrate box.
+        * **gnd** – ground-plane rectangle with a coaxial void.
+        * **ant** – rectangular patch with a triangular polarisation cutout.
+        * **feed_pin** – inner conductor cylinder through the substrate.
+        * **feed_coax** – inner conductor extension below the ground plane.
+        * **coax** – Teflon-filled outer coaxial cylinder.
+        * **port_cap** – PEC end-cap closing the coaxial feed.
+        * **port** – circular lumped-port face.
+
+        All objects are moved to ``self.origin`` and grouped under
+        ``self.name`` before the modeler view is fitted.
+
+        Returns
+        -------
+        bool
+            ``True`` when the antenna geometry was created successfully.
+            ``False`` if the antenna already exists in ``self.object_list``.
+        """
         if self.object_list:
             logger.debug("This antenna already exists")
             return False
@@ -266,10 +328,18 @@ class GPSPatchCeramic(CommonPatch):
 
     @pyaedt_function_handler()
     def model_disco(self):
-        """Model in PyDiscovery. To be implemented."""
+        """Model the antenna in PyDiscovery.
+
+        .. note::
+            Not yet implemented.
+        """
         pass
 
     @pyaedt_function_handler()
     def setup_disco(self):
-        """Set up the model in PyDiscovery. To be implemented."""
+        """Set up the antenna model in PyDiscovery.
+
+        .. note::
+            Not yet implemented.
+        """
         pass

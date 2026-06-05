@@ -33,12 +33,12 @@ if sys.version_info >= (3, 11):
 else:
     import tomli as tomllib
 
+from ansys.aedt.toolkits.common.ui.models import UIProperties
+from ansys.aedt.toolkits.common.ui.models import general_settings
 from pydantic import BaseModel
 from pydantic import Field
 
 import ansys.aedt.toolkits.antenna
-from ansys.aedt.toolkits.common.ui.models import UIProperties
-from ansys.aedt.toolkits.common.ui.models import general_settings
 
 
 class AntennaProperties(BaseModel):
