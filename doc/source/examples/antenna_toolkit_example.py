@@ -30,14 +30,14 @@
 
 # ## Perform required imports
 
-import os
+from pathlib import Path
 import sys
 import tempfile
-import pyvista as pv
 
 from ansys.aedt.core import generate_unique_project_name
 from ansys.aedt.core.visualization.advanced.farfield_visualization import FfdSolutionData
 from ansys.aedt.core.visualization.plot.pyvista import ModelPlotter
+import pyvista as pv
 
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
@@ -180,7 +180,7 @@ antenna_parameter = toolkit_api.get_antenna("RectangularPatchProbe")
 
 toolkit_api.connect_design("HFSS")
 # Save the plot to display it
-plot_obj = toolkit_api.aedtapp.plot(show=False, output_file=os.path.join(temp_dir.name, "antenna_model.png"))
+plot_obj = toolkit_api.aedtapp.plot(show=False, output_file=str(Path(temp_dir.name) / "antenna_model.png"))
 toolkit_api.release_aedt(False, False)
 
 # ## Try to create antenna
