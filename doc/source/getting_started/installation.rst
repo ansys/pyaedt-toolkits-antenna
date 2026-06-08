@@ -165,7 +165,7 @@ guide`_. You need to follow these steps:
 
    .. code:: bash
 
-      python -m pip install -e .[tests,doc]
+      python -m pip install -e . --group tests --group doc
 
 #. Finally, verify your development installation by running:
 
@@ -233,7 +233,7 @@ For building documentation, you can either run the usual rules provided in the
 
 .. code:: bash
 
-    pip install -e .[doc]
+    pip install -e . --group doc
     doc/make.bat html
     # subsequently open the documentation with (under Linux):
     <your_browser_name> doc/html/index.html
