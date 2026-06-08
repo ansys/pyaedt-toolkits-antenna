@@ -35,6 +35,7 @@
 import tempfile
 
 import ansys.aedt.core
+
 from ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie import BowTieRounded
 
 # ##  Set AEDT version
@@ -117,7 +118,7 @@ oantenna2.setup_hfss()
 #
 # Plot geometry with PyVista.
 
-app.plot()
+model = app.plot(show=True)
 
 # ## Release AEDT
 #

@@ -2,14 +2,10 @@ name: Labeler
 
 on:
   pull_request:
-      # opened, reopened, and synchronize are default for pull_request
-      # edited - when PR title or body is changed
-      # labeled - when labels are added to PR
-      types: [opened, reopened, synchronize, edited, labeled]
-  push:
-    branches: [ main ]
-    paths:
-      - '../labels.yml'
+    # opened, reopened, and synchronize are default for pull_request
+    # edited - when PR title or body is changed
+    # labeled - when labels are added to PR
+    types: [opened, reopened, synchronize, edited, labeled]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -26,7 +22,6 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-
       - uses: micnncim/action-label-syncer@3abd5ab72fda571e69fffd97bd4e0033dd5f495c # v1.3.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -36,49 +31,41 @@ jobs:
     needs: [label-syncer]
     permissions:
       contents: read
-      pull-requests: write # Needed to add labels to PRs
+      pull-requests: write # Needed to add existing labels to PRs
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
     steps:
 
-    # Label based on modified files
-    - name: Label based on changed files
-      uses: actions/labeler@f27b608878404679385c85cfa523b85ccb86e213 # v6.1.0
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+      # Label based on modified files
+      - name: Label based on changed files
+        uses: actions/labeler@f27b608878404679385c85cfa523b85ccb86e213 # v6.1.0
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
 
-    # Label based on branch name
-    - uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
-      if: |
-        startsWith(github.event.pull_request.head.ref, 'doc') ||
-        startsWith(github.event.pull_request.head.ref, 'docs')
-      with:
-        labels: documentation
+      # Label based on branch name
+      - name: Label docs
+        if: startsWith(github.event.pull_request.head.ref, 'docs')
+        run: gh pr edit "$PR_NUMBER" --add-label "documentation" --repo ansys/pyaedt-toolkits-antenna
 
-    - uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
-      if: |
-        startsWith(github.event.pull_request.head.ref, 'maint') ||
-        startsWith(github.event.pull_request.head.ref, 'no-ci') ||
-        startsWith(github.event.pull_request.head.ref, 'ci')
-      with:
-        labels: maintenance
+      - name: Label maintenance
+        if: |
+          startsWith(github.event.pull_request.head.ref, 'maint') ||
+          startsWith(github.event.pull_request.head.ref, 'ci')
+        run: gh pr edit "$PR_NUMBER" --add-label "maintenance" --repo ansys/pyaedt-toolkits-antenna
 
-    - uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
-      if: startsWith(github.event.pull_request.head.ref, 'feat')
-      with:
-        labels: enhancement
+      - name: Label enhancement
+        if: startsWith(github.event.pull_request.head.ref, 'feat')
+        run: gh pr edit "$PR_NUMBER" --add-label "enhancement" --repo ansys/pyaedt-toolkits-antenna
 
-    - uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
-      if: |
-        startsWith(github.event.pull_request.head.ref, 'fix') ||
-        startsWith(github.event.pull_request.head.ref, 'patch')
-      with:
-        labels: bug
+      - name: Label bug
+        if: startsWith(github.event.pull_request.head.ref, 'fix')
+        run: gh pr edit "$PR_NUMBER" --add-label "bug" --repo ansys/pyaedt-toolkits-antenna
 
-    - uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
-      if: |
-        startsWith(github.event.pull_request.head.ref, 'test')
-      with:
-        labels: testing
+      - name: Label testing
+        if: startsWith(github.event.pull_request.head.ref, 'test')
+        run: gh pr edit "$PR_NUMBER" --add-label "testing" --repo ansys/pyaedt-toolkits-antenna
 
   commenter:
     name: Suggest labels if none assigned
@@ -95,25 +82,25 @@ jobs:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
           Please add one of the following labels to add this contribution to the Release Notes :point_down:
-          - [bug](https://github.com/ansys/pyaedt-toolkits-antenna.git/pulls?q=label%3Abug+)
-          - [documentation](https://github.com/ansys/pyaedt-toolkits-antenna.git/pulls?q=label%3Adocumentation+)
-          - [enhancement](https://github.com/ansys/pyaedt-toolkits-antenna.git/pulls?q=label%3Aenhancement+)
-          - [good first issue](https://github.com/ansys/pyaedt-toolkits-antenna.git/pulls?q=label%3Agood+first+issue)
-          - [maintenance](https://github.com/ansys/pyaedt-toolkits-antenna.git/pulls?q=label%3Amaintenance+)
-          - [release](https://github.com/ansys/pyaedt-toolkits-antenna.git/pulls?q=label%3Arelease+)
+          - [bug](https://github.com/ansys/pyaedt-toolkits-antenna/pulls?q=label%3Abug+)
+          - [documentation](https://github.com/ansys/pyaedt-toolkits-antenna/pulls?q=label%3Adocumentation+)
+          - [enhancement](https://github.com/ansys/pyaedt-toolkits-antenna/pulls?q=label%3Aenhancement+)
+          - [good first issue](https://github.com/ansys/pyaedt-toolkits-antenna/pulls?q=label%3Agood+first+issue)
+          - [maintenance](https://github.com/ansys/pyaedt-toolkits-antenna/pulls?q=label%3Amaintenance+)
+          - [release](https://github.com/ansys/pyaedt-toolkits-antenna/pulls?q=label%3Arelease+)
 
   changelog-fragment:
-    name: "Create changelog fragment"
+    name: Create changelog fragment file
     needs: [labeler]
     permissions:
-      contents: write      # Needed to create changelog fragment on PR
+      contents: write # Needed to create changelog fragment on PR
       pull-requests: write # Needed to create changelog fragment on PR
     runs-on: ubuntu-latest
     steps:
     - uses: ansys/actions/doc-changelog@d946b24b9a765f4169bcc94afdb27bd1a0533741 # v10.3.2
       with:
-        token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
-        use-conventional-commits: true
-        use-default-towncrier-config: true
-        bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
         bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
+        bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+        token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+        use-default-towncrier-config: true
+        use-pull-request-title: true

@@ -25,9 +25,10 @@ from collections import OrderedDict
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
+
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.antenna.backend.antenna_models.common import StandardWaveguide
-from ansys.aedt.toolkits.common.backend.logger_handler import logger
 
 
 class CommonHorn(CommonAntenna):

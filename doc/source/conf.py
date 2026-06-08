@@ -76,7 +76,28 @@ def setup(app):
     app.connect("builder-inited", check_pandoc_installed)
 
 
+os.environ["PYAEDT_NON_GRAPHICAL"] = "1"
 os.environ["PYANSYS_VISUALIZER_HTML_BACKEND"] = "true"
+
+# Configure PyVista for Jupyter rendering in nbsphinx
+# This is called before notebooks are executed
+try:
+    import pyvista as pv
+
+    # Use trame backend for interactive 3D in Jupyter
+    pv.set_jupyter_backend("trame")
+    pv.global_theme.background = "white"
+    pv.global_theme.window_size = [1024, 768]
+except ImportError:
+    pass
+except Exception:
+    # If trame is not available, try static backend
+    try:
+        import pyvista as pv
+
+        pv.set_jupyter_backend("static")
+    except Exception:
+        pass
 
 print(__version__)
 # Project information
@@ -215,6 +236,7 @@ nbsphinx_custom_formats = {
     ".py": ["jupytext.reads", {"fmt": ""}],
 }
 
+
 exclude_patterns = ["_build", "sphinx_boogergreen_theme_1", "Thumbs.db", ".DS_Store", "*.txt", "conf.py"]
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -225,5 +247,3 @@ latex_additional_files = [watermark, ansys_logo_white, ansys_logo_white_cropped]
 # change the preamble of latex with customized title page
 # variables are the title of pdf, watermark
 latex_elements = {"preamble": latex.generate_preamble(html_title)}
-
-os.environ["PYAEDT_NON_GRAPHICAL"] = "1"

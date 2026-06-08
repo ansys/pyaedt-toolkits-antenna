@@ -33,11 +33,10 @@ from typing import Any
 from typing import Dict
 from typing import List
 
-from pydantic import BaseModel
-from pydantic import model_validator
-
 from ansys.aedt.toolkits.common.backend.models import CommonProperties
 from ansys.aedt.toolkits.common.backend.models import common_properties
+from pydantic import BaseModel
+from pydantic import model_validator
 
 
 class Synthesis(BaseModel, validate_assignment=True):

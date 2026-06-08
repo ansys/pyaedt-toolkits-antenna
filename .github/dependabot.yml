@@ -1,7 +1,6 @@
 version: 2
-enable-beta-ecosystems: true
 updates:
-  - package-ecosystem: "pip" # See documentation for possible values
+  - package-ecosystem: "uv" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
@@ -16,15 +15,15 @@ updates:
         - "ansys-sphinx-theme"
         - "ansys-tools-visualization-interface"
         - "ansys-pythonnet"
-    reviewers:
-      - "Samuelopez-ansys"
+        - "pyaedt"
+        - "pyedb"
     assignees:
-      - "pyansys-ci-bot"
+      - "Samuelopez-ansys"
     labels:
       - "maintenance"
       - "dependencies"
     commit-message:
-      prefix: "BUILD(pip)"
+      prefix: "BUILD(uv)"
 
   - package-ecosystem: "github-actions"
     cooldown:
@@ -39,12 +38,31 @@ updates:
       day: "saturday"
       time: "06:00"
       timezone: "Europe/Paris"
-    reviewers:
-      - "Samuelopez-ansys"
     assignees:
-      - "pyansys-ci-bot"
+      - "Samuelopez-ansys"
     labels:
       - "maintenance"
       - "dependencies"
     commit-message:
       prefix: "BUILD(actions)"
+
+  - package-ecosystem: "pre-commit"
+    cooldown:
+      default-days: 7 # Fallback cooldown if no specific rule applies
+      include:
+        - "*"  # Include all dependencies in cooldown
+      exclude:
+        - "ansys/pre-commit-hooks"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "06:00"
+      timezone: "Europe/Paris"
+    assignees:
+      - "Samuelopez-ansys"
+    labels:
+      - "maintenance"
+      - "dependencies"
+    commit-message:
+      prefix: "BUILD(pre-commit)"

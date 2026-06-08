@@ -24,11 +24,11 @@
 from pathlib import Path
 import sys
 
+from ansys.aedt.core.modeler.cad.object_3d import Object3d
+from ansys.aedt.core.modeler.geometry_operators import GeometryOperators
 import pytest
 import pyvista as pv
 
-from ansys.aedt.core.modeler.cad.object_3d import Object3d
-from ansys.aedt.core.modeler.geometry_operators import GeometryOperators
 from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 if sys.version_info >= (3, 11):
