@@ -30,8 +30,10 @@
 
 # ## Perform required imports
 
+import os
 import sys
 import tempfile
+import pyvista as pv
 
 from ansys.aedt.core import generate_unique_project_name
 from ansys.aedt.core.visualization.advanced.farfield_visualization import FfdSolutionData
@@ -50,7 +52,7 @@ aedt_version = "2026.1"
 #
 # Set non-graphical mode.
 
-non_graphical = True
+non_graphical = False
 
 # ## Set number of cores
 
@@ -174,7 +176,14 @@ properties.antenna.synthesis.outer_boundary = "Radiation"
 
 antenna_parameter = toolkit_api.get_antenna("RectangularPatchProbe")
 
-# ## Try. to create antenna
+# ## Plot antenna model
+
+toolkit_api.connect_design("HFSS")
+# Save the plot to display it
+plot_obj = toolkit_api.aedtapp.plot(show=False, output_file=os.path.join(temp_dir.name, "antenna_model.png"))
+toolkit_api.release_aedt(False, False)
+
+# ## Try to create antenna
 #
 # The AEDT Antenna Toolkit API does not allow the creation of more than one antenna. However, you can use the antenna
 # model's API to create more than one antenna.
@@ -189,13 +198,6 @@ print(new_antenna)
 
 toolkit_api.update_hfss_parameters("pos_x", "20")
 
-# ## Fit all
-
-toolkit_api.connect_design()
-
-toolkit_api.aedtapp.modeler.fit_all()
-
-toolkit_api.release_aedt(False, False)
 
 # ## Set properties
 #
@@ -232,15 +234,18 @@ files = toolkit_api.export_aedt_model(encode=False)
 
 toolkit_api.release_aedt(True, True)
 
+
 # ## Plot results
 
-# Plot exported files
+# Plot exported 3D model
 
-model = ModelPlotter()
+model_plotter = ModelPlotter()
 for file in files:
-    model.add_object(file[0], file[1], file[2])
+    model_plotter.add_object(file[0], file[1], file[2])
 
-model.plot()
+# Plot the model
+model_plotter.plot(show=True)
+
 
 # ## Load far field
 
@@ -248,11 +253,20 @@ farfield_data = FfdSolutionData(farfield_metadata)
 
 # ## Plot far field 3D
 
-data = farfield_data.plot_3d()
+# Render 3D far field - in Jupyter, this will show as interactive 3D
+pyvista_plotter = pv.Plotter(notebook=True, off_screen=non_graphical)
+farfield_data.plot_3d(
+    quantity="RealizedGain",
+    show=False,
+    pyvista_object=pyvista_plotter,
+)
+pyvista_plotter.show(jupyter_backend="html")
 
 # ## Plot far field cut
 
-farfield_data.plot_cut(primary_sweep="theta")
+# Render far field cut plot
+farfield_data.plot_cut(primary_sweep="theta", show=True)
+
 
 # ## Clean temporary directory
 

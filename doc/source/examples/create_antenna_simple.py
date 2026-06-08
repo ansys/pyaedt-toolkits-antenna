@@ -118,7 +118,7 @@ oantenna2.setup_hfss()
 #
 # Plot geometry with PyVista.
 
-app.plot()
+model = app.plot(show=True)
 
 # ## Release AEDT
 #
