@@ -37,7 +37,6 @@ from ansys_sphinx_theme import pyansys_logo_black
 from ansys_sphinx_theme import watermark
 from sphinx.util import logging
 
-
 root_path = str(Path(__file__).parent.parent.parent)
 src_path = Path(root_path) / "src"
 sys.path.insert(0, str(root_path))
@@ -84,16 +83,18 @@ os.environ["PYANSYS_VISUALIZER_HTML_BACKEND"] = "true"
 # This is called before notebooks are executed
 try:
     import pyvista as pv
+
     # Use trame backend for interactive 3D in Jupyter
     pv.set_jupyter_backend("trame")
     pv.global_theme.background = "white"
     pv.global_theme.window_size = [1024, 768]
 except ImportError:
     pass
-except Exception as e:
+except Exception:
     # If trame is not available, try static backend
     try:
         import pyvista as pv
+
         pv.set_jupyter_backend("static")
     except Exception:
         pass
@@ -246,4 +247,3 @@ latex_additional_files = [watermark, ansys_logo_white, ansys_logo_white_cropped]
 # change the preamble of latex with customized title page
 # variables are the title of pdf, watermark
 latex_elements = {"preamble": latex.generate_preamble(html_title)}
-

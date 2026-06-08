@@ -33,11 +33,11 @@
 import os
 import sys
 import tempfile
-import pyvista as pv
 
 from ansys.aedt.core import generate_unique_project_name
 from ansys.aedt.core.visualization.advanced.farfield_visualization import FfdSolutionData
 from ansys.aedt.core.visualization.plot.pyvista import ModelPlotter
+import pyvista as pv
 
 from ansys.aedt.toolkits.antenna.backend.api import ToolkitBackend
 from ansys.aedt.toolkits.antenna.backend.models import properties
