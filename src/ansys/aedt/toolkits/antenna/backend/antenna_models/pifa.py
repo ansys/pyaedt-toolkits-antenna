@@ -26,8 +26,9 @@ import math
 
 import ansys.aedt.core.generic.constants as constants
 from ansys.aedt.core.generic.general_methods import pyaedt_function_handler
-from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 from ansys.aedt.toolkits.common.backend.logger_handler import logger
+
+from ansys.aedt.toolkits.antenna.backend.antenna_models.common import CommonAntenna
 
 
 class CommonPIFA(CommonAntenna):
@@ -261,7 +262,47 @@ class CommonPIFA(CommonAntenna):
 
 
 class PlanarInvertedF(CommonPIFA):
-    """Manages a planar inverted-F antenna."""
+    """Manage a planar inverted-F antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``2.4``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Substrate material. The default is ``"Duroid (tm)"``.
+    material_properties : dict, optional
+        Material properties for the substrate. The default is
+        ``{"permittivity": 2.2}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+    substrate_height : float, optional
+        Substrate height. The default is ``1.5748``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.pifa.PlanarInvertedF`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] W. Kin-Lu, "PIFAs for Internal Mobile Phone Antennas," in
+       *Planar Antennas for Wireless Communications*, New York, 2003.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import PlanarInvertedF
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = PlanarInvertedF(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _default_input_parameters = {
         "name": "",
@@ -446,7 +487,47 @@ class PlanarInvertedF(CommonPIFA):
 
 
 class ShortingPin(CommonPIFA):
-    """Manages a shorting-pin PIFA."""
+    """Manage a shorting-pin planar inverted-F antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``2.45``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Substrate material. The default is ``"Duroid (tm)"``.
+    material_properties : dict, optional
+        Material properties for the substrate. The default is
+        ``{"permittivity": 2.2}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+    substrate_height : float, optional
+        Substrate height. The default is ``1.5748``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.pifa.ShortingPin`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] W. Kin-Lu, "PIFAs for Internal Mobile Phone Antennas," in
+       *Planar Antennas for Wireless Communications*, New York, 2003.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import ShortingPin
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = ShortingPin(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _default_input_parameters = {
         "name": "",
@@ -560,7 +641,47 @@ class ShortingPin(CommonPIFA):
 
 
 class ShortingPlate(CommonPIFA):
-    """Manages a shorting-plate PIFA."""
+    """Manage a shorting-plate planar inverted-F antenna.
+
+    Parameters
+    ----------
+    frequency : float, optional
+        Center frequency. The default is ``3.0``.
+    frequency_unit : str, optional
+        Frequency units. The default is ``"GHz"``.
+    material : str, optional
+        Substrate material. The default is ``"Duroid (tm)"``.
+    material_properties : dict, optional
+        Material properties for the substrate. The default is
+        ``{"permittivity": 2.2}``.
+    outer_boundary : str, optional
+        Boundary type to use. The default is ``None``. Options are
+        ``"FEBI"``, ``"PML"``, ``"Radiation"``, and ``None``.
+    length_unit : str, optional
+        Length units. The default is ``"mm"``.
+    substrate_height : float, optional
+        Substrate height. The default is ``1.5748``.
+
+    Returns
+    -------
+    :class:`ansys.aedt.toolkits.antenna.backend.antenna_models.pifa.ShortingPlate`
+        Antenna object.
+
+    Notes
+    -----
+    .. [1] W. Kin-Lu, "PIFAs for Internal Mobile Phone Antennas," in
+       *Planar Antennas for Wireless Communications*, New York, 2003.
+
+    Examples
+    --------
+    >>> from ansys.aedt.toolkits.antenna.backend.antenna_models.pifa import ShortingPlate
+    >>> import ansys.aedt.core
+    >>> app = ansys.aedt.core.Hfss()
+    >>> antenna = ShortingPlate(app)
+    >>> antenna.model_hfss()
+    >>> antenna.setup_hfss()
+    >>> app.release_desktop(False, False)
+    """
 
     _default_input_parameters = {
         "name": "",

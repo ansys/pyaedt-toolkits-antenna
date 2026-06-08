@@ -1,0 +1,11 @@
+Name = "Circular_Waveguide"
+Frequency = 10.0
+Material = ["pec", "copper", "aluminum"]
+WG_Radius = 11.43
+WG_Length = 50.8
+Wall_Thickness = 0.508
+Outer_Boundary = ["Radiation", "PML", "FEBI", "None"]
+Origin_X_Position = 0.0
+Origin_Y_Position = 0.0
+Origin_Z_Position = 0.0
+Coordinate_System = "Global"

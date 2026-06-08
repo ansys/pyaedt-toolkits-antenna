@@ -23,10 +23,10 @@
 
 import math
 
-import pytest
-
 from ansys.aedt.core.modeler.cad.object_3d import Object3d
 from ansys.aedt.core.modeler.geometry_operators import GeometryOperators
+import pytest
+
 from ansys.aedt.toolkits.antenna.backend import antenna_models
 
 pytestmark = [pytest.mark.antenna_models_api]

@@ -43,6 +43,9 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import HPlane
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import Pyramidal
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import PyramidalRidged
 from ansys.aedt.toolkits.antenna.backend.antenna_models.horn import QuadRidged
+from ansys.aedt.toolkits.antenna.backend.antenna_models.log_periodic import LogPeriodicArray
+from ansys.aedt.toolkits.antenna.backend.antenna_models.log_periodic import LogPeriodicToothed
+from ansys.aedt.toolkits.antenna.backend.antenna_models.log_periodic import LogPeriodicTrapezoidal
 from ansys.aedt.toolkits.antenna.backend.antenna_models.misc import Bicone
 from ansys.aedt.toolkits.antenna.backend.antenna_models.misc import Discone
 from ansys.aedt.toolkits.antenna.backend.antenna_models.monopole import BladeAntenna
@@ -71,3 +74,10 @@ from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotCavityBa
 from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotGap
 from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotMicrostrip
 from ansys.aedt.toolkits.antenna.backend.antenna_models.slot import SlotTBar
+from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import Vivaldi
+from ansys.aedt.toolkits.antenna.backend.antenna_models.vivaldi import VivaldiStepped
+from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import CircularWaveguide
+from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import RectangularWaveguide
+from ansys.aedt.toolkits.antenna.backend.antenna_models.waveguide import RectangularWaveguideSlotArray
+from ansys.aedt.toolkits.antenna.backend.antenna_models.yagiuda import QuasiYagi
+from ansys.aedt.toolkits.antenna.backend.antenna_models.yagiuda import WireYagiUda

@@ -20,9 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import pytest
-
 from ansys.aedt.core import is_linux
+import pytest
 
 pytestmark = [pytest.mark.antenna_toolkit_api]
 

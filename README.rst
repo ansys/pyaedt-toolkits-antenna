@@ -10,8 +10,8 @@ Antenna Toolkit
 .. |PythonVersion| image:: https://img.shields.io/badge/python-3.10+-blue.svg
    :target: https://www.python.org/downloads/
 
-.. |GH-CI| image:: https://github.com/ansys/pyaedt-toolkits-antenna/actions/workflows/ci_cd.yml/badge.svg
-   :target: https://github.com/ansys/pyaedt-toolkits-antenna/actions/workflows/ci_cd.yml
+.. |GH-CI| image:: https://github.com/ansys/pyaedt-toolkits-antenna/actions/workflows/ci_cd_pr.yml/badge.svg
+   :target: https://github.com/ansys/pyaedt-toolkits-antenna/actions/workflows/ci_cd_pr.yml
 
 .. |MIT| image:: https://img.shields.io/badge/License-MIT-yellow.svg
    :target: https://opensource.org/licenses/MIT
