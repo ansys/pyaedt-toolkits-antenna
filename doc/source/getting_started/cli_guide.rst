@@ -12,27 +12,9 @@ Overview
 
 The CLI offers three main commands:
 
-* **list**: Display all available antenna types
-* **synthesize**: Calculate antenna dimensions without connecting to AEDT
-* **create**: Create an antenna in a running AEDT/HFSS session
-
-Installation
-============
-
-The CLI is automatically available after installing the antenna toolkit:
-
-.. code-block:: bash
-
-   pip install ansys-aedt-toolkits-antenna
-
-For development installations:
-
-.. code-block:: bash
-
-   pip install -e .
-
-.. note::
-   If the ``pyaedt antenna`` command is not recognized, you may need to modify update your PyAEDT version.
+* **list**: Display all available antenna types.
+* **synthesize**: Calculate antenna dimensions without connecting to AEDT.
+* **create**: Create an antenna in a running AEDT session.
 
 
 Basic commands

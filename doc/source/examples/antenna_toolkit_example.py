@@ -89,7 +89,7 @@ length_unit = backend_properties["antenna"]["synthesis"]["length_unit"]
 # ## Modify default length units
 
 properties.antenna.synthesis.length_unit = "cm"
-properties.antenna.synthesis.substrate_height = 0.16
+properties.antenna.synthesis.substrate_height = 0.1
 
 # ## Create antenna object only for synthesis
 #
