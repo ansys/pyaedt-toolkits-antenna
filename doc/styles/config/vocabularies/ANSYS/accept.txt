@@ -12,6 +12,7 @@ docstring
 GitHub
 HFSS
 html
+JSON
 [Mm]akefile
 Powershell
 Properties.json

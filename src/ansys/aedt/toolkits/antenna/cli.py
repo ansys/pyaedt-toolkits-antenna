@@ -53,9 +53,7 @@ _CAMEL_BOUNDARY_2 = re.compile(r"([a-z0-9])([A-Z])")
 _SKIP_FIELDS = {"material_properties", "origin"}
 
 
-# ---------------------------------------------------------------------------
 # Helpers
-# ---------------------------------------------------------------------------
 
 
 def _python_type_for_annotation(annotation):
@@ -337,9 +335,7 @@ def _resolve_target_design(kwargs: dict, class_name: str, properties) -> str:
     return _CLASS_TO_CLI.get(class_name, _camel_to_kebab(class_name))
 
 
-# ---------------------------------------------------------------------------
-# Dynamic command factory — auto-generates Typer params from Synthesis model
-# ---------------------------------------------------------------------------
+# Dynamic command factory, auto-generates Typer params from Synthesis model
 
 # Collect the names of Synthesis fields that map to scalar CLI options.
 _SYNTH_FIELD_NAMES: list[str] = []
@@ -488,14 +484,12 @@ def _collect_overrides(kwargs: dict) -> dict:
     return {name: kwargs[name] for name in _SYNTH_FIELD_NAMES if kwargs.get(name) is not None}
 
 
-# ---------------------------------------------------------------------------
 # Typer application
-# ---------------------------------------------------------------------------
 
-antenna_app = typer.Typer(help="Antenna design and synthesis commands.")
+antenna_app = typer.Typer(help="Antenna design and synthesis commands.", no_args_is_help=True)
 
 
-# -- list -----------------------------------------------------------------
+# -- list
 
 
 @antenna_app.command(name="list")
@@ -513,7 +507,7 @@ def list_antennas() -> None:
         typer.echo()
 
 
-# -- synthesize -----------------------------------------------------------
+# -- synthesize
 
 
 def _synthesize_impl(**kwargs) -> None:
@@ -559,7 +553,7 @@ _synthesize_impl.__signature__ = _build_signature(is_create=False)
 antenna_app.command(name="synthesize")(_synthesize_impl)
 
 
-# -- create ---------------------------------------------------------------
+# -- create
 
 
 def _create_impl(**kwargs) -> None:

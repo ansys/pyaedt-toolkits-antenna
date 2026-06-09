@@ -22,6 +22,13 @@ This section explains how to install the AEDT Antenna Toolkit.
 
         Learn more about the Antenna wizard and how to use it.
 
+    .. grid-item-card:: CLI guide :fa:`terminal`
+        :padding: 2 2 2 2
+        :link: cli_guide
+        :link-type: doc
+
+        Learn how to use the command-line interface for antenna design.
+
 
 .. toctree::
    :hidden:
@@ -29,3 +36,4 @@ This section explains how to install the AEDT Antenna Toolkit.
 
    installation
    user_guide
+   cli_guide
