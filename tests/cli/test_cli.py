@@ -207,7 +207,8 @@ def test_create_command_creates_project_for_empty_session(
 
     assert result.exit_code == 0
     assert properties.active_project == generated_project
-    assert properties.active_design == "bowtie"
+    assert properties.design_list["bowtie_normal"] == []
+    assert properties.active_design == "bowtie-normal"
     assert mocked_cli_backend["connect_design_called_with"] == "HFSS"
     assert mocked_cli_backend["get_antenna_called_with"] == ("BowTieNormal", False)
 

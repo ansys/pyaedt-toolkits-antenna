@@ -40,6 +40,7 @@ from typing import List
 from typing import Optional
 from typing import get_origin
 
+from ansys.aedt.core import generate_unique_project_name
 from ansys.aedt.core.cli import common
 import typer
 
@@ -300,6 +301,34 @@ def _resolve_project_name(project_name: Optional[str], project_list: list[str]) 
         raise RuntimeError(f"Project '{project_name}' is ambiguous. Matches: {partial_matches}")
 
     raise RuntimeError(f"Project '{project_name}' not found. Available: {project_list}")
+
+
+def _default_project_name(class_name: str) -> str:
+    """Generate a recognizable project path for fresh AEDT sessions."""
+    project_name = _CLASS_TO_CLI.get(class_name, _camel_to_kebab(class_name)).replace("-", "_")
+    return generate_unique_project_name(project_name=project_name)
+
+
+def _resolve_target_project(kwargs: dict, class_name: str, properties) -> str:
+    """Pick the project to use, creating one when the AEDT session is empty."""
+    project_name = _resolve_project_name(kwargs.get("project"), properties.project_list)
+    if project_name:
+        return project_name
+
+    if properties.active_project:
+        return properties.active_project
+
+    if len(properties.project_list) == 1:
+        return properties.project_list[0]
+
+    return _default_project_name(class_name)
+
+
+def _bootstrap_project_design_state(properties) -> None:
+    """Ensure a fresh project has an entry in the design map before connecting."""
+    project_name = _project_key(properties.active_project)
+    if project_name and project_name not in properties.design_list:
+        properties.design_list[project_name] = []
 
 
 def _designs_for_project(design_list: dict, project_name: Optional[str]) -> list[str]:
@@ -575,10 +604,8 @@ def _create_impl(**kwargs) -> None:
         toolkit.launch_aedt()
         toolkit.wait_to_be_idle()
 
-        project_name = _resolve_project_name(kwargs.get("project"), properties.project_list)
-        if project_name:
-            properties.active_project = project_name
-
+        properties.active_project = _resolve_target_project(kwargs, class_name, properties)
+        _bootstrap_project_design_state(properties)
         properties.active_design = _resolve_target_design(kwargs, class_name, properties)
         if not toolkit.connect_design("HFSS"):
             raise RuntimeError("Unable to connect to the selected HFSS design.")
