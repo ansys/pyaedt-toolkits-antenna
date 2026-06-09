@@ -111,7 +111,7 @@ The ``create`` command creates an antenna in a running AEDT session via gRPC.
 
 1. AEDT must be running
 2. gRPC server must be enabled (check the port number in AEDT)
-3. An HFSS project should be open
+3. If no HFSS project is open, the command creates a new project automatically
 
 Basic example:
 
