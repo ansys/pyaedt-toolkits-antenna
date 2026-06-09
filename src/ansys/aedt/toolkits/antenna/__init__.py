@@ -28,4 +28,6 @@ pyaedt-toolkits.
 ansys.aedt.toolkits.antenna
 """
 
-__version__ = "0.10.dev0"
+import importlib.metadata as importlib_metadata
+
+__version__ = importlib_metadata.version(__name__)
