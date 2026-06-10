@@ -6,6 +6,7 @@ AEDT's
 Api.py
 application
 [Bb]owtie
+CLI
 CPython
 datas
 docstring
