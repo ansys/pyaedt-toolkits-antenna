@@ -32,3 +32,4 @@ url
 uv
 venv
 walkthrough
+CLI
