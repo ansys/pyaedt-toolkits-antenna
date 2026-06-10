@@ -223,11 +223,12 @@ wheels = [
 
 [[package]]
 name = "ansys-aedt-toolkits-antenna"
-version = "0.9.dev0"
+version = "0.10.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "ansys-aedt-toolkits-common", extra = ["all"] },
     { name = "ansys-tools-visualization-interface" },
+    { name = "typer" },
 ]
 
 [package.optional-dependencies]
@@ -298,6 +299,7 @@ requires-dist = [
     { name = "ansys-aedt-toolkits-common", extras = ["all"], specifier = ">=0.16.2" },
     { name = "ansys-tools-visualization-interface" },
     { name = "pyinstaller", marker = "extra == 'freeze'" },
+    { name = "typer", specifier = ">=0.20.0" },
 ]
 provides-extras = ["freeze"]
 
