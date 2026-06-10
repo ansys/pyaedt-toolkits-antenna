@@ -65,7 +65,7 @@ class Synthesis(BaseModel, validate_assignment=True):
     base_element_length: float = 0.0
     base_element_radius: float = 0.0
     number_of_elements: int = 0
-    length_unit: str = "meter"
+    length_unit: str = "mm"
     material: str = "pec"
     material_properties: Dict[str, Any] = {}
     number_of_patches_x: int = 2
@@ -74,7 +74,7 @@ class Synthesis(BaseModel, validate_assignment=True):
     outer_boundary: str = ""
     start_frequency: float = 0.0
     stop_frequency: float = 0.0
-    substrate_height: float = 0.1
+    substrate_height: float = 1.6
     direction: str = "Left"
     num_sides: int = 6
 

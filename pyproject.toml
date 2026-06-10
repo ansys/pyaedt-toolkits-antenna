@@ -68,6 +68,9 @@ tests = [
 [tool.flit.module]
 name = "ansys.aedt.toolkits.antenna"
 
+[project.entry-points."pyaedt.cli"]
+antenna = "ansys.aedt.toolkits.antenna.cli:antenna_app"
+
 [project.urls]
 Source = "https://github.com/ansys/pyaedt-toolkits-antenna"
 Issues = "https://github.com/ansys/pyaedt-toolkits-antenna/issues"
