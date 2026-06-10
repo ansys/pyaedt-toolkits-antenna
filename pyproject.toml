@@ -27,6 +27,7 @@ classifiers = [
 dependencies = [
     "ansys-aedt-toolkits-common[all]>=0.16.2",
     "ansys-tools-visualization-interface",
+    "typer>=0.20.0",
 ]
 
 [project.optional-dependencies]
