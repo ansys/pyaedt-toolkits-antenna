@@ -223,3 +223,296 @@ def test_create_command_returns_error_when_design_connection_fails(
 
     assert result.exit_code == 1
     assert "Unable to connect to the selected HFSS design." in result.output
+
+
+def test_helper_functions_cover_alias_parsing_and_file_inputs(
+    tmp_path: Path,
+):
+    assert cli._resolve_antenna_type("bowtie") == "BowTieNormal"
+    assert cli._resolve_antenna_type("BowTieNormal") == "BowTieNormal"
+
+    assert cli._parse_param_list(None) == {}
+    assert cli._parse_param_list(["count=2", "enabled=true", 'meta={"x": 1}', "label=test"]) == {
+        "count": 2,
+        "enabled": True,
+        "meta": {"x": 1},
+        "label": "test",
+    }
+
+    with pytest.raises(Exception, match="Invalid --param format"):
+        cli._parse_param_list(["invalid"])
+
+    yaml_file = tmp_path / "params.yaml"
+    yaml_file.write_text("frequency: 2.1\nlength_unit: mm\n", encoding="utf-8")
+    assert cli._load_params_file(str(yaml_file)) == {"frequency": 2.1, "length_unit": "mm"}
+
+    null_json = tmp_path / "params-null.json"
+    null_json.write_text("null", encoding="utf-8")
+    assert cli._load_params_file(str(null_json)) == {}
+
+
+def test_load_params_file_and_file_override_error_paths(tmp_path: Path):
+    missing_file = tmp_path / "missing.json"
+    with pytest.raises(Exception, match="was not found"):
+        cli._load_params_file(str(missing_file))
+
+    invalid_json = tmp_path / "invalid.json"
+    invalid_json.write_text("{", encoding="utf-8")
+    with pytest.raises(Exception, match="Unable to parse parameter file"):
+        cli._load_params_file(str(invalid_json))
+
+    list_json = tmp_path / "list.json"
+    list_json.write_text("[]", encoding="utf-8")
+    with pytest.raises(Exception, match="must contain a mapping"):
+        cli._load_params_file(str(list_json))
+
+    with pytest.raises(Exception, match="'synthesis' section"):
+        cli._collect_file_overrides({"synthesis": []}, is_create=False)
+
+    with pytest.raises(Exception, match="'setup' section"):
+        cli._collect_file_overrides({"setup": []}, is_create=True)
+
+    with pytest.raises(Exception, match="'param' section"):
+        cli._collect_file_overrides({"param": []}, is_create=True)
+
+
+def test_collect_file_overrides_and_merge_create_inputs(tmp_path: Path):
+    synth_values, setup_values, extra_values = cli._collect_file_overrides(
+        {
+            "synthesis": {"frequency": 1.1},
+            "setup": {"create_setup": False},
+            "param": {"feed": "coax"},
+            "substrate_height": 1.6,
+            "sweep": 30,
+            "custom_flag": True,
+        },
+        is_create=True,
+    )
+
+    assert synth_values == {"frequency": 1.1, "substrate_height": 1.6}
+    assert setup_values == {"create_setup": False, "sweep": 30}
+    assert extra_values == {"feed": "coax", "custom_flag": True}
+
+    params_file = tmp_path / "create.json"
+    params_file.write_text(
+        json.dumps(
+            {
+                "synthesis": {"frequency": 1.5},
+                "setup": {"create_setup": False, "sweep": 10},
+                "param": {"feed": "probe"},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    overrides, merged_setup, extra = cli._merge_cli_inputs(
+        {
+            "params_file": str(params_file),
+            "param": ['feed={"type": "wave"}'],
+            "frequency": 2.2,
+            "length_unit": None,
+            "substrate_height": None,
+            "create_setup": True,
+            "component_3d": False,
+            "lattice_pair": True,
+            "sweep": None,
+            "num_cores": 6,
+        },
+        is_create=True,
+    )
+
+    assert overrides == {"frequency": 2.2}
+    assert merged_setup == {
+        "create_setup": True,
+        "sweep": 10,
+        "component_3d": False,
+        "lattice_pair": True,
+        "num_cores": 6,
+    }
+    assert extra == {"feed": {"type": "wave"}}
+
+
+def test_project_and_design_resolution_helpers(monkeypatch: pytest.MonkeyPatch):
+    assert cli._project_key(None) == ""
+    assert cli._project_key("C:/tmp/demo_project.aedt") == "demo_project"
+
+    project_list = ["DemoProject.aedt", "OtherProject.aedt"]
+    assert cli._resolve_project_name("demoproject", project_list) == "DemoProject.aedt"
+    assert cli._resolve_project_name("other", project_list) == "OtherProject.aedt"
+
+    ambiguous_exact = ["DemoProject.aedt", "demoproject"]
+    with pytest.raises(RuntimeError, match="ambiguous"):
+        cli._resolve_project_name("demoproject", ambiguous_exact)
+
+    ambiguous_partial = ["AlphaProject.aedt", "ProjectBeta.aedt"]
+    with pytest.raises(RuntimeError, match="ambiguous"):
+        cli._resolve_project_name("project", ambiguous_partial)
+
+    with pytest.raises(RuntimeError, match="not found"):
+        cli._resolve_project_name("missing", project_list)
+
+    monkeypatch.setattr(cli, "generate_unique_project_name", lambda project_name=None: f"generated:{project_name}")
+    assert cli._default_project_name("BowTieNormal") == "generated:bowtie_normal"
+
+    properties = SimpleNamespace(
+        project_list=["OnlyProject.aedt"],
+        active_project="",
+        design_list={},
+    )
+    assert cli._resolve_target_project({"project": None}, "BowTieNormal", properties) == "OnlyProject.aedt"
+
+    properties.active_project = "CurrentProject.aedt"
+    assert cli._resolve_target_project({"project": None}, "BowTieNormal", properties) == "CurrentProject.aedt"
+    assert cli._resolve_target_project({"project": "OnlyProject"}, "BowTieNormal", properties) == "OnlyProject.aedt"
+
+    empty_properties = SimpleNamespace(project_list=[], active_project="", design_list={})
+    assert cli._resolve_target_project({"project": None}, "BowTieNormal", empty_properties) == "generated:bowtie_normal"
+
+    cli._bootstrap_project_design_state(empty_properties)
+    assert empty_properties.design_list == {}
+
+    empty_properties.active_project = "C:/tmp/generated_project.aedt"
+    cli._bootstrap_project_design_state(empty_properties)
+    assert empty_properties.design_list == {"generated_project": []}
+
+    assert cli._designs_for_project({}, None) == []
+    assert cli._designs_for_project({"OnlyProject": ["A"]}, "OnlyProject.aedt") == ["A"]
+    assert cli._designs_for_project({"OnlyProject.aedt": ["B"]}, "OnlyProject.aedt") == ["B"]
+    assert cli._designs_for_project({"Other": ["C"]}, "OnlyProject.aedt") == []
+
+    design_properties = SimpleNamespace(
+        active_project="OnlyProject.aedt", design_list={"OnlyProject": ["BowTieNormal", "custom"]}
+    )
+    assert (
+        cli._resolve_target_design({"design": "manual", "antenna_type": "bowtie"}, "BowTieNormal", design_properties)
+        == "manual"
+    )
+    assert (
+        cli._resolve_target_design({"design": None, "antenna_type": "bowtie"}, "BowTieNormal", design_properties)
+        == "BowTieNormal"
+    )
+    assert (
+        cli._resolve_target_design(
+            {"design": None, "antenna_type": "missing-name"},
+            "MissingClass",
+            SimpleNamespace(active_project="OnlyProject.aedt", design_list={"OnlyProject": ["missing-name"]}),
+        )
+        == "missing-name"
+    )
+    assert (
+        cli._resolve_target_design(
+            {"design": None, "antenna_type": "unknown"},
+            "MissingClass",
+            SimpleNamespace(active_project="OnlyProject.aedt", design_list={"OnlyProject": []}),
+        )
+        == "missing-class"
+    )
+
+
+def test_build_signature_exposes_create_specific_options():
+    synth_signature = cli._build_signature(is_create=False)
+    create_signature = cli._build_signature(is_create=True)
+
+    assert "port" not in synth_signature.parameters
+    assert "create_setup" not in synth_signature.parameters
+    assert "port" in create_signature.parameters
+    assert "project" in create_signature.parameters
+    assert "design" in create_signature.parameters
+    assert "create_setup" in create_signature.parameters
+    assert "component_3d" in create_signature.parameters
+    assert "lattice_pair" in create_signature.parameters
+    assert "sweep" in create_signature.parameters
+    assert "num_cores" in create_signature.parameters
+    assert "params_file" in create_signature.parameters
+    assert "param" in create_signature.parameters
+
+
+def test_list_and_synthesize_commands_support_json_mode(
+    runner: CliRunner,
+    mocked_cli_backend: dict,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    calls = []
+    monkeypatch.setattr(cli.common, "json_mode", True)
+    monkeypatch.setattr(cli.common, "print_output", lambda **kwargs: calls.append(kwargs))
+
+    list_result = runner.invoke(cli.antenna_app, ["list"])
+    synth_result = runner.invoke(cli.antenna_app, ["synthesize", "bowtie"])
+
+    assert list_result.exit_code == 0
+    assert synth_result.exit_code == 0
+    assert calls[0]["data"]["antennas"] == cli.ANTENNA_REGISTRY
+    assert calls[1]["data"] == {
+        "antenna": "bowtie",
+        "class": "BowTieNormal",
+        "parameters": mocked_cli_backend["result"],
+    }
+
+
+def test_synthesize_and_create_commands_report_json_errors(
+    runner: CliRunner,
+    mocked_cli_backend: dict,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    calls = []
+    monkeypatch.setattr(cli.common, "json_mode", True)
+    monkeypatch.setattr(cli.common, "print_output", lambda **kwargs: calls.append(kwargs))
+
+    mocked_cli_backend["result"] = False
+    synth_result = runner.invoke(cli.antenna_app, ["synthesize", "bowtie"])
+    create_result = runner.invoke(cli.antenna_app, ["create", "bowtie", "--port", "50051"])
+
+    assert synth_result.exit_code == 1
+    assert create_result.exit_code == 1
+    assert calls[0] == {"error": "Synthesis failed for BowTieNormal."}
+    assert calls[1] == {"error": "Antenna creation failed. Check AEDT connection and design state."}
+
+
+def test_create_command_supports_json_mode_and_param_sections(
+    runner: CliRunner,
+    mocked_cli_backend: dict,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+):
+    calls = []
+    monkeypatch.setattr(cli.common, "json_mode", True)
+    monkeypatch.setattr(cli.common, "print_output", lambda **kwargs: calls.append(kwargs))
+
+    params_file = tmp_path / "create.json"
+    params_file.write_text(
+        json.dumps(
+            {
+                "synthesis": {"frequency": 3.5},
+                "setup": {"create_setup": False, "component_3d": True, "sweep": 15},
+                "param": {"ignored_extra": "value"},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = runner.invoke(
+        cli.antenna_app,
+        [
+            "create",
+            "bowtie",
+            "--port",
+            "50051",
+            "--params-file",
+            str(params_file),
+            "--lattice-pair",
+        ],
+    )
+
+    properties = mocked_cli_backend["properties"]
+
+    assert result.exit_code == 0
+    assert calls[-1]["data"] == {
+        "antenna": "bowtie",
+        "class": "BowTieNormal",
+        "parameters": mocked_cli_backend["result"],
+    }
+    assert properties.antenna.synthesis.frequency == 3.5
+    assert properties.antenna.setup.create_setup is False
+    assert properties.antenna.setup.component_3d is True
+    assert properties.antenna.setup.lattice_pair is True
+    assert properties.antenna.setup.sweep == 15
