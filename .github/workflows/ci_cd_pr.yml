@@ -290,6 +290,11 @@ jobs:
           name: Antenna-Toolkit-Installer-ubuntu_${{ matrix.os }}
           path: Antenna-Toolkit-Installer-ubuntu_${{ env.OS_VERSION_PROCESSED }}.zip
 
+  build-appimage:
+    name: "Build Application - AppImage"
+    needs: smoke-tests
+    uses: ./.github/workflows/ci_cd_appimage.yml
+
   tests_windows:
     name: "Windows Tests"
     runs-on: [self-hosted, Windows, pyaedt-toolkit]
