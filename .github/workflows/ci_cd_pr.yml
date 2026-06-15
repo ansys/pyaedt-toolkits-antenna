@@ -11,6 +11,11 @@ env:
   DOCUMENTATION_CNAME: 'aedt.antenna.toolkit.docs.pyansys.com'
   LIBRARY_NAME: 'ansys-aedt-toolkits-antenna'
   LIBRARY_NAMESPACE: 'ansys.aedt.toolkits.antenna'
+  PYTHON_APPIMAGE_URL: "https://github.com/niess/python-appimage/releases/download/python3.14/python3.14.0-cp314-cp314-manylinux_2_28_x86_64.AppImage"
+  APP_ID: 'antenna_toolkit'
+  APP_NAME: 'Antenna Toolkit'
+  APP_COMMENT: 'Ansys AEDT Antenna Toolkit'
+  APP_ICON_SOURCE: 'src/ansys/aedt/toolkits/antenna/ui/splash.png'
   ANSYSLMD_LICENSE_FILE: ${{ format('1055@{0}', secrets.LICENSE_SERVER) }}
   ON_CI: True
 
@@ -290,10 +295,128 @@ jobs:
           name: Antenna-Toolkit-Installer-ubuntu_${{ matrix.os }}
           path: Antenna-Toolkit-Installer-ubuntu_${{ env.OS_VERSION_PROCESSED }}.zip
 
-#  build-appimage:
-#    name: "Build Application - AppImage"
-#    needs: smoke-tests
-#    uses: ./.github/workflows/ci_cd_appimage.yml
+  build-appimage:
+    name: "Build Application - AppImage"
+    runs-on: ubuntu-latest
+    needs: smoke-tests
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglib2.0-0 libgl1 libxkbcommon-x11-0 libegl1 libdbus-1-3
+          python -m pip install --upgrade pip setuptools wheel
+
+      - id: extract_version
+        name: Extract version
+        run: |
+          python installer/extract_version.py
+          version=$(cat installer/VERSION)
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Build AppImage payload
+        env:
+          VERSION: ${{ steps.extract_version.outputs.version }}
+        run: |
+          wget -c "${PYTHON_APPIMAGE_URL}" -O python-base.AppImage
+          chmod +x python-base.AppImage
+          rm -rf squashfs-root
+          ./python-base.AppImage --appimage-extract
+
+          ./squashfs-root/AppRun -m pip install --upgrade pip setuptools wheel
+          ./squashfs-root/AppRun -m pip install "."
+
+          cat << 'EOF' >> ./squashfs-root/AppRun
+          HERE="$(dirname "$(readlink -f "${0}")")"
+          exec "$APPDIR/opt/python3.14/bin/python3.14" "$APPDIR/opt/python3.14/lib/python3.14/site-packages/ansys/aedt/toolkits/antenna/run_toolkit.py" "$@"
+          EOF
+
+          chmod +x ./squashfs-root/AppRun
+
+          desktop_file=$(find squashfs-root/usr/share/applications -maxdepth 1 -name 'python*.desktop' -print -quit)
+          if [ -z "${desktop_file}" ]; then
+              echo "Python desktop entry not found in extracted AppImage" >&2
+              exit 1
+          fi
+          mv "${desktop_file}" "squashfs-root/usr/share/applications/${APP_ID}.desktop"
+
+          sed -i -e "s|^Name=.*|Name=${APP_NAME}|g" "squashfs-root/usr/share/applications/${APP_ID}.desktop"
+          sed -i -e "s|^Exec=.*|Exec=${APP_ID}|g" "squashfs-root/usr/share/applications/${APP_ID}.desktop"
+          sed -i -e "s|^Icon=.*|Icon=${APP_ID}|g" "squashfs-root/usr/share/applications/${APP_ID}.desktop"
+          sed -i -e "s|^Comment=.*|Comment=${APP_COMMENT}|g" "squashfs-root/usr/share/applications/${APP_ID}.desktop"
+          sed -i -e 's|^Terminal=.*|Terminal=false|g' "squashfs-root/usr/share/applications/${APP_ID}.desktop"
+          sed -i -e 's|^Categories=.*|Categories=Science;Engineering;|g' "squashfs-root/usr/share/applications/${APP_ID}.desktop"
+
+          rm -f squashfs-root/*.desktop
+          cp "squashfs-root/usr/share/applications/${APP_ID}.desktop" squashfs-root/
+
+          install -Dm644 "${APP_ICON_SOURCE}" "squashfs-root/usr/share/icons/hicolor/256x256/apps/${APP_ID}.png"
+          cp "squashfs-root/usr/share/icons/hicolor/256x256/apps/${APP_ID}.png" "squashfs-root/${APP_ID}.png"
+
+          chmod +x squashfs-root/AppRun
+          mv squashfs-root/AppRun "squashfs-root/${APP_ID}"
+          mv squashfs-root antenna_toolkit_x86_64
+
+          sync
+
+          tar \
+            --warning=no-file-changed \
+            --numeric-owner \
+            --owner=0 \
+            --group=0 \
+            --preserve-permissions \
+            -czf "Antenna-Toolkit-${VERSION}-x86_64.tar.gz" \
+            -C antenna_toolkit_x86_64 . || [[ $? -le 1 ]]
+
+          cd antenna_toolkit_x86_64
+          tar \
+            --warning=no-file-changed \
+            --owner=65534 --group=65534 --mode=go-w,go+r,u+rw \
+            -czf LINX64.TGZ . || [[ $? -le 1 ]]
+          cd ..
+
+      - name: Package AppImage zip
+        run: |
+          set -e
+          if ! command -v zip >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y zip
+          fi
+          VERSION=${{ steps.extract_version.outputs.version }}
+          TAR_NAME="Antenna-Toolkit-${VERSION}-x86_64.tar.gz"
+          ZIP_NAME="AntennaToolkit-AppImage.zip"
+          LINX64_TGZ="antenna_toolkit_x86_64/LINX64.TGZ"
+          if [ ! -f "${TAR_NAME}" ]; then
+            echo "Expected ${TAR_NAME} not found" >&2
+            exit 1
+          fi
+          if [ ! -f "${LINX64_TGZ}" ]; then
+            echo "Expected ${LINX64_TGZ} not found" >&2
+            exit 1
+          fi
+          zip -j "${ZIP_NAME}" "${TAR_NAME}"
+
+      - name: Upload AppImage artifact (zip)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: AntennaToolkit-AppImage
+          path: AntennaToolkit-AppImage.zip
+          if-no-files-found: error
+
+      - name: Upload LINX64.TGZ artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: AntennaToolkit-LINX64
+          path: antenna_toolkit_x86_64/LINX64.TGZ
+          if-no-files-found: error
 
   tests_windows:
     name: "Windows Tests"
@@ -442,7 +565,7 @@ jobs:
   build-library:
     name: "Build library artifacts"
     runs-on: ubuntu-latest
-    needs: [doc-build, tests_windows, tests_linux, build-application-windows, build-application-linux-debian]
+    needs: [doc-build, tests_windows, tests_linux, build-application-windows, build-application-linux-debian, build-appimage]
     permissions:
       contents: read
     steps:
