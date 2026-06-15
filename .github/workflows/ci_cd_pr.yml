@@ -385,12 +385,13 @@ jobs:
           cd ..
 
       - name: Package AppImage zip
+        env:
+          VERSION: ${{ steps.extract_version.outputs.version }}
         run: |
           set -e
           if ! command -v zip >/dev/null 2>&1; then
             sudo apt-get update && sudo apt-get install -y zip
           fi
-          VERSION=${{ steps.extract_version.outputs.version }}
           TAR_NAME="Antenna-Toolkit-${VERSION}-x86_64.tar.gz"
           ZIP_NAME="AntennaToolkit-AppImage.zip"
           LINX64_TGZ="antenna_toolkit_x86_64/LINX64.TGZ"
