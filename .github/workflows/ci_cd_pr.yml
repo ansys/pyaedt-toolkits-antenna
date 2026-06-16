@@ -369,17 +369,9 @@ jobs:
           install -Dm644 "${APP_ICON_SOURCE}" "squashfs-root/usr/share/icons/hicolor/256x256/apps/${APP_ID}.png"
           cp "squashfs-root/usr/share/icons/hicolor/256x256/apps/${APP_ID}.png" "squashfs-root/${APP_ID}.png"
 
-          chmod +x squashfs-root/AppRun
-          mv squashfs-root/AppRun "squashfs-root/${APP_ID}"
-          mv squashfs-root antenna_toolkit_x86_64
-
           wget -c "${APPIMAGETOOL_URL}" -O appimagetool.AppImage
           chmod +x appimagetool.AppImage
-          ARCH=x86_64 ./appimagetool.AppImage --appimage-extract-and-run \
-            antenna_toolkit_x86_64 \
-            "Antenna-Toolkit-${VERSION}-x86_64.AppImage"
-
-          sync
+          ARCH=x86_64 ./appimagetool.AppImage squashfs-root/ "Antenna-Toolkit-${VERSION}-x86_64.AppImage"
 
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
