@@ -339,8 +339,8 @@ jobs:
           rm -rf squashfs-root
           ./python-base.AppImage --appimage-extract
 
-          ./squashfs-root/AppRun -m pip install --upgrade pip uv
-          ./squashfs-root/AppRun -m uv pip install "."
+          ./squashfs-root/AppRun -m pip install --upgrade uv flit_core
+          ./squashfs-root/AppRun -m uv pip install --no-build-isolation "."
 
           cat << 'EOF' >> ./squashfs-root/AppRun
           HERE="$(dirname "$(readlink -f "${0}")")"
