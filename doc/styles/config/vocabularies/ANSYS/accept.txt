@@ -6,12 +6,14 @@ AEDT's
 Api.py
 application
 [Bb]owtie
+CLI
 CPython
 datas
 docstring
 GitHub
 HFSS
 html
+JSON
 [Mm]akefile
 Powershell
 Properties.json
@@ -31,3 +33,7 @@ url
 uv
 venv
 walkthrough
+CLI
+Pydantic
+boolean
+[Ss]ynopsys
