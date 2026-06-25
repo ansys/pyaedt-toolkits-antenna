@@ -9,6 +9,72 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.9.1 <https://github.com/ansys/pyaedt-toolkits-antenna/releases/tag/v0.9.1>`_ - June 25, 2026
+===============================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - CLI
+          - `#408 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/408>`_
+
+
+  .. tab-item:: Dependencies
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Bump actions/checkout from 6.0.2 to 6.0.3
+          - `#412 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/412>`_
+
+        * - Bump astral-sh/setup-uv from 8.1.0 to 8.2.0
+          - `#413 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/413>`_
+
+        * - Bump prek from 0.4.3 to 0.4.4
+          - `#414 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/414>`_
+
+        * - Bump ruff-pre-commit from v0.15.15 to 0.15.16
+          - `#415 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/415>`_
+
+        * - Bump check-jsonschema from 0.37.2 to 0.37.3
+          - `#416 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/416>`_
+
+        * - Bump codecov/codecov-action from 6.0.1 to 7.0.0
+          - `#417 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/417>`_
+
+        * - Bump ansys-sphinx-theme from 1.8.2 to 1.9.0
+          - `#418 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/418>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.9.0
+          - `#406 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/406>`_
+
+        * - Bump dev version into v0.10.dev0
+          - `#407 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/407>`_
+
+        * - Add typer
+          - `#409 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/409>`_
+
+        * - Update missing or outdated files
+          - `#419 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/419>`_
+
+        * - Add Synopsys word
+          - `#421 <https://github.com/ansys/pyaedt-toolkits-antenna/pull/421>`_
+
+
 `0.9.0 <https://github.com/ansys/pyaedt-toolkits-antenna/releases/tag/v0.9.0>`_ - June 08, 2026
 ===============================================================================================
 
