@@ -123,6 +123,9 @@ force-sort-within-sections = true
 known-first-party = ["doc", "src", "tests"]
 force-single-line = true
 
+[tool.codespell]
+ignore-words = "ignore_words.txt"
+
 [tool.ruff.lint.mccabe]
 max-complexity = 10
 
