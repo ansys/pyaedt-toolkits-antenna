@@ -36,3 +36,4 @@ walkthrough
 CLI
 Pydantic
 boolean
+[Ss]ynopsys
