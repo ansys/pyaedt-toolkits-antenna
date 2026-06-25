@@ -8,6 +8,20 @@ synthesizing antennas directly from the terminal. The CLI is integrated with PyA
 accessed using the ``pyaedt antenna`` command. When the toolkit is installed directly, the same
 commands are also available through the standalone ``antenna`` executable.
 
+When you install one of the packaged application builds, the launcher executable also supports
+CLI subcommands. Running it without arguments starts the GUI, while passing arguments makes it
+behave like the CLI.
+
+.. code-block:: bash
+
+   # Windows packaged app
+   AntennaToolkit.exe list
+   AntennaToolkit.exe synthesize --help
+
+   # Linux packaged app or shell alias
+   antenna_toolkit list
+   antenna_toolkit synthesize --help
+
 Overview
 ========
 
