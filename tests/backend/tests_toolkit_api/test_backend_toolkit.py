@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
