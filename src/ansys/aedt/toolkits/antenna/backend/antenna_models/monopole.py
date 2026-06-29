@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
+#
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -347,7 +348,7 @@ class CircularDiscMonopole(CommonMonopole):
     .. [1] S. Honda et al., "A disc monopole antenna with 1:8 impedance bandwidth
        and omnidirectional radiation pattern," in *Proceedings of the
        International Symposium on Antennas and Propagation*, Sapporo, Japan,
-       Sept. 1992, pp. 1145-1148.
+       Sept. 1992, pp. 1145 - 1148.
     .. [2] N. P. Agrawall et al., "Wide-Band Planar Monopole Antennas," *IEEE
        Transactions on Antennas and Propagation*, vol. 46, no. 2,
        pp. 294-295, Feb. 1998.
@@ -525,7 +526,7 @@ class EllipticalBaseStripMonopole(CommonMonopole):
        monopole antenna and the band-rejected cross semi-elliptic monopole
        antenna for UWB applications," in *IEEE Antennas and Propagation
        Society International Symposium*, Albuquerque, NM, USA, 2006,
-       pp. 4649-4652.
+       pp. 4649 - 4652.
 
     Examples
     --------
@@ -725,7 +726,7 @@ class VerticalTrapezoidalMonopole(CommonMonopole):
     .. [2] J. A. Evans and M. J. Ammann, "Planar trapezoidal and pentagonal
        monopoles with impedance bandwidths in excess of 10:1," in *Antennas and
        Propagation Society International Symposium*, Orlando, FL, USA, 1999,
-       pp. 1558-1561, vol. 3.
+       pp. 1558 - 1561, vol. 3.
 
     Examples
     --------
