@@ -27,6 +27,7 @@ import multiprocessing
 import os
 import sys
 
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
 from ansys.aedt.toolkits.common.utils import clean_python_processes
 from ansys.aedt.toolkits.common.utils import find_free_port
 from ansys.aedt.toolkits.common.utils import is_server_running
@@ -52,8 +53,8 @@ def _hide_console_window() -> None:
         hwnd = ctypes.windll.kernel32.GetConsoleWindow()
         if hwnd:
             ctypes.windll.user32.ShowWindow(hwnd, 0)
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.debug("Failed to hide console window.", exc_info=exc)
 
 
 def _should_run_cli(argv: list[str]) -> bool:

@@ -9,7 +9,7 @@ accessed using the ``pyaedt antenna`` command. When the toolkit is installed dir
 commands are also available through the standalone ``antenna`` executable.
 
 When you install one of the packaged application builds, the launcher executable also supports
-CLI subcommands. Running it without arguments starts the GUI, while passing arguments makes it
+CLI sub-commands. Running it without arguments starts the GUI, while passing arguments makes it
 behave like the CLI.
 
 .. code-block:: bash
