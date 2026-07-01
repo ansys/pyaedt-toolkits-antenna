@@ -13,7 +13,7 @@ exclude: |
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: 22f0422809455ec89ffdcf5a00170ba816e42ddb  # frozen: v0.15.16
+  rev: 77039ccbba72c8aede339c5f8ae29b42aced0a2e  # frozen: v0.15.18
   hooks:
     - id: ruff-check
     - id: ruff-format
@@ -51,7 +51,7 @@ repos:
     - id: check-pre-commit-ci-config
 
 - repo: https://github.com/ansys/pre-commit-hooks
-  rev: ad4e7598809ad98cde5aaf52d80040c7ac56e7cf  # frozen: v0.7.2
+  rev: 55c5b6a5439abd847613579c6924da750e8b78b2  # frozen: v0.8.0
   hooks:
     - id: add-license-headers
       files: '(src|tests|installer|doc)/.*\.(py)'
