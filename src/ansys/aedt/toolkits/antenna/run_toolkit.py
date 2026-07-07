@@ -46,14 +46,17 @@ def _hide_console_window() -> None:
     if os.name != "nt" or not getattr(sys, "frozen", False):
         return
 
-    try:
-        import ctypes
+    import ctypes
 
-        hwnd = ctypes.windll.kernel32.GetConsoleWindow()
-        if hwnd:
-            ctypes.windll.user32.ShowWindow(hwnd, 0)
-    except Exception:
-        pass
+    try:
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        user32 = ctypes.WinDLL("user32", use_last_error=True)
+    except OSError:
+        return
+
+    hwnd = kernel32.GetConsoleWindow()
+    if hwnd:
+        user32.ShowWindow(hwnd, 0)
 
 
 def _should_run_cli(argv: list[str]) -> bool:
