@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
+#
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +28,7 @@ import multiprocessing
 import os
 import sys
 
+from ansys.aedt.toolkits.common.backend.logger_handler import logger
 from ansys.aedt.toolkits.common.utils import clean_python_processes
 from ansys.aedt.toolkits.common.utils import find_free_port
 from ansys.aedt.toolkits.common.utils import is_server_running
@@ -46,17 +48,14 @@ def _hide_console_window() -> None:
     if os.name != "nt" or not getattr(sys, "frozen", False):
         return
 
-    import ctypes
-
     try:
-        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-        user32 = ctypes.WinDLL("user32", use_last_error=True)
-    except OSError:
-        return
+        import ctypes
 
-    hwnd = kernel32.GetConsoleWindow()
-    if hwnd:
-        user32.ShowWindow(hwnd, 0)
+        hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+        if hwnd:
+            ctypes.windll.user32.ShowWindow(hwnd, 0)
+    except Exception as exc:
+        logger.debug("Failed to hide console window.", exc_info=exc)
 
 
 def _should_run_cli(argv: list[str]) -> bool:
