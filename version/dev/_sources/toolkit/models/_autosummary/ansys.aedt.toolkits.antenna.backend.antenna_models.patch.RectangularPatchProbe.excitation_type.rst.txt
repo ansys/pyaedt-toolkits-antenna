@@ -1,0 +1,6 @@
+excitation\_type
+================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.patch
+
+.. autoproperty:: RectangularPatchProbe.excitation_type

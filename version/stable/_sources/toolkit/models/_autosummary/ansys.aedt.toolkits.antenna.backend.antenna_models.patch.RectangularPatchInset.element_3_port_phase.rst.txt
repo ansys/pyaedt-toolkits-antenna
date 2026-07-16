@@ -1,0 +1,6 @@
+element\_3\_port\_phase
+=======================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.patch
+
+.. autoproperty:: RectangularPatchInset.element_3_port_phase

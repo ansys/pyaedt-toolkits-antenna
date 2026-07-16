@@ -1,0 +1,74 @@
+﻿QuadrifilarOpen
+===============
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.helix
+
+.. autoclass:: QuadrifilarOpen
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      QuadrifilarOpen.create_3dcomponent
+      
+      
+      QuadrifilarOpen.create_lattice_pair
+      
+      
+      QuadrifilarOpen.duplicate_along_line
+      
+      
+      QuadrifilarOpen.init_model
+      
+      
+      QuadrifilarOpen.model_disco
+      
+      
+      QuadrifilarOpen.model_hfss
+      
+      
+      QuadrifilarOpen.set_variables_in_hfss
+      
+      
+      QuadrifilarOpen.setup_disco
+      
+      
+      QuadrifilarOpen.setup_hfss
+      
+      
+      QuadrifilarOpen.synthesis
+      
+      
+      QuadrifilarOpen.update_synthesis_parameters
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      QuadrifilarOpen.antenna_type
+      QuadrifilarOpen.coordinate_system
+      QuadrifilarOpen.direction
+      QuadrifilarOpen.excitation_type
+      QuadrifilarOpen.feeder_length
+      QuadrifilarOpen.frequency
+      QuadrifilarOpen.frequency_unit
+      QuadrifilarOpen.gain
+      QuadrifilarOpen.length_unit
+      QuadrifilarOpen.material
+      QuadrifilarOpen.name
+      QuadrifilarOpen.origin
+      QuadrifilarOpen.outer_boundary
+   
+   

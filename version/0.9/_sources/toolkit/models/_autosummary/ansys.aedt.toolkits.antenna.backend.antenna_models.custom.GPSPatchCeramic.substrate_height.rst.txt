@@ -1,0 +1,6 @@
+substrate\_height
+=================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.custom
+
+.. autoproperty:: GPSPatchCeramic.substrate_height
