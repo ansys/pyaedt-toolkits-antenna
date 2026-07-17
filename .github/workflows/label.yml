@@ -89,6 +89,7 @@ jobs:
           - [maintenance](https://github.com/ansys/pyaedt-toolkits-antenna/pulls?q=label%3Amaintenance+)
           - [release](https://github.com/ansys/pyaedt-toolkits-antenna/pulls?q=label%3Arelease+)
 
+
   changelog-fragment:
     name: Create changelog fragment file
     needs: [labeler]
@@ -97,10 +98,58 @@ jobs:
       pull-requests: write # Needed to create changelog fragment on PR
     runs-on: ubuntu-latest
     steps:
-    - uses: ansys/actions/doc-changelog@d946b24b9a765f4169bcc94afdb27bd1a0533741 # v10.3.2
+    - uses: ansys/actions/doc-changelog@a5b0351dc277d68c2dc1beca2d2674c7dfa4fc55 # v10.3.3
       with:
         bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
         bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
         token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
         use-default-towncrier-config: true
         use-pull-request-title: true
+
+  check-pr-template:
+    name: Check PR template
+    # NOTE: Disable checking for dependabot and other automated PRs
+    if: |
+      !startsWith(github.event.pull_request.title, 'BUILD(uv):') &&
+      !startsWith(github.event.pull_request.title, 'BUILD(actions):') &&
+      !startsWith(github.event.pull_request.title, 'BUILD(pre-commit):') &&
+      !startsWith(github.event.pull_request.title, 'CHORE: update CHANGELOG for v') &&
+      github.event.pull_request.user.login != 'pyansys-automation'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read   # Required to read PR content for validation
+    steps:
+      - name: Check PR description
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          ERRORS=()
+
+          # Check required sections exist
+          for section in "## Description" "## Issue linked" "## Checklist"; do
+            if ! echo "$PR_BODY" | grep -qF "$section"; then
+              ERRORS+=("Missing section: '$section'")
+            fi
+          done
+
+          # Check placeholder texts have been replaced
+          PLACEHOLDERS=(
+            "**Please provide a brief description of the changes made in this pull request.**"
+            "**Please mention the issue number or describe the problem this pull request addresses.**"
+          )
+          for placeholder in "${PLACEHOLDERS[@]}"; do
+            if echo "$PR_BODY" | grep -qF "$placeholder"; then
+              ERRORS+=("Placeholder not replaced: '$placeholder'")
+            fi
+          done
+
+          # Report
+          if [ ${#ERRORS[@]} -ne 0 ]; then
+            echo "PR description validation failed:"
+            for err in "${ERRORS[@]}"; do
+              echo "  - $err"
+            done
+            exit 1
+          fi
+
+          echo "PR description is valid."
