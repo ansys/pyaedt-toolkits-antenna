@@ -50,7 +50,6 @@ doc = [
     "nbsphinx",
     "numpydoc",
     "pypandoc",
-    "pyside6",
     "recommonmark",
     "Sphinx",
     "sphinx-autobuild",
@@ -59,11 +58,9 @@ doc = [
     "pyvista[jupyter]",
 ]
 tests = [
-    "flask",
     "pytest",
     "pytest-cov",
     "pytest-qt",
-    "pyside6",
 ]
 
 [tool.flit.module]

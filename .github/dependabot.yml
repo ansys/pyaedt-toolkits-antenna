@@ -38,8 +38,6 @@ updates:
             - "pytest"
             - "pytest-cov"
             - "pytest-qt"
-            - "flask"
-            - "pyside6"
         transitive-dependencies:
           applies-to: version-updates
           patterns:
