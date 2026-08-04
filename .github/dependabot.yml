@@ -59,6 +59,7 @@ updates:
     labels:
       - "maintenance"
       - "dependencies"
+    ignore:
       - dependency-name: "flask"
         update-types: [ "version-update:semver-patch" ]
       - dependency-name: "pyside6"
