@@ -7,45 +7,45 @@ updates:
       day: "saturday"
       time: "06:00"
       timezone: "Europe/Paris"
-      groups:
-        direct-dependencies:
-          applies-to: version-updates
-          patterns:
-            - "ansys-aedt-toolkits-common"
-            - "ansys-tools-visualization-interface"
-            - "typer"
-        dev-dependencies:
-          applies-to: version-updates
-          patterns:
-            # Documentation
-            - "ansys-sphinx-theme"
-            - "ipython"
-            - "ipywidgets"
-            - "jupyterlab"
-            - "jupytext"
-            - "nbsphinx"
-            - "numpydoc"
-            - "pypandoc"
-            - "recommonmark"
-            - "Sphinx"
-            - "sphinx-autobuild"
-            - "sphinx-copybutton"
-            - "sphinx_design"
-            - "pyvista"
-            # Lint / Format
-            - "prek"
-            # Test
-            - "pytest"
-            - "pytest-cov"
-            - "pytest-qt"
-        transitive-dependencies:
-          applies-to: version-updates
-          patterns:
-            - "*"
-        security-updates:
-          applies-to: security-updates
-          patterns:
-            - "*"
+    groups:
+      direct-dependencies:
+        applies-to: version-updates
+        patterns:
+          - "ansys-aedt-toolkits-common"
+          - "ansys-tools-visualization-interface"
+          - "typer"
+      dev-dependencies:
+        applies-to: version-updates
+        patterns:
+          # Documentation
+          - "ansys-sphinx-theme"
+          - "ipython"
+          - "ipywidgets"
+          - "jupyterlab"
+          - "jupytext"
+          - "nbsphinx"
+          - "numpydoc"
+          - "pypandoc"
+          - "recommonmark"
+          - "Sphinx"
+          - "sphinx-autobuild"
+          - "sphinx-copybutton"
+          - "sphinx_design"
+          - "pyvista"
+          # Lint / Format
+          - "prek"
+          # Test
+          - "pytest"
+          - "pytest-cov"
+          - "pytest-qt"
+      transitive-dependencies:
+        applies-to: version-updates
+        patterns:
+          - "*"
+      security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
     cooldown:
       default-days: 7
       include:
