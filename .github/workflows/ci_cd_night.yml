@@ -66,7 +66,7 @@ jobs:
 
   doc-build:
     name: "Build documentation"
-    runs-on: [self-hosted, Windows, pyaedt-toolkit]
+    runs-on: [self-hosted, Linux, pyaedt-toolkit]
     needs: doc-style
     timeout-minutes: 30
     permissions:
