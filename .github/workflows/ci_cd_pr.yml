@@ -52,7 +52,7 @@ jobs:
       pull-requests: read # Needed to check the title of the PR
     steps:
       - name: Check the title of the pull request
-        uses: ansys/actions/check-pr-title@84b6533ae76f5dde69a1df26c18682160a8121cf # v10.3.5
+        uses: ansys/actions/check-pr-title@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           use-upper-case: true
@@ -78,7 +78,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: ansys/actions/check-actions-security@84b6533ae76f5dde69a1df26c18682160a8121cf # v10.3.5
+      - uses: ansys/actions/check-actions-security@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
         with:
           generate-summary: true
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -92,7 +92,7 @@ jobs:
       contents: read
       pull-requests: read # Required to read documentation files for style checking
     steps:
-      - uses: ansys/actions/doc-style@84b6533ae76f5dde69a1df26c18682160a8121cf # v10.3.5
+      - uses: ansys/actions/doc-style@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           vale-version: "3.4.1"
@@ -106,7 +106,7 @@ jobs:
       contents: read
     steps:
       - name: Build documentation
-        uses: ansys/actions/doc-build@84b6533ae76f5dde69a1df26c18682160a8121cf # v10.3.5
+        uses: ansys/actions/doc-build@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
@@ -126,7 +126,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: ansys/actions/build-wheelhouse@84b6533ae76f5dde69a1df26c18682160a8121cf # v10.3.5
+      - uses: ansys/actions/build-wheelhouse@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           operating-system: ${{ matrix.os }}
@@ -441,7 +441,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: ansys/actions/build-library@84b6533ae76f5dde69a1df26c18682160a8121cf # v10.3.5
+      - uses: ansys/actions/build-library@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
