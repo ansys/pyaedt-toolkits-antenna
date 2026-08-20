@@ -1,0 +1,84 @@
+﻿GPSPatchCeramic
+===============
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.custom
+
+.. autoclass:: GPSPatchCeramic
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      GPSPatchCeramic.create_3dcomponent
+      
+      
+      GPSPatchCeramic.create_lattice_pair
+      
+      
+      GPSPatchCeramic.duplicate_along_line
+      
+      
+      GPSPatchCeramic.init_model
+      
+      
+      GPSPatchCeramic.model_disco
+      
+      
+      GPSPatchCeramic.model_hfss
+      
+      
+      GPSPatchCeramic.set_variables_in_hfss
+      
+      
+      GPSPatchCeramic.setup_disco
+      
+      
+      GPSPatchCeramic.setup_hfss
+      
+      
+      GPSPatchCeramic.synthesis
+      
+      
+      GPSPatchCeramic.update_synthesis_parameters
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      GPSPatchCeramic.antenna_type
+      GPSPatchCeramic.coordinate_system
+      GPSPatchCeramic.element_1_port_phase
+      GPSPatchCeramic.element_1_rotation_angle
+      GPSPatchCeramic.element_2_port_phase
+      GPSPatchCeramic.element_2_rotation_angle
+      GPSPatchCeramic.element_3_port_phase
+      GPSPatchCeramic.element_3_rotation_angle
+      GPSPatchCeramic.element_4_port_phase
+      GPSPatchCeramic.element_4_rotation_angle
+      GPSPatchCeramic.excitation_type
+      GPSPatchCeramic.feed_rotation_angle
+      GPSPatchCeramic.frequency
+      GPSPatchCeramic.frequency_unit
+      GPSPatchCeramic.length_unit
+      GPSPatchCeramic.material
+      GPSPatchCeramic.material_properties
+      GPSPatchCeramic.name
+      GPSPatchCeramic.number_of_patches_x
+      GPSPatchCeramic.number_of_patches_y
+      GPSPatchCeramic.origin
+      GPSPatchCeramic.outer_boundary
+      GPSPatchCeramic.substrate_height
+   
+   
