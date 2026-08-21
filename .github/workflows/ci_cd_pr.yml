@@ -158,6 +158,12 @@ jobs:
       - name: Freeze application
         run: pyinstaller frozen.spec
 
+      - name: Smoke test packaged CLI
+        shell: pwsh
+        run: |
+          & ".\dist\antenna_toolkit\AntennaToolkit.exe" list
+          & ".\dist\antenna_toolkit\AntennaToolkit.exe" synthesize --help
+
       - name: Install NSIS
         run: choco install nsis -y
 
@@ -252,6 +258,11 @@ jobs:
         env:
           ADD_PYTHON_BINARIES: true
         run: pyinstaller frozen.spec
+
+      - name: Smoke test packaged CLI
+        run: |
+          ./dist/antenna_toolkit/antenna_toolkit list
+          ./dist/antenna_toolkit/antenna_toolkit synthesize --help
 
       - name: Setup and Copy Linux files for packaging
         run: |
