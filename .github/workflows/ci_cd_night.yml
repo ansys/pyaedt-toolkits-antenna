@@ -33,7 +33,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: ansys/actions/check-vulnerabilities@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 #v10.3.6
+      - uses: ansys/actions/check-vulnerabilities@d98e1a4008dab392f8c114a483c2c5624076ccd6 #v11.0.1
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           python-package-name: ${{ env.LIBRARY_NAME }}
@@ -47,7 +47,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: ansys/actions/code-style@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+      - uses: ansys/actions/code-style@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
@@ -59,7 +59,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: ansys/actions/doc-style@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+      - uses: ansys/actions/doc-style@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           vale-version: "3.4.1"
@@ -73,7 +73,7 @@ jobs:
       contents: read
     steps:
       - name: Build documentation
-        uses: ansys/actions/doc-build@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+        uses: ansys/actions/doc-build@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
@@ -93,7 +93,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: ansys/actions/build-wheelhouse@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+      - uses: ansys/actions/build-wheelhouse@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           operating-system: ${{ matrix.os }}
@@ -274,7 +274,7 @@ jobs:
           python-version: ${{ env.TESTS_PYTHON_VERSION }}
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        uses: astral-sh/setup-uv@ae62891fec2bb8e7d6c99fc78c9fec3a63790f8d # v10.0.0
         with:
           enable-cache: false
           prune-cache: true
@@ -343,7 +343,7 @@ jobs:
           python-version: ${{ env.TESTS_PYTHON_VERSION }}
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        uses: astral-sh/setup-uv@ae62891fec2bb8e7d6c99fc78c9fec3a63790f8d # v10.0.0
         with:
           enable-cache: false
           prune-cache: true
@@ -408,7 +408,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: ansys/actions/build-library@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+      - uses: ansys/actions/build-library@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
         with:
           library-name: ${{ env.LIBRARY_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
@@ -420,7 +420,7 @@ jobs:
     permissions:
       contents: write # Needed to update files on the gh-pages branch
     steps:
-      - uses: ansys/actions/doc-deploy-dev@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+      - uses: ansys/actions/doc-deploy-dev@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
