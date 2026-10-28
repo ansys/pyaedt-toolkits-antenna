@@ -148,8 +148,23 @@ jobs:
         with:
           python-version: ${{ env.TESTS_PYTHON_VERSION }}
 
+      # Bootstrap from the PSF-published wheel and hash: an index-based upgrade
+      # would still rely on the old pip's compromised CA bundle.
+      - name: "Bootstrap pip with a safe certificate bundle"
+        shell: bash
+        run: |
+          python -m pip --disable-pip-version-check install --no-cache-dir --force-reinstall "pip @ https://files.pythonhosted.org/packages/3f/06/3e4420302363fbb71be3c7f35ce042f54bfca330e3e66b3a2e3c4cca579f/pip-26.2.2-py3-none-any.whl#sha256=fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          activate-environment: true
+          enable-cache: false
+          prune-cache: true
+
       - name: Install Dependencies
-        run: pip install .[freeze]
+        run: |
+          uv sync --frozen --extra freeze
 
       - name: Extract version
         run: |
@@ -207,6 +222,20 @@ jobs:
         with:
           python-version: ${{ env.TESTS_PYTHON_VERSION }}
 
+      # Bootstrap from the PSF-published wheel and hash: an index-based upgrade
+      # would still rely on the old pip's compromised CA bundle.
+      - name: "Bootstrap pip with a safe certificate bundle"
+        shell: bash
+        run: |
+          python -m pip --disable-pip-version-check install --no-cache-dir --force-reinstall "pip @ https://files.pythonhosted.org/packages/3f/06/3e4420302363fbb71be3c7f35ce042f54bfca330e3e66b3a2e3c4cca579f/pip-26.2.2-py3-none-any.whl#sha256=fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          activate-environment: true
+          enable-cache: false
+          prune-cache: true
+
       - name: Install Linux Dependencies
         run: |
           sudo apt update
@@ -242,7 +271,8 @@ jobs:
           sudo gem install fpm
 
       - name: Install Python Dependencies
-        run: pip install .[freeze]
+        run: |
+          uv sync --frozen --extra freeze
 
       - name: Extract version
         run: |
@@ -307,12 +337,18 @@ jobs:
         with:
           python-version: ${{ env.TESTS_PYTHON_VERSION }}
 
+      # Bootstrap from the PSF-published wheel and hash: an index-based upgrade
+      # would still rely on the old pip's compromised CA bundle.
+      - name: "Bootstrap pip with a safe certificate bundle"
+        shell: bash
+        run: |
+          python -m pip --disable-pip-version-check install --no-cache-dir --force-reinstall "pip @ https://files.pythonhosted.org/packages/3f/06/3e4420302363fbb71be3c7f35ce042f54bfca330e3e66b3a2e3c4cca579f/pip-26.2.2-py3-none-any.whl#sha256=fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70"
+
       - name: Set up uv
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           enable-cache: false
           prune-cache: true
-
 
       - name: Install packages for testing
         run: uv sync --frozen --group tests
@@ -376,6 +412,13 @@ jobs:
         with:
           python-version: ${{ env.TESTS_PYTHON_VERSION }}
 
+      # Bootstrap from the PSF-published wheel and hash: an index-based upgrade
+      # would still rely on the old pip's compromised CA bundle.
+      - name: "Bootstrap pip with a safe certificate bundle"
+        shell: bash
+        run: |
+          python -m pip --disable-pip-version-check install --no-cache-dir --force-reinstall "pip @ https://files.pythonhosted.org/packages/3f/06/3e4420302363fbb71be3c7f35ce042f54bfca330e3e66b3a2e3c4cca579f/pip-26.2.2-py3-none-any.whl#sha256=fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70"
+
       - name: Set up uv
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
@@ -411,7 +454,6 @@ jobs:
             libxcb-xinerama0-dev \
             libxkbcommon-dev \
             libxkbcommon-x11-dev
-
 
       - name: Install packages for testing
         run: uv sync --frozen --group tests
