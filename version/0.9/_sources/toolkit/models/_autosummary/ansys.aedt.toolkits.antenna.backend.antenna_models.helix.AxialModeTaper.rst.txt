@@ -1,0 +1,74 @@
+﻿AxialModeTaper
+==============
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.helix
+
+.. autoclass:: AxialModeTaper
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      AxialModeTaper.create_3dcomponent
+      
+      
+      AxialModeTaper.create_lattice_pair
+      
+      
+      AxialModeTaper.duplicate_along_line
+      
+      
+      AxialModeTaper.init_model
+      
+      
+      AxialModeTaper.model_disco
+      
+      
+      AxialModeTaper.model_hfss
+      
+      
+      AxialModeTaper.set_variables_in_hfss
+      
+      
+      AxialModeTaper.setup_disco
+      
+      
+      AxialModeTaper.setup_hfss
+      
+      
+      AxialModeTaper.synthesis
+      
+      
+      AxialModeTaper.update_synthesis_parameters
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      AxialModeTaper.antenna_type
+      AxialModeTaper.coordinate_system
+      AxialModeTaper.direction
+      AxialModeTaper.excitation_type
+      AxialModeTaper.feeder_length
+      AxialModeTaper.frequency
+      AxialModeTaper.frequency_unit
+      AxialModeTaper.gain
+      AxialModeTaper.length_unit
+      AxialModeTaper.material
+      AxialModeTaper.name
+      AxialModeTaper.origin
+      AxialModeTaper.outer_boundary
+   
+   

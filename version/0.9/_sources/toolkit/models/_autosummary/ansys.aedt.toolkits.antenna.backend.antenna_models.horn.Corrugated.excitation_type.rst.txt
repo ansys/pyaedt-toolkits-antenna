@@ -1,0 +1,6 @@
+excitation\_type
+================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.horn
+
+.. autoproperty:: Corrugated.excitation_type

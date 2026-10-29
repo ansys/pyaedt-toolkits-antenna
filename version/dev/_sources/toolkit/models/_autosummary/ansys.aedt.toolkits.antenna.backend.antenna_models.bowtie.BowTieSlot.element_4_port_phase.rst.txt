@@ -1,0 +1,6 @@
+element\_4\_port\_phase
+=======================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie
+
+.. autoproperty:: BowTieSlot.element_4_port_phase

@@ -1,0 +1,74 @@
+﻿QuadrifilarShort
+================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.helix
+
+.. autoclass:: QuadrifilarShort
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      QuadrifilarShort.create_3dcomponent
+      
+      
+      QuadrifilarShort.create_lattice_pair
+      
+      
+      QuadrifilarShort.duplicate_along_line
+      
+      
+      QuadrifilarShort.init_model
+      
+      
+      QuadrifilarShort.model_disco
+      
+      
+      QuadrifilarShort.model_hfss
+      
+      
+      QuadrifilarShort.set_variables_in_hfss
+      
+      
+      QuadrifilarShort.setup_disco
+      
+      
+      QuadrifilarShort.setup_hfss
+      
+      
+      QuadrifilarShort.synthesis
+      
+      
+      QuadrifilarShort.update_synthesis_parameters
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      QuadrifilarShort.antenna_type
+      QuadrifilarShort.coordinate_system
+      QuadrifilarShort.direction
+      QuadrifilarShort.excitation_type
+      QuadrifilarShort.feeder_length
+      QuadrifilarShort.frequency
+      QuadrifilarShort.frequency_unit
+      QuadrifilarShort.gain
+      QuadrifilarShort.length_unit
+      QuadrifilarShort.material
+      QuadrifilarShort.name
+      QuadrifilarShort.origin
+      QuadrifilarShort.outer_boundary
+   
+   
