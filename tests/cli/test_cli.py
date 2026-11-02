@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import runpy
 import sys
 from types import ModuleType
 from types import SimpleNamespace
@@ -108,6 +109,26 @@ def test_list_command_displays_available_antennas(runner: CliRunner):
     assert "Available antenna types:" in result.output
     assert cli_name in result.output
     assert class_name in result.output
+
+
+def test_main_invokes_standalone_typer_app(monkeypatch: pytest.MonkeyPatch):
+    calls = []
+
+    monkeypatch.setattr(cli, "antenna_app", lambda: calls.append("called"))
+
+    cli.main()
+
+    assert calls == ["called"]
+
+
+def test_module_entry_point_delegates_to_cli_main(monkeypatch: pytest.MonkeyPatch):
+    calls = []
+
+    monkeypatch.setattr(cli, "main", lambda: calls.append("called"))
+
+    runpy.run_module("ansys.aedt.toolkits.antenna.__main__", run_name="__main__")
+
+    assert calls == ["called"]
 
 
 def test_synthesize_command_uses_params_file_and_cli_override(

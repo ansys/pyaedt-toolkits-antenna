@@ -3,6 +3,7 @@
 ; Set the name, version, and output path of the installer
 !define LICENSE_FILE "LICENSE"
 !define PRODUCT_NAME "Antenna Toolkit"
+!define PRODUCT_EXE "AntennaToolkit.exe"
 !define /file PRODUCT_VERSION "installer\VERSION"
 !define OUTFILE_NAME "Antenna-Toolkit-Installer-windows.exe"
 
@@ -25,10 +26,10 @@ VIProductVersion "${PRODUCT_VERSION}"
 !include "uninstall.nsi"
 
 Function CreateDesktopShortCut
-  CreateShortCut "$desktop\${PRODUCT_NAME}.lnk" "$INSTDIR\Antenna Toolkit.exe"
+  CreateShortCut "$desktop\${PRODUCT_NAME}.lnk" "$INSTDIR\${PRODUCT_EXE}"
 FunctionEnd
 
-!define MUI_FINISHPAGE_RUN "$INSTDIR\Antenna Toolkit.exe"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\${PRODUCT_EXE}"
 !define MUI_FINISHPAGE_SHOWREADME
 !define MUI_FINISHPAGE_SHOWREADME_TEXT "Create Desktop Shortcut"
 !define MUI_FINISHPAGE_SHOWREADME_FUNCTION "CreateDesktopShortCut"
@@ -56,12 +57,12 @@ Section "${PRODUCT_NAME}" SEC01
   CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
 
   ; Create the start menu shortcut
-  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\${PRODUCT_NAME}.exe"
+  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\${PRODUCT_EXE}"
 
   ; Add the program to the installed programs list
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayName" "${PRODUCT_NAME}"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayIcon" "$\"$INSTDIR\Ansys Python Manager.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayIcon" "$\"$INSTDIR\${PRODUCT_EXE}$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "Publisher" "ANSYS Inc"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "Version" "${PRODUCT_VERSION}"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayVersion" "${PRODUCT_VERSION}"
