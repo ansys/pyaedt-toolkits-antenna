@@ -1,0 +1,84 @@
+﻿BowTieNormal
+============
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie
+
+.. autoclass:: BowTieNormal
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      BowTieNormal.create_3dcomponent
+      
+      
+      BowTieNormal.create_lattice_pair
+      
+      
+      BowTieNormal.duplicate_along_line
+      
+      
+      BowTieNormal.init_model
+      
+      
+      BowTieNormal.model_disco
+      
+      
+      BowTieNormal.model_hfss
+      
+      
+      BowTieNormal.set_variables_in_hfss
+      
+      
+      BowTieNormal.setup_disco
+      
+      
+      BowTieNormal.setup_hfss
+      
+      
+      BowTieNormal.synthesis
+      
+      
+      BowTieNormal.update_synthesis_parameters
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      BowTieNormal.antenna_type
+      BowTieNormal.coordinate_system
+      BowTieNormal.element_1_port_phase
+      BowTieNormal.element_1_rotation_angle
+      BowTieNormal.element_2_port_phase
+      BowTieNormal.element_2_rotation_angle
+      BowTieNormal.element_3_port_phase
+      BowTieNormal.element_3_rotation_angle
+      BowTieNormal.element_4_port_phase
+      BowTieNormal.element_4_rotation_angle
+      BowTieNormal.excitation_type
+      BowTieNormal.feed_rotation_angle
+      BowTieNormal.frequency
+      BowTieNormal.frequency_unit
+      BowTieNormal.length_unit
+      BowTieNormal.material
+      BowTieNormal.material_properties
+      BowTieNormal.name
+      BowTieNormal.number_of_patches_x
+      BowTieNormal.number_of_patches_y
+      BowTieNormal.origin
+      BowTieNormal.outer_boundary
+      BowTieNormal.substrate_height
+   
+   

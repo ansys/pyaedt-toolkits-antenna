@@ -1,0 +1,6 @@
+feed\_rotation\_angle
+=====================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie
+
+.. autoproperty:: BowTieNormal.feed_rotation_angle

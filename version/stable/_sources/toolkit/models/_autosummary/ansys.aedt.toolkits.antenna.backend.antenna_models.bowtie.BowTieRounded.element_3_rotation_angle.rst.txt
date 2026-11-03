@@ -1,0 +1,6 @@
+element\_3\_rotation\_angle
+===========================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie
+
+.. autoproperty:: BowTieRounded.element_3_rotation_angle

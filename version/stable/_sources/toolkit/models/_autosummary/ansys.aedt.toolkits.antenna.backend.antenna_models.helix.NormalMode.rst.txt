@@ -1,0 +1,74 @@
+﻿NormalMode
+==========
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.helix
+
+.. autoclass:: NormalMode
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      NormalMode.create_3dcomponent
+      
+      
+      NormalMode.create_lattice_pair
+      
+      
+      NormalMode.duplicate_along_line
+      
+      
+      NormalMode.init_model
+      
+      
+      NormalMode.model_disco
+      
+      
+      NormalMode.model_hfss
+      
+      
+      NormalMode.set_variables_in_hfss
+      
+      
+      NormalMode.setup_disco
+      
+      
+      NormalMode.setup_hfss
+      
+      
+      NormalMode.synthesis
+      
+      
+      NormalMode.update_synthesis_parameters
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      NormalMode.antenna_type
+      NormalMode.coordinate_system
+      NormalMode.direction
+      NormalMode.excitation_type
+      NormalMode.feeder_length
+      NormalMode.frequency
+      NormalMode.frequency_unit
+      NormalMode.gain
+      NormalMode.length_unit
+      NormalMode.material
+      NormalMode.name
+      NormalMode.origin
+      NormalMode.outer_boundary
+   
+   

@@ -1,0 +1,6 @@
+element\_2\_rotation\_angle
+===========================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.custom
+
+.. autoproperty:: GPSPatchCeramic.element_2_rotation_angle

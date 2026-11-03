@@ -1,0 +1,6 @@
+number\_of\_patches\_x
+======================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie
+
+.. autoproperty:: BowTieRounded.number_of_patches_x
