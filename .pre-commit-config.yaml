@@ -13,7 +13,7 @@ exclude: |
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: 7c55798a78262d14b2074abf623d8a992ebb70d4  # frozen: v0.16.2
+  rev: 25bcf95026b96e2dd3c0aec3090c3d6ef6ca2e6c  # frozen: v0.17.3
   hooks:
     - id: ruff-check
     - id: ruff-format
@@ -34,7 +34,7 @@ repos:
 
 # validate GitHub workflow files
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 6b63472e72e1a91ed8a2f6d483790dfb644fa1d3  # frozen: 0.37.4
+  rev: a76b92851fc9eede9f9bc4073eb55202f34eb0df  # frozen: 0.39.0
   hooks:
     - id: check-github-workflows
 
@@ -42,7 +42,7 @@ repos:
   rev: fda77690955e9b63c6687d8806bafd56a526e45f  # frozen: 1.20.0
   hooks:
     - id: blacken-docs
-      additional_dependencies: [black==26.5.1]
+      additional_dependencies: [black==26.10.1]
 
 # This validates our pre-commit.ci configuration
 - repo: https://github.com/pre-commit-ci/pre-commit-ci-config
