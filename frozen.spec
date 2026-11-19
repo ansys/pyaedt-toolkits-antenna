@@ -14,7 +14,7 @@ except NameError:
     THIS_PATH = os.getcwd()
 
 OUT_PATH = 'antenna_toolkit'
-APP_NAME = 'antenna_toolkit' if is_linux else 'Antenna Toolkit'
+APP_NAME = 'antenna_toolkit' if is_linux else 'AntennaToolkit'
 
 CODE_PATH = os.path.join(THIS_PATH, 'src/ansys/aedt/toolkits/antenna')
 INSTALLER_PATH = os.path.join(THIS_PATH, 'installer')
@@ -110,7 +110,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=False,
-          console=False,
+          console=True,
           icon=ICON_FILE)
 
 coll = COLLECT(exe,

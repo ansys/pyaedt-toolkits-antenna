@@ -25,9 +25,12 @@
 """Antenna toolkit CLI extension for ``pyaedt``.
 
 CLI options for the ``synthesize`` and ``create`` commands are **auto-generated**
-from the :class:`Synthesis` Pydantic model.  Adding a new field to that model
+from the :class:`Synthesis` Pydantic model. Adding a new field to that model
 automatically exposes it as a ``--<field-name>`` flag — no manual CLI changes
 required.
+
+The same Typer application can be used both as the ``pyaedt antenna`` plugin
+and as a standalone ``antenna`` command.
 """
 
 from __future__ import annotations
@@ -347,7 +350,7 @@ def _designs_for_project(design_list: dict, project_name: Optional[str]) -> list
 def _resolve_target_design(kwargs: dict, class_name: str, properties) -> str:
     """Pick the design to use, creating an antenna-named design when absent."""
     requested_design = kwargs.get("design")
-    if requested_design:
+    if isinstance(requested_design, str) and requested_design:
         return requested_design
 
     existing_designs = {
@@ -428,7 +431,7 @@ def _build_signature(is_create: bool) -> inspect.Signature:
             inspect.Parameter(
                 name,
                 _P,
-                annotation=Optional[py_type],
+                annotation=py_type,
                 default=typer.Option(None, opt_flag, help=f"Default: {fi.default}"),
             )
         )
@@ -554,7 +557,7 @@ def _synthesize_impl(**kwargs) -> None:
 
         toolkit = ToolkitBackend()
         result = toolkit.get_antenna(class_name, synth_only=True)
-        if result is False:
+        if result is False or not isinstance(result, dict):
             raise RuntimeError(f"Synthesis failed for {class_name}.")
 
         if common.json_mode:
@@ -629,7 +632,7 @@ def _create_impl(**kwargs) -> None:
             typer.echo(f"Creating {kwargs['antenna_type']} ({class_name}) on port {port}...")
 
         result = toolkit.get_antenna(class_name, synth_only=False)
-        if result is False:
+        if result is False or not isinstance(result, dict):
             raise RuntimeError("Antenna creation failed. Check AEDT connection and design state.")
 
         if common.json_mode:
@@ -656,3 +659,12 @@ _create_impl.__doc__ = (
 )
 _create_impl.__signature__ = _build_signature(is_create=True)
 antenna_app.command(name="create")(_create_impl)
+
+
+def main() -> None:
+    """Run the antenna CLI as a standalone command."""
+    antenna_app()
+
+
+if __name__ == "__main__":  # pragma: no cover
+    main()

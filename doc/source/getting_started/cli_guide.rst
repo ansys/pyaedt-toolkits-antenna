@@ -5,7 +5,22 @@ CLI guide
 
 The AEDT Antenna Toolkit provides a powerful command-line interface (CLI) for designing and
 synthesizing antennas directly from the terminal. The CLI is integrated with PyAEDT and can be
-accessed using the ``pyaedt antenna`` command.
+accessed using the ``pyaedt antenna`` command. When the toolkit is installed directly, the same
+commands are also available through the standalone ``antenna`` executable.
+
+When you install one of the packaged application builds, the launcher executable also supports
+CLI sub-commands. Running it without arguments starts the GUI, while passing arguments makes it
+behave like the CLI.
+
+.. code-block:: bash
+
+   # Windows packaged app
+   AntennaToolkit.exe list
+   AntennaToolkit.exe synthesize --help
+
+   # Linux packaged app or shell alias
+   antenna_toolkit list
+   antenna_toolkit synthesize --help
 
 Overview
 ========
@@ -28,6 +43,12 @@ To see all supported antenna types organized by category:
 .. code-block:: bash
 
    pyaedt antenna list
+
+Standalone usage:
+
+.. code-block:: bash
+
+   antenna list
 
 This command displays antenna types in a readable format:
 
