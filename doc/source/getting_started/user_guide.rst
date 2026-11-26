@@ -77,7 +77,7 @@ You can install the AEDT Antenna Toolkit in a specific Python environment from t
 
    .. code:: bash
 
-       python -m pip install pyaedt-toolkits-antenna
+       python -m pip install ansys-aedt-toolkits-antenna
 
 #. Launch the Antenna Toolkit Wizard:
 
@@ -128,7 +128,7 @@ and toolkit level.
 
    .. code:: bash
 
-       python -m pip install pyaedt-toolkits-antenna
+       python -m pip install ansys-aedt-toolkits-antenna
 
 #. Open a Python console in your virtual environment:
 
