@@ -24,15 +24,10 @@
 
 import os
 from pathlib import Path
-import sys
+import tomllib
 from typing import Any
 from typing import Dict
 from typing import List
-
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib
 
 from ansys.aedt.toolkits.common.ui.models import UIProperties
 from ansys.aedt.toolkits.common.ui.models import general_settings

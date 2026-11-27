@@ -1,5 +1,5 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
+requires = ["flit_core>=3.2,<5"]
 build-backend = "flit_core.buildapi"
 
 [project]
@@ -8,7 +8,7 @@ name = "ansys-aedt-toolkits-antenna"
 version = "0.10.dev0"
 description = "Toolkit to design antennas with Ansys AEDT."
 readme = "README.rst"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
@@ -18,14 +18,12 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Information Analysis",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "ansys-aedt-toolkits-common[all]>=0.16.2",
+    "ansys-aedt-toolkits-common[all]>=0.17.0",
     "ansys-tools-visualization-interface",
     "typer>=0.20.0",
 ]
