@@ -304,7 +304,7 @@ tests = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ansys-aedt-toolkits-common", extras = ["all"], specifier = ">=0.16.2" },
+    { name = "ansys-aedt-toolkits-common", extras = ["all"], specifier = ">=0.17.0" },
     { name = "ansys-tools-visualization-interface" },
     { name = "pyinstaller", marker = "extra == 'freeze'" },
     { name = "typer", specifier = ">=0.20.0" },
@@ -363,16 +363,16 @@ tests = [
 
 [[package]]
 name = "ansys-aedt-toolkits-common"
-version = "0.16.3"
+version = "0.17.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansys-tools-common" },
     { name = "pyaedt" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6b/b6/4556dab92dd294d9b3001baf4ffb4fb76d55f4a40b241170825d83e27fde/ansys_aedt_toolkits_common-0.16.3.tar.gz", hash = "sha256:85f8b3340f7d68405cae141619f9a5ee4ba491e75374f8cea583a4f8bb60dae4", size = 234426, upload-time = "2026-09-10T12:39:44.906Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7b/34/3f9c713972566793a23a6adca94d7ebab445a125808208db076ea137f86f/ansys_aedt_toolkits_common-0.17.0.tar.gz", hash = "sha256:76d6f84cca82e6579c836080ade106c2553a5b22f58faf9e11de60b3a6b05f96", size = 235802, upload-time = "2026-11-18T19:25:08.071Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dc/82/b846b58070b1d9f8763ee6ac655fd8ed2dadfdd1b5138439fde4ab201bef/ansys_aedt_toolkits_common-0.16.3-py3-none-any.whl", hash = "sha256:398ae7ffdd720e7291ebe61c78997adf93e39efc446b1c91e3b5ab031c1ac5ad", size = 331119, upload-time = "2026-09-10T12:39:43.427Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/7a/bb005cfe4373e01531ec6feae58ad0ec48ff0d58483cb7c827ac85b0f39c/ansys_aedt_toolkits_common-0.17.0-py3-none-any.whl", hash = "sha256:9404a29876a6d025c60fee4f0cce4773dd83ee00a177ef93c57518a231b7b00c", size = 333510, upload-time = "2026-11-18T19:25:06.266Z" },
 ]
 
 [package.optional-dependencies]
@@ -1955,7 +1955,7 @@ name = "macholib"
 version = "1.16.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "altgraph" },
+    { name = "altgraph", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/10/2f/97589876ea967487978071c9042518d28b958d87b17dceb7cdc1d881f963/macholib-1.16.4.tar.gz", hash = "sha256:f408c93ab2e995cd2c46e34fe328b130404be143469e41bc366c807448979362", size = 59427, upload-time = "2025-11-22T08:28:38.373Z" }
 wheels = [
@@ -2759,7 +2759,7 @@ name = "pexpect"
 version = "4.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ptyprocess" },
+    { name = "ptyprocess", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce1f4d06852fc19a2f11d180f23dc32d9588bee2f149d/pexpect-4.9.0.tar.gz", hash = "sha256:ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f", size = 166450, upload-time = "2023-11-25T09:07:26.339Z" }
 wheels = [

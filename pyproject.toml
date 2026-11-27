@@ -23,7 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "ansys-aedt-toolkits-common[all]>=0.16.2",
+    "ansys-aedt-toolkits-common[all]>=0.17.0",
     "ansys-tools-visualization-interface",
     "typer>=0.20.0",
 ]

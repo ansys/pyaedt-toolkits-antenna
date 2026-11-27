@@ -24,7 +24,6 @@ from functools import partial
 import inspect
 from pathlib import Path
 import re
-import sys
 
 from PySide6.QtCore import Qt
 from PySide6.QtCore import Signal
@@ -58,10 +57,7 @@ from ansys.aedt.toolkits.antenna.ui.windows.antenna_catalog.antenna_catalog_page
     Ui_AntennaCatalog,
 )
 
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib
+import tomllib
 
 antenna_catalog = {}
 CATALOG_DIR = Path(__file__).parent
