@@ -1,0 +1,6 @@
+element\_4\_rotation\_angle
+===========================
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.patch
+
+.. autoproperty:: RectangularPatchEdge.element_4_rotation_angle

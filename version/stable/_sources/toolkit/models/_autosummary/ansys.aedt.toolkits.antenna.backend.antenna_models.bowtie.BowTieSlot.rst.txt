@@ -1,0 +1,84 @@
+﻿BowTieSlot
+==========
+
+.. currentmodule:: ansys.aedt.toolkits.antenna.backend.antenna_models.bowtie
+
+.. autoclass:: BowTieSlot
+
+   
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      
+      
+      BowTieSlot.create_3dcomponent
+      
+      
+      BowTieSlot.create_lattice_pair
+      
+      
+      BowTieSlot.duplicate_along_line
+      
+      
+      BowTieSlot.init_model
+      
+      
+      BowTieSlot.model_disco
+      
+      
+      BowTieSlot.model_hfss
+      
+      
+      BowTieSlot.set_variables_in_hfss
+      
+      
+      BowTieSlot.setup_disco
+      
+      
+      BowTieSlot.setup_hfss
+      
+      
+      BowTieSlot.synthesis
+      
+      
+      BowTieSlot.update_synthesis_parameters
+      
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+      :toctree:
+   
+      BowTieSlot.antenna_type
+      BowTieSlot.coordinate_system
+      BowTieSlot.element_1_port_phase
+      BowTieSlot.element_1_rotation_angle
+      BowTieSlot.element_2_port_phase
+      BowTieSlot.element_2_rotation_angle
+      BowTieSlot.element_3_port_phase
+      BowTieSlot.element_3_rotation_angle
+      BowTieSlot.element_4_port_phase
+      BowTieSlot.element_4_rotation_angle
+      BowTieSlot.excitation_type
+      BowTieSlot.feed_rotation_angle
+      BowTieSlot.frequency
+      BowTieSlot.frequency_unit
+      BowTieSlot.length_unit
+      BowTieSlot.material
+      BowTieSlot.material_properties
+      BowTieSlot.name
+      BowTieSlot.number_of_patches_x
+      BowTieSlot.number_of_patches_y
+      BowTieSlot.origin
+      BowTieSlot.outer_boundary
+      BowTieSlot.substrate_height
+   
+   
