@@ -7,7 +7,7 @@ Antenna Toolkit
    :target: https://docs.pyansys.com/
    :alt: PyAnsys
 
-.. |PythonVersion| image:: https://img.shields.io/badge/python-3.10+-blue.svg
+.. |PythonVersion| image:: https://img.shields.io/badge/python-3.12+-blue.svg
    :target: https://www.python.org/downloads/
 
 .. |Nightly| image:: https://github.com/ansys/pyaedt-toolkits-antenna/actions/workflows/ci_cd_night.yml/badge.svg
